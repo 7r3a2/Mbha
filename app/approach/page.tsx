@@ -336,7 +336,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
         </button>
       </div>
 
-      {/* Main flowchart container - no nested frame */}
+      {/* Main flowchart container */}
       <div 
         className="relative w-full h-full overflow-hidden flex items-center justify-center"
         onMouseDown={handleMouseDown}
@@ -349,10 +349,10 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
         onTouchEnd={handleTouchEnd}
         style={{ 
           cursor: isPanning ? 'grabbing' : 'grab',
-          touchAction: 'none', // Prevent page refresh on iPad
+          touchAction: 'none',
           pointerEvents: 'auto',
-          WebkitTouchCallout: 'none', // Prevent iOS touch callouts
-          WebkitUserSelect: 'none' // Prevent text selection
+          WebkitTouchCallout: 'none',
+          WebkitUserSelect: 'none'
         }}
       >
         
@@ -363,17 +363,14 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             transform: `scale(${scale * zoomScale}) translate(${panX}px, ${panY}px)`,
             width: '1800px',
             height: '1400px',
-            pointerEvents: 'auto', // Enable interaction with boxes
+            pointerEvents: 'auto',
             transformOrigin: 'center',
-            transition: isZooming ? 'none' : 'none', // Remove transition for instant panning
-            willChange: 'transform', // Optimize for animations
-            backfaceVisibility: 'hidden', // Reduce blur on touch
-            WebkitBackfaceVisibility: 'hidden', // Safari support
-            // Improve rendering quality for zoom
+            transition: isZooming ? 'none' : 'none',
+            willChange: 'transform',
+            backfaceVisibility: 'hidden',
+            WebkitBackfaceVisibility: 'hidden',
             imageRendering: 'crisp-edges',
-            // Better text rendering
             textRendering: 'optimizeLegibility',
-            // Prevent blur during zoom
             transformStyle: 'preserve-3d',
             perspective: '1000px'
           }}
@@ -444,17 +441,11 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
               justifyContent: 'center'
             }}
           >
-            <div className="flex items-center space-x-2">
-              <span className="text-lg">🔬</span>
-              <span>Intrauterine pregnancy on TVUS¹</span>
-            </div>
+            Intrauterine pregnancy on TVUS¹
           </div>
 
-
-
-          {/* 4. THIRD LEVEL: Findings from Abdominal and pelvic exam */}
-          
-          {/* 4A. Cervical Motion Tenderness */}
+          {/* 4. THIRD LEVEL: Findings from Abdominal and pelvic exam - arranged horizontally with spacing */}
+          {/* 4A. Cervical Motion Tenderness (far left) */}
           <div 
             className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
@@ -468,13 +459,10 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
               justifyContent: 'center'
             }}
           >
-            <div className="flex items-center space-x-2">
-              <span className="text-lg">🩺</span>
-              <span>Cervical Motion Tenderness</span>
-            </div>
+            Cervical Motion Tenderness
           </div>
 
-          {/* 4B. Severe Unilateral Pain */}
+          {/* 4B. Severe Unilateral Pain (left center) */}
           <div 
             className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
@@ -488,13 +476,10 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
               justifyContent: 'center'
             }}
           >
-            <div className="flex items-center space-x-2">
-              <span className="text-lg">🩺</span>
-              <span>Severe Unilateral Pain</span>
-            </div>
+            Severe Unilateral Pain
           </div>
 
-          {/* 4C. Suprapubic Tenderness */}
+          {/* 4C. Suprapubic Tenderness (center) */}
           <div 
             className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
@@ -508,13 +493,10 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
               justifyContent: 'center'
             }}
           >
-            <div className="flex items-center space-x-2">
-              <span className="text-lg">🩺</span>
-              <span>Suprapubic Tenderness</span>
-            </div>
+            Suprapubic Tenderness
           </div>
 
-          {/* 4D. Cyclic Monthly Pain Episodes */}
+          {/* 4D. Cyclic Monthly Pain Episodes (right center) */}
           <div 
             className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
@@ -528,14 +510,10 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
               justifyContent: 'center'
             }}
           >
-            <div className="flex items-center space-x-2">
-              <span className="text-lg">📅</span>
-              <span>Cyclic Monthly Pain Episodes</span>
-            </div>
+            Cyclic, monthly acute pain episodes
           </div>
 
           {/* 5. BRANCHES FROM INTRAUTERINE PREGNANCY ON TVUS¹ */}
-          
           {/* 5A. Ectopic Pregnancy (negative branch) */}
           <div 
             className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
@@ -571,10 +549,10 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             See Abdominal Pain in Pregnancy, p. 644
           </div>
 
-          {/* 6. TESTS AND FINDINGS */}
+          {/* 6. DETAILED SUB-BRANCHES */}
           
-          {/* 6A. From Cervical Motion Tenderness */}
-          {/* STI test */}
+          {/* 6A. From "Cervical Motion Tenderness" - Vertically arranged */}
+          {/* STI testing */}
           <div 
             className="bg-gray-200 border-2 border-gray-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
@@ -588,7 +566,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
               justifyContent: 'center'
             }}
           >
-            STI test
+            STI testing
           </div>
 
           {/* TVUS¹ */}
@@ -608,7 +586,44 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             TVUS¹
           </div>
 
-          {/* 6B. From Severe Unilateral Pain */}
+          {/* Then conditionally split horizontally */}
+          {/* Left: Pelvic Inflammatory Disease */}
+          <div 
+            className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
+            style={{
+              position: 'absolute',
+              left: 50,
+              top: 700,
+              width: 140,
+              minHeight: '50px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              clipPath: 'polygon(10% 0%, 90% 0%, 100% 50%, 90% 100%, 10% 100%, 0% 50%)'
+            }}
+          >
+            Pelvic Inflammatory Disease
+          </div>
+
+          {/* Right: Tubo-ovarian Abscess */}
+          <div 
+            className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
+            style={{
+              position: 'absolute',
+              left: 210,
+              top: 700,
+              width: 140,
+              minHeight: '50px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              clipPath: 'polygon(10% 0%, 90% 0%, 100% 50%, 90% 100%, 10% 100%, 0% 50%)'
+            }}
+          >
+            Tubo-ovarian Abscess
+          </div>
+
+          {/* 6B. From "Severe Unilateral Pain" - Vertically */}
           {/* Abdominal ultrasound */}
           <div 
             className="bg-gray-200 border-2 border-gray-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
@@ -626,186 +641,15 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             Abdominal ultrasound
           </div>
 
-          {/* 6C. From Suprapubic Tenderness */}
-          {/* UA findings */}
-          <div 
-            className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 350,
-              top: 460,
-              width: 220,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <div className="flex items-center space-x-2">
-              <span className="text-lg">🧪</span>
-              <span>UA: WBCs + nitrites, Urine culture: &gt;100K single organism colonies</span>
-            </div>
-          </div>
-
-          {/* 6D. From Cyclic Monthly Pain Episodes */}
-          {/* Monthly mid-cycle pain */}
-          <div 
-            className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 580,
-              top: 460,
-              width: 120,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <div className="flex items-center space-x-2">
-              <span className="text-lg">📅</span>
-              <span>Monthly mid-cycle pain</span>
-            </div>
-          </div>
-
-          {/* Dysmenorrhea, GI or Urinary Symptoms */}
-          <div 
-            className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 720,
-              top: 460,
-              width: 140,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <div className="flex items-center space-x-2">
-              <span className="text-lg">🔍</span>
-              <span>Dysmenorrhea, GI or Urinary Symptoms</span>
-            </div>
-          </div>
-
-          {/* 7. DIAGNOSES AND TREATMENTS */}
-          
-          {/* 7A. From Cervical Motion Tenderness */}
+          {/* Then horizontally split into 3 child boxes aligned horizontally below */}
+          {/* Left: Appendicitis (if appendiceal diameter > 6mm or wall thickening) */}
           <div 
             className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
             style={{
               position: 'absolute',
-              left: 70,
-              top: 580,
-              width: 140,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              clipPath: 'polygon(10% 0%, 90% 0%, 100% 50%, 90% 100%, 10% 100%, 0% 50%)'
-            }}
-          >
-            Pelvic Inflammatory Disease
-          </div>
-
-          <div 
-            className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 70,
-              top: 700,
-              width: 200,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            Ceftriaxone 500 mg IM, doxycycline + metronidazole ×14 days
-          </div>
-
-          {/* 7B. From Severe Unilateral Pain */}
-          {/* Thick-walled cystic collection in adnexa? */}
-          <div 
-            className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 230,
-              top: 580,
-              width: 160,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <div className="flex items-center space-x-2">
-              <span className="text-lg">🔬</span>
-              <span>Thick-walled cystic collection in adnexa?</span>
-            </div>
-          </div>
-
-          {/* Tubo-ovarian Abscess */}
-          <div 
-            className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 230,
-              top: 700,
-              width: 140,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              clipPath: 'polygon(10% 0%, 90% 0%, 100% 50%, 90% 100%, 10% 100%, 0% 50%)'
-            }}
-          >
-            Tubo-ovarian Abscess
-          </div>
-
-          <div 
-            className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 230,
-              top: 820,
-              width: 200,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            Broad-spectrum antibiotics³ ± drainage or laparoscopy
-          </div>
-
-          {/* Appendiceal diameter >6 mm */}
-          <div 
-            className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 410,
+              left: 50,
               top: 580,
               width: 120,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <div className="flex items-center space-x-2">
-              <span className="text-lg">🔬</span>
-              <span>Appendiceal diameter &gt;6 mm</span>
-            </div>
-          </div>
-
-          <div 
-            className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 410,
-              top: 700,
-              width: 100,
               minHeight: '50px',
               display: 'flex',
               alignItems: 'center',
@@ -816,48 +660,13 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             Appendicitis
           </div>
 
-          <div 
-            className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 410,
-              top: 820,
-              width: 140,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            Surgery
-          </div>
-
-          {/* Intraperitoneal fluid collection */}
-          <div 
-            className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 550,
-              top: 580,
-              width: 120,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <div className="flex items-center space-x-2">
-              <span className="text-lg">🔬</span>
-              <span>Intraperitoneal fluid collection</span>
-            </div>
-          </div>
-
+          {/* Center: Ovarian Cyst Rupture (if intraperitoneal fluid collection) */}
           <div 
             className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
             style={{
               position: 'absolute',
-              left: 550,
-              top: 700,
+              left: 190,
+              top: 580,
               width: 140,
               minHeight: '50px',
               display: 'flex',
@@ -869,49 +678,14 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             Ovarian Cyst Rupture
           </div>
 
-          <div 
-            className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 550,
-              top: 820,
-              width: 200,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            Supportive care (if stable) exploratory laparoscopy (if unstable)
-          </div>
-
-          {/* ↓ Ovarian artery flow */}
-          <div 
-            className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 690,
-              top: 580,
-              width: 120,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <div className="flex items-center space-x-2">
-              <span className="text-lg">🔬</span>
-              <span>↓ Ovarian artery flow</span>
-            </div>
-          </div>
-
+          {/* Right: Ovarian Torsion (if ↓ ovarian artery flow) */}
           <div 
             className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
             style={{
               position: 'absolute',
-              left: 690,
-              top: 700,
-              width: 120,
+              left: 350,
+              top: 580,
+              width: 140,
               minHeight: '50px',
               display: 'flex',
               alignItems: 'center',
@@ -922,23 +696,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             Ovarian Torsion
           </div>
 
-          <div 
-            className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 690,
-              top: 820,
-              width: 140,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            Exploratory laparoscopy
-          </div>
-
-          {/* 6C. From Suprapubic tenderness */}
+          {/* 6C. From "Suprapubic Tenderness" - Vertically */}
           {/* Urinalysis, urine culture */}
           <div 
             className="bg-gray-200 border-2 border-gray-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
@@ -956,33 +714,13 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             Urinalysis, urine culture
           </div>
 
-          {/* UA findings */}
-          <div 
-            className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 350,
-              top: 580,
-              width: 220,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <div className="flex items-center space-x-2">
-              <span className="text-lg">🧪</span>
-              <span>UA: WBCs ± nitrites, Urine culture: &gt;100K colonies</span>
-            </div>
-          </div>
-
-          {/* UTI diagnosis */}
+          {/* Then down to: */}
           <div 
             className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
             style={{
               position: 'absolute',
               left: 390,
-              top: 700,
+              top: 580,
               width: 140,
               minHeight: '50px',
               display: 'flex',
@@ -994,70 +732,14 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             Urinary Tract Infection²
           </div>
 
-          {/* UTI treatment */}
-          <div 
-            className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 390,
-              top: 820,
-              width: 140,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            Nitrofurantoin or TMP-SMX
-          </div>
-
-          {/* 6D. From Cyclic, monthly acute pain episodes */}
-          {/* Two branches horizontally */}
-          <div 
-            className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 580,
-              top: 460,
-              width: 120,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <div className="flex items-center space-x-2">
-              <span className="text-lg">📅</span>
-              <span>Monthly mid-cycle pain</span>
-            </div>
-          </div>
-
-          <div 
-            className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 720,
-              top: 460,
-              width: 140,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <div className="flex items-center space-x-2">
-              <span className="text-lg">🔍</span>
-              <span>Dysmenorrhea, GI symptoms</span>
-            </div>
-          </div>
-
-          {/* Two diagnoses */}
+          {/* 6D. From "Cyclic, monthly acute pain episodes" - Two branches horizontally */}
+          {/* Left: Mittelschmerz */}
           <div 
             className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
             style={{
               position: 'absolute',
               left: 590,
-              top: 580,
+              top: 460,
               width: 100,
               minHeight: '50px',
               display: 'flex',
@@ -1069,29 +751,13 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             Mittelschmerz
           </div>
 
-          {/* Mittelschmerz treatment */}
-          <div 
-            className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 590,
-              top: 700,
-              width: 160,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            Reassurance and supportive care
-          </div>
-
+          {/* Right: Endometriosis */}
           <div 
             className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
             style={{
               position: 'absolute',
               left: 730,
-              top: 580,
+              top: 460,
               width: 120,
               minHeight: '50px',
               display: 'flex',
@@ -1103,23 +769,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             Endometriosis
           </div>
 
-          {/* Endometriosis treatment */}
-          <div 
-            className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 730,
-              top: 700,
-              width: 160,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            OCPs and NSAIDs. Consider diagnostic laparoscopy
-          </div>
-
+          {/* 7. TREATMENTS */}
           {/* Ectopic Pregnancy treatment */}
           <div 
             className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
@@ -1137,352 +787,30 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             Methotrexate or laparoscopy
           </div>
 
-          {/* TVUS¹ */}
-          <div 
-            className="bg-gray-200 border-2 border-gray-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 120,
-              top: 480,
-              width: 80,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            TVUS¹
-          </div>
-
-          {/* Test Results - Row 3 positioned like in photo */}
-          <div 
-            className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 80,
-              top: 580,
-              width: 160,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <div className="flex items-center space-x-2">
-              <span className="text-lg">🔬</span>
-              <span>Thick-walled cystic collection in adnexa?</span>
-            </div>
-          </div>
-
-          <div 
-            className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 350,
-              top: 480,
-              width: 250,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <div className="flex items-center space-x-2">
-              <span className="text-lg">🧪</span>
-              <span>UA: WBCs ± nitrites Urine culture: &gt;100 K single organism colonies</span>
-            </div>
-          </div>
-
-          <div 
-            className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 520,
-              top: 580,
-              width: 140,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <div className="flex items-center space-x-2">
-              <span className="text-lg">📅</span>
-              <span>Monthly mid-cycle pain</span>
-            </div>
-          </div>
-
-          <div 
-            className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 680,
-              top: 580,
-              width: 180,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <div className="flex items-center space-x-2">
-              <span className="text-lg">🔍</span>
-              <span>Dysmenorrhea, GI or urinary symptoms</span>
-            </div>
-          </div>
-
-          {/* Ectopic Pregnancy - Correct position like in photo */}
-          <div 
-            className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 750,
-              top: 380,
-              width: 140,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              clipPath: 'polygon(10% 0%, 90% 0%, 100% 50%, 90% 100%, 10% 100%, 0% 50%)'
-            }}
-          >
-            Ectopic Pregnancy
-          </div>
-
-          <div 
-            className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 80,
-              top: 680,
-              width: 140,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              clipPath: 'polygon(10% 0%, 90% 0%, 100% 50%, 90% 100%, 10% 100%, 0% 50%)'
-            }}
-          >
-            Pelvic Inflammatory Disease
-          </div>
-
-          <div 
-            className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 250,
-              top: 680,
-              width: 140,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              clipPath: 'polygon(10% 0%, 90% 0%, 100% 50%, 90% 100%, 10% 100%, 0% 50%)'
-            }}
-          >
-            Tubo-ovarian Abscess
-          </div>
-
-          <div 
-            className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 350,
-              top: 580,
-              width: 140,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              clipPath: 'polygon(10% 0%, 90% 0%, 100% 50%, 90% 100%, 10% 100%, 0% 50%)'
-            }}
-          >
-            Urinary Tract Infection²
-          </div>
-
-          <div 
-            className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 520,
-              top: 680,
-              width: 120,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              clipPath: 'polygon(10% 0%, 90% 0%, 100% 50%, 90% 100%, 10% 100%, 0% 50%)'
-            }}
-          >
-            Mittelschmerz
-          </div>
-
-          <div 
-            className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 680,
-              top: 680,
-              width: 120,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              clipPath: 'polygon(10% 0%, 90% 0%, 100% 50%, 90% 100%, 10% 100%, 0% 50%)'
-            }}
-          >
-            Endometriosis
-          </div>
-
-          {/* Ultrasound Findings - Row 5 with much better spacing */}
-          <div 
-            className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 50,
-              top: 880,
-              width: 180,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <div className="flex items-center space-x-2">
-              <span className="text-lg">🔬</span>
-              <span>Appendiceal diameter &gt;6 mm or appendiceal wall thickening</span>
-            </div>
-          </div>
-
-          <div 
-            className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 250,
-              top: 880,
-              width: 160,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <div className="flex items-center space-x-2">
-              <span className="text-lg">🔬</span>
-              <span>Intraperitoneal fluid collection</span>
-            </div>
-          </div>
-
-          <div 
-            className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 430,
-              top: 880,
-              width: 140,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <div className="flex items-center space-x-2">
-              <span className="text-lg">🔬</span>
-              <span>↓ Ovarian artery flow</span>
-            </div>
-          </div>
-
-          {/* Final Diagnoses - Row 6 with much better spacing */}
-          <div 
-            className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 50,
-              top: 980,
-              width: 120,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              clipPath: 'polygon(10% 0%, 90% 0%, 100% 50%, 90% 100%, 10% 100%, 0% 50%)'
-            }}
-          >
-            Appendicitis
-          </div>
-
-          <div 
-            className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 250,
-              top: 980,
-              width: 140,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              clipPath: 'polygon(10% 0%, 90% 0%, 100% 50%, 90% 100%, 10% 100%, 0% 50%)'
-            }}
-          >
-            Ovarian Cyst Rupture
-          </div>
-
-          <div 
-            className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 430,
-              top: 980,
-              width: 140,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              clipPath: 'polygon(10% 0%, 90% 0%, 100% 50%, 90% 100%, 10% 100%, 0% 50%)'
-            }}
-          >
-            Ovarian Torsion
-          </div>
-
-          {/* Treatments positioned like in photo */}
-          <div 
-            className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 750,
-              top: 480,
-              width: 160,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            Methotrexate or laparoscopy
-          </div>
-
+          {/* PID treatment */}
           <div 
             className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
               left: 50,
-              top: 880,
-              width: 180,
+              top: 820,
+              width: 200,
               minHeight: '50px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center'
             }}
           >
-            Ceftriaxone 500 mg IM, doxycycline + metronidazole x14 days
+            Ceftriaxone 500 mg IM, doxycycline + metronidazole ×14 days
           </div>
 
+          {/* Tubo-ovarian Abscess treatment */}
           <div 
             className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 250,
-              top: 880,
+              left: 210,
+              top: 820,
               width: 200,
               minHeight: '50px',
               display: 'flex',
@@ -1493,12 +821,64 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             Broad-spectrum antibiotics³ ± drainage or laparoscopy
           </div>
 
+          {/* Appendicitis treatment */}
           <div 
             className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 400,
-              top: 780,
+              left: 50,
+              top: 700,
+              width: 140,
+              minHeight: '50px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            Surgery
+          </div>
+
+          {/* Ovarian Cyst Rupture treatment */}
+          <div 
+            className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
+            style={{
+              position: 'absolute',
+              left: 190,
+              top: 700,
+              width: 200,
+              minHeight: '50px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            Supportive care (if stable), or exploratory laparoscopy (if unstable)
+          </div>
+
+          {/* Ovarian Torsion treatment */}
+          <div 
+            className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
+            style={{
+              position: 'absolute',
+              left: 350,
+              top: 700,
+              width: 140,
+              minHeight: '50px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            Exploratory laparoscopy
+          </div>
+
+          {/* UTI treatment */}
+          <div 
+            className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
+            style={{
+              position: 'absolute',
+              left: 390,
+              top: 700,
               width: 140,
               minHeight: '50px',
               display: 'flex',
@@ -1509,12 +889,13 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             Nitrofurantoin or TMP-SMX
           </div>
 
+          {/* Mittelschmerz treatment */}
           <div 
             className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 670,
-              top: 780,
+              left: 590,
+              top: 580,
               width: 160,
               minHeight: '50px',
               display: 'flex',
@@ -1525,13 +906,14 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             Reassurance and supportive care
           </div>
 
+          {/* Endometriosis treatment */}
           <div 
             className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 830,
-              top: 780,
-              width: 180,
+              left: 730,
+              top: 580,
+              width: 160,
               minHeight: '50px',
               display: 'flex',
               alignItems: 'center',
@@ -1541,78 +923,13 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             OCPs and NSAIDs. Consider diagnostic laparoscopy
           </div>
 
-          <div 
-            className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 50,
-              top: 1080,
-              width: 280,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            Supportive care (if stable), or exploratory laparoscopy (if unstable)
-          </div>
-
-          <div 
-            className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 250,
-              top: 1080,
-              width: 140,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            Exploratory laparoscopy
-          </div>
-
-          <div 
-            className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 430,
-              top: 1080,
-              width: 140,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            Exploratory laparoscopy
-          </div>
-
-          {/* Reference */}
-          <div 
-            className="bg-red-300 border-2 border-red-500 px-4 py-3 text-center rounded-lg shadow-md text-sm font-semibold text-black"
-            style={{
-              position: 'absolute',
-              left: 740,
-              top: 280,
-              width: 180,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            See Abdominal Pain in Pregnancy, p. 644
-          </div>
-
-          {/* Footnotes - Moved closer to flowchart */}
+          {/* Footnotes */}
           <div 
             className="bg-gray-100 border-2 border-gray-400 px-4 py-3 rounded-lg shadow-md text-xs text-gray-700"
             style={{
               position: 'absolute',
               left: 640,
-              top: 1080,
+              top: 820,
               width: 280
             }}
           >
@@ -1623,589 +940,120 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             </div>
           </div>
 
-          {/* ARROWS - Simple connections matching the image */}
+          {/* ARROWS - Hierarchical tree structure with proper spacing */}
           
           {/* 1. Acute Pelvic Pain → Beta-hCG */}
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 550 - 0.5,
-              top: 80,
-              width: 1,
-              height: 40,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 550 - 3,
-              top: 120 - 6,
-              width: 0,
-              height: 0,
-              zIndex: 11,
-              borderLeft: '3px solid transparent',
-              borderRight: '3px solid transparent',
-              borderTop: '6px solid #374151',
-            }}
-          />
+          <VerticalLine x={550} startY={80} endY={120} />
+          <ArrowHead x={550} y={120} direction="down" />
 
           {/* 2. Beta-hCG branching */}
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 550 - 0.5,
-              top: 170,
-              width: 1,
-              height: 30,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 280,
-              top: 200 - 0.5,
-              width: 540,
-              height: 1,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
+          <VerticalLine x={550} startY={170} endY={200} />
+          <HorizontalLine y={200} startX={280} endX={820} />
           
           {/* Negative branch to Abdominal exam */}
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 280 - 0.5,
-              top: 200,
-              width: 1,
-              height: 20,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 280 - 3,
-              top: 220 - 6,
-              width: 0,
-              height: 0,
-              zIndex: 11,
-              borderLeft: '3px solid transparent',
-              borderRight: '3px solid transparent',
-              borderTop: '6px solid #374151',
-            }}
-          />
-          <div
-            className="absolute pointer-events-none bg-white border border-gray-400 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold text-gray-700"
-            style={{
-              left: 280 - 12,
-              top: 200 - 12,
-              zIndex: 12,
-            }}
-          >
-            −
-          </div>
+          <VerticalLine x={280} startY={200} endY={220} />
+          <ArrowHead x={280} y={220} direction="down" />
+          <div className="absolute pointer-events-none bg-white border border-gray-400 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold text-gray-700" style={{ left: 280 - 12, top: 200 - 12, zIndex: 12 }}>−</div>
 
           {/* Positive branch to Intrauterine pregnancy */}
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 790 - 0.5,
-              top: 200,
-              width: 1,
-              height: 20,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 790 - 3,
-              top: 220 - 6,
-              width: 0,
-              height: 0,
-              zIndex: 11,
-              borderLeft: '3px solid transparent',
-              borderRight: '3px solid transparent',
-              borderTop: '6px solid #374151',
-            }}
-          />
-          <div
-            className="absolute pointer-events-none bg-white border border-gray-400 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold text-gray-700"
-            style={{
-              left: 790 - 12,
-              top: 200 - 12,
-              zIndex: 12,
-            }}
-          >
-            +
-          </div>
+          <VerticalLine x={790} startY={200} endY={220} />
+          <ArrowHead x={790} y={220} direction="down" />
+          <div className="absolute pointer-events-none bg-white border border-gray-400 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold text-gray-700" style={{ left: 790 - 12, top: 200 - 12, zIndex: 12 }}>+</div>
 
           {/* 3. Abdominal exam to findings */}
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 280 - 0.5,
-              top: 270,
-              width: 1,
-              height: 50,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 120,
-              top: 320 - 0.5,
-              width: 570,
-              height: 1,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
-
+          <VerticalLine x={280} startY={270} endY={320} />
+          <HorizontalLine y={320} startX={120} endX={690} />
+          
           {/* Arrows down to each finding */}
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 120 - 0.5,
-              top: 320,
-              width: 1,
-              height: 20,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 280 - 0.5,
-              top: 320,
-              width: 1,
-              height: 20,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 440 - 0.5,
-              top: 320,
-              width: 1,
-              height: 20,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 610 - 0.5,
-              top: 320,
-              width: 1,
-              height: 20,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
+          <VerticalLine x={120} startY={320} endY={340} />
+          <VerticalLine x={280} startY={320} endY={340} />
+          <VerticalLine x={440} startY={320} endY={340} />
+          <VerticalLine x={610} startY={320} endY={340} />
+          <ArrowHead x={120} y={340} direction="down" />
+          <ArrowHead x={280} y={340} direction="down" />
+          <ArrowHead x={440} y={340} direction="down" />
+          <ArrowHead x={610} y={340} direction="down" />
 
           {/* 4. Intrauterine pregnancy to 2 branches */}
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 790 - 0.5,
-              top: 270,
-              width: 1,
-              height: 50,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 690,
-              top: 320 - 0.5,
-              width: 200,
-              height: 1,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
-
+          <VerticalLine x={790} startY={270} endY={320} />
+          <HorizontalLine y={320} startX={690} endX={870} />
+          
           {/* Negative to Ectopic */}
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 690 - 0.5,
-              top: 320,
-              width: 1,
-              height: 20,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
-          <div
-            className="absolute pointer-events-none bg-white border border-gray-400 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold text-gray-700"
-            style={{
-              left: 690 - 12,
-              top: 320 - 12,
-              zIndex: 12,
-            }}
-          >
-            −
-          </div>
+          <VerticalLine x={690} startY={320} endY={340} />
+          <ArrowHead x={690} y={340} direction="down" />
+          <div className="absolute pointer-events-none bg-white border border-gray-400 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold text-gray-700" style={{ left: 690 - 12, top: 320 - 12, zIndex: 12 }}>−</div>
 
           {/* Positive to Reference */}
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 870 - 0.5,
-              top: 320,
-              width: 1,
-              height: 20,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
-          <div
-            className="absolute pointer-events-none bg-white border border-gray-400 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold text-gray-700"
-            style={{
-              left: 870 - 12,
-              top: 320 - 12,
-              zIndex: 12,
-            }}
-          >
-            +
-          </div>
+          <VerticalLine x={870} startY={320} endY={340} />
+          <ArrowHead x={870} y={340} direction="down" />
+          <div className="absolute pointer-events-none bg-white border border-gray-400 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold text-gray-700" style={{ left: 870 - 12, top: 320 - 12, zIndex: 12 }}>+</div>
 
-          {/* 5. Simple connections from findings to tests/diagnoses */}
+          {/* 5. Detailed sub-branches connections */}
           {/* Cervical Motion → STI test */}
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 120 - 0.5,
-              top: 390,
-              width: 1,
-              height: 70,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
+          <VerticalLine x={120} startY={390} endY={460} />
+          <ArrowHead x={120} y={460} direction="down" />
 
           {/* STI test → TVUS */}
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 120 - 0.5,
-              top: 510,
-              width: 1,
-              height: 70,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
+          <VerticalLine x={120} startY={510} endY={580} />
+          <ArrowHead x={120} y={580} direction="down" />
 
-          {/* TVUS → PID */}
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 120 - 0.5,
-              top: 630,
-              width: 1,
-              height: 70,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
-
-          {/* PID → Treatment */}
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 120 - 0.5,
-              top: 750,
-              width: 1,
-              height: 70,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
+          {/* TVUS → PID and Tubo-ovarian */}
+          <VerticalLine x={120} startY={630} endY={680} />
+          <HorizontalLine y={680} startX={120} endX={350} />
+          <VerticalLine x={120} startY={680} endY={700} />
+          <VerticalLine x={280} startY={680} endY={700} />
+          <ArrowHead x={120} y={700} direction="down" />
+          <ArrowHead x={280} y={700} direction="down" />
 
           {/* Severe Pain → Abdominal ultrasound */}
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 280 - 0.5,
-              top: 390,
-              width: 1,
-              height: 70,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
+          <VerticalLine x={280} startY={390} endY={460} />
+          <ArrowHead x={280} y={460} direction="down" />
 
-          {/* Abdominal ultrasound → findings */}
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 300 - 0.5,
-              top: 510,
-              width: 1,
-              height: 70,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
+          {/* Abdominal ultrasound → 3 findings */}
+          <VerticalLine x={280} startY={510} endY={580} />
+          <HorizontalLine y={580} startX={110} endX={490} />
+          <VerticalLine x={110} startY={580} endY={580} />
+          <VerticalLine x={280} startY={580} endY={580} />
+          <VerticalLine x={420} startY={580} endY={580} />
+          <ArrowHead x={110} y={580} direction="down" />
+          <ArrowHead x={280} y={580} direction="down" />
+          <ArrowHead x={420} y={580} direction="down" />
 
-          {/* Findings to diagnoses */}
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 230 - 0.5,
-              top: 630,
-              width: 1,
-              height: 70,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 410 - 0.5,
-              top: 630,
-              width: 1,
-              height: 70,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 550 - 0.5,
-              top: 630,
-              width: 1,
-              height: 70,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 690 - 0.5,
-              top: 630,
-              width: 1,
-              height: 70,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
+          {/* Suprapubic → UA findings → UTI */}
+          <VerticalLine x={440} startY={390} endY={460} />
+          <ArrowHead x={440} y={460} direction="down" />
+          <VerticalLine x={440} startY={510} endY={580} />
+          <ArrowHead x={440} y={580} direction="down" />
 
-          {/* Diagnoses to treatments */}
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 230 - 0.5,
-              top: 750,
-              width: 1,
-              height: 70,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 410 - 0.5,
-              top: 750,
-              width: 1,
-              height: 70,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 550 - 0.5,
-              top: 750,
-              width: 1,
-              height: 70,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 690 - 0.5,
-              top: 750,
-              width: 1,
-              height: 70,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
-
-          {/* Suprapubic → UA findings → UTI → Treatment */}
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 440 - 0.5,
-              top: 390,
-              width: 1,
-              height: 70,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 460 - 0.5,
-              top: 510,
-              width: 1,
-              height: 70,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 460 - 0.5,
-              top: 630,
-              width: 1,
-              height: 70,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 460 - 0.5,
-              top: 750,
-              width: 1,
-              height: 70,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
-
-          {/* Cyclic pain → findings → diagnoses → treatments */}
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 610 - 0.5,
-              top: 390,
-              width: 1,
-              height: 70,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 640,
-              top: 460 - 0.5,
-              width: 220,
-              height: 1,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 640 - 0.5,
-              top: 510,
-              width: 1,
-              height: 70,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 790 - 0.5,
-              top: 510,
-              width: 1,
-              height: 70,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 640 - 0.5,
-              top: 630,
-              width: 1,
-              height: 70,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 790 - 0.5,
-              top: 630,
-              width: 1,
-              height: 70,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 640 - 0.5,
-              top: 750,
-              width: 1,
-              height: 70,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 790 - 0.5,
-              top: 750,
-              width: 1,
-              height: 70,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
+          {/* Cyclic pain → 2 branches */}
+          <VerticalLine x={610} startY={390} endY={460} />
+          <HorizontalLine y={460} startX={640} endX={790} />
+          <VerticalLine x={640} startY={460} endY={460} />
+          <VerticalLine x={790} startY={460} endY={460} />
+          <ArrowHead x={640} y={460} direction="down" />
+          <ArrowHead x={790} y={460} direction="down" />
 
           {/* Ectopic → Treatment */}
-          <div
-            className="absolute pointer-events-none"
-            style={{
-              left: 690 - 0.5,
-              top: 390,
-              width: 1,
-              height: 70,
-              backgroundColor: '#374151',
-              zIndex: 10,
-            }}
-          />
+          <VerticalLine x={690} startY={390} endY={460} />
+          <ArrowHead x={690} y={460} direction="down" />
+
+          {/* Treatments connections */}
+          <VerticalLine x={50} startY={750} endY={820} />
+          <VerticalLine x={210} startY={750} endY={820} />
+          <VerticalLine x={50} startY={630} endY={700} />
+          <VerticalLine x={190} startY={630} endY={700} />
+          <VerticalLine x={350} startY={630} endY={700} />
+          <VerticalLine x={390} startY={630} endY={700} />
+          <VerticalLine x={590} startY={510} endY={580} />
+          <VerticalLine x={730} startY={510} endY={580} />
+          <ArrowHead x={50} y={820} direction="down" />
+          <ArrowHead x={210} y={820} direction="down" />
+          <ArrowHead x={50} y={700} direction="down" />
+          <ArrowHead x={190} y={700} direction="down" />
+          <ArrowHead x={350} y={700} direction="down" />
+          <ArrowHead x={390} y={700} direction="down" />
+          <ArrowHead x={590} y={580} direction="down" />
+          <ArrowHead x={730} y={580} direction="down" />
           
         </div>
       </div>
