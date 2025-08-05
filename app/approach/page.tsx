@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { useRouter } from 'next/navigation';
@@ -143,12 +143,27 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
   );
 };
 
-// Chest Pain Flowchart Component
-const ChestPainFlowchart = () => {
-  const [isPanning, setIsPanning] = useState(false);
-  const [startPos, setStartPos] = useState({ x: 0, y: 0 });
-  const [scrollPos, setScrollPos] = useState({ x: 0, y: 0 });
-  const [isFullScreen, setIsFullScreen] = useState(false);
+ // Chest Pain Flowchart Component
+ const ChestPainFlowchart = () => {
+   const [isPanning, setIsPanning] = useState(false);
+   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
+   const [scrollPos, setScrollPos] = useState({ x: 0, y: 0 });
+   const [isFullScreen, setIsFullScreen] = useState(false);
+   const [isMobile, setIsMobile] = useState(false);
+   const [scale, setScale] = useState(1);
+
+   // Check if mobile/tablet on mount and resize
+   useEffect(() => {
+     const checkDevice = () => {
+       const width = window.innerWidth;
+       setIsMobile(width < 1024);
+       setScale(width < 768 ? 0.6 : width < 1024 ? 0.8 : 1);
+     };
+     
+     checkDevice();
+     window.addEventListener('resize', checkDevice);
+     return () => window.removeEventListener('resize', checkDevice);
+   }, []);
 
   // Panning functionality with constraints and smooth movement
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -170,11 +185,11 @@ const ChestPainFlowchart = () => {
     const newX = e.clientX - startPos.x;
     const newY = e.clientY - startPos.y;
     
-         // Constrain panning to keep flowchart visible - balanced medium size
-     const maxX = 200; // Allow some panning to the right
-     const minX = -600; // Allow some panning to the left (balanced with right)
+         // Constrain panning to keep flowchart visible - responsive constraints
+     const maxX = isMobile ? 100 : 200; // Less panning on mobile
+     const minX = isMobile ? -300 : -600; // Less panning on mobile
      const maxY = 0; // Don't pan too far down (flowchart starts at 0)
-     const minY = -400; // Allow some panning up (medium size)
+     const minY = isMobile ? -200 : -400; // Less panning on mobile
     
     const constrainedX = Math.max(minX, Math.min(maxX, newX));
     const constrainedY = Math.max(minY, Math.min(maxY, newY));
@@ -186,32 +201,34 @@ const ChestPainFlowchart = () => {
     setIsPanning(false);
   };
 
-  // Touch events for mobile
-  const handleTouchStart = (e: React.TouchEvent) => {
-    const target = e.target as HTMLElement;
-    if (target.closest('.flowchart-box, .reference-box, .text-box')) {
-      return;
-    }
-    
-    e.preventDefault();
-    const touch = e.touches[0];
-    setIsPanning(true);
-    setStartPos({ x: touch.clientX - scrollPos.x, y: touch.clientY - scrollPos.y });
-  };
+     // Touch events for mobile - improved for iPad
+   const handleTouchStart = (e: React.TouchEvent) => {
+     const target = e.target as HTMLElement;
+     if (target.closest('.flowchart-box, .reference-box, .text-box')) {
+       return;
+     }
+     
+     e.preventDefault();
+     e.stopPropagation();
+     const touch = e.touches[0];
+     setIsPanning(true);
+     setStartPos({ x: touch.clientX - scrollPos.x, y: touch.clientY - scrollPos.y });
+   };
 
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isPanning) return;
-    e.preventDefault();
-    
-    const touch = e.touches[0];
-    const newX = touch.clientX - startPos.x;
-    const newY = touch.clientY - startPos.y;
+     const handleTouchMove = (e: React.TouchEvent) => {
+     if (!isPanning) return;
+     e.preventDefault();
+     e.stopPropagation();
+     
+     const touch = e.touches[0];
+     const newX = touch.clientX - startPos.x;
+     const newY = touch.clientY - startPos.y;
     
          // Same constraints as mouse
-     const maxX = 200;
-     const minX = -600;
+     const maxX = isMobile ? 100 : 200;
+     const minX = isMobile ? -300 : -600;
      const maxY = 0;
-     const minY = -400;
+     const minY = isMobile ? -200 : -400;
     
     const constrainedX = Math.max(minX, Math.min(maxX, newX));
     const constrainedY = Math.max(minY, Math.min(maxY, newY));
@@ -228,15 +245,15 @@ const ChestPainFlowchart = () => {
     setIsFullScreen(!isFullScreen);
   };
 
-  return (
-    <div className={`${isFullScreen ? 'fixed inset-0 z-50' : 'h-full'} bg-gray-100 overflow-hidden`}>
-      {/* Header with full screen button */}
-      <div className="bg-white p-4 shadow-sm flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-blue-600">Chest Pain</h1>
-        <button
-          onClick={toggleFullScreen}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
-        >
+     return (
+     <div className={`${isFullScreen ? 'fixed inset-0 z-50' : 'h-full'} bg-gradient-to-br from-blue-50 to-indigo-100 overflow-hidden`}>
+       {/* Header with full screen button */}
+       <div className="bg-white/90 backdrop-blur-sm p-3 sm:p-4 shadow-sm flex items-center justify-between">
+         <h1 className="text-lg sm:text-2xl font-bold text-blue-600">Chest Pain</h1>
+         <button
+           onClick={toggleFullScreen}
+           className="px-3 py-2 sm:px-4 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2 text-sm sm:text-base"
+         >
           {isFullScreen ? (
             <>
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -255,35 +272,36 @@ const ChestPainFlowchart = () => {
         </button>
       </div>
 
-             {/* Main flowchart container */}
-       <div className="relative w-full h-full overflow-hidden">
-         {/* Panning area - only around the flowchart content */}
-         <div
-           className="absolute inset-0 cursor-grab active:cursor-grabbing"
-           onMouseDown={handleMouseDown}
-           onMouseMove={handleMouseMove}
-           onMouseUp={handleMouseUp}
-           onMouseLeave={handleMouseUp}
-           onTouchStart={handleTouchStart}
-           onTouchMove={handleTouchMove}
-           onTouchEnd={handleTouchEnd}
-           style={{ 
-             cursor: isPanning ? 'grabbing' : 'grab',
-             touchAction: 'none',
-             pointerEvents: 'auto'
-           }}
-         />
-         
-         {/* Flowchart content - interactive */}
-         <div
-           className="relative"
-           style={{
-             transform: `translate(${scrollPos.x}px, ${scrollPos.y}px)`,
-             width: '1600px',
-             height: '1300px',
-             pointerEvents: 'none' // Let panning area handle events
-           }}
-         >
+                      {/* Main flowchart container */}
+        <div className="relative w-full h-full overflow-hidden">
+          {/* Panning area - only around the flowchart content */}
+          <div
+            className="absolute inset-0 cursor-grab active:cursor-grabbing"
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            style={{ 
+              cursor: isPanning ? 'grabbing' : 'grab',
+              touchAction: 'none',
+              pointerEvents: 'auto'
+            }}
+          />
+          
+                     {/* Flowchart content - interactive */}
+           <div
+             className="relative"
+             style={{
+               transform: `translate(${scrollPos.x}px, ${scrollPos.y}px) scale(${scale})`,
+               width: '1600px',
+               height: '1300px',
+               pointerEvents: 'none', // Let panning area handle events
+               transformOrigin: 'top left'
+             }}
+           >
                      {/* Chest Pain - Main box */}
            <FlowchartBox
              title="Chest Pain"
@@ -491,12 +509,22 @@ const ChestPainFlowchart = () => {
               </p>
             </div>
           </div>
-        </div>
-      </div>
+                 </div>
+         
+         {/* Mobile-friendly instruction overlay */}
+         {isMobile && (
+           <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm p-3 rounded-lg shadow-lg text-xs text-gray-600">
+             <div className="font-semibold mb-1">Touch & Drag:</div>
+             <div>• Touch and drag empty areas to pan</div>
+             <div>• Tap boxes to select and copy text</div>
+             <div>• Use full screen for better view</div>
+           </div>
+         )}
+       </div>
 
-             
-    </div>
-  );
+              
+     </div>
+   );
 };
 
 export default function ApproachPage() {
@@ -604,8 +632,8 @@ export default function ApproachPage() {
 
   const selectedContent = getSelectedContent();
 
-  return (
-    <div className="flex h-screen bg-gray-100">
+     return (
+     <div className="flex h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       {/* Sidebar - Same design as dashboard */}
       <div 
         className={`bg-[#1E2A38] text-white flex flex-col transition-all duration-300 ${
@@ -754,9 +782,9 @@ export default function ApproachPage() {
          </header>
 
                                    {/* Main Content */}
-          <main className="flex-1 p-6 overflow-hidden">
-            {selectedContent && selectedContent.lecture ? (
-              <div className="h-full bg-white border-2 border-green-500 rounded-lg overflow-hidden">
+                     <main className="flex-1 p-4 sm:p-6 overflow-hidden">
+             {selectedContent && selectedContent.lecture ? (
+               <div className="h-full bg-white/95 backdrop-blur-sm border-2 border-blue-300 rounded-xl overflow-hidden shadow-xl">
                 {selectedContent.lecture.id === 'card-5' ? (
                   // Render Chest Pain flowchart directly as component
                   <ChestPainFlowchart />
@@ -777,8 +805,8 @@ export default function ApproachPage() {
                   </div>
                 )}
               </div>
-            ) : (
-              <div className="h-full bg-white border-2 border-green-500 rounded-lg flex items-center justify-center">
+                         ) : (
+               <div className="h-full bg-white/95 backdrop-blur-sm border-2 border-blue-300 rounded-xl flex items-center justify-center shadow-xl">
                 <div className="text-center">
                   <div className="w-40 h-40 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-8">
                     <svg className="w-20 h-20 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
