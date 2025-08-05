@@ -449,31 +449,15 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             </div>
           </div>
 
-          {/* Ectopic Pregnancy - Missing diagnosis */}
-          <div 
-            className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
-            style={{
-              position: 'absolute',
-              left: 600,
-              top: 280,
-              width: 140,
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              clipPath: 'polygon(10% 0%, 90% 0%, 100% 50%, 90% 100%, 10% 100%, 0% 50%)'
-            }}
-          >
-            Ectopic Pregnancy
-          </div>
 
-          {/* Findings from exam - Row 1 with much better spacing */}
+
+          {/* Findings from exam - Row 1 positioned like in photo */}
           <div 
             className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 50,
-              top: 380,
+              left: 80,
+              top: 280,
               width: 140,
               minHeight: '50px',
               display: 'flex',
@@ -491,8 +475,8 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 220,
-              top: 380,
+              left: 240,
+              top: 280,
               width: 140,
               minHeight: '50px',
               display: 'flex',
@@ -510,8 +494,8 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 390,
-              top: 380,
+              left: 400,
+              top: 280,
               width: 140,
               minHeight: '50px',
               display: 'flex',
@@ -530,7 +514,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             style={{
               position: 'absolute',
               left: 560,
-              top: 380,
+              top: 280,
               width: 160,
               minHeight: '50px',
               display: 'flex',
@@ -544,13 +528,13 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             </div>
           </div>
 
-          {/* Tests - Row 2 with much better spacing */}
+          {/* Tests - Row 2 positioned like in photo */}
           <div 
             className="bg-gray-200 border-2 border-gray-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
               left: 120,
-              top: 480,
+              top: 380,
               width: 100,
               minHeight: '50px',
               display: 'flex',
@@ -565,8 +549,8 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-gray-200 border-2 border-gray-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 240,
-              top: 480,
+              left: 260,
+              top: 380,
               width: 140,
               minHeight: '50px',
               display: 'flex',
@@ -581,8 +565,8 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-gray-200 border-2 border-gray-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 400,
-              top: 480,
+              left: 420,
+              top: 380,
               width: 140,
               minHeight: '50px',
               display: 'flex',
@@ -599,7 +583,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             style={{
               position: 'absolute',
               left: 120,
-              top: 580,
+              top: 480,
               width: 80,
               minHeight: '50px',
               display: 'flex',
@@ -610,13 +594,13 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             TVUS¹
           </div>
 
-          {/* Test Results - Row 3 with much better spacing */}
+          {/* Test Results - Row 3 positioned like in photo */}
           <div 
             className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 50,
-              top: 680,
+              left: 80,
+              top: 580,
               width: 160,
               minHeight: '50px',
               display: 'flex',
@@ -634,8 +618,8 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 400,
-              top: 580,
+              left: 350,
+              top: 480,
               width: 250,
               minHeight: '50px',
               display: 'flex',
@@ -653,7 +637,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 670,
+              left: 520,
               top: 580,
               width: 140,
               minHeight: '50px',
@@ -672,7 +656,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 830,
+              left: 680,
               top: 580,
               width: 180,
               minHeight: '50px',
@@ -687,13 +671,13 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             </div>
           </div>
 
-          {/* Diagnoses - Row 4 with much better spacing */}
+          {/* Ectopic Pregnancy - Correct position like in photo */}
           <div 
             className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
             style={{
               position: 'absolute',
-              left: 800,
-              top: 280,
+              left: 750,
+              top: 380,
               width: 140,
               minHeight: '50px',
               display: 'flex',
@@ -709,8 +693,8 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
             style={{
               position: 'absolute',
-              left: 50,
-              top: 780,
+              left: 80,
+              top: 680,
               width: 140,
               minHeight: '50px',
               display: 'flex',
@@ -726,8 +710,8 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
             style={{
               position: 'absolute',
-              left: 220,
-              top: 780,
+              left: 250,
+              top: 680,
               width: 140,
               minHeight: '50px',
               display: 'flex',
@@ -743,8 +727,8 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
             style={{
               position: 'absolute',
-              left: 400,
-              top: 680,
+              left: 350,
+              top: 580,
               width: 140,
               minHeight: '50px',
               display: 'flex',
@@ -760,7 +744,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
             style={{
               position: 'absolute',
-              left: 670,
+              left: 520,
               top: 680,
               width: 120,
               minHeight: '50px',
@@ -777,7 +761,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
             style={{
               position: 'absolute',
-              left: 830,
+              left: 680,
               top: 680,
               width: 120,
               minHeight: '50px',
@@ -900,13 +884,13 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             Ovarian Torsion
           </div>
 
-          {/* Treatments with much better spacing */}
+          {/* Treatments positioned like in photo */}
           <div 
             className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 800,
-              top: 380,
+              left: 750,
+              top: 480,
               width: 160,
               minHeight: '50px',
               display: 'flex',
@@ -1051,7 +1035,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             style={{
               position: 'absolute',
               left: 740,
-              top: 380,
+              top: 280,
               width: 180,
               minHeight: '50px',
               display: 'flex',
