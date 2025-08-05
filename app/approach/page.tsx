@@ -417,7 +417,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-gray-200 border-2 border-gray-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 200,
+              left: 150,
               top: 180,
               width: 160,
               minHeight: '50px',
@@ -434,7 +434,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 600,
+              left: 650,
               top: 180,
               width: 180,
               minHeight: '50px',
@@ -1106,9 +1106,9 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
           <div
             className="absolute pointer-events-none"
             style={{
-              left: 280,
+              left: 230,
               top: 170 - 0.5,
-              width: 440,
+              width: 540,
               height: 1,
               backgroundColor: '#374151',
               zIndex: 10,
@@ -1119,7 +1119,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
           <div
             className="absolute pointer-events-none"
             style={{
-              left: 280 - 0.5,
+              left: 230 - 0.5,
               top: 170,
               width: 1,
               height: 10,
@@ -1130,7 +1130,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
           <div
             className="absolute pointer-events-none"
             style={{
-              left: 280 - 3,
+              left: 230 - 3,
               top: 180 - 6,
               width: 0,
               height: 0,
@@ -1143,7 +1143,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
           <div
             className="absolute pointer-events-none bg-white border border-gray-400 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold text-gray-700"
             style={{
-              left: 280 - 12,
+              left: 230 - 12,
               top: 170 - 12,
               zIndex: 12,
             }}
@@ -1155,7 +1155,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
           <div
             className="absolute pointer-events-none"
             style={{
-              left: 690 - 0.5,
+              left: 740 - 0.5,
               top: 170,
               width: 1,
               height: 10,
@@ -1166,7 +1166,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
           <div
             className="absolute pointer-events-none"
             style={{
-              left: 690 - 3,
+              left: 740 - 3,
               top: 180 - 6,
               width: 0,
               height: 0,
@@ -1179,7 +1179,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
           <div
             className="absolute pointer-events-none bg-white border border-gray-400 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold text-gray-700"
             style={{
-              left: 690 - 12,
+              left: 740 - 12,
               top: 170 - 12,
               zIndex: 12,
             }}
@@ -1191,7 +1191,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
           <div
             className="absolute pointer-events-none"
             style={{
-              left: 280 - 0.5,
+              left: 230 - 0.5,
               top: 230,
               width: 1,
               height: 50,
@@ -1458,7 +1458,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
           <div
             className="absolute pointer-events-none"
             style={{
-              left: 690 - 0.5,
+              left: 740 - 0.5,
               top: 230,
               width: 1,
               height: 150,
@@ -1469,7 +1469,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
           <div
             className="absolute pointer-events-none"
             style={{
-              left: 690,
+              left: 740,
               top: 380 - 0.5,
               width: 60,
               height: 1,
@@ -1480,7 +1480,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
           <div
             className="absolute pointer-events-none bg-white border border-gray-400 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold text-gray-700"
             style={{
-              left: 690 - 12,
+              left: 740 - 12,
               top: 380 - 12,
               zIndex: 12,
             }}
@@ -1492,9 +1492,9 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
           <div
             className="absolute pointer-events-none"
             style={{
-              left: 720,
+              left: 770,
               top: 230 - 0.5,
-              width: 100,
+              width: 50,
               height: 1,
               backgroundColor: '#374151',
               zIndex: 10,
@@ -1527,7 +1527,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
           <div
             className="absolute pointer-events-none bg-white border border-gray-400 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold text-gray-700"
             style={{
-              left: 720 - 12,
+              left: 770 - 12,
               top: 230 - 12,
               zIndex: 12,
             }}
