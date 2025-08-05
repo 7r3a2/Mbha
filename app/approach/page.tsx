@@ -32,6 +32,9 @@ const FlowchartBox = ({
       position: 'relative',
       zIndex: 20,
       pointerEvents: 'auto', // Re-enable pointer events for boxes
+      // Better rendering quality
+      textRendering: 'optimizeLegibility',
+      imageRendering: 'crisp-edges',
       ...style
     }}
   >
@@ -52,6 +55,9 @@ const ReferenceBox = ({ text, style = {} }: { text: string; style?: React.CSSPro
       position: 'relative',
       zIndex: 20,
       pointerEvents: 'auto', // Re-enable pointer events for boxes
+      // Better rendering quality
+      textRendering: 'optimizeLegibility',
+      imageRendering: 'crisp-edges',
       ...style
     }}
   >
@@ -350,21 +356,28 @@ const ChestPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullScreen =
         }}
       >
         
-        {/* Flowchart content - centered and responsive */}
-                 <div
-           className="relative"
-           style={{
-             transform: `scale(${scale * zoomScale}) translate(${panX}px, ${panY}px)`,
-             width: '1600px',
-             height: '1300px',
-             pointerEvents: 'auto', // Enable interaction with boxes
-             transformOrigin: 'center',
-             transition: isZooming ? 'none' : 'none', // Remove transition for instant panning
-             willChange: 'transform', // Optimize for animations
-             backfaceVisibility: 'hidden', // Reduce blur on touch
-             WebkitBackfaceVisibility: 'hidden' // Safari support
-           }}
-         >
+                 {/* Flowchart content - centered and responsive */}
+                  <div
+            className="relative"
+            style={{
+              transform: `scale(${scale * zoomScale}) translate(${panX}px, ${panY}px)`,
+              width: '1600px',
+              height: '1300px',
+              pointerEvents: 'auto', // Enable interaction with boxes
+              transformOrigin: 'center',
+              transition: isZooming ? 'none' : 'none', // Remove transition for instant panning
+              willChange: 'transform', // Optimize for animations
+              backfaceVisibility: 'hidden', // Reduce blur on touch
+              WebkitBackfaceVisibility: 'hidden', // Safari support
+              // Improve rendering quality for zoom
+              imageRendering: 'crisp-edges',
+              // Better text rendering
+              textRendering: 'optimizeLegibility',
+              // Prevent blur during zoom
+              transformStyle: 'preserve-3d',
+              perspective: '1000px'
+            }}
+          >
           {/* Chest Pain - Main box */}
           <FlowchartBox
             title="Chest Pain"
@@ -520,21 +533,24 @@ const ChestPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullScreen =
           <HorizontalLine y={560} startX={910} endX={1020} />
           <ArrowHead x={1020} y={560} direction="right" />
 
-          {/* Large text box - now part of the moveable flowchart */}
-          <div 
-            className="text-box absolute bg-white border-2 border-gray-500 p-6 rounded-lg shadow-lg select-text cursor-text hover:bg-gray-50 transition-colors"
-            style={{ 
-              left: 50, 
-              top: 720, 
-              width: 'min(1500px, 90vw)', 
-              height: 'auto',
-              minHeight: 400,
-              overflow: 'visible',
-              position: 'relative',
-              zIndex: 20,
-              pointerEvents: 'auto' // Re-enable pointer events for text box
-            }}
-          >
+                     {/* Large text box - now part of the moveable flowchart */}
+           <div 
+             className="text-box absolute bg-white border-2 border-gray-500 p-6 rounded-lg shadow-lg select-text cursor-text hover:bg-gray-50 transition-colors"
+             style={{ 
+               left: 50, 
+               top: 720, 
+               width: 'min(1500px, 90vw)', 
+               height: 'auto',
+               minHeight: 400,
+               overflow: 'visible',
+               position: 'relative',
+               zIndex: 20,
+               pointerEvents: 'auto', // Re-enable pointer events for text box
+               // Better rendering quality
+               textRendering: 'optimizeLegibility',
+               imageRendering: 'crisp-edges'
+             }}
+           >
             <div className="text-sm leading-6 text-gray-800">
               <p className="mb-3">
                 <strong>Chest pain is one of the most common reasons in which a patient presents for medical care.</strong> There are many etiologies of chest pain or discomfort, 
