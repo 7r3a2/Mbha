@@ -191,20 +191,20 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
      }
    };
 
-   const handleTouchMove = (e: React.TouchEvent) => {
-     if (e.touches.length === 2 && isZooming) {
-       e.preventDefault();
-       const distance = Math.hypot(
-         e.touches[0].clientX - e.touches[1].clientX,
-         e.touches[0].clientY - e.touches[1].clientY
-       );
-       
-       const scaleFactor = distance / initialDistance;
-       const newZoomScale = Math.max(0.5, Math.min(3, zoomScale * scaleFactor));
-       setZoomScale(newZoomScale);
-       setInitialDistance(distance);
-     }
-   };
+       const handleTouchMove = (e: React.TouchEvent) => {
+      if (e.touches.length === 2 && isZooming) {
+        e.preventDefault();
+        const distance = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        );
+        
+        const scaleFactor = distance / initialDistance;
+        const newZoomScale = Math.max(0.3, Math.min(5, zoomScale * scaleFactor));
+        setZoomScale(newZoomScale);
+        setInitialDistance(distance);
+      }
+    };
 
    const handleTouchEnd = () => {
      setIsZooming(false);
@@ -215,67 +215,67 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
      onToggleFrameFullScreen();
    };
 
-       return (
-      <div className="h-full bg-gradient-to-br from-blue-50 to-indigo-100 overflow-hidden">
-                {/* Header with full screen button */}
-         <div className="bg-white/90 backdrop-blur-sm p-3 sm:p-4 shadow-sm flex items-center justify-between">
-           <h1 className="text-lg sm:text-2xl font-bold text-blue-600">Chest Pain</h1>
-           <button
-             onClick={toggleFullScreen}
-             className="px-3 py-2 sm:px-4 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2 text-sm sm:text-base"
-             title={frameFullScreen ? "Exit Full Screen" : "Full Screen"}
-           >
-          {frameFullScreen ? (
-            <>
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-                                                           <span>Exit Full Screen</span>
-              </>
-            ) : (
-              <>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-                </svg>
-                <span>Full Screen</span>
-              </>
-            )}
-        </button>
-      </div>
+               return (
+       <div className="h-full bg-gradient-to-br from-blue-50 to-indigo-100 overflow-hidden">
+                 {/* Header with full screen button */}
+          <div className="bg-white/90 backdrop-blur-sm p-3 sm:p-4 shadow-sm flex items-center justify-between">
+            <h1 className="text-lg sm:text-2xl font-bold text-blue-600">Chest Pain</h1>
+            <button
+              onClick={toggleFullScreen}
+              className="px-3 py-2 sm:px-4 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2 text-sm sm:text-base"
+              title={frameFullScreen ? "Exit Full Screen" : "Full Screen"}
+            >
+           {frameFullScreen ? (
+             <>
+               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+               </svg>
+                                                            <span>Exit Full Screen</span>
+               </>
+             ) : (
+               <>
+                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                 </svg>
+                 <span>Full Screen</span>
+               </>
+             )}
+         </button>
+       </div>
 
-                                             {/* Main flowchart container */}
-         <div className="relative w-full h-full overflow-hidden flex items-center justify-center">
-           {/* Touch area for pinch-to-zoom */}
-           <div
-             className="absolute inset-0"
-             onTouchStart={handleTouchStart}
-             onTouchMove={handleTouchMove}
-             onTouchEnd={handleTouchEnd}
-             style={{ 
-               touchAction: 'none', // Prevent page refresh on iPad
-               pointerEvents: 'auto',
-               WebkitTouchCallout: 'none', // Prevent iOS touch callouts
-               WebkitUserSelect: 'none' // Prevent text selection
-             }}
-           />
+                                              {/* Main flowchart container - smaller frame */}
+          <div className="relative w-full h-full overflow-hidden flex items-center justify-center p-4">
+            {/* Touch area for pinch-to-zoom - only within the flowchart area */}
+            <div
+              className="relative w-full h-full max-w-6xl max-h-[80vh] bg-white/80 rounded-lg border-2 border-blue-200 shadow-lg"
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+              style={{ 
+                touchAction: 'none', // Prevent page refresh on iPad
+                pointerEvents: 'auto',
+                WebkitTouchCallout: 'none', // Prevent iOS touch callouts
+                WebkitUserSelect: 'none' // Prevent text selection
+              }}
+            >
            
-                                            {/* Flowchart content - centered */}
-             <div
-               className="relative"
-               style={{
-                 transform: `scale(${scale * zoomScale})`,
-                 width: '1600px',
-                 height: '1300px',
-                 pointerEvents: 'auto', // Enable interaction with boxes
-                 transformOrigin: 'center',
-                 maxWidth: '100%',
-                 maxHeight: '100%',
-                 transition: isZooming ? 'none' : 'transform 0.15s ease-out',
-                 willChange: 'transform', // Optimize for animations
-                 backfaceVisibility: 'hidden', // Reduce blur on touch
-                 WebkitBackfaceVisibility: 'hidden' // Safari support
-               }}
-             >
+                                                                                         {/* Flowchart content - centered */}
+              <div
+                className="relative w-full h-full flex items-center justify-center"
+                style={{
+                  transform: `scale(${scale * zoomScale})`,
+                  width: '1600px',
+                  height: '1300px',
+                  pointerEvents: 'auto', // Enable interaction with boxes
+                  transformOrigin: 'center',
+                  maxWidth: '100%',
+                  maxHeight: '100%',
+                  transition: isZooming ? 'none' : 'transform 0.15s ease-out',
+                  willChange: 'transform', // Optimize for animations
+                  backfaceVisibility: 'hidden', // Reduce blur on touch
+                  WebkitBackfaceVisibility: 'hidden' // Safari support
+                }}
+              >
                      {/* Chest Pain - Main box */}
            <FlowchartBox
              title="Chest Pain"
@@ -483,18 +483,19 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
               </p>
             </div>
           </div>
-                 </div>
-         
-                   {/* Mobile-friendly instruction overlay */}
-          {isMobile && (
-            <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm p-3 rounded-lg shadow-lg text-xs text-gray-600">
-              <div className="font-semibold mb-1">Pinch to Zoom:</div>
-              <div>• Use two fingers to pinch and zoom</div>
-              <div>• Tap boxes to select and copy text</div>
-              <div>• Use full screen for better view</div>
-            </div>
-          )}
-       </div>
+                                   </div>
+             </div>
+          
+                    {/* Mobile-friendly instruction overlay */}
+           {isMobile && (
+             <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm p-3 rounded-lg shadow-lg text-xs text-gray-600">
+               <div className="font-semibold mb-1">Pinch to Zoom:</div>
+               <div>• Use two fingers to pinch and zoom</div>
+               <div>• Tap boxes to select and copy text</div>
+               <div>• Use full screen for better view</div>
+             </div>
+           )}
+        </div>
 
               
      </div>
