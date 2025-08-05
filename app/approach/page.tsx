@@ -449,12 +449,12 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             </div>
           </div>
 
-          {/* Findings from exam - Row 1 with proper spacing */}
+          {/* Findings from exam - Row 1 with better spacing */}
           <div 
             className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 50,
+              left: 80,
               top: 280,
               width: 140,
               minHeight: '50px',
@@ -473,7 +473,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 200,
+              left: 240,
               top: 280,
               width: 140,
               minHeight: '50px',
@@ -492,7 +492,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 350,
+              left: 400,
               top: 280,
               width: 140,
               minHeight: '50px',
@@ -511,7 +511,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 500,
+              left: 560,
               top: 280,
               width: 160,
               minHeight: '50px',
@@ -526,12 +526,12 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             </div>
           </div>
 
-          {/* Tests - Row 2 with proper spacing */}
+          {/* Tests - Row 2 with better spacing */}
           <div 
             className="bg-gray-200 border-2 border-gray-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 120,
+              left: 140,
               top: 380,
               width: 100,
               minHeight: '50px',
@@ -547,7 +547,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-gray-200 border-2 border-gray-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 200,
+              left: 260,
               top: 380,
               width: 140,
               minHeight: '50px',
@@ -563,7 +563,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-gray-200 border-2 border-gray-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 350,
+              left: 420,
               top: 380,
               width: 140,
               minHeight: '50px',
@@ -580,7 +580,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-gray-200 border-2 border-gray-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 120,
+              left: 140,
               top: 480,
               width: 80,
               minHeight: '50px',
@@ -592,12 +592,12 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             TVUS¹
           </div>
 
-          {/* Test Results - Row 3 with proper spacing */}
+          {/* Test Results - Row 3 with better spacing */}
           <div 
             className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 50,
+              left: 80,
               top: 580,
               width: 160,
               minHeight: '50px',
@@ -616,7 +616,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 350,
+              left: 420,
               top: 480,
               width: 250,
               minHeight: '50px',
@@ -635,7 +635,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 500,
+              left: 580,
               top: 480,
               width: 140,
               minHeight: '50px',
@@ -654,7 +654,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 650,
+              left: 740,
               top: 480,
               width: 180,
               minHeight: '50px',
@@ -669,7 +669,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             </div>
           </div>
 
-          {/* Diagnoses - Row 4 with proper spacing */}
+          {/* Diagnoses - Row 4 with better spacing */}
           <div 
             className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
             style={{
@@ -691,7 +691,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
             style={{
               position: 'absolute',
-              left: 50,
+              left: 80,
               top: 680,
               width: 140,
               minHeight: '50px',
@@ -708,7 +708,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
             style={{
               position: 'absolute',
-              left: 210,
+              left: 240,
               top: 680,
               width: 140,
               minHeight: '50px',
@@ -725,7 +725,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
             style={{
               position: 'absolute',
-              left: 350,
+              left: 420,
               top: 580,
               width: 140,
               minHeight: '50px',
@@ -742,7 +742,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
             style={{
               position: 'absolute',
-              left: 500,
+              left: 580,
               top: 580,
               width: 120,
               minHeight: '50px',
@@ -759,7 +759,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
             style={{
               position: 'absolute',
-              left: 650,
+              left: 740,
               top: 580,
               width: 120,
               minHeight: '50px',
@@ -777,7 +777,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 50,
+              left: 80,
               top: 780,
               width: 180,
               minHeight: '50px',
@@ -796,7 +796,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 240,
+              left: 280,
               top: 780,
               width: 160,
               minHeight: '50px',
@@ -815,7 +815,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 410,
+              left: 460,
               top: 780,
               width: 140,
               minHeight: '50px',
@@ -830,7 +830,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             </div>
           </div>
 
-          {/* Final Diagnoses - Row 6 with proper spacing */}
+          {/* Final Diagnoses - Row 6 with better spacing */}
           <div 
             className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
             style={{
@@ -852,7 +852,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
             style={{
               position: 'absolute',
-              left: 240,
+              left: 280,
               top: 880,
               width: 140,
               minHeight: '50px',
@@ -869,7 +869,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
             style={{
               position: 'absolute',
-              left: 410,
+              left: 460,
               top: 880,
               width: 140,
               minHeight: '50px',
@@ -882,7 +882,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             Ovarian Torsion
           </div>
 
-          {/* Treatments with proper spacing */}
+          {/* Treatments with better spacing */}
           <div 
             className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
@@ -903,7 +903,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 50,
+              left: 80,
               top: 780,
               width: 180,
               minHeight: '50px',
@@ -919,7 +919,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 210,
+              left: 280,
               top: 780,
               width: 200,
               minHeight: '50px',
@@ -935,7 +935,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 350,
+              left: 420,
               top: 680,
               width: 140,
               minHeight: '50px',
@@ -951,7 +951,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 500,
+              left: 580,
               top: 680,
               width: 160,
               minHeight: '50px',
@@ -967,7 +967,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 650,
+              left: 740,
               top: 680,
               width: 180,
               minHeight: '50px',
@@ -999,7 +999,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 240,
+              left: 280,
               top: 980,
               width: 140,
               minHeight: '50px',
@@ -1015,7 +1015,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 410,
+              left: 460,
               top: 980,
               width: 140,
               minHeight: '50px',
@@ -1032,7 +1032,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-red-300 border-2 border-red-500 px-4 py-3 text-center rounded-lg shadow-md text-sm font-semibold text-black"
             style={{
               position: 'absolute',
-              left: 650,
+              left: 740,
               top: 280,
               width: 180,
               minHeight: '50px',
@@ -1049,7 +1049,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-gray-100 border-2 border-gray-400 px-4 py-3 rounded-lg shadow-md text-xs text-gray-700"
             style={{
               position: 'absolute',
-              left: 600,
+              left: 640,
               top: 880,
               width: 280
             }}
@@ -1061,7 +1061,8 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             </div>
           </div>
 
-          {/* Lines and Arrows - Updated for new positioning */}
+          {/* Lines and Arrows - Complete flowchart connections */}
+          
           {/* From Acute Pelvic Pain to Beta-hCG */}
           <div
             className="absolute pointer-events-none"
@@ -1105,7 +1106,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             style={{
               left: 280,
               top: 170 - 0.5,
-              width: 410,
+              width: 420,
               height: 1,
               backgroundColor: '#374151',
               zIndex: 10,
@@ -1184,8 +1185,612 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             +
           </div>
 
-          {/* Continue with more lines and arrows as needed... */}
-          {/* Add all the remaining lines and arrows from the original flowchart */}
+          {/* From Abdominal and pelvic exam to findings */}
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 280 - 0.5,
+              top: 230,
+              width: 1,
+              height: 50,
+              backgroundColor: '#374151',
+              zIndex: 10,
+            }}
+          />
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 150,
+              top: 280 - 0.5,
+              width: 260,
+              height: 1,
+              backgroundColor: '#374151',
+              zIndex: 10,
+            }}
+          />
+
+          {/* From findings to tests */}
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 190 - 0.5,
+              top: 330,
+              width: 1,
+              height: 50,
+              backgroundColor: '#374151',
+              zIndex: 10,
+            }}
+          />
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 190 - 3,
+              top: 380 - 6,
+              width: 0,
+              height: 0,
+              zIndex: 11,
+              borderLeft: '3px solid transparent',
+              borderRight: '3px solid transparent',
+              borderTop: '6px solid #374151',
+            }}
+          />
+
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 330 - 0.5,
+              top: 330,
+              width: 1,
+              height: 50,
+              backgroundColor: '#374151',
+              zIndex: 10,
+            }}
+          />
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 330 - 3,
+              top: 380 - 6,
+              width: 0,
+              height: 0,
+              zIndex: 11,
+              borderLeft: '3px solid transparent',
+              borderRight: '3px solid transparent',
+              borderTop: '6px solid #374151',
+            }}
+          />
+
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 470 - 0.5,
+              top: 330,
+              width: 1,
+              height: 50,
+              backgroundColor: '#374151',
+              zIndex: 10,
+            }}
+          />
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 470 - 3,
+              top: 380 - 6,
+              width: 0,
+              height: 0,
+              zIndex: 11,
+              borderLeft: '3px solid transparent',
+              borderRight: '3px solid transparent',
+              borderTop: '6px solid #374151',
+            }}
+          />
+
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 640 - 0.5,
+              top: 330,
+              width: 1,
+              height: 50,
+              backgroundColor: '#374151',
+              zIndex: 10,
+            }}
+          />
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 640 - 3,
+              top: 380 - 6,
+              width: 0,
+              height: 0,
+              zIndex: 11,
+              borderLeft: '3px solid transparent',
+              borderRight: '3px solid transparent',
+              borderTop: '6px solid #374151',
+            }}
+          />
+
+          {/* From STI testing to TVUS */}
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 190 - 0.5,
+              top: 430,
+              width: 1,
+              height: 50,
+              backgroundColor: '#374151',
+              zIndex: 10,
+            }}
+          />
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 190 - 3,
+              top: 480 - 6,
+              width: 0,
+              height: 0,
+              zIndex: 11,
+              borderLeft: '3px solid transparent',
+              borderRight: '3px solid transparent',
+              borderTop: '6px solid #374151',
+            }}
+          />
+
+          {/* From TVUS to findings */}
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 180 - 0.5,
+              top: 530,
+              width: 1,
+              height: 50,
+              backgroundColor: '#374151',
+              zIndex: 10,
+            }}
+          />
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 160,
+              top: 580 - 0.5,
+              width: 40,
+              height: 1,
+              backgroundColor: '#374151',
+              zIndex: 10,
+            }}
+          />
+
+          {/* From findings to diagnoses */}
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 160 - 0.5,
+              top: 630,
+              width: 1,
+              height: 50,
+              backgroundColor: '#374151',
+              zIndex: 10,
+            }}
+          />
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 160 - 3,
+              top: 680 - 6,
+              width: 0,
+              height: 0,
+              zIndex: 11,
+              borderLeft: '3px solid transparent',
+              borderRight: '3px solid transparent',
+              borderTop: '6px solid #374151',
+            }}
+          />
+
+          {/* From urine findings to UTI diagnosis */}
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 545 - 0.5,
+              top: 530,
+              width: 1,
+              height: 50,
+              backgroundColor: '#374151',
+              zIndex: 10,
+            }}
+          />
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 545 - 3,
+              top: 580 - 6,
+              width: 0,
+              height: 0,
+              zIndex: 11,
+              borderLeft: '3px solid transparent',
+              borderRight: '3px solid transparent',
+              borderTop: '6px solid #374151',
+            }}
+          />
+
+          {/* From cyclic pain to Mittelschmerz */}
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 640 - 0.5,
+              top: 530,
+              width: 1,
+              height: 50,
+              backgroundColor: '#374151',
+              zIndex: 10,
+            }}
+          />
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 640 - 3,
+              top: 580 - 6,
+              width: 0,
+              height: 0,
+              zIndex: 11,
+              borderLeft: '3px solid transparent',
+              borderRight: '3px solid transparent',
+              borderTop: '6px solid #374151',
+            }}
+          />
+
+          {/* From symptoms to Endometriosis */}
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 830 - 0.5,
+              top: 530,
+              width: 1,
+              height: 50,
+              backgroundColor: '#374151',
+              zIndex: 10,
+            }}
+          />
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 830 - 3,
+              top: 580 - 6,
+              width: 0,
+              height: 0,
+              zIndex: 11,
+              borderLeft: '3px solid transparent',
+              borderRight: '3px solid transparent',
+              borderTop: '6px solid #374151',
+            }}
+          />
+
+          {/* From Intrauterine pregnancy to Ectopic Pregnancy */}
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 690 - 0.5,
+              top: 230,
+              width: 1,
+              height: 50,
+              backgroundColor: '#374151',
+              zIndex: 10,
+            }}
+          />
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 870,
+              top: 280 - 0.5,
+              width: 40,
+              height: 1,
+              backgroundColor: '#374151',
+              zIndex: 10,
+            }}
+          />
+
+          {/* From Ectopic Pregnancy to treatment */}
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 870 - 0.5,
+              top: 330,
+              width: 1,
+              height: 50,
+              backgroundColor: '#374151',
+              zIndex: 10,
+            }}
+          />
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 870 - 3,
+              top: 380 - 6,
+              width: 0,
+              height: 0,
+              zIndex: 11,
+              borderLeft: '3px solid transparent',
+              borderRight: '3px solid transparent',
+              borderTop: '6px solid #374151',
+            }}
+          />
+
+          {/* From diagnoses to treatments */}
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 150 - 0.5,
+              top: 730,
+              width: 1,
+              height: 50,
+              backgroundColor: '#374151',
+              zIndex: 10,
+            }}
+          />
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 150 - 3,
+              top: 780 - 6,
+              width: 0,
+              height: 0,
+              zIndex: 11,
+              borderLeft: '3px solid transparent',
+              borderRight: '3px solid transparent',
+              borderTop: '6px solid #374151',
+            }}
+          />
+
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 350 - 0.5,
+              top: 730,
+              width: 1,
+              height: 50,
+              backgroundColor: '#374151',
+              zIndex: 10,
+            }}
+          />
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 350 - 3,
+              top: 780 - 6,
+              width: 0,
+              height: 0,
+              zIndex: 11,
+              borderLeft: '3px solid transparent',
+              borderRight: '3px solid transparent',
+              borderTop: '6px solid #374151',
+            }}
+          />
+
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 490 - 0.5,
+              top: 730,
+              width: 1,
+              height: 50,
+              backgroundColor: '#374151',
+              zIndex: 10,
+            }}
+          />
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 490 - 3,
+              top: 780 - 6,
+              width: 0,
+              height: 0,
+              zIndex: 11,
+              borderLeft: '3px solid transparent',
+              borderRight: '3px solid transparent',
+              borderTop: '6px solid #374151',
+            }}
+          />
+
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 640 - 0.5,
+              top: 730,
+              width: 1,
+              height: 50,
+              backgroundColor: '#374151',
+              zIndex: 10,
+            }}
+          />
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 640 - 3,
+              top: 780 - 6,
+              width: 0,
+              height: 0,
+              zIndex: 11,
+              borderLeft: '3px solid transparent',
+              borderRight: '3px solid transparent',
+              borderTop: '6px solid #374151',
+            }}
+          />
+
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 830 - 0.5,
+              top: 730,
+              width: 1,
+              height: 50,
+              backgroundColor: '#374151',
+              zIndex: 10,
+            }}
+          />
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 830 - 3,
+              top: 780 - 6,
+              width: 0,
+              height: 0,
+              zIndex: 11,
+              borderLeft: '3px solid transparent',
+              borderRight: '3px solid transparent',
+              borderTop: '6px solid #374151',
+            }}
+          />
+
+          {/* From ultrasound findings to final diagnoses */}
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 170 - 0.5,
+              top: 830,
+              width: 1,
+              height: 50,
+              backgroundColor: '#374151',
+              zIndex: 10,
+            }}
+          />
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 170 - 3,
+              top: 880 - 6,
+              width: 0,
+              height: 0,
+              zIndex: 11,
+              borderLeft: '3px solid transparent',
+              borderRight: '3px solid transparent',
+              borderTop: '6px solid #374151',
+            }}
+          />
+
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 350 - 0.5,
+              top: 830,
+              width: 1,
+              height: 50,
+              backgroundColor: '#374151',
+              zIndex: 10,
+            }}
+          />
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 350 - 3,
+              top: 880 - 6,
+              width: 0,
+              height: 0,
+              zIndex: 11,
+              borderLeft: '3px solid transparent',
+              borderRight: '3px solid transparent',
+              borderTop: '6px solid #374151',
+            }}
+          />
+
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 530 - 0.5,
+              top: 830,
+              width: 1,
+              height: 50,
+              backgroundColor: '#374151',
+              zIndex: 10,
+            }}
+          />
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 530 - 3,
+              top: 880 - 6,
+              width: 0,
+              height: 0,
+              zIndex: 11,
+              borderLeft: '3px solid transparent',
+              borderRight: '3px solid transparent',
+              borderTop: '6px solid #374151',
+            }}
+          />
+
+          {/* From final diagnoses to treatments */}
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 140 - 0.5,
+              top: 930,
+              width: 1,
+              height: 50,
+              backgroundColor: '#374151',
+              zIndex: 10,
+            }}
+          />
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 140 - 3,
+              top: 980 - 6,
+              width: 0,
+              height: 0,
+              zIndex: 11,
+              borderLeft: '3px solid transparent',
+              borderRight: '3px solid transparent',
+              borderTop: '6px solid #374151',
+            }}
+          />
+
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 350 - 0.5,
+              top: 930,
+              width: 1,
+              height: 50,
+              backgroundColor: '#374151',
+              zIndex: 10,
+            }}
+          />
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 350 - 3,
+              top: 980 - 6,
+              width: 0,
+              height: 0,
+              zIndex: 11,
+              borderLeft: '3px solid transparent',
+              borderRight: '3px solid transparent',
+              borderTop: '6px solid #374151',
+            }}
+          />
+
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 530 - 0.5,
+              top: 930,
+              width: 1,
+              height: 50,
+              backgroundColor: '#374151',
+              zIndex: 10,
+            }}
+          />
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              left: 530 - 3,
+              top: 980 - 6,
+              width: 0,
+              height: 0,
+              zIndex: 11,
+              borderLeft: '3px solid transparent',
+              borderRight: '3px solid transparent',
+              borderTop: '6px solid #374151',
+            }}
+          />
           
         </div>
       </div>
