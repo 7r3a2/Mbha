@@ -170,11 +170,11 @@ const ChestPainFlowchart = () => {
     const newX = e.clientX - startPos.x;
     const newY = e.clientY - startPos.y;
     
-         // Constrain panning to keep flowchart visible
-     const maxX = 0; // Don't pan too far right (flowchart starts at 0)
-     const minX = -1200; // Don't pan too far left (flowchart width is 1600px, so -1200 keeps it visible)
+         // Constrain panning to keep flowchart visible - balanced medium size
+     const maxX = 200; // Allow some panning to the right
+     const minX = -600; // Allow some panning to the left (balanced with right)
      const maxY = 0; // Don't pan too far down (flowchart starts at 0)
-     const minY = -800; // Don't pan too far up (flowchart height is 1300px, so -800 keeps it visible)
+     const minY = -400; // Allow some panning up (medium size)
     
     const constrainedX = Math.max(minX, Math.min(maxX, newX));
     const constrainedY = Math.max(minY, Math.min(maxY, newY));
@@ -208,10 +208,10 @@ const ChestPainFlowchart = () => {
     const newY = touch.clientY - startPos.y;
     
          // Same constraints as mouse
-     const maxX = 0;
-     const minX = -1200;
+     const maxX = 200;
+     const minX = -600;
      const maxY = 0;
-     const minY = -800;
+     const minY = -400;
     
     const constrainedX = Math.max(minX, Math.min(maxX, newX));
     const constrainedY = Math.max(minY, Math.min(maxY, newY));
