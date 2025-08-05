@@ -158,11 +158,6 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
        const width = window.innerWidth;
        setIsMobile(width < 1024);
        setScale(width < 768 ? 0.6 : width < 1024 ? 0.8 : 1);
-       
-       // Auto fullscreen for iPad/tablet (768px - 1024px)
-       if (width >= 768 && width < 1024) {
-         setIsFullScreen(true);
-       }
      };
      
      checkDevice();
@@ -251,35 +246,35 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
    };
 
        return (
-      <div className="h-full bg-gradient-to-br from-blue-50 to-indigo-100 overflow-hidden">
+      <div className={`${isFullScreen ? 'fixed inset-0 z-50' : 'h-full'} bg-gradient-to-br from-blue-50 to-indigo-100 overflow-hidden`}>
                 {/* Header with full screen button */}
          <div className="bg-white/90 backdrop-blur-sm p-3 sm:p-4 shadow-sm flex items-center justify-between">
            <h1 className="text-lg sm:text-2xl font-bold text-blue-600">Chest Pain</h1>
            <button
              onClick={toggleFullScreen}
              className="px-3 py-2 sm:px-4 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2 text-sm sm:text-base"
-             title={isFullScreen ? "Exit Full Screen" : "Full Screen Frame"}
+             title={isFullScreen ? "Exit Full Screen" : "Full Screen"}
            >
           {isFullScreen ? (
             <>
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
-                             <span>Exit Frame</span>
-             </>
-           ) : (
-             <>
-               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-               </svg>
-               <span>Full Frame</span>
-             </>
-           )}
+                                                           <span>Exit Full Screen</span>
+              </>
+            ) : (
+              <>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                </svg>
+                <span>Full Screen</span>
+              </>
+            )}
         </button>
       </div>
 
                       {/* Main flowchart container */}
-        <div className={`relative ${isFullScreen ? 'fixed inset-0 z-50 bg-gradient-to-br from-blue-50 to-indigo-100' : 'w-full h-full'} overflow-hidden`}>
+        <div className="relative w-full h-full overflow-hidden">
           {/* Panning area - only around the flowchart content */}
           <div
             className="absolute inset-0 cursor-grab active:cursor-grabbing"
@@ -518,22 +513,12 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
                  </div>
          
          {/* Mobile-friendly instruction overlay */}
-         {isMobile && !isFullScreen && (
+         {isMobile && (
            <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm p-3 rounded-lg shadow-lg text-xs text-gray-600">
              <div className="font-semibold mb-1">Touch & Drag:</div>
              <div>• Touch and drag empty areas to pan</div>
              <div>• Tap boxes to select and copy text</div>
-             <div>• Use full frame button for better view</div>
-           </div>
-         )}
-         
-         {/* Fullscreen instruction overlay */}
-         {isFullScreen && (
-           <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm p-3 rounded-lg shadow-lg text-xs text-gray-600">
-             <div className="font-semibold mb-1">Fullscreen Mode:</div>
-             <div>• Touch and drag empty areas to pan</div>
-             <div>• Tap boxes to select and copy text</div>
-             <div>• Use Exit Frame button to return</div>
+             <div>• Use full screen for better view</div>
            </div>
          )}
        </div>
@@ -550,6 +535,24 @@ export default function ApproachPage() {
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
   const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
   const [selectedLecture, setSelectedLecture] = useState<string | null>(null);
+  const [isIPadFullscreen, setIsIPadFullscreen] = useState(false);
+
+  // Auto fullscreen for iPad
+  useEffect(() => {
+    const checkIPad = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const isIPad = width >= 768 && width <= 1024;
+      
+      if (isIPad) {
+        setIsIPadFullscreen(true);
+      }
+    };
+    
+    checkIPad();
+    window.addEventListener('resize', checkIPad);
+    return () => window.removeEventListener('resize', checkIPad);
+  }, []);
 
                                                const subjects = [
         {
@@ -649,7 +652,7 @@ export default function ApproachPage() {
   const selectedContent = getSelectedContent();
 
      return (
-     <div className="flex h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+     <div className={`flex h-screen ${isIPadFullscreen ? 'fixed inset-0 z-40' : ''} bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100`}>
       {/* Sidebar - Same design as dashboard */}
       <div 
         className={`bg-[#1E2A38] text-white flex flex-col transition-all duration-300 ${
