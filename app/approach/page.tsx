@@ -200,34 +200,19 @@ const ChestPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullScreen =
     if (!isPanning) return;
     e.preventDefault();
     
-    // Faster, more responsive panning
+    // Direct, responsive panning without borders
     const newX = e.clientX - mouseStartPos.x;
     const newY = e.clientY - mouseStartPos.y;
     
-    // Add sliding borders - not free sliding
-    const scaledWidth = 1600 * scale * zoomScale;
-    const scaledHeight = 1300 * scale * zoomScale;
-    const containerWidth = window.innerWidth;
-    const containerHeight = window.innerHeight;
-    
-    // Calculate border limits with more generous bounds
-    const maxX = 200; // Can slide right more
-    const minX = -(scaledWidth - containerWidth + 200); // Can slide left more
-    const maxY = 100; // Can slide down more
-    const minY = -(scaledHeight - containerHeight + 200); // Can slide up more
-    
-    const constrainedX = Math.max(minX, Math.min(maxX, newX));
-    const constrainedY = Math.max(minY, Math.min(maxY, newY));
-    
-    setPanX(constrainedX);
-    setPanY(constrainedY);
+    setPanX(newX);
+    setPanY(newY);
   };
 
   const handleMouseUp = () => {
     setIsPanning(false);
   };
 
-  // Scroll to zoom functionality for desktop
+  // Scroll to zoom functionality for desktop - zoom to mouse position
   const handleWheel = (e: React.WheelEvent) => {
     e.preventDefault();
     
@@ -235,7 +220,20 @@ const ChestPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullScreen =
     if (!isPanning && !isMobile) {
       const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1; // Zoom out on scroll down, zoom in on scroll up
       const newZoomScale = Math.max(0.3, Math.min(5, zoomScale * zoomFactor));
+      
+      // Get mouse position relative to the flowchart container
+      const rect = e.currentTarget.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left - rect.width / 2;
+      const mouseY = e.clientY - rect.top - rect.height / 2;
+      
+      // Calculate new pan position to zoom towards mouse
+      const scaleChange = newZoomScale / zoomScale;
+      const newPanX = panX - (mouseX * (scaleChange - 1));
+      const newPanY = panY - (mouseY * (scaleChange - 1));
+      
       setZoomScale(newZoomScale);
+      setPanX(newPanX);
+      setPanY(newPanY);
     }
   };
 
@@ -280,32 +278,14 @@ const ChestPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullScreen =
       setZoomScale(newZoomScale);
       setInitialDistance(distance);
     } else if (e.touches.length === 1 && isPanning) {
-      // Single finger pan with borders - faster and more responsive
+      // Single finger pan - direct and responsive
       e.preventDefault();
       const touch = e.touches[0];
       const deltaX = touch.clientX - lastTouchX;
       const deltaY = touch.clientY - lastTouchY;
       
-      const newX = panX + deltaX;
-      const newY = panY + deltaY;
-      
-      // Add sliding borders for touch too with more generous bounds
-      const scaledWidth = 1600 * scale * zoomScale;
-      const scaledHeight = 1300 * scale * zoomScale;
-      const containerWidth = window.innerWidth;
-      const containerHeight = window.innerHeight;
-      
-      // Calculate border limits with more generous bounds
-      const maxX = 200;
-      const minX = -(scaledWidth - containerWidth + 200);
-      const maxY = 100;
-      const minY = -(scaledHeight - containerHeight + 200);
-      
-      const constrainedX = Math.max(minX, Math.min(maxX, newX));
-      const constrainedY = Math.max(minY, Math.min(maxY, newY));
-      
-      setPanX(constrainedX);
-      setPanY(constrainedY);
+      setPanX(prev => prev + deltaX);
+      setPanY(prev => prev + deltaY);
       
       setLastTouchX(touch.clientX);
       setLastTouchY(touch.clientY);
