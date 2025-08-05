@@ -171,10 +171,10 @@ const ChestPainFlowchart = () => {
     const newY = e.clientY - startPos.y;
     
          // Constrain panning to keep flowchart visible
-     const maxX = 400; // Allow panning to the right
-     const minX = -1200; // Don't pan too far left
-     const maxY = 0; // Don't pan too far down
-     const minY = -800; // Don't pan too far up
+     const maxX = 0; // Don't pan too far right (flowchart starts at 0)
+     const minX = -1200; // Don't pan too far left (flowchart width is 1600px, so -1200 keeps it visible)
+     const maxY = 0; // Don't pan too far down (flowchart starts at 0)
+     const minY = -800; // Don't pan too far up (flowchart height is 1300px, so -800 keeps it visible)
     
     const constrainedX = Math.max(minX, Math.min(maxX, newX));
     const constrainedY = Math.max(minY, Math.min(maxY, newY));
@@ -208,7 +208,7 @@ const ChestPainFlowchart = () => {
     const newY = touch.clientY - startPos.y;
     
          // Same constraints as mouse
-     const maxX = 400;
+     const maxX = 0;
      const minX = -1200;
      const maxY = 0;
      const minY = -800;
@@ -507,37 +507,69 @@ export default function ApproachPage() {
   const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
   const [selectedLecture, setSelectedLecture] = useState<string | null>(null);
 
-                       const subjects = [
-       {
-         id: 'internal-medicine',
-         name: 'Internal Medicine',
-         folders: [
-           {
-             id: 'cardiology',
-             name: 'Cardiology',
-             lectures: [
-               { id: 'card-5', name: 'Chest Pain', content: 'Chest pain evaluation flowchart and approach...' },
-             ]
-           }
-         ]
-       },
-       {
-         id: 'obs-gyne',
-         name: 'Obs & Gyne',
-         folders: [
-           {
-             id: 'obstetrics',
-             name: 'Obstetrics',
-             lectures: []
-           },
-           {
-             id: 'gynecology',
-             name: 'Gynecology',
-             lectures: []
-           }
-         ]
-       }
-     ];
+                                               const subjects = [
+        {
+          id: 'internal-medicine',
+          name: 'Internal Medicine',
+          folders: [
+            {
+              id: 'cardiology',
+              name: 'Cardiology',
+              lectures: [
+                { id: 'card-5', name: 'Chest Pain', content: 'Chest pain evaluation flowchart and approach...' },
+              ]
+            }
+          ]
+        },
+        {
+          id: 'surgery',
+          name: 'Surgery',
+          folders: [
+            {
+              id: 'general-surgery',
+              name: 'General Surgery',
+              lectures: []
+            },
+            {
+              id: 'specialized-surgery',
+              name: 'Specialized Surgery',
+              lectures: []
+            }
+          ]
+        },
+        {
+          id: 'pediatrics',
+          name: 'Pediatrics',
+          folders: [
+            {
+              id: 'general-pediatrics',
+              name: 'General Pediatrics',
+              lectures: []
+            },
+            {
+              id: 'pediatric-specialties',
+              name: 'Pediatric Specialties',
+              lectures: []
+            }
+          ]
+        },
+        {
+          id: 'obs-gyne',
+          name: 'Obs & Gyne',
+          folders: [
+            {
+              id: 'obstetrics',
+              name: 'Obstetrics',
+              lectures: []
+            },
+            {
+              id: 'gynecology',
+              name: 'Gynecology',
+              lectures: []
+            }
+          ]
+        }
+      ];
 
   // Check authentication only (allow all authenticated users)
   if (!isLoading && !user) {
