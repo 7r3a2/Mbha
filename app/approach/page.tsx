@@ -172,9 +172,9 @@ const ChestPainFlowchart = () => {
     
          // Constrain panning to keep flowchart visible
      const maxX = 0; // Don't pan too far right
-     const minX = -800; // Don't pan too far left
+     const minX = -1200; // Don't pan too far left
      const maxY = 0; // Don't pan too far down
-     const minY = -600; // Don't pan too far up
+     const minY = -800; // Don't pan too far up
     
     const constrainedX = Math.max(minX, Math.min(maxX, newX));
     const constrainedY = Math.max(minY, Math.min(maxY, newY));
@@ -209,9 +209,9 @@ const ChestPainFlowchart = () => {
     
          // Same constraints as mouse
      const maxX = 0;
-     const minX = -800;
+     const minX = -1200;
      const maxY = 0;
-     const minY = -600;
+     const minY = -800;
     
     const constrainedX = Math.max(minX, Math.min(maxX, newX));
     const constrainedY = Math.max(minY, Math.min(maxY, newY));
@@ -279,63 +279,63 @@ const ChestPainFlowchart = () => {
            className="relative"
            style={{
              transform: `translate(${scrollPos.x}px, ${scrollPos.y}px)`,
-             width: '1200px',
-             height: '1000px',
+             width: '1600px',
+             height: '1300px',
              pointerEvents: 'none' // Let panning area handle events
            }}
          >
                      {/* Chest Pain - Main box */}
            <FlowchartBox
              title="Chest Pain"
-             style={{ position: 'absolute', left: 530, top: 60, width: 140 }}
+             style={{ position: 'absolute', left: 650, top: 80, width: 140 }}
            />
 
            {/* Cardiac */}
            <FlowchartBox
              title="Cardiac"
-             style={{ position: 'absolute', left: 300, top: 160, width: 120 }}
+             style={{ position: 'absolute', left: 400, top: 200, width: 120 }}
            />
 
            {/* Non-Cardiac */}
            <FlowchartBox
              title="Non-Cardiac"
-             style={{ position: 'absolute', left: 780, top: 160, width: 120 }}
+             style={{ position: 'absolute', left: 850, top: 200, width: 120 }}
            />
 
            {/* See pp. 9-11 */}
            <ReferenceBox
              text="See Non-Ischemic Chest Pain (Pulmonary) approach"
-             style={{ position: 'absolute', left: 920, top: 160, width: 200 }}
+             style={{ position: 'absolute', left: 1020, top: 200, width: 200 }}
            />
 
                      {/* Ischemic */}
            <FlowchartBox
              title="Ischemic"
-             style={{ position: 'absolute', left: 200, top: 260, width: 120 }}
+             style={{ position: 'absolute', left: 280, top: 320, width: 120 }}
            />
 
            {/* Non-Ischemic */}
            <FlowchartBox
              title="Non-Ischemic"
-             style={{ position: 'absolute', left: 420, top: 260, width: 140 }}
+             style={{ position: 'absolute', left: 550, top: 320, width: 140 }}
            />
 
            {/* Acute Coronary Syndrome */}
            <FlowchartBox
              title="Acute Coronary Syndrome"
-             style={{ position: 'absolute', left: 120, top: 360, width: 160 }}
+             style={{ position: 'absolute', left: 150, top: 460, width: 160 }}
            />
 
            {/* Stable/Chronic Angina */}
            <FlowchartBox
              title="Stable/Chronic Angina"
-             style={{ position: 'absolute', left: 300, top: 360, width: 160 }}
+             style={{ position: 'absolute', left: 360, top: 460, width: 160 }}
            />
 
            {/* Non-Ischemic detailed box */}
            <FlowchartBox
              title=""
-             style={{ position: 'absolute', left: 420, top: 360, width: 180, height: 140 }}
+             style={{ position: 'absolute', left: 540, top: 460, width: 180, height: 140 }}
            >
             <div className="text-left text-xs leading-relaxed">
               • Pericarditis<br/>
@@ -351,103 +351,103 @@ const ChestPainFlowchart = () => {
                      {/* Reference boxes */}
            <ReferenceBox
              text="See Ischemic Chest Pain approach"
-             style={{ position: 'absolute', left: 160, top: 520, width: 200 }}
+             style={{ position: 'absolute', left: 160, top: 630, width: 200 }}
            />
 
            <ReferenceBox
              text="See Non-Ischemic Chest Pain (Cardiac) approach"
-             style={{ position: 'absolute', left: 420, top: 520, width: 240 }}
+             style={{ position: 'absolute', left: 480, top: 630, width: 240 }}
            />
 
            {/* Non-Cardiac causes - properly spaced */}
            <FlowchartBox
              title="Pulmonary Causes"
-             style={{ position: 'absolute', left: 780, top: 260, width: 140 }}
+             style={{ position: 'absolute', left: 950, top: 320, width: 140 }}
            />
 
            <FlowchartBox
              title="Gastrointestinal Causes"
-             style={{ position: 'absolute', left: 780, top: 320, width: 140 }}
+             style={{ position: 'absolute', left: 950, top: 400, width: 140 }}
            />
 
            <FlowchartBox
              title="Musculoskeletal Causes"
-             style={{ position: 'absolute', left: 780, top: 380, width: 140 }}
+             style={{ position: 'absolute', left: 950, top: 480, width: 140 }}
            />
 
            <FlowchartBox
              title="Other Causes (Miscellaneous)"
-             style={{ position: 'absolute', left: 780, top: 440, width: 140 }}
+             style={{ position: 'absolute', left: 950, top: 560, width: 140 }}
            />
 
           {/* Clean vertical and horizontal lines with arrows */}
           
                      {/* From Chest Pain to Cardiac and Non-Cardiac */}
-           <VerticalLine x={600} startY={110} endY={150} />
-           <HorizontalLine y={150} startX={360} endX={840} />
-           <VerticalLine x={360} startY={150} endY={180} />
-           <VerticalLine x={840} startY={150} endY={180} />
-           <ArrowHead x={360} y={180} direction="down" />
-           <ArrowHead x={840} y={180} direction="down" />
+           <VerticalLine x={720} startY={130} endY={170} />
+           <HorizontalLine y={170} startX={460} endX={910} />
+           <VerticalLine x={460} startY={170} endY={200} />
+           <VerticalLine x={910} startY={170} endY={200} />
+           <ArrowHead x={460} y={200} direction="down" />
+           <ArrowHead x={910} y={200} direction="down" />
            
            {/* From Cardiac to Ischemic and Non-Ischemic */}
-           <VerticalLine x={360} startY={220} endY={250} />
-           <HorizontalLine y={250} startX={260} endX={490} />
-           <VerticalLine x={260} startY={250} endY={280} />
-           <VerticalLine x={490} startY={250} endY={280} />
-           <ArrowHead x={260} y={280} direction="down" />
-           <ArrowHead x={490} y={280} direction="down" />
+           <VerticalLine x={460} startY={250} endY={290} />
+           <HorizontalLine y={290} startX={340} endX={620} />
+           <VerticalLine x={340} startY={290} endY={320} />
+           <VerticalLine x={620} startY={290} endY={320} />
+           <ArrowHead x={340} y={320} direction="down" />
+           <ArrowHead x={620} y={320} direction="down" />
            
            {/* From Ischemic to its sub-branches */}
-           <VerticalLine x={260} startY={320} endY={350} />
-           <HorizontalLine y={350} startX={200} endX={380} />
-           <VerticalLine x={200} startY={350} endY={380} />
-           <VerticalLine x={380} startY={350} endY={380} />
-           <ArrowHead x={200} y={380} direction="down" />
-           <ArrowHead x={380} y={380} direction="down" />
+           <VerticalLine x={340} startY={370} endY={430} />
+           <HorizontalLine y={430} startX={230} endX={440} />
+           <VerticalLine x={230} startY={430} endY={460} />
+           <VerticalLine x={440} startY={430} endY={460} />
+           <ArrowHead x={230} y={460} direction="down" />
+           <ArrowHead x={440} y={460} direction="down" />
            
            {/* From Non-Ischemic to detailed box */}
-           <VerticalLine x={490} startY={320} endY={380} />
-           <ArrowHead x={490} y={380} direction="down" />
+           <VerticalLine x={620} startY={370} endY={460} />
+           <ArrowHead x={620} y={460} direction="down" />
            
            {/* From Acute Coronary Syndrome to reference */}
-           <VerticalLine x={200} startY={420} endY={520} />
-           <ArrowHead x={200} y={520} direction="down" />
+           <VerticalLine x={230} startY={510} endY={620} />
+           <ArrowHead x={230} y={620} direction="down" />
            
            {/* From Non-Ischemic detailed box to reference */}
-           <VerticalLine x={490} startY={500} endY={520} />
-           <ArrowHead x={490} y={520} direction="down" />
+           <VerticalLine x={620} startY={600} endY={630} />
+           <ArrowHead x={620} y={630} direction="down" />
            
            {/* From Non-Cardiac to reference - horizontal */}
-           <HorizontalLine y={190} startX={900} endX={920} />
-           <ArrowHead x={920} y={190} direction="right" />
+           <HorizontalLine y={225} startX={970} endX={1020} />
+           <ArrowHead x={1020} y={225} direction="right" />
            
            {/* From Non-Cardiac to all cause boxes - lines connect to center of boxes */}
-           <VerticalLine x={840} startY={210} endY={280} />
-           <HorizontalLine y={280} startX={840} endX={920} />
-           <ArrowHead x={920} y={280} direction="right" />
+           <VerticalLine x={910} startY={250} endY={320} />
+           <HorizontalLine y={320} startX={910} endX={1020} />
+           <ArrowHead x={1020} y={320} direction="right" />
            
-           <VerticalLine x={840} startY={210} endY={340} />
-           <HorizontalLine y={340} startX={840} endX={920} />
-           <ArrowHead x={920} y={340} direction="right" />
+           <VerticalLine x={910} startY={250} endY={400} />
+           <HorizontalLine y={400} startX={910} endX={1020} />
+           <ArrowHead x={1020} y={400} direction="right" />
            
-           <VerticalLine x={840} startY={210} endY={400} />
-           <HorizontalLine y={400} startX={840} endX={920} />
-           <ArrowHead x={920} y={400} direction="right" />
+           <VerticalLine x={910} startY={250} endY={480} />
+           <HorizontalLine y={480} startX={910} endX={1020} />
+           <ArrowHead x={1020} y={480} direction="right" />
            
-           <VerticalLine x={840} startY={210} endY={460} />
-           <HorizontalLine y={460} startX={840} endX={920} />
-           <ArrowHead x={920} y={460} direction="right" />
+           <VerticalLine x={910} startY={250} endY={560} />
+           <HorizontalLine y={560} startX={910} endX={1020} />
+           <ArrowHead x={1020} y={560} direction="right" />
 
                      {/* Large text box - now part of the moveable flowchart */}
            <div 
              className="text-box absolute bg-white border-2 border-gray-500 p-6 rounded-lg shadow-lg select-text cursor-text hover:bg-gray-50 transition-colors"
              style={{ 
                left: 50, 
-               top: 600, 
-               width: 1100, 
+               top: 720, 
+               width: 1500, 
                height: 'auto',
-               minHeight: 350,
+               minHeight: 400,
                overflow: 'visible',
                position: 'relative',
                zIndex: 20,
