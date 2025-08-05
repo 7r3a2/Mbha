@@ -585,17 +585,6 @@ const ChestPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullScreen =
           <div>• Use full screen for better view</div>
         </div>
       )}
-
-      {/* Desktop instruction overlay */}
-      {!isMobile && (
-        <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm p-3 rounded-lg shadow-lg text-xs text-gray-600">
-          <div className="font-semibold mb-1">Desktop Controls:</div>
-          <div>• Mouse wheel: Scroll to zoom in/out</div>
-          <div>• Click and drag: Pan around flowchart</div>
-          <div>• Click boxes to select and copy text</div>
-          <div>• Use full screen for better view</div>
-        </div>
-      )}
     </div>
   );
 };
