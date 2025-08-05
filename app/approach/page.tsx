@@ -245,8 +245,8 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
      setIsFullScreen(!isFullScreen);
    };
 
-   return (
-     <div className="h-full bg-gradient-to-br from-blue-50 to-indigo-100 overflow-hidden">
+       return (
+      <div className={`${isFullScreen ? 'fixed inset-0 z-50' : 'h-full'} bg-gradient-to-br from-blue-50 to-indigo-100 overflow-hidden`}>
                 {/* Header with full screen button */}
          <div className="bg-white/90 backdrop-blur-sm p-3 sm:p-4 shadow-sm flex items-center justify-between">
            <h1 className="text-lg sm:text-2xl font-bold text-blue-600">Chest Pain</h1>
@@ -274,7 +274,7 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
       </div>
 
                       {/* Main flowchart container */}
-        <div className={`relative ${isFullScreen ? 'fixed inset-0 z-50 bg-gradient-to-br from-blue-50 to-indigo-100' : 'w-full h-full'} overflow-hidden`}>
+        <div className="relative w-full h-full overflow-hidden">
           {/* Panning area - only around the flowchart content */}
           <div
             className="absolute inset-0 cursor-grab active:cursor-grabbing"
