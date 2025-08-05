@@ -158,15 +158,15 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
        const width = window.innerWidth;
        const height = window.innerHeight;
        setIsMobile(width < 1024);
-       // Responsive scaling based on available space
+       // Responsive scaling - fix only iPad, keep desktop original
        if (width < 640) {
-         setScale(0.4); // Small mobile - smaller scale
+         setScale(0.5); // Small mobile
        } else if (width < 768) {
-         setScale(0.5); // Large mobile
+         setScale(0.6); // Large mobile
        } else if (width < 1024) {
-         setScale(0.6); // Tablet - better for iPad
+         setScale(0.65); // iPad only - better fit
        } else {
-         setScale(0.8); // Desktop - fit better in frame
+         setScale(1); // Desktop - back to original
        }
      };
      
@@ -195,11 +195,11 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
     const newX = e.clientX - startPos.x;
     const newY = e.clientY - startPos.y;
     
-         // Responsive panning constraints based on device
+         // Responsive panning constraints - more range for mobile to see text box
      const maxX = isMobile ? 150 : 200; // Allow panning to the right
      const minX = isMobile ? -800 : -600; // More panning left on mobile to see content
-     const maxY = isMobile ? 50 : 0; // Allow some down panning on mobile
-     const minY = isMobile ? -600 : -400; // Much more up panning on mobile to see full flowchart
+     const maxY = isMobile ? 100 : 0; // Allow more down panning on mobile
+     const minY = isMobile ? -800 : -400; // Much more up panning to see large text box
     
     const constrainedX = Math.max(minX, Math.min(maxX, newX));
     const constrainedY = Math.max(minY, Math.min(maxY, newY));
@@ -211,13 +211,14 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
     setIsPanning(false);
   };
 
-     // Touch events for mobile - smooth like desktop
+     // Touch events for mobile - prevent page refresh on iPad
    const handleTouchStart = (e: React.TouchEvent) => {
      const target = e.target as HTMLElement;
      if (target.closest('.flowchart-box, .reference-box, .text-box')) {
        return;
      }
      
+     e.preventDefault(); // Prevent page refresh/bounce on iPad
      const touch = e.touches[0];
      setIsPanning(true);
      setStartPos({ x: touch.clientX - scrollPos.x, y: touch.clientY - scrollPos.y });
@@ -226,15 +227,16 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
      const handleTouchMove = (e: React.TouchEvent) => {
      if (!isPanning) return;
      
+     e.preventDefault(); // Prevent page refresh/bounce on iPad
      const touch = e.touches[0];
      const newX = touch.clientX - startPos.x;
      const newY = touch.clientY - startPos.y;
     
-         // Responsive panning constraints for touch
+         // Responsive panning constraints for touch - more range to see text box
      const maxX = isMobile ? 150 : 200; // Allow panning to the right
      const minX = isMobile ? -800 : -600; // More panning left on mobile to see content
-     const maxY = isMobile ? 50 : 0; // Allow some down panning on mobile
-     const minY = isMobile ? -600 : -400; // Much more up panning on mobile to see full flowchart
+     const maxY = isMobile ? 100 : 0; // Allow more down panning on mobile
+     const minY = isMobile ? -800 : -400; // Much more up panning to see large text box
     
     const constrainedX = Math.max(minX, Math.min(maxX, newX));
     const constrainedY = Math.max(minY, Math.min(maxY, newY));
@@ -293,10 +295,11 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
             onTouchEnd={handleTouchEnd}
             style={{ 
               cursor: isPanning ? 'grabbing' : 'grab',
-              touchAction: 'pan-x pan-y', // Allow native scrolling when needed
+              touchAction: 'none', // Prevent page refresh on iPad
               pointerEvents: 'auto',
               WebkitTouchCallout: 'none', // Prevent iOS touch callouts
-              WebkitUserSelect: 'none' // Prevent text selection
+              WebkitUserSelect: 'none', // Prevent text selection
+              WebkitOverflowScrolling: 'touch' // Smooth scrolling on iOS
             }}
           />
           
