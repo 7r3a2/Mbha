@@ -655,13 +655,13 @@ export default function ApproachPage() {
   const selectedContent = getSelectedContent();
 
      return (
-     <div className={`flex h-screen ${isIPadFullscreen ? 'fixed inset-0 z-40' : ''} bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100`}>
+     <div className={`flex h-screen ${isIPadFullscreen ? 'fixed inset-0 z-40' : ''} bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 min-h-screen`}>
       {/* Sidebar - Same design as dashboard */}
-      <div 
-        className={`bg-[#1E2A38] text-white flex flex-col transition-all duration-300 ${
-          isOpen ? 'w-64' : 'w-16'
-        }`}
-      >
+             <div 
+         className={`bg-[#1E2A38] text-white flex flex-col transition-all duration-300 ${
+           isOpen ? 'w-48 sm:w-56 md:w-64' : 'w-12 sm:w-14 md:w-16'
+         }`}
+       >
         {/* Logo */}
         <div className="h-16 flex items-center border-b border-gray-700">
           <div className={`flex items-center ${isOpen ? 'px-4' : 'justify-center w-full'}`}>
@@ -790,7 +790,7 @@ export default function ApproachPage() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
                  {/* Header */}
-         <header className="bg-[#3A8431] shadow-md h-16 flex items-center justify-between px-6">
+         <header className="bg-[#3A8431] shadow-md h-12 sm:h-14 md:h-16 flex items-center justify-between px-3 sm:px-4 md:px-6">
            <button 
              onClick={() => setIsOpen(!isOpen)}
              className="text-white hover:text-gray-200 transition-colors duration-300 p-2 rounded-lg hover:bg-white/10"
@@ -799,14 +799,14 @@ export default function ApproachPage() {
                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
              </svg>
            </button>
-           <h1 className="text-xl font-semibold text-white">Approach</h1>
+           <h1 className="text-lg sm:text-xl font-semibold text-white">Approach</h1>
            <div className="w-6"></div>
          </header>
 
                                    {/* Main Content */}
-                     <main className="flex-1 p-4 sm:p-6 overflow-hidden">
+                     <main className="flex-1 p-2 sm:p-4 md:p-6 overflow-hidden">
              {selectedContent && selectedContent.lecture ? (
-               <div className={`${selectedContent.lecture.id === 'card-5' && isFrameFullscreen ? 'fixed inset-0 z-50' : 'h-full'} bg-white/95 backdrop-blur-sm border-2 border-blue-300 rounded-xl overflow-hidden shadow-xl`}>
+               <div className={`${selectedContent.lecture.id === 'card-5' && isFrameFullscreen ? 'fixed inset-0 z-50' : 'h-full w-full'} bg-white/95 backdrop-blur-sm border-2 border-blue-300 rounded-xl overflow-hidden shadow-xl`}>
                 {selectedContent.lecture.id === 'card-5' ? (
                   // Render Chest Pain flowchart directly as component
                   <ChestPainFlowchart 
