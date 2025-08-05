@@ -155,56 +155,90 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
     const [isPanning, setIsPanning] = useState(false);
     const [lastTouchX, setLastTouchX] = useState(0);
     const [lastTouchY, setLastTouchY] = useState(0);
+    const [mouseStartPos, setMouseStartPos] = useState({ x: 0, y: 0 });
 
-           // Check if mobile/tablet on mount and resize
-    useEffect(() => {
-      const checkDevice = () => {
-        const width = window.innerWidth;
-        const height = window.innerHeight;
-        setIsMobile(width < 1024);
-        
-        // Bigger flowchart that fits the frame
-        const flowchartWidth = 1600;
-        const flowchartHeight = 1300;
-        
-        // Calculate scale to fit the frame properly
-        const scaleX = (width * 0.95) / flowchartWidth; // 95% of screen width
-        const scaleY = (height * 0.85) / flowchartHeight; // 85% of screen height
-        
-        // Use the smaller scale to ensure it fits completely
-        const autoScale = Math.min(scaleX, scaleY, 1); // Cap at 1.0
-        
-        setScale(autoScale);
-      };
-      
-      checkDevice();
-      window.addEventListener('resize', checkDevice);
-      return () => window.removeEventListener('resize', checkDevice);
-    }, []);
+                       // Check if mobile/tablet on mount and resize
+     useEffect(() => {
+       const checkDevice = () => {
+         const width = window.innerWidth;
+         const height = window.innerHeight;
+         setIsMobile(width < 1024);
+         
+         // Responsive flowchart that fits all devices
+         const flowchartWidth = 1600;
+         const flowchartHeight = 1300;
+         
+         // Calculate scale to fit the device properly
+         const scaleX = (width * 0.9) / flowchartWidth; // 90% of screen width
+         const scaleY = (height * 0.8) / flowchartHeight; // 80% of screen height
+         
+         // Use the smaller scale to ensure it fits completely
+         const autoScale = Math.min(scaleX, scaleY, 1); // Cap at 1.0
+         
+         setScale(autoScale);
+       };
+       
+       checkDevice();
+       window.addEventListener('resize', checkDevice);
+       return () => window.removeEventListener('resize', checkDevice);
+     }, []);
 
-           // Pinch-to-zoom and panning functionality for mobile
-    const handleTouchStart = (e: React.TouchEvent) => {
-      if (e.touches.length === 2) {
-        // Two finger touch - start zooming
-        e.preventDefault();
-        setIsZooming(true);
-        setIsPanning(false);
-        const distance = Math.hypot(
-          e.touches[0].clientX - e.touches[1].clientX,
-          e.touches[0].clientY - e.touches[1].clientY
-        );
-        setInitialDistance(distance);
-      } else if (e.touches.length === 1 && zoomScale > 1) {
-        // Single finger touch when zoomed - start panning
-        e.preventDefault();
-        setIsPanning(true);
-        setIsZooming(false);
-        setLastTouchX(e.touches[0].clientX);
-        setLastTouchY(e.touches[0].clientY);
-      }
-    };
+                       // Mouse and touch panning functionality
+     const handleMouseDown = (e: React.MouseEvent) => {
+       // Only start panning if clicking on empty space (not on boxes)
+       const target = e.target as HTMLElement;
+       if (target.closest('.flowchart-box, .reference-box, .text-box')) {
+         return;
+       }
+       
+       e.preventDefault();
+       setIsPanning(true);
+       setMouseStartPos({ x: e.clientX - panX, y: e.clientY - panY });
+     };
 
-        const handleTouchMove = (e: React.TouchEvent) => {
+     const handleMouseMove = (e: React.MouseEvent) => {
+       if (!isPanning) return;
+       e.preventDefault();
+       
+       const newX = e.clientX - mouseStartPos.x;
+       const newY = e.clientY - mouseStartPos.y;
+       
+       setPanX(newX);
+       setPanY(newY);
+     };
+
+     const handleMouseUp = () => {
+       setIsPanning(false);
+     };
+
+     // Touch panning functionality
+     const handleTouchStart = (e: React.TouchEvent) => {
+       if (e.touches.length === 2) {
+         // Two finger touch - start zooming
+         e.preventDefault();
+         setIsZooming(true);
+         setIsPanning(false);
+         const distance = Math.hypot(
+           e.touches[0].clientX - e.touches[1].clientX,
+           e.touches[0].clientY - e.touches[1].clientY
+         );
+         setInitialDistance(distance);
+       } else if (e.touches.length === 1) {
+         // Single finger touch - start panning
+         const target = e.target as HTMLElement;
+         if (target.closest('.flowchart-box, .reference-box, .text-box')) {
+           return;
+         }
+         
+         e.preventDefault();
+         setIsPanning(true);
+         setIsZooming(false);
+         setLastTouchX(e.touches[0].clientX);
+         setLastTouchY(e.touches[0].clientY);
+       }
+     };
+
+     const handleTouchMove = (e: React.TouchEvent) => {
        if (e.touches.length === 2 && isZooming) {
          // Two finger zoom
          e.preventDefault();
@@ -217,8 +251,8 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
          const newZoomScale = Math.max(0.3, Math.min(5, zoomScale * scaleFactor));
          setZoomScale(newZoomScale);
          setInitialDistance(distance);
-       } else if (e.touches.length === 1 && isPanning && zoomScale > 1) {
-         // Single finger pan when zoomed
+       } else if (e.touches.length === 1 && isPanning) {
+         // Single finger pan
          e.preventDefault();
          const touch = e.touches[0];
          const deltaX = touch.clientX - lastTouchX;
@@ -232,10 +266,10 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
        }
      };
 
-    const handleTouchEnd = () => {
-      setIsZooming(false);
-      setIsPanning(false);
-    };
+     const handleTouchEnd = () => {
+       setIsZooming(false);
+       setIsPanning(false);
+     };
 
      // Full screen toggle - only for the flowchart frame
    const toggleFullScreen = () => {
@@ -270,39 +304,40 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
          </button>
        </div>
 
-                                                                                             {/* Main flowchart container - direct touch area */}
-           <div className="relative w-full h-full overflow-hidden flex items-center justify-center p-4">
-             {/* Touch area for pinch-to-zoom and panning */}
-             <div
-               className="relative w-full h-full max-w-6xl max-h-[80vh] bg-white/80 rounded-lg border-2 border-blue-200 shadow-lg overflow-hidden"
-               onTouchStart={handleTouchStart}
-               onTouchMove={handleTouchMove}
-               onTouchEnd={handleTouchEnd}
-               style={{ 
-                 touchAction: 'none', // Prevent page refresh on iPad
-                 pointerEvents: 'auto',
-                 WebkitTouchCallout: 'none', // Prevent iOS touch callouts
-                 WebkitUserSelect: 'none' // Prevent text selection
-               }}
-             >
-            
-                                                                                          {/* Flowchart content - with panning when zoomed */}
-               <div
-                 className="relative w-full h-full flex items-center justify-center"
-                 style={{
-                   transform: `scale(${scale * zoomScale}) translate(${panX}px, ${panY}px)`,
-                   width: '1600px',
-                   height: '1300px',
-                   pointerEvents: 'auto', // Enable interaction with boxes
-                   transformOrigin: 'center',
-                   maxWidth: '100%',
-                   maxHeight: '100%',
-                   transition: isZooming ? 'none' : 'transform 0.15s ease-out',
-                   willChange: 'transform', // Optimize for animations
-                   backfaceVisibility: 'hidden', // Reduce blur on touch
-                   WebkitBackfaceVisibility: 'hidden' // Safari support
-                 }}
-               >
+                                                                                                                                                                                           {/* Main flowchart container - no nested frame */}
+            <div 
+              className="relative w-full h-full overflow-hidden flex items-center justify-center"
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+              style={{ 
+                cursor: isPanning ? 'grabbing' : 'grab',
+                touchAction: 'none', // Prevent page refresh on iPad
+                pointerEvents: 'auto',
+                WebkitTouchCallout: 'none', // Prevent iOS touch callouts
+                WebkitUserSelect: 'none' // Prevent text selection
+              }}
+            >
+             
+                                                                                           {/* Flowchart content - centered and responsive */}
+                <div
+                  className="relative"
+                  style={{
+                    transform: `scale(${scale * zoomScale}) translate(${panX}px, ${panY}px)`,
+                    width: '1600px',
+                    height: '1300px',
+                    pointerEvents: 'auto', // Enable interaction with boxes
+                    transformOrigin: 'center',
+                    transition: isZooming ? 'none' : 'transform 0.15s ease-out',
+                    willChange: 'transform', // Optimize for animations
+                    backfaceVisibility: 'hidden', // Reduce blur on touch
+                    WebkitBackfaceVisibility: 'hidden' // Safari support
+                  }}
+                >
                      {/* Chest Pain - Main box */}
            <FlowchartBox
              title="Chest Pain"
@@ -510,22 +545,21 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
               </p>
             </div>
           </div>
-                                   </div>
+                                                                       </div>
              </div>
-          
-                                         {/* Mobile-friendly instruction overlay */}
-            {isMobile && (
-              <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm p-3 rounded-lg shadow-lg text-xs text-gray-600">
-                <div className="font-semibold mb-1">Touch Controls:</div>
-                <div>• Two fingers: Pinch to zoom in/out</div>
-                <div>• One finger: Drag to pan when zoomed</div>
-                <div>• Tap boxes to select and copy text</div>
-                <div>• Use full screen for better view</div>
-              </div>
-            )}
-        </div>
-
-              
+           
+                                          {/* Mobile-friendly instruction overlay */}
+             {isMobile && (
+               <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm p-3 rounded-lg shadow-lg text-xs text-gray-600">
+                 <div className="font-semibold mb-1">Touch Controls:</div>
+                 <div>• Two fingers: Pinch to zoom in/out</div>
+                 <div>• One finger: Drag to pan around flowchart</div>
+                 <div>• Tap boxes to select and copy text</div>
+                 <div>• Use full screen for better view</div>
+               </div>
+             )}
+         </div>
+       </div>
      </div>
    );
 };
