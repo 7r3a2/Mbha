@@ -203,12 +203,39 @@ const ChestPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullScreen =
     const newX = e.clientX - mouseStartPos.x;
     const newY = e.clientY - mouseStartPos.y;
     
-    setPanX(newX);
-    setPanY(newY);
+    // Add sliding borders - not free sliding
+    const scaledWidth = 1600 * scale * zoomScale;
+    const scaledHeight = 1300 * scale * zoomScale;
+    const containerWidth = window.innerWidth;
+    const containerHeight = window.innerHeight;
+    
+    // Calculate border limits
+    const maxX = 100; // Can slide right a bit
+    const minX = -(scaledWidth - containerWidth + 100); // Can slide left to see content
+    const maxY = 50; // Can slide down a bit
+    const minY = -(scaledHeight - containerHeight + 100); // Can slide up to see content
+    
+    const constrainedX = Math.max(minX, Math.min(maxX, newX));
+    const constrainedY = Math.max(minY, Math.min(maxY, newY));
+    
+    setPanX(constrainedX);
+    setPanY(constrainedY);
   };
 
   const handleMouseUp = () => {
     setIsPanning(false);
+  };
+
+  // Scroll to zoom functionality for desktop
+  const handleWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+    
+    // Only zoom if not panning and not on mobile
+    if (!isPanning && !isMobile) {
+      const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1; // Zoom out on scroll down, zoom in on scroll up
+      const newZoomScale = Math.max(0.3, Math.min(5, zoomScale * zoomFactor));
+      setZoomScale(newZoomScale);
+    }
   };
 
   // Touch panning functionality
@@ -252,14 +279,32 @@ const ChestPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullScreen =
       setZoomScale(newZoomScale);
       setInitialDistance(distance);
     } else if (e.touches.length === 1 && isPanning) {
-      // Single finger pan
+      // Single finger pan with borders
       e.preventDefault();
       const touch = e.touches[0];
       const deltaX = touch.clientX - lastTouchX;
       const deltaY = touch.clientY - lastTouchY;
       
-      setPanX(prev => prev + deltaX);
-      setPanY(prev => prev + deltaY);
+      const newX = panX + deltaX;
+      const newY = panY + deltaY;
+      
+      // Add sliding borders for touch too
+      const scaledWidth = 1600 * scale * zoomScale;
+      const scaledHeight = 1300 * scale * zoomScale;
+      const containerWidth = window.innerWidth;
+      const containerHeight = window.innerHeight;
+      
+      // Calculate border limits
+      const maxX = 100;
+      const minX = -(scaledWidth - containerWidth + 100);
+      const maxY = 50;
+      const minY = -(scaledHeight - containerHeight + 100);
+      
+      const constrainedX = Math.max(minX, Math.min(maxX, newX));
+      const constrainedY = Math.max(minY, Math.min(maxY, newY));
+      
+      setPanX(constrainedX);
+      setPanY(constrainedY);
       
       setLastTouchX(touch.clientX);
       setLastTouchY(touch.clientY);
@@ -311,6 +356,7 @@ const ChestPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullScreen =
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
+        onWheel={handleWheel}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -555,6 +601,17 @@ const ChestPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullScreen =
           <div>• Two fingers: Pinch to zoom in/out</div>
           <div>• One finger: Drag to pan around flowchart</div>
           <div>• Tap boxes to select and copy text</div>
+          <div>• Use full screen for better view</div>
+        </div>
+      )}
+
+      {/* Desktop instruction overlay */}
+      {!isMobile && (
+        <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm p-3 rounded-lg shadow-lg text-xs text-gray-600">
+          <div className="font-semibold mb-1">Desktop Controls:</div>
+          <div>• Mouse wheel: Scroll to zoom in/out</div>
+          <div>• Click and drag: Pan around flowchart</div>
+          <div>• Click boxes to select and copy text</div>
           <div>• Use full screen for better view</div>
         </div>
       )}
