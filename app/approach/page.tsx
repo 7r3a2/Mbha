@@ -26,6 +26,7 @@ export default function ApproachPage() {
             { id: 'card-2', name: 'Coronary Artery Disease', content: 'CAD content coming soon...' },
             { id: 'card-3', name: 'Arrhythmias', content: 'Arrhythmias content coming soon...' },
             { id: 'card-4', name: 'Hypertension', content: 'Hypertension content coming soon...' },
+            { id: 'card-5', name: 'Chest Pain', content: 'Chest pain evaluation flowchart and approach...' },
           ]
         },
         {
@@ -282,19 +283,47 @@ export default function ApproachPage() {
 
                  {/* Main Content */}
          <main className="flex-1 p-6 overflow-hidden">
-           <div className="h-full bg-white border-2 border-green-500 rounded-lg flex items-center justify-center">
-             <div className="text-center">
-               <div className="w-40 h-40 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-8">
-                 <svg className="w-20 h-20 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                 </svg>
-               </div>
-               <h1 className="text-5xl font-bold text-gray-900 mb-6">Coming Soon</h1>
-               <p className="text-2xl text-gray-600 max-w-lg mx-auto">
-                 The Approach content will be available soon.
-               </p>
+           {selectedContent && selectedContent.lecture ? (
+             <div className="h-full bg-white border-2 border-green-500 rounded-lg overflow-hidden">
+               {selectedContent.lecture.id === 'card-5' ? (
+                 // Render Chest Pain flowchart
+                 <iframe 
+                   src="/approach/cardiology/chest-pain" 
+                   className="w-full h-full border-0"
+                   title="Chest Pain Flowchart"
+                 />
+               ) : (
+                 // Default content for other lectures
+                 <div className="h-full flex items-center justify-center">
+                   <div className="text-center">
+                     <div className="w-40 h-40 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-8">
+                       <svg className="w-20 h-20 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                       </svg>
+                     </div>
+                     <h1 className="text-5xl font-bold text-gray-900 mb-6">Coming Soon</h1>
+                     <p className="text-2xl text-gray-600 max-w-lg mx-auto">
+                       {selectedContent.lecture.name} content will be available soon.
+                     </p>
+                   </div>
+                 </div>
+               )}
              </div>
-           </div>
+           ) : (
+             <div className="h-full bg-white border-2 border-green-500 rounded-lg flex items-center justify-center">
+               <div className="text-center">
+                 <div className="w-40 h-40 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-8">
+                   <svg className="w-20 h-20 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                   </svg>
+                 </div>
+                 <h1 className="text-5xl font-bold text-gray-900 mb-6">Coming Soon</h1>
+                 <p className="text-2xl text-gray-600 max-w-lg mx-auto">
+                   The Approach content will be available soon.
+                 </p>
+               </div>
+             </div>
+           )}
          </main>
       </div>
     </div>
