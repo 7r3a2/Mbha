@@ -1,0 +1,37 @@
+[
+  {
+    "code": "MBHA2024-001",
+    "used": false,
+    "createdAt": "2024-01-01T00:00:00.000Z",
+    "usedBy": null,
+    "usedAt": null
+  },
+  {
+    "code": "MBHA2024-002", 
+    "used": false,
+    "createdAt": "2024-01-01T00:00:00.000Z",
+    "usedBy": null,
+    "usedAt": null
+  },
+  {
+    "code": "MBHA2024-003",
+    "used": false,
+    "createdAt": "2024-01-01T00:00:00.000Z",
+    "usedBy": null,
+    "usedAt": null
+  },
+  {
+    "code": "MBHA2024-004",
+    "used": false,
+    "createdAt": "2024-01-01T00:00:00.000Z",
+    "usedBy": null,
+    "usedAt": null
+  },
+  {
+    "code": "MBHA2024-005",
+    "used": false,
+    "createdAt": "2024-01-01T00:00:00.000Z",
+    "usedBy": null,
+    "usedAt": null
+  }
+] 

@@ -1,0 +1,32 @@
+[
+  {
+    "question": "What is the normal duration of pregnancy?",
+    "options": [
+      "38 weeks",
+      "40 weeks", 
+      "42 weeks",
+      "36 weeks"
+    ],
+    "correct_option": 2
+  },
+  {
+    "question": "Which hormone is primarily responsible for maintaining pregnancy?",
+    "options": [
+      "Estrogen",
+      "Progesterone",
+      "LH",
+      "FSH"
+    ],
+    "correct_option": 2
+  },
+  {
+    "question": "What is the most common cause of postpartum hemorrhage?",
+    "options": [
+      "Uterine atony",
+      "Cervical laceration",
+      "Retained placenta",
+      "Coagulopathy"
+    ],
+    "correct_option": 1
+  }
+]
