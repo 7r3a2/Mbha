@@ -1,6 +1,6 @@
 'use client';
 
- import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { useRouter } from 'next/navigation';
@@ -143,254 +143,254 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
   );
 };
 
-   // Chest Pain Flowchart Component
-  const ChestPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullScreen = () => {} }) => {
-    const [isMobile, setIsMobile] = useState(false);
-    const [scale, setScale] = useState(1);
-    const [zoomScale, setZoomScale] = useState(1);
-    const [isZooming, setIsZooming] = useState(false);
-    const [initialDistance, setInitialDistance] = useState(0);
-    const [panX, setPanX] = useState(0);
-    const [panY, setPanY] = useState(0);
-    const [isPanning, setIsPanning] = useState(false);
-    const [lastTouchX, setLastTouchX] = useState(0);
-    const [lastTouchY, setLastTouchY] = useState(0);
-    const [mouseStartPos, setMouseStartPos] = useState({ x: 0, y: 0 });
+// Chest Pain Flowchart Component
+const ChestPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullScreen = () => {} }) => {
+  const [isMobile, setIsMobile] = useState(false);
+  const [scale, setScale] = useState(1);
+  const [zoomScale, setZoomScale] = useState(1);
+  const [isZooming, setIsZooming] = useState(false);
+  const [initialDistance, setInitialDistance] = useState(0);
+  const [panX, setPanX] = useState(0);
+  const [panY, setPanY] = useState(0);
+  const [isPanning, setIsPanning] = useState(false);
+  const [lastTouchX, setLastTouchX] = useState(0);
+  const [lastTouchY, setLastTouchY] = useState(0);
+  const [mouseStartPos, setMouseStartPos] = useState({ x: 0, y: 0 });
 
-                       // Check if mobile/tablet on mount and resize
-     useEffect(() => {
-       const checkDevice = () => {
-         const width = window.innerWidth;
-         const height = window.innerHeight;
-         setIsMobile(width < 1024);
-         
-         // Responsive flowchart that fits all devices
-         const flowchartWidth = 1600;
-         const flowchartHeight = 1300;
-         
-         // Calculate scale to fit the device properly
-         const scaleX = (width * 0.9) / flowchartWidth; // 90% of screen width
-         const scaleY = (height * 0.8) / flowchartHeight; // 80% of screen height
-         
-         // Use the smaller scale to ensure it fits completely
-         const autoScale = Math.min(scaleX, scaleY, 1); // Cap at 1.0
-         
-         setScale(autoScale);
-       };
-       
-       checkDevice();
-       window.addEventListener('resize', checkDevice);
-       return () => window.removeEventListener('resize', checkDevice);
-     }, []);
+  // Check if mobile/tablet on mount and resize
+  useEffect(() => {
+    const checkDevice = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      setIsMobile(width < 1024);
+      
+      // Responsive flowchart that fits all devices
+      const flowchartWidth = 1600;
+      const flowchartHeight = 1300;
+      
+      // Calculate scale to fit the device properly
+      const scaleX = (width * 0.9) / flowchartWidth; // 90% of screen width
+      const scaleY = (height * 0.8) / flowchartHeight; // 80% of screen height
+      
+      // Use the smaller scale to ensure it fits completely
+      const autoScale = Math.min(scaleX, scaleY, 1); // Cap at 1.0
+      
+      setScale(autoScale);
+    };
+    
+    checkDevice();
+    window.addEventListener('resize', checkDevice);
+    return () => window.removeEventListener('resize', checkDevice);
+  }, []);
 
-                       // Mouse and touch panning functionality
-     const handleMouseDown = (e: React.MouseEvent) => {
-       // Only start panning if clicking on empty space (not on boxes)
-       const target = e.target as HTMLElement;
-       if (target.closest('.flowchart-box, .reference-box, .text-box')) {
-         return;
-       }
-       
-       e.preventDefault();
-       setIsPanning(true);
-       setMouseStartPos({ x: e.clientX - panX, y: e.clientY - panY });
-     };
+  // Mouse and touch panning functionality
+  const handleMouseDown = (e: React.MouseEvent) => {
+    // Only start panning if clicking on empty space (not on boxes)
+    const target = e.target as HTMLElement;
+    if (target.closest('.flowchart-box, .reference-box, .text-box')) {
+      return;
+    }
+    
+    e.preventDefault();
+    setIsPanning(true);
+    setMouseStartPos({ x: e.clientX - panX, y: e.clientY - panY });
+  };
 
-     const handleMouseMove = (e: React.MouseEvent) => {
-       if (!isPanning) return;
-       e.preventDefault();
-       
-       const newX = e.clientX - mouseStartPos.x;
-       const newY = e.clientY - mouseStartPos.y;
-       
-       setPanX(newX);
-       setPanY(newY);
-     };
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isPanning) return;
+    e.preventDefault();
+    
+    const newX = e.clientX - mouseStartPos.x;
+    const newY = e.clientY - mouseStartPos.y;
+    
+    setPanX(newX);
+    setPanY(newY);
+  };
 
-     const handleMouseUp = () => {
-       setIsPanning(false);
-     };
+  const handleMouseUp = () => {
+    setIsPanning(false);
+  };
 
-     // Touch panning functionality
-     const handleTouchStart = (e: React.TouchEvent) => {
-       if (e.touches.length === 2) {
-         // Two finger touch - start zooming
-         e.preventDefault();
-         setIsZooming(true);
-         setIsPanning(false);
-         const distance = Math.hypot(
-           e.touches[0].clientX - e.touches[1].clientX,
-           e.touches[0].clientY - e.touches[1].clientY
-         );
-         setInitialDistance(distance);
-       } else if (e.touches.length === 1) {
-         // Single finger touch - start panning
-         const target = e.target as HTMLElement;
-         if (target.closest('.flowchart-box, .reference-box, .text-box')) {
-           return;
-         }
-         
-         e.preventDefault();
-         setIsPanning(true);
-         setIsZooming(false);
-         setLastTouchX(e.touches[0].clientX);
-         setLastTouchY(e.touches[0].clientY);
-       }
-     };
+  // Touch panning functionality
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 2) {
+      // Two finger touch - start zooming
+      e.preventDefault();
+      setIsZooming(true);
+      setIsPanning(false);
+      const distance = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      setInitialDistance(distance);
+    } else if (e.touches.length === 1) {
+      // Single finger touch - start panning
+      const target = e.target as HTMLElement;
+      if (target.closest('.flowchart-box, .reference-box, .text-box')) {
+        return;
+      }
+      
+      e.preventDefault();
+      setIsPanning(true);
+      setIsZooming(false);
+      setLastTouchX(e.touches[0].clientX);
+      setLastTouchY(e.touches[0].clientY);
+    }
+  };
 
-     const handleTouchMove = (e: React.TouchEvent) => {
-       if (e.touches.length === 2 && isZooming) {
-         // Two finger zoom
-         e.preventDefault();
-         const distance = Math.hypot(
-           e.touches[0].clientX - e.touches[1].clientX,
-           e.touches[0].clientY - e.touches[1].clientY
-         );
-         
-         const scaleFactor = distance / initialDistance;
-         const newZoomScale = Math.max(0.3, Math.min(5, zoomScale * scaleFactor));
-         setZoomScale(newZoomScale);
-         setInitialDistance(distance);
-       } else if (e.touches.length === 1 && isPanning) {
-         // Single finger pan
-         e.preventDefault();
-         const touch = e.touches[0];
-         const deltaX = touch.clientX - lastTouchX;
-         const deltaY = touch.clientY - lastTouchY;
-         
-         setPanX(prev => prev + deltaX);
-         setPanY(prev => prev + deltaY);
-         
-         setLastTouchX(touch.clientX);
-         setLastTouchY(touch.clientY);
-       }
-     };
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length === 2 && isZooming) {
+      // Two finger zoom
+      e.preventDefault();
+      const distance = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      
+      const scaleFactor = distance / initialDistance;
+      const newZoomScale = Math.max(0.3, Math.min(5, zoomScale * scaleFactor));
+      setZoomScale(newZoomScale);
+      setInitialDistance(distance);
+    } else if (e.touches.length === 1 && isPanning) {
+      // Single finger pan
+      e.preventDefault();
+      const touch = e.touches[0];
+      const deltaX = touch.clientX - lastTouchX;
+      const deltaY = touch.clientY - lastTouchY;
+      
+      setPanX(prev => prev + deltaX);
+      setPanY(prev => prev + deltaY);
+      
+      setLastTouchX(touch.clientX);
+      setLastTouchY(touch.clientY);
+    }
+  };
 
-     const handleTouchEnd = () => {
-       setIsZooming(false);
-       setIsPanning(false);
-     };
+  const handleTouchEnd = () => {
+    setIsZooming(false);
+    setIsPanning(false);
+  };
 
-     // Full screen toggle - only for the flowchart frame
-   const toggleFullScreen = () => {
-     onToggleFrameFullScreen();
-   };
+  // Full screen toggle - only for the flowchart frame
+  const toggleFullScreen = () => {
+    onToggleFrameFullScreen();
+  };
 
-               return (
-       <div className="h-full bg-gradient-to-br from-blue-50 to-indigo-100 overflow-hidden">
-                 {/* Header with full screen button */}
-          <div className="bg-white/90 backdrop-blur-sm p-3 sm:p-4 shadow-sm flex items-center justify-between">
-            <h1 className="text-lg sm:text-2xl font-bold text-blue-600">Chest Pain</h1>
-            <button
-              onClick={toggleFullScreen}
-              className="px-3 py-2 sm:px-4 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2 text-sm sm:text-base"
-              title={frameFullScreen ? "Exit Full Screen" : "Full Screen"}
-            >
-           {frameFullScreen ? (
-             <>
-               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-               </svg>
-                                                            <span>Exit Full Screen</span>
-               </>
-             ) : (
-               <>
-                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-                 </svg>
-                 <span>Full Screen</span>
-               </>
-             )}
-         </button>
-       </div>
+  return (
+    <div className="h-full bg-gradient-to-br from-blue-50 to-indigo-100 overflow-hidden">
+      {/* Header with full screen button */}
+      <div className="bg-white/90 backdrop-blur-sm p-3 sm:p-4 shadow-sm flex items-center justify-between">
+        <h1 className="text-lg sm:text-2xl font-bold text-blue-600">Chest Pain</h1>
+        <button
+          onClick={toggleFullScreen}
+          className="px-3 py-2 sm:px-4 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2 text-sm sm:text-base"
+          title={frameFullScreen ? "Exit Full Screen" : "Full Screen"}
+        >
+          {frameFullScreen ? (
+            <>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              <span>Exit Full Screen</span>
+            </>
+          ) : (
+            <>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+              </svg>
+              <span>Full Screen</span>
+            </>
+          )}
+        </button>
+      </div>
 
-                                                                                                                                                                                           {/* Main flowchart container - no nested frame */}
-            <div 
-              className="relative w-full h-full overflow-hidden flex items-center justify-center"
-              onMouseDown={handleMouseDown}
-              onMouseMove={handleMouseMove}
-              onMouseUp={handleMouseUp}
-              onMouseLeave={handleMouseUp}
-              onTouchStart={handleTouchStart}
-              onTouchMove={handleTouchMove}
-              onTouchEnd={handleTouchEnd}
-              style={{ 
-                cursor: isPanning ? 'grabbing' : 'grab',
-                touchAction: 'none', // Prevent page refresh on iPad
-                pointerEvents: 'auto',
-                WebkitTouchCallout: 'none', // Prevent iOS touch callouts
-                WebkitUserSelect: 'none' // Prevent text selection
-              }}
-            >
-             
-                                                                                           {/* Flowchart content - centered and responsive */}
-                <div
-                  className="relative"
-                  style={{
-                    transform: `scale(${scale * zoomScale}) translate(${panX}px, ${panY}px)`,
-                    width: '1600px',
-                    height: '1300px',
-                    pointerEvents: 'auto', // Enable interaction with boxes
-                    transformOrigin: 'center',
-                    transition: isZooming ? 'none' : 'transform 0.15s ease-out',
-                    willChange: 'transform', // Optimize for animations
-                    backfaceVisibility: 'hidden', // Reduce blur on touch
-                    WebkitBackfaceVisibility: 'hidden' // Safari support
-                  }}
-                >
-                     {/* Chest Pain - Main box */}
-           <FlowchartBox
-             title="Chest Pain"
-             style={{ position: 'absolute', left: 650, top: 80, width: 140 }}
-           />
+      {/* Main flowchart container - no nested frame */}
+      <div 
+        className="relative w-full h-full overflow-hidden flex items-center justify-center"
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        style={{ 
+          cursor: isPanning ? 'grabbing' : 'grab',
+          touchAction: 'none', // Prevent page refresh on iPad
+          pointerEvents: 'auto',
+          WebkitTouchCallout: 'none', // Prevent iOS touch callouts
+          WebkitUserSelect: 'none' // Prevent text selection
+        }}
+      >
+        
+        {/* Flowchart content - centered and responsive */}
+        <div
+          className="relative"
+          style={{
+            transform: `scale(${scale * zoomScale}) translate(${panX}px, ${panY}px)`,
+            width: '1600px',
+            height: '1300px',
+            pointerEvents: 'auto', // Enable interaction with boxes
+            transformOrigin: 'center',
+            transition: isZooming ? 'none' : 'transform 0.15s ease-out',
+            willChange: 'transform', // Optimize for animations
+            backfaceVisibility: 'hidden', // Reduce blur on touch
+            WebkitBackfaceVisibility: 'hidden' // Safari support
+          }}
+        >
+          {/* Chest Pain - Main box */}
+          <FlowchartBox
+            title="Chest Pain"
+            style={{ position: 'absolute', left: 650, top: 80, width: 140 }}
+          />
 
-           {/* Cardiac */}
-           <FlowchartBox
-             title="Cardiac"
-             style={{ position: 'absolute', left: 400, top: 200, width: 120 }}
-           />
+          {/* Cardiac */}
+          <FlowchartBox
+            title="Cardiac"
+            style={{ position: 'absolute', left: 400, top: 200, width: 120 }}
+          />
 
-           {/* Non-Cardiac */}
-           <FlowchartBox
-             title="Non-Cardiac"
-             style={{ position: 'absolute', left: 850, top: 200, width: 120 }}
-           />
+          {/* Non-Cardiac */}
+          <FlowchartBox
+            title="Non-Cardiac"
+            style={{ position: 'absolute', left: 850, top: 200, width: 120 }}
+          />
 
-           {/* See pp. 9-11 */}
-           <ReferenceBox
-             text="See Non-Ischemic Chest Pain (Pulmonary) approach"
-             style={{ position: 'absolute', left: 1020, top: 200, width: 200 }}
-           />
+          {/* See pp. 9-11 */}
+          <ReferenceBox
+            text="See Non-Ischemic Chest Pain (Pulmonary) approach"
+            style={{ position: 'absolute', left: 1020, top: 200, width: 200 }}
+          />
 
-                     {/* Ischemic */}
-           <FlowchartBox
-             title="Ischemic"
-             style={{ position: 'absolute', left: 280, top: 320, width: 120 }}
-           />
+          {/* Ischemic */}
+          <FlowchartBox
+            title="Ischemic"
+            style={{ position: 'absolute', left: 280, top: 320, width: 120 }}
+          />
 
-           {/* Non-Ischemic */}
-           <FlowchartBox
-             title="Non-Ischemic"
-             style={{ position: 'absolute', left: 550, top: 320, width: 140 }}
-           />
+          {/* Non-Ischemic */}
+          <FlowchartBox
+            title="Non-Ischemic"
+            style={{ position: 'absolute', left: 550, top: 320, width: 140 }}
+          />
 
-           {/* Acute Coronary Syndrome */}
-           <FlowchartBox
-             title="Acute Coronary Syndrome"
-             style={{ position: 'absolute', left: 150, top: 460, width: 160 }}
-           />
+          {/* Acute Coronary Syndrome */}
+          <FlowchartBox
+            title="Acute Coronary Syndrome"
+            style={{ position: 'absolute', left: 150, top: 460, width: 160 }}
+          />
 
-           {/* Stable/Chronic Angina */}
-           <FlowchartBox
-             title="Stable/Chronic Angina"
-             style={{ position: 'absolute', left: 360, top: 460, width: 160 }}
-           />
+          {/* Stable/Chronic Angina */}
+          <FlowchartBox
+            title="Stable/Chronic Angina"
+            style={{ position: 'absolute', left: 360, top: 460, width: 160 }}
+          />
 
-           {/* Non-Ischemic detailed box */}
-           <FlowchartBox
-             title=""
-             style={{ position: 'absolute', left: 540, top: 460, width: 180, height: 140 }}
-           >
+          {/* Non-Ischemic detailed box */}
+          <FlowchartBox
+            title=""
+            style={{ position: 'absolute', left: 540, top: 460, width: 180, height: 140 }}
+          >
             <div className="text-left text-xs leading-relaxed">
               • Pericarditis<br/>
               • Myocarditis<br/>
@@ -402,112 +402,112 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
             </div>
           </FlowchartBox>
 
-                     {/* Reference boxes */}
-           <ReferenceBox
-             text="See Ischemic Chest Pain approach"
-             style={{ position: 'absolute', left: 160, top: 630, width: 200 }}
-           />
+          {/* Reference boxes */}
+          <ReferenceBox
+            text="See Ischemic Chest Pain approach"
+            style={{ position: 'absolute', left: 160, top: 630, width: 200 }}
+          />
 
-           <ReferenceBox
-             text="See Non-Ischemic Chest Pain (Cardiac) approach"
-             style={{ position: 'absolute', left: 480, top: 630, width: 240 }}
-           />
+          <ReferenceBox
+            text="See Non-Ischemic Chest Pain (Cardiac) approach"
+            style={{ position: 'absolute', left: 480, top: 630, width: 240 }}
+          />
 
-           {/* Non-Cardiac causes - properly spaced */}
-           <FlowchartBox
-             title="Pulmonary Causes"
-             style={{ position: 'absolute', left: 950, top: 320, width: 140 }}
-           />
+          {/* Non-Cardiac causes - properly spaced */}
+          <FlowchartBox
+            title="Pulmonary Causes"
+            style={{ position: 'absolute', left: 950, top: 320, width: 140 }}
+          />
 
-           <FlowchartBox
-             title="Gastrointestinal Causes"
-             style={{ position: 'absolute', left: 950, top: 400, width: 140 }}
-           />
+          <FlowchartBox
+            title="Gastrointestinal Causes"
+            style={{ position: 'absolute', left: 950, top: 400, width: 140 }}
+          />
 
-           <FlowchartBox
-             title="Musculoskeletal Causes"
-             style={{ position: 'absolute', left: 950, top: 480, width: 140 }}
-           />
+          <FlowchartBox
+            title="Musculoskeletal Causes"
+            style={{ position: 'absolute', left: 950, top: 480, width: 140 }}
+          />
 
-           <FlowchartBox
-             title="Other Causes (Miscellaneous)"
-             style={{ position: 'absolute', left: 950, top: 560, width: 140 }}
-           />
+          <FlowchartBox
+            title="Other Causes (Miscellaneous)"
+            style={{ position: 'absolute', left: 950, top: 560, width: 140 }}
+          />
 
           {/* Clean vertical and horizontal lines with arrows */}
           
-                     {/* From Chest Pain to Cardiac and Non-Cardiac */}
-           <VerticalLine x={720} startY={130} endY={170} />
-           <HorizontalLine y={170} startX={460} endX={910} />
-           <VerticalLine x={460} startY={170} endY={200} />
-           <VerticalLine x={910} startY={170} endY={200} />
-           <ArrowHead x={460} y={200} direction="down" />
-           <ArrowHead x={910} y={200} direction="down" />
-           
-           {/* From Cardiac to Ischemic and Non-Ischemic */}
-           <VerticalLine x={460} startY={250} endY={290} />
-           <HorizontalLine y={290} startX={340} endX={620} />
-           <VerticalLine x={340} startY={290} endY={320} />
-           <VerticalLine x={620} startY={290} endY={320} />
-           <ArrowHead x={340} y={320} direction="down" />
-           <ArrowHead x={620} y={320} direction="down" />
-           
-           {/* From Ischemic to its sub-branches */}
-           <VerticalLine x={340} startY={370} endY={430} />
-           <HorizontalLine y={430} startX={230} endX={440} />
-           <VerticalLine x={230} startY={430} endY={460} />
-           <VerticalLine x={440} startY={430} endY={460} />
-           <ArrowHead x={230} y={460} direction="down" />
-           <ArrowHead x={440} y={460} direction="down" />
-           
-           {/* From Non-Ischemic to detailed box */}
-           <VerticalLine x={620} startY={370} endY={460} />
-           <ArrowHead x={620} y={460} direction="down" />
-           
-           {/* From Acute Coronary Syndrome to reference */}
-           <VerticalLine x={230} startY={510} endY={620} />
-           <ArrowHead x={230} y={620} direction="down" />
-           
-           {/* From Non-Ischemic detailed box to reference */}
-           <VerticalLine x={620} startY={600} endY={630} />
-           <ArrowHead x={620} y={630} direction="down" />
-           
-           {/* From Non-Cardiac to reference - horizontal */}
-           <HorizontalLine y={225} startX={970} endX={1020} />
-           <ArrowHead x={1020} y={225} direction="right" />
-           
-           {/* From Non-Cardiac to all cause boxes - lines connect to center of boxes */}
-           <VerticalLine x={910} startY={250} endY={320} />
-           <HorizontalLine y={320} startX={910} endX={1020} />
-           <ArrowHead x={1020} y={320} direction="right" />
-           
-           <VerticalLine x={910} startY={250} endY={400} />
-           <HorizontalLine y={400} startX={910} endX={1020} />
-           <ArrowHead x={1020} y={400} direction="right" />
-           
-           <VerticalLine x={910} startY={250} endY={480} />
-           <HorizontalLine y={480} startX={910} endX={1020} />
-           <ArrowHead x={1020} y={480} direction="right" />
-           
-           <VerticalLine x={910} startY={250} endY={560} />
-           <HorizontalLine y={560} startX={910} endX={1020} />
-           <ArrowHead x={1020} y={560} direction="right" />
+          {/* From Chest Pain to Cardiac and Non-Cardiac */}
+          <VerticalLine x={720} startY={130} endY={170} />
+          <HorizontalLine y={170} startX={460} endX={910} />
+          <VerticalLine x={460} startY={170} endY={200} />
+          <VerticalLine x={910} startY={170} endY={200} />
+          <ArrowHead x={460} y={200} direction="down" />
+          <ArrowHead x={910} y={200} direction="down" />
+          
+          {/* From Cardiac to Ischemic and Non-Ischemic */}
+          <VerticalLine x={460} startY={250} endY={290} />
+          <HorizontalLine y={290} startX={340} endX={620} />
+          <VerticalLine x={340} startY={290} endY={320} />
+          <VerticalLine x={620} startY={290} endY={320} />
+          <ArrowHead x={340} y={320} direction="down" />
+          <ArrowHead x={620} y={320} direction="down" />
+          
+          {/* From Ischemic to its sub-branches */}
+          <VerticalLine x={340} startY={370} endY={430} />
+          <HorizontalLine y={430} startX={230} endX={440} />
+          <VerticalLine x={230} startY={430} endY={460} />
+          <VerticalLine x={440} startY={430} endY={460} />
+          <ArrowHead x={230} y={460} direction="down" />
+          <ArrowHead x={440} y={460} direction="down" />
+          
+          {/* From Non-Ischemic to detailed box */}
+          <VerticalLine x={620} startY={370} endY={460} />
+          <ArrowHead x={620} y={460} direction="down" />
+          
+          {/* From Acute Coronary Syndrome to reference */}
+          <VerticalLine x={230} startY={510} endY={620} />
+          <ArrowHead x={230} y={620} direction="down" />
+          
+          {/* From Non-Ischemic detailed box to reference */}
+          <VerticalLine x={620} startY={600} endY={630} />
+          <ArrowHead x={620} y={630} direction="down" />
+          
+          {/* From Non-Cardiac to reference - horizontal */}
+          <HorizontalLine y={225} startX={970} endX={1020} />
+          <ArrowHead x={1020} y={225} direction="right" />
+          
+          {/* From Non-Cardiac to all cause boxes - lines connect to center of boxes */}
+          <VerticalLine x={910} startY={250} endY={320} />
+          <HorizontalLine y={320} startX={910} endX={1020} />
+          <ArrowHead x={1020} y={320} direction="right" />
+          
+          <VerticalLine x={910} startY={250} endY={400} />
+          <HorizontalLine y={400} startX={910} endX={1020} />
+          <ArrowHead x={1020} y={400} direction="right" />
+          
+          <VerticalLine x={910} startY={250} endY={480} />
+          <HorizontalLine y={480} startX={910} endX={1020} />
+          <ArrowHead x={1020} y={480} direction="right" />
+          
+          <VerticalLine x={910} startY={250} endY={560} />
+          <HorizontalLine y={560} startX={910} endX={1020} />
+          <ArrowHead x={1020} y={560} direction="right" />
 
-                                           {/* Large text box - now part of the moveable flowchart */}
-            <div 
-              className="text-box absolute bg-white border-2 border-gray-500 p-6 rounded-lg shadow-lg select-text cursor-text hover:bg-gray-50 transition-colors"
-              style={{ 
-                left: 50, 
-                top: 720, 
-                width: 'min(1500px, 90vw)', 
-                height: 'auto',
-                minHeight: 400,
-                overflow: 'visible',
-                position: 'relative',
-                zIndex: 20,
-                pointerEvents: 'auto' // Re-enable pointer events for text box
-              }}
-            >
+          {/* Large text box - now part of the moveable flowchart */}
+          <div 
+            className="text-box absolute bg-white border-2 border-gray-500 p-6 rounded-lg shadow-lg select-text cursor-text hover:bg-gray-50 transition-colors"
+            style={{ 
+              left: 50, 
+              top: 720, 
+              width: 'min(1500px, 90vw)', 
+              height: 'auto',
+              minHeight: 400,
+              overflow: 'visible',
+              position: 'relative',
+              zIndex: 20,
+              pointerEvents: 'auto' // Re-enable pointer events for text box
+            }}
+          >
             <div className="text-sm leading-6 text-gray-800">
               <p className="mb-3">
                 <strong>Chest pain is one of the most common reasons in which a patient presents for medical care.</strong> There are many etiologies of chest pain or discomfort, 
@@ -545,23 +545,21 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
               </p>
             </div>
           </div>
-                                                                       </div>
-             </div>
-           
-                                          {/* Mobile-friendly instruction overlay */}
-             {isMobile && (
-               <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm p-3 rounded-lg shadow-lg text-xs text-gray-600">
-                 <div className="font-semibold mb-1">Touch Controls:</div>
-                 <div>• Two fingers: Pinch to zoom in/out</div>
-                 <div>• One finger: Drag to pan around flowchart</div>
-                 <div>• Tap boxes to select and copy text</div>
-                 <div>• Use full screen for better view</div>
-               </div>
-             )}
-         </div>
-       </div>
-     </div>
-   );
+        </div>
+      </div>
+      
+      {/* Mobile-friendly instruction overlay */}
+      {isMobile && (
+        <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm p-3 rounded-lg shadow-lg text-xs text-gray-600">
+          <div className="font-semibold mb-1">Touch Controls:</div>
+          <div>• Two fingers: Pinch to zoom in/out</div>
+          <div>• One finger: Drag to pan around flowchart</div>
+          <div>• Tap boxes to select and copy text</div>
+          <div>• Use full screen for better view</div>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default function ApproachPage() {
@@ -573,71 +571,69 @@ export default function ApproachPage() {
   const [selectedLecture, setSelectedLecture] = useState<string | null>(null);
   const [isFrameFullscreen, setIsFrameFullscreen] = useState(false);
 
-  // Remove iPad fullscreen logic - not needed
-
-                                               const subjects = [
+  const subjects = [
+    {
+      id: 'internal-medicine',
+      name: 'Internal Medicine',
+      folders: [
         {
-          id: 'internal-medicine',
-          name: 'Internal Medicine',
-          folders: [
-            {
-              id: 'cardiology',
-              name: 'Cardiology',
-              lectures: [
-                { id: 'card-5', name: 'Chest Pain', content: 'Chest pain evaluation flowchart and approach...' },
-              ]
-            }
-          ]
-        },
-        {
-          id: 'surgery',
-          name: 'Surgery',
-          folders: [
-            {
-              id: 'general-surgery',
-              name: 'General Surgery',
-              lectures: []
-            },
-            {
-              id: 'specialized-surgery',
-              name: 'Specialized Surgery',
-              lectures: []
-            }
-          ]
-        },
-        {
-          id: 'pediatrics',
-          name: 'Pediatrics',
-          folders: [
-            {
-              id: 'general-pediatrics',
-              name: 'General Pediatrics',
-              lectures: []
-            },
-            {
-              id: 'pediatric-specialties',
-              name: 'Pediatric Specialties',
-              lectures: []
-            }
-          ]
-        },
-        {
-          id: 'obs-gyne',
-          name: 'Obs & Gyne',
-          folders: [
-            {
-              id: 'obstetrics',
-              name: 'Obstetrics',
-              lectures: []
-            },
-            {
-              id: 'gynecology',
-              name: 'Gynecology',
-              lectures: []
-            }
+          id: 'cardiology',
+          name: 'Cardiology',
+          lectures: [
+            { id: 'card-5', name: 'Chest Pain', content: 'Chest pain evaluation flowchart and approach...' },
           ]
         }
-      ];
+      ]
+    },
+    {
+      id: 'surgery',
+      name: 'Surgery',
+      folders: [
+        {
+          id: 'general-surgery',
+          name: 'General Surgery',
+          lectures: []
+        },
+        {
+          id: 'specialized-surgery',
+          name: 'Specialized Surgery',
+          lectures: []
+        }
+      ]
+    },
+    {
+      id: 'pediatrics',
+      name: 'Pediatrics',
+      folders: [
+        {
+          id: 'general-pediatrics',
+          name: 'General Pediatrics',
+          lectures: []
+        },
+        {
+          id: 'pediatric-specialties',
+          name: 'Pediatric Specialties',
+          lectures: []
+        }
+      ]
+    },
+    {
+      id: 'obs-gyne',
+      name: 'Obs & Gyne',
+      folders: [
+        {
+          id: 'obstetrics',
+          name: 'Obstetrics',
+          lectures: []
+        },
+        {
+          id: 'gynecology',
+          name: 'Gynecology',
+          lectures: []
+        }
+      ]
+    }
+  ];
 
   // Check authentication only (allow all authenticated users)
   if (!isLoading && !user) {
@@ -672,14 +668,14 @@ export default function ApproachPage() {
 
   const selectedContent = getSelectedContent();
 
-          return (
-      <div className="flex h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+  return (
+    <div className="flex h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       {/* Sidebar - Same design as dashboard */}
-             <div 
-         className={`bg-[#1E2A38] text-white flex flex-col transition-all duration-300 ${
-           isOpen ? 'w-48 sm:w-56 md:w-64' : 'w-12 sm:w-14 md:w-16'
-         }`}
-       >
+      <div 
+        className={`bg-[#1E2A38] text-white flex flex-col transition-all duration-300 ${
+          isOpen ? 'w-48 sm:w-56 md:w-64' : 'w-12 sm:w-14 md:w-16'
+        }`}
+      >
         {/* Logo */}
         <div className="h-16 flex items-center border-b border-gray-700">
           <div className={`flex items-center ${isOpen ? 'px-4' : 'justify-center w-full'}`}>
@@ -721,38 +717,38 @@ export default function ApproachPage() {
                   <div className="ml-6 mt-2 space-y-1">
                     {subject.folders.map((folder) => (
                       <div key={folder.id}>
-                                                 <button 
-                           onClick={() => setSelectedFolder(selectedFolder === folder.id ? null : folder.id)}
-                           className={`flex items-center w-full transition-all duration-300 text-gray-400 hover:bg-gray-600 hover:text-white rounded-lg px-3 py-2 ${
-                             selectedFolder === folder.id ? 'bg-gray-600 text-white' : ''
-                           }`}
-                         >
-                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
-                           </svg>
-                           <span className="ml-2 text-sm">{folder.name}</span>
-                         </button>
+                        <button 
+                          onClick={() => setSelectedFolder(selectedFolder === folder.id ? null : folder.id)}
+                          className={`flex items-center w-full transition-all duration-300 text-gray-400 hover:bg-gray-600 hover:text-white rounded-lg px-3 py-2 ${
+                            selectedFolder === folder.id ? 'bg-gray-600 text-white' : ''
+                          }`}
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
+                          </svg>
+                          <span className="ml-2 text-sm">{folder.name}</span>
+                        </button>
 
-                         {/* Lectures - Only show if folder is selected */}
-                         {selectedFolder === folder.id && (
-                           <div className="ml-6 mt-1 space-y-1">
-                             {folder.lectures.map((lecture) => (
-                               <button 
-                                 key={lecture.id}
-                                 onClick={() => setSelectedLecture(lecture.id)}
-                                 className={`flex items-center w-full transition-all duration-300 text-gray-500 hover:bg-gray-500 hover:text-white rounded-lg px-3 py-1 ${
-                                   selectedLecture === lecture.id ? 'bg-[#3A8431] text-white' : ''
-                                 }`}
-                               >
-                                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                 </svg>
-                                 <span className="ml-2 text-xs">{lecture.name}</span>
-                               </button>
-                             ))}
-                           </div>
-                         )}
-                       </div>
+                        {/* Lectures - Only show if folder is selected */}
+                        {selectedFolder === folder.id && (
+                          <div className="ml-6 mt-1 space-y-1">
+                            {folder.lectures.map((lecture) => (
+                              <button 
+                                key={lecture.id}
+                                onClick={() => setSelectedLecture(lecture.id)}
+                                className={`flex items-center w-full transition-all duration-300 text-gray-500 hover:bg-gray-500 hover:text-white rounded-lg px-3 py-1 ${
+                                  selectedLecture === lecture.id ? 'bg-[#3A8431] text-white' : ''
+                                }`}
+                              >
+                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                <span className="ml-2 text-xs">{lecture.name}</span>
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     ))}
                   </div>
                 )}
@@ -784,86 +780,86 @@ export default function ApproachPage() {
           
           {/* Logout Button */}
           <div className={`${isOpen ? 'px-4 pb-4' : 'px-2 pb-4'}`}>
-                         <button 
-               onClick={handleExit}
-               className={`w-full bg-red-600 text-white font-bold py-2 px-3 rounded-lg hover:bg-red-700 transition-all duration-300 text-sm flex items-center justify-center`}
-             >
-               {isOpen ? (
-                 <>
-                   <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                   </svg>
-                   Exit
-                 </>
-               ) : (
-                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                 </svg>
-               )}
-             </button>
+            <button 
+              onClick={handleExit}
+              className={`w-full bg-red-600 text-white font-bold py-2 px-3 rounded-lg hover:bg-red-700 transition-all duration-300 text-sm flex items-center justify-center`}
+            >
+              {isOpen ? (
+                <>
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                  Exit
+                </>
+              ) : (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+              )}
+            </button>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">
-                 {/* Header */}
-         <header className="bg-[#3A8431] shadow-md h-12 sm:h-14 md:h-16 flex items-center justify-between px-3 sm:px-4 md:px-6">
-           <button 
-             onClick={() => setIsOpen(!isOpen)}
-             className="text-white hover:text-gray-200 transition-colors duration-300 p-2 rounded-lg hover:bg-white/10"
-           >
-             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-             </svg>
-           </button>
-           <h1 className="text-lg sm:text-xl font-semibold text-white">Approach</h1>
-           <div className="w-6"></div>
-         </header>
+        {/* Header */}
+        <header className="bg-[#3A8431] shadow-md h-12 sm:h-14 md:h-16 flex items-center justify-between px-3 sm:px-4 md:px-6">
+          <button 
+            onClick={() => setIsOpen(!isOpen)}
+            className="text-white hover:text-gray-200 transition-colors duration-300 p-2 rounded-lg hover:bg-white/10"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+          <h1 className="text-lg sm:text-xl font-semibold text-white">Approach</h1>
+          <div className="w-6"></div>
+        </header>
 
-                                   {/* Main Content */}
-                     <main className="flex-1 p-2 sm:p-4 md:p-6 overflow-hidden min-w-0">
-             {selectedContent && selectedContent.lecture ? (
-                               <div className={`${selectedContent.lecture.id === 'card-5' && isFrameFullscreen ? 'fixed inset-0 z-50' : 'h-full w-full'} bg-white/95 backdrop-blur-sm border-2 border-blue-300 rounded-xl overflow-hidden shadow-xl`}>
-                {selectedContent.lecture.id === 'card-5' ? (
-                  // Render Chest Pain flowchart directly as component
-                  <ChestPainFlowchart 
-                    frameFullScreen={isFrameFullscreen}
-                    onToggleFrameFullScreen={() => setIsFrameFullscreen(!isFrameFullscreen)}
-                  />
-                ) : (
-                  // Default content for other lectures
-                  <div className="h-full flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="w-40 h-40 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-8">
-                        <svg className="w-20 h-20 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                        </svg>
-                      </div>
-                      <h1 className="text-5xl font-bold text-gray-900 mb-6">Coming Soon</h1>
-                      <p className="text-2xl text-gray-600 max-w-lg mx-auto">
-                        {selectedContent.lecture.name} content will be available soon.
-                      </p>
+        {/* Main Content */}
+        <main className="flex-1 p-2 sm:p-4 md:p-6 overflow-hidden min-w-0">
+          {selectedContent && selectedContent.lecture ? (
+            <div className={`${selectedContent.lecture.id === 'card-5' && isFrameFullscreen ? 'fixed inset-0 z-50' : 'h-full w-full'} bg-white/95 backdrop-blur-sm border-2 border-blue-300 rounded-xl overflow-hidden shadow-xl`}>
+              {selectedContent.lecture.id === 'card-5' ? (
+                // Render Chest Pain flowchart directly as component
+                <ChestPainFlowchart 
+                  frameFullScreen={isFrameFullscreen}
+                  onToggleFrameFullScreen={() => setIsFrameFullscreen(!isFrameFullscreen)}
+                />
+              ) : (
+                // Default content for other lectures
+                <div className="h-full flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="w-40 h-40 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-8">
+                      <svg className="w-20 h-20 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                      </svg>
                     </div>
+                    <h1 className="text-5xl font-bold text-gray-900 mb-6">Coming Soon</h1>
+                    <p className="text-2xl text-gray-600 max-w-lg mx-auto">
+                      {selectedContent.lecture.name} content will be available soon.
+                    </p>
                   </div>
-                )}
-              </div>
-                         ) : (
-               <div className="h-full bg-white/95 backdrop-blur-sm border-2 border-blue-300 rounded-xl flex items-center justify-center shadow-xl">
-                <div className="text-center">
-                  <div className="w-40 h-40 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-8">
-                    <svg className="w-20 h-20 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                    </svg>
-                  </div>
-                  <h1 className="text-5xl font-bold text-gray-900 mb-6">Coming Soon</h1>
-                  <p className="text-2xl text-gray-600 max-w-lg mx-auto">
-                    The Approach content will be available soon.
-                  </p>
                 </div>
+              )}
+            </div>
+          ) : (
+            <div className="h-full bg-white/95 backdrop-blur-sm border-2 border-blue-300 rounded-xl flex items-center justify-center shadow-xl">
+              <div className="text-center">
+                <div className="w-40 h-40 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-8">
+                  <svg className="w-20 h-20 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  </svg>
+                </div>
+                <h1 className="text-5xl font-bold text-gray-900 mb-6">Coming Soon</h1>
+                <p className="text-2xl text-gray-600 max-w-lg mx-auto">
+                  The Approach content will be available soon.
+                </p>
               </div>
-            )}
-          </main>
+            </div>
+          )}
+        </main>
       </div>
     </div>
   );
