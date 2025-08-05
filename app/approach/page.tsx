@@ -292,17 +292,19 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
             }}
           />
           
-                     {/* Flowchart content - interactive */}
-           <div
-             className="relative"
-             style={{
-               transform: `translate(${scrollPos.x}px, ${scrollPos.y}px) scale(${scale})`,
-               width: '1600px',
-               height: '1300px',
-               pointerEvents: 'none', // Let panning area handle events
-               transformOrigin: 'top left'
-             }}
-           >
+                                           {/* Flowchart content - interactive */}
+            <div
+              className="relative"
+              style={{
+                transform: `translate(${scrollPos.x}px, ${scrollPos.y}px) scale(${scale})`,
+                width: '1600px',
+                height: '1300px',
+                pointerEvents: 'none', // Let panning area handle events
+                transformOrigin: 'top left',
+                maxWidth: '100%',
+                maxHeight: '100%'
+              }}
+            >
                      {/* Chest Pain - Main box */}
            <FlowchartBox
              title="Chest Pain"
@@ -458,21 +460,21 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
            <HorizontalLine y={560} startX={910} endX={1020} />
            <ArrowHead x={1020} y={560} direction="right" />
 
-                     {/* Large text box - now part of the moveable flowchart */}
-           <div 
-             className="text-box absolute bg-white border-2 border-gray-500 p-6 rounded-lg shadow-lg select-text cursor-text hover:bg-gray-50 transition-colors"
-             style={{ 
-               left: 50, 
-               top: 720, 
-               width: 1500, 
-               height: 'auto',
-               minHeight: 400,
-               overflow: 'visible',
-               position: 'relative',
-               zIndex: 20,
-               pointerEvents: 'auto' // Re-enable pointer events for text box
-             }}
-           >
+                                           {/* Large text box - now part of the moveable flowchart */}
+            <div 
+              className="text-box absolute bg-white border-2 border-gray-500 p-6 rounded-lg shadow-lg select-text cursor-text hover:bg-gray-50 transition-colors"
+              style={{ 
+                left: 50, 
+                top: 720, 
+                width: 'min(1500px, 90vw)', 
+                height: 'auto',
+                minHeight: 400,
+                overflow: 'visible',
+                position: 'relative',
+                zIndex: 20,
+                pointerEvents: 'auto' // Re-enable pointer events for text box
+              }}
+            >
             <div className="text-sm leading-6 text-gray-800">
               <p className="mb-3">
                 <strong>Chest pain is one of the most common reasons in which a patient presents for medical care.</strong> There are many etiologies of chest pain or discomfort, 
@@ -788,7 +790,7 @@ export default function ApproachPage() {
                                    {/* Main Content */}
                      <main className="flex-1 p-2 sm:p-4 md:p-6 overflow-hidden">
              {selectedContent && selectedContent.lecture ? (
-                               <div className={`${selectedContent.lecture.id === 'card-5' && isFrameFullscreen ? 'fixed inset-0 z-50' : 'h-full w-full'} bg-white/95 backdrop-blur-sm border-2 border-blue-300 rounded-xl overflow-hidden shadow-xl`}>
+                               <div className={`${selectedContent.lecture.id === 'card-5' && isFrameFullscreen ? 'fixed inset-0 z-50' : 'h-full w-full max-w-full'} bg-white/95 backdrop-blur-sm border-2 border-blue-300 rounded-xl overflow-hidden shadow-xl`}>
                 {selectedContent.lecture.id === 'card-5' ? (
                   // Render Chest Pain flowchart directly as component
                   <ChestPainFlowchart 
