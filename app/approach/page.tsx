@@ -157,7 +157,16 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
      const checkDevice = () => {
        const width = window.innerWidth;
        setIsMobile(width < 1024);
-       setScale(width < 768 ? 0.6 : width < 1024 ? 0.8 : 1);
+       // Better scaling for consistent design
+       if (width < 640) {
+         setScale(0.5); // Small mobile
+       } else if (width < 768) {
+         setScale(0.6); // Large mobile
+       } else if (width < 1024) {
+         setScale(0.75); // Tablet
+       } else {
+         setScale(1); // Desktop
+       }
      };
      
      checkDevice();
@@ -185,11 +194,11 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
     const newX = e.clientX - startPos.x;
     const newY = e.clientY - startPos.y;
     
-         // Constrain panning to keep flowchart visible - responsive constraints
-     const maxX = isMobile ? 100 : 200; // Less panning on mobile
-     const minX = isMobile ? -300 : -600; // Less panning on mobile
+         // Constrain panning to keep flowchart visible - same for all devices
+     const maxX = 200; // Allow some panning to the right
+     const minX = -600; // Allow some panning to the left (balanced with right)
      const maxY = 0; // Don't pan too far down (flowchart starts at 0)
-     const minY = isMobile ? -200 : -400; // Less panning on mobile
+     const minY = -400; // Allow some panning up (medium size)
     
     const constrainedX = Math.max(minX, Math.min(maxX, newX));
     const constrainedY = Math.max(minY, Math.min(maxY, newY));
@@ -201,15 +210,13 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
     setIsPanning(false);
   };
 
-     // Touch events for mobile - improved for iPad
+     // Touch events for mobile - smooth like desktop
    const handleTouchStart = (e: React.TouchEvent) => {
      const target = e.target as HTMLElement;
      if (target.closest('.flowchart-box, .reference-box, .text-box')) {
        return;
      }
      
-     e.preventDefault();
-     e.stopPropagation();
      const touch = e.touches[0];
      setIsPanning(true);
      setStartPos({ x: touch.clientX - scrollPos.x, y: touch.clientY - scrollPos.y });
@@ -217,18 +224,16 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
 
      const handleTouchMove = (e: React.TouchEvent) => {
      if (!isPanning) return;
-     e.preventDefault();
-     e.stopPropagation();
      
      const touch = e.touches[0];
      const newX = touch.clientX - startPos.x;
      const newY = touch.clientY - startPos.y;
     
-         // Same constraints as mouse
-     const maxX = isMobile ? 100 : 200;
-     const minX = isMobile ? -300 : -600;
-     const maxY = 0;
-     const minY = isMobile ? -200 : -400;
+         // Same constraints as desktop for consistent experience
+     const maxX = 200; // Allow some panning to the right
+     const minX = -600; // Allow some panning to the left (balanced with right)
+     const maxY = 0; // Don't pan too far down (flowchart starts at 0)
+     const minY = -400; // Allow some panning up (medium size)
     
     const constrainedX = Math.max(minX, Math.min(maxX, newX));
     const constrainedY = Math.max(minY, Math.min(maxY, newY));
@@ -302,7 +307,8 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
                 pointerEvents: 'none', // Let panning area handle events
                 transformOrigin: 'top left',
                 maxWidth: '100%',
-                maxHeight: '100%'
+                maxHeight: '100%',
+                transition: isPanning ? 'none' : 'transform 0.1s ease-out'
               }}
             >
                      {/* Chest Pain - Main box */}
