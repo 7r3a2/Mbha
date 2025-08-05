@@ -195,11 +195,11 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
     const newX = e.clientX - startPos.x;
     const newY = e.clientY - startPos.y;
     
-         // Responsive panning constraints - much more range for iPad to see text box
+         // Responsive panning constraints - maximum range for iPad to see text box at bottom
      const maxX = isMobile ? 150 : 200; // Allow panning to the right
      const minX = isMobile ? -800 : -600; // More panning left on mobile to see content
-     const maxY = isMobile ? 200 : 0; // Allow much more down panning on mobile
-     const minY = isMobile ? -1200 : -400; // Much more up panning to see large text box
+     const maxY = isMobile ? 300 : 0; // Allow much more down panning on mobile
+     const minY = isMobile ? -1600 : -400; // Maximum up panning to see text box (top: 720 + height: 400 = 1120)
     
     const constrainedX = Math.max(minX, Math.min(maxX, newX));
     const constrainedY = Math.max(minY, Math.min(maxY, newY));
@@ -232,11 +232,11 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
      const newX = touch.clientX - startPos.x;
      const newY = touch.clientY - startPos.y;
     
-         // Responsive panning constraints for touch - much more range for iPad to see text box
+         // Responsive panning constraints for touch - maximum range for iPad to see text box at bottom
      const maxX = isMobile ? 150 : 200; // Allow panning to the right
      const minX = isMobile ? -800 : -600; // More panning left on mobile to see content
-     const maxY = isMobile ? 200 : 0; // Allow much more down panning on mobile
-     const minY = isMobile ? -1200 : -400; // Much more up panning to see large text box
+     const maxY = isMobile ? 300 : 0; // Allow much more down panning on mobile
+     const minY = isMobile ? -1600 : -400; // Maximum up panning to see text box (top: 720 + height: 400 = 1120)
     
     const constrainedX = Math.max(minX, Math.min(maxX, newX));
     const constrainedY = Math.max(minY, Math.min(maxY, newY));
