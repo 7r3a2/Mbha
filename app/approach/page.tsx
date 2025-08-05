@@ -450,9 +450,9 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 50,
+              left: 30,
               top: 340,
-              width: 140,
+              width: 160,
               minHeight: '50px',
               display: 'flex',
               alignItems: 'center',
@@ -467,9 +467,9 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 210,
+              left: 220,
               top: 340,
-              width: 140,
+              width: 160,
               minHeight: '50px',
               display: 'flex',
               alignItems: 'center',
@@ -484,9 +484,9 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 370,
+              left: 410,
               top: 340,
-              width: 140,
+              width: 160,
               minHeight: '50px',
               display: 'flex',
               alignItems: 'center',
@@ -501,9 +501,9 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 530,
+              left: 600,
               top: 340,
-              width: 160,
+              width: 180,
               minHeight: '50px',
               display: 'flex',
               alignItems: 'center',
@@ -559,7 +559,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
               position: 'absolute',
               left: 70,
               top: 460,
-              width: 80,
+              width: 100,
               minHeight: '50px',
               display: 'flex',
               alignItems: 'center',
@@ -576,7 +576,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
               position: 'absolute',
               left: 90,
               top: 580,
-              width: 80,
+              width: 100,
               minHeight: '50px',
               display: 'flex',
               alignItems: 'center',
@@ -592,9 +592,9 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
             style={{
               position: 'absolute',
-              left: 50,
+              left: 30,
               top: 700,
-              width: 140,
+              width: 160,
               minHeight: '50px',
               display: 'flex',
               alignItems: 'center',
@@ -610,9 +610,9 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
             style={{
               position: 'absolute',
-              left: 210,
+              left: 220,
               top: 700,
-              width: 140,
+              width: 160,
               minHeight: '50px',
               display: 'flex',
               alignItems: 'center',
@@ -629,9 +629,9 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-gray-200 border-2 border-gray-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 230,
+              left: 250,
               top: 460,
-              width: 140,
+              width: 160,
               minHeight: '50px',
               display: 'flex',
               alignItems: 'center',
@@ -649,7 +649,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
               position: 'absolute',
               left: 50,
               top: 580,
-              width: 120,
+              width: 140,
               minHeight: '50px',
               display: 'flex',
               alignItems: 'center',
@@ -665,9 +665,9 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
             style={{
               position: 'absolute',
-              left: 190,
+              left: 220,
               top: 580,
-              width: 140,
+              width: 160,
               minHeight: '50px',
               display: 'flex',
               alignItems: 'center',
@@ -683,9 +683,9 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
             style={{
               position: 'absolute',
-              left: 350,
+              left: 410,
               top: 580,
-              width: 140,
+              width: 160,
               minHeight: '50px',
               display: 'flex',
               alignItems: 'center',
@@ -702,9 +702,9 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-gray-200 border-2 border-gray-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 390,
+              left: 450,
               top: 460,
-              width: 140,
+              width: 160,
               minHeight: '50px',
               display: 'flex',
               alignItems: 'center',
@@ -719,9 +719,9 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
             style={{
               position: 'absolute',
-              left: 390,
+              left: 450,
               top: 580,
-              width: 140,
+              width: 160,
               minHeight: '50px',
               display: 'flex',
               alignItems: 'center',
@@ -738,9 +738,9 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
             style={{
               position: 'absolute',
-              left: 590,
+              left: 620,
               top: 460,
-              width: 100,
+              width: 120,
               minHeight: '50px',
               display: 'flex',
               alignItems: 'center',
@@ -756,9 +756,9 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
             style={{
               position: 'absolute',
-              left: 730,
+              left: 770,
               top: 460,
-              width: 120,
+              width: 140,
               minHeight: '50px',
               display: 'flex',
               alignItems: 'center',
@@ -775,9 +775,9 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 620,
+              left: 650,
               top: 460,
-              width: 160,
+              width: 180,
               minHeight: '50px',
               display: 'flex',
               alignItems: 'center',
@@ -792,9 +792,9 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 50,
+              left: 30,
               top: 820,
-              width: 200,
+              width: 220,
               minHeight: '50px',
               display: 'flex',
               alignItems: 'center',
@@ -809,9 +809,9 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 210,
+              left: 270,
               top: 820,
-              width: 200,
+              width: 220,
               minHeight: '50px',
               display: 'flex',
               alignItems: 'center',
@@ -828,7 +828,7 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
               position: 'absolute',
               left: 50,
               top: 700,
-              width: 140,
+              width: 160,
               minHeight: '50px',
               display: 'flex',
               alignItems: 'center',
@@ -843,9 +843,9 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 190,
+              left: 220,
               top: 700,
-              width: 200,
+              width: 220,
               minHeight: '50px',
               display: 'flex',
               alignItems: 'center',
@@ -860,9 +860,9 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 350,
+              left: 410,
               top: 700,
-              width: 140,
+              width: 160,
               minHeight: '50px',
               display: 'flex',
               alignItems: 'center',
@@ -877,9 +877,9 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 390,
+              left: 450,
               top: 700,
-              width: 140,
+              width: 160,
               minHeight: '50px',
               display: 'flex',
               alignItems: 'center',
@@ -894,9 +894,9 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 590,
+              left: 620,
               top: 580,
-              width: 160,
+              width: 180,
               minHeight: '50px',
               display: 'flex',
               alignItems: 'center',
@@ -911,9 +911,9 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
             className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
             style={{
               position: 'absolute',
-              left: 730,
+              left: 770,
               top: 580,
-              width: 160,
+              width: 180,
               minHeight: '50px',
               display: 'flex',
               alignItems: 'center',
@@ -962,17 +962,17 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
 
           {/* 3. Abdominal exam to findings */}
           <VerticalLine x={280} startY={270} endY={320} />
-          <HorizontalLine y={320} startX={120} endX={690} />
+          <HorizontalLine y={320} startX={110} endX={750} />
           
           {/* Arrows down to each finding */}
-          <VerticalLine x={120} startY={320} endY={340} />
-          <VerticalLine x={280} startY={320} endY={340} />
-          <VerticalLine x={440} startY={320} endY={340} />
-          <VerticalLine x={610} startY={320} endY={340} />
-          <ArrowHead x={120} y={340} direction="down" />
-          <ArrowHead x={280} y={340} direction="down" />
-          <ArrowHead x={440} y={340} direction="down" />
-          <ArrowHead x={610} y={340} direction="down" />
+          <VerticalLine x={110} startY={320} endY={340} />
+          <VerticalLine x={300} startY={320} endY={340} />
+          <VerticalLine x={490} startY={320} endY={340} />
+          <VerticalLine x={690} startY={320} endY={340} />
+          <ArrowHead x={110} y={340} direction="down" />
+          <ArrowHead x={300} y={340} direction="down" />
+          <ArrowHead x={490} y={340} direction="down" />
+          <ArrowHead x={690} y={340} direction="down" />
 
           {/* 4. Intrauterine pregnancy to 2 branches */}
           <VerticalLine x={790} startY={270} endY={320} />
@@ -990,70 +990,70 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
 
           {/* 5. Detailed sub-branches connections */}
           {/* Cervical Motion → STI test */}
-          <VerticalLine x={120} startY={390} endY={460} />
-          <ArrowHead x={120} y={460} direction="down" />
+          <VerticalLine x={110} startY={390} endY={460} />
+          <ArrowHead x={110} y={460} direction="down" />
 
           {/* STI test → TVUS */}
-          <VerticalLine x={120} startY={510} endY={580} />
-          <ArrowHead x={120} y={580} direction="down" />
+          <VerticalLine x={110} startY={510} endY={580} />
+          <ArrowHead x={110} y={580} direction="down" />
 
           {/* TVUS → PID and Tubo-ovarian */}
-          <VerticalLine x={120} startY={630} endY={680} />
-          <HorizontalLine y={680} startX={120} endX={350} />
-          <VerticalLine x={120} startY={680} endY={700} />
-          <VerticalLine x={280} startY={680} endY={700} />
-          <ArrowHead x={120} y={700} direction="down" />
-          <ArrowHead x={280} y={700} direction="down" />
+          <VerticalLine x={110} startY={630} endY={680} />
+          <HorizontalLine y={680} startX={110} endX={350} />
+          <VerticalLine x={110} startY={680} endY={700} />
+          <VerticalLine x={300} startY={680} endY={700} />
+          <ArrowHead x={110} y={700} direction="down" />
+          <ArrowHead x={300} y={700} direction="down" />
 
           {/* Severe Pain → Abdominal ultrasound */}
-          <VerticalLine x={280} startY={390} endY={460} />
-          <ArrowHead x={280} y={460} direction="down" />
+          <VerticalLine x={300} startY={390} endY={460} />
+          <ArrowHead x={300} y={460} direction="down" />
 
           {/* Abdominal ultrasound → 3 findings */}
-          <VerticalLine x={280} startY={510} endY={580} />
-          <HorizontalLine y={580} startX={110} endX={490} />
-          <VerticalLine x={110} startY={580} endY={580} />
-          <VerticalLine x={280} startY={580} endY={580} />
-          <VerticalLine x={420} startY={580} endY={580} />
-          <ArrowHead x={110} y={580} direction="down" />
-          <ArrowHead x={280} y={580} direction="down" />
-          <ArrowHead x={420} y={580} direction="down" />
+          <VerticalLine x={300} startY={510} endY={580} />
+          <HorizontalLine y={580} startX={120} endX={530} />
+          <VerticalLine x={120} startY={580} endY={580} />
+          <VerticalLine x={300} startY={580} endY={580} />
+          <VerticalLine x={490} startY={580} endY={580} />
+          <ArrowHead x={120} y={580} direction="down" />
+          <ArrowHead x={300} y={580} direction="down" />
+          <ArrowHead x={490} y={580} direction="down" />
 
           {/* Suprapubic → UA findings → UTI */}
-          <VerticalLine x={440} startY={390} endY={460} />
-          <ArrowHead x={440} y={460} direction="down" />
-          <VerticalLine x={440} startY={510} endY={580} />
-          <ArrowHead x={440} y={580} direction="down" />
+          <VerticalLine x={490} startY={390} endY={460} />
+          <ArrowHead x={490} y={460} direction="down" />
+          <VerticalLine x={490} startY={510} endY={580} />
+          <ArrowHead x={490} y={580} direction="down" />
 
           {/* Cyclic pain → 2 branches */}
-          <VerticalLine x={610} startY={390} endY={460} />
-          <HorizontalLine y={460} startX={640} endX={790} />
-          <VerticalLine x={640} startY={460} endY={460} />
-          <VerticalLine x={790} startY={460} endY={460} />
-          <ArrowHead x={640} y={460} direction="down" />
-          <ArrowHead x={790} y={460} direction="down" />
+          <VerticalLine x={690} startY={390} endY={460} />
+          <HorizontalLine y={460} startX={680} endX={840} />
+          <VerticalLine x={680} startY={460} endY={460} />
+          <VerticalLine x={840} startY={460} endY={460} />
+          <ArrowHead x={680} y={460} direction="down" />
+          <ArrowHead x={840} y={460} direction="down" />
 
           {/* Ectopic → Treatment */}
-          <VerticalLine x={690} startY={390} endY={460} />
-          <ArrowHead x={690} y={460} direction="down" />
+          <VerticalLine x={740} startY={390} endY={460} />
+          <ArrowHead x={740} y={460} direction="down" />
 
           {/* Treatments connections */}
-          <VerticalLine x={50} startY={750} endY={820} />
-          <VerticalLine x={210} startY={750} endY={820} />
+          <VerticalLine x={30} startY={750} endY={820} />
+          <VerticalLine x={270} startY={750} endY={820} />
           <VerticalLine x={50} startY={630} endY={700} />
-          <VerticalLine x={190} startY={630} endY={700} />
-          <VerticalLine x={350} startY={630} endY={700} />
-          <VerticalLine x={390} startY={630} endY={700} />
-          <VerticalLine x={590} startY={510} endY={580} />
-          <VerticalLine x={730} startY={510} endY={580} />
-          <ArrowHead x={50} y={820} direction="down" />
-          <ArrowHead x={210} y={820} direction="down" />
+          <VerticalLine x={220} startY={630} endY={700} />
+          <VerticalLine x={410} startY={630} endY={700} />
+          <VerticalLine x={450} startY={630} endY={700} />
+          <VerticalLine x={620} startY={510} endY={580} />
+          <VerticalLine x={770} startY={510} endY={580} />
+          <ArrowHead x={30} y={820} direction="down" />
+          <ArrowHead x={270} y={820} direction="down" />
           <ArrowHead x={50} y={700} direction="down" />
-          <ArrowHead x={190} y={700} direction="down" />
-          <ArrowHead x={350} y={700} direction="down" />
-          <ArrowHead x={390} y={700} direction="down" />
-          <ArrowHead x={590} y={580} direction="down" />
-          <ArrowHead x={730} y={580} direction="down" />
+          <ArrowHead x={220} y={700} direction="down" />
+          <ArrowHead x={410} y={700} direction="down" />
+          <ArrowHead x={450} y={700} direction="down" />
+          <ArrowHead x={620} y={580} direction="down" />
+          <ArrowHead x={770} y={580} direction="down" />
           
         </div>
       </div>
