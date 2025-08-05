@@ -246,7 +246,7 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
    };
 
        return (
-      <div className="h-full bg-gradient-to-br from-blue-50 to-indigo-100 overflow-hidden">
+      <div className={`${frameFullScreen ? 'fixed inset-0 z-50' : 'h-full'} bg-gradient-to-br from-blue-50 to-indigo-100 overflow-hidden`}>
                 {/* Header with full screen button */}
          <div className="bg-white/90 backdrop-blur-sm p-3 sm:p-4 shadow-sm flex items-center justify-between">
            <h1 className="text-lg sm:text-2xl font-bold text-blue-600">Chest Pain</h1>
@@ -535,27 +535,9 @@ export default function ApproachPage() {
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
   const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
   const [selectedLecture, setSelectedLecture] = useState<string | null>(null);
-  const [isIPadFullscreen, setIsIPadFullscreen] = useState(false);
   const [isFrameFullscreen, setIsFrameFullscreen] = useState(false);
 
-  // Auto fullscreen for iPad - entire approach page
-  useEffect(() => {
-    const checkIPad = () => {
-      const width = window.innerWidth;
-      const height = window.innerHeight;
-      const isIPad = width >= 768 && width <= 1024;
-      
-      if (isIPad) {
-        setIsIPadFullscreen(true);
-      } else {
-        setIsIPadFullscreen(false);
-      }
-    };
-    
-    checkIPad();
-    window.addEventListener('resize', checkIPad);
-    return () => window.removeEventListener('resize', checkIPad);
-  }, []);
+  // Remove iPad fullscreen logic - not needed
 
                                                const subjects = [
         {
@@ -654,8 +636,8 @@ export default function ApproachPage() {
 
   const selectedContent = getSelectedContent();
 
-     return (
-     <div className={`flex h-screen ${isIPadFullscreen ? 'fixed inset-0 z-40' : ''} bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 min-h-screen`}>
+          return (
+      <div className="flex h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       {/* Sidebar - Same design as dashboard */}
              <div 
          className={`bg-[#1E2A38] text-white flex flex-col transition-all duration-300 ${
@@ -806,7 +788,7 @@ export default function ApproachPage() {
                                    {/* Main Content */}
                      <main className="flex-1 p-2 sm:p-4 md:p-6 overflow-hidden">
              {selectedContent && selectedContent.lecture ? (
-               <div className={`${selectedContent.lecture.id === 'card-5' && isFrameFullscreen ? 'fixed inset-0 z-50' : 'h-full w-full'} bg-white/95 backdrop-blur-sm border-2 border-blue-300 rounded-xl overflow-hidden shadow-xl`}>
+                               <div className="h-full w-full bg-white/95 backdrop-blur-sm border-2 border-blue-300 rounded-xl overflow-hidden shadow-xl">
                 {selectedContent.lecture.id === 'card-5' ? (
                   // Render Chest Pain flowchart directly as component
                   <ChestPainFlowchart 
