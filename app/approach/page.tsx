@@ -144,11 +144,11 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
 };
 
  // Chest Pain Flowchart Component
- const ChestPainFlowchart = () => {
+ const ChestPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullScreen = () => {} }) => {
    const [isPanning, setIsPanning] = useState(false);
    const [startPos, setStartPos] = useState({ x: 0, y: 0 });
    const [scrollPos, setScrollPos] = useState({ x: 0, y: 0 });
-   const [isFullScreen, setIsFullScreen] = useState(false);
+   // Remove local fullscreen state, use props instead
    const [isMobile, setIsMobile] = useState(false);
    const [scale, setScale] = useState(1);
 
@@ -242,20 +242,20 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
 
      // Full screen toggle - only for the flowchart frame
    const toggleFullScreen = () => {
-     setIsFullScreen(!isFullScreen);
+     onToggleFrameFullScreen();
    };
 
        return (
-      <div className={`${isFullScreen ? 'fixed inset-0 z-50' : 'h-full'} bg-gradient-to-br from-blue-50 to-indigo-100 overflow-hidden`}>
+      <div className="h-full bg-gradient-to-br from-blue-50 to-indigo-100 overflow-hidden">
                 {/* Header with full screen button */}
          <div className="bg-white/90 backdrop-blur-sm p-3 sm:p-4 shadow-sm flex items-center justify-between">
            <h1 className="text-lg sm:text-2xl font-bold text-blue-600">Chest Pain</h1>
            <button
              onClick={toggleFullScreen}
              className="px-3 py-2 sm:px-4 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2 text-sm sm:text-base"
-             title={isFullScreen ? "Exit Full Screen" : "Full Screen"}
+             title={frameFullScreen ? "Exit Full Screen" : "Full Screen"}
            >
-          {isFullScreen ? (
+          {frameFullScreen ? (
             <>
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -536,8 +536,9 @@ export default function ApproachPage() {
   const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
   const [selectedLecture, setSelectedLecture] = useState<string | null>(null);
   const [isIPadFullscreen, setIsIPadFullscreen] = useState(false);
+  const [isFrameFullscreen, setIsFrameFullscreen] = useState(false);
 
-  // Auto fullscreen for iPad
+  // Auto fullscreen for iPad - entire approach page
   useEffect(() => {
     const checkIPad = () => {
       const width = window.innerWidth;
@@ -546,6 +547,8 @@ export default function ApproachPage() {
       
       if (isIPad) {
         setIsIPadFullscreen(true);
+      } else {
+        setIsIPadFullscreen(false);
       }
     };
     
@@ -803,10 +806,13 @@ export default function ApproachPage() {
                                    {/* Main Content */}
                      <main className="flex-1 p-4 sm:p-6 overflow-hidden">
              {selectedContent && selectedContent.lecture ? (
-               <div className="h-full bg-white/95 backdrop-blur-sm border-2 border-blue-300 rounded-xl overflow-hidden shadow-xl">
+               <div className={`${selectedContent.lecture.id === 'card-5' && isFrameFullscreen ? 'fixed inset-0 z-50' : 'h-full'} bg-white/95 backdrop-blur-sm border-2 border-blue-300 rounded-xl overflow-hidden shadow-xl`}>
                 {selectedContent.lecture.id === 'card-5' ? (
                   // Render Chest Pain flowchart directly as component
-                  <ChestPainFlowchart />
+                  <ChestPainFlowchart 
+                    frameFullScreen={isFrameFullscreen}
+                    onToggleFrameFullScreen={() => setIsFrameFullscreen(!isFrameFullscreen)}
+                  />
                 ) : (
                   // Default content for other lectures
                   <div className="h-full flex items-center justify-center">
