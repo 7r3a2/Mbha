@@ -171,7 +171,7 @@ const ChestPainFlowchart = () => {
     const newY = e.clientY - startPos.y;
     
          // Constrain panning to keep flowchart visible
-     const maxX = 0; // Don't pan too far right
+     const maxX = 400; // Allow panning to the right
      const minX = -1200; // Don't pan too far left
      const maxY = 0; // Don't pan too far down
      const minY = -800; // Don't pan too far up
@@ -208,7 +208,7 @@ const ChestPainFlowchart = () => {
     const newY = touch.clientY - startPos.y;
     
          // Same constraints as mouse
-     const maxX = 0;
+     const maxX = 400;
      const minX = -1200;
      const maxY = 0;
      const minY = -800;
@@ -494,15 +494,7 @@ const ChestPainFlowchart = () => {
         </div>
       </div>
 
-             {/* Instructions overlay */}
-       <div className="absolute bottom-4 right-4 bg-white p-3 rounded-lg shadow-lg text-sm text-gray-600">
-         <div className="font-semibold mb-1">Instructions:</div>
-         <div>• Click and drag empty areas to pan around flowchart</div>
-         <div>• Touch and drag on mobile devices</div>
-         <div>• Click on boxes to select and copy text</div>
-         <div>• Panning is limited to keep flowchart visible</div>
-         <div>• Use full screen button for better view</div>
-       </div>
+             
     </div>
   );
 };
@@ -515,91 +507,37 @@ export default function ApproachPage() {
   const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
   const [selectedLecture, setSelectedLecture] = useState<string | null>(null);
 
-  const subjects = [
-    {
-      id: 'internal-medicine',
-      name: 'Internal Medicine',
-      folders: [
-        {
-          id: 'cardiology',
-          name: 'Cardiology',
-          lectures: [
-            { id: 'card-1', name: 'Heart Failure', content: 'Heart failure content coming soon...' },
-            { id: 'card-2', name: 'Coronary Artery Disease', content: 'CAD content coming soon...' },
-            { id: 'card-3', name: 'Arrhythmias', content: 'Arrhythmias content coming soon...' },
-            { id: 'card-4', name: 'Hypertension', content: 'Hypertension content coming soon...' },
-            { id: 'card-5', name: 'Chest Pain', content: 'Chest pain evaluation flowchart and approach...' },
-          ]
-        },
-        {
-          id: 'endocrinology',
-          name: 'Endocrinology',
-          lectures: [
-            { id: 'endo-1', name: 'Diabetes Mellitus', content: 'Diabetes content coming soon...' },
-            { id: 'endo-2', name: 'Thyroid Disorders', content: 'Thyroid content coming soon...' },
-            { id: 'endo-3', name: 'Adrenal Disorders', content: 'Adrenal content coming soon...' },
-          ]
-        },
-        {
-          id: 'gastroenterology',
-          name: 'Gastroenterology',
-          lectures: [
-            { id: 'gastro-1', name: 'Peptic Ulcer Disease', content: 'PUD content coming soon...' },
-            { id: 'gastro-2', name: 'Inflammatory Bowel Disease', content: 'IBD content coming soon...' },
-            { id: 'gastro-3', name: 'Liver Disease', content: 'Liver disease content coming soon...' },
-          ]
-        }
-      ]
-    },
-    {
-      id: 'surgery',
-      name: 'Surgery',
-      folders: [
-        {
-          id: 'general-surgery',
-          name: 'General Surgery',
-          lectures: [
-            { id: 'gen-1', name: 'Appendicitis', content: 'Appendicitis content coming soon...' },
-            { id: 'gen-2', name: 'Hernia', content: 'Hernia content coming soon...' },
-            { id: 'gen-3', name: 'Gallbladder Disease', content: 'Gallbladder content coming soon...' },
-          ]
-        },
-        {
-          id: 'orthopedics',
-          name: 'Orthopedics',
-          lectures: [
-            { id: 'ortho-1', name: 'Fractures', content: 'Fractures content coming soon...' },
-            { id: 'ortho-2', name: 'Joint Disorders', content: 'Joint disorders content coming soon...' },
-            { id: 'ortho-3', name: 'Spine Surgery', content: 'Spine surgery content coming soon...' },
-          ]
-        }
-      ]
-    },
-    {
-      id: 'pediatrics',
-      name: 'Pediatrics',
-      folders: [
-        {
-          id: 'general-pediatrics',
-          name: 'General Pediatrics',
-          lectures: [
-            { id: 'ped-1', name: 'Growth and Development', content: 'Growth content coming soon...' },
-            { id: 'ped-2', name: 'Immunization', content: 'Immunization content coming soon...' },
-            { id: 'ped-3', name: 'Common Infections', content: 'Infections content coming soon...' },
-          ]
-        },
-        {
-          id: 'neonatology',
-          name: 'Neonatology',
-          lectures: [
-            { id: 'neo-1', name: 'Prematurity', content: 'Prematurity content coming soon...' },
-            { id: 'neo-2', name: 'Neonatal Jaundice', content: 'Jaundice content coming soon...' },
-            { id: 'neo-3', name: 'Respiratory Distress', content: 'Respiratory distress content coming soon...' },
-          ]
-        }
-      ]
-    }
-  ];
+                       const subjects = [
+       {
+         id: 'internal-medicine',
+         name: 'Internal Medicine',
+         folders: [
+           {
+             id: 'cardiology',
+             name: 'Cardiology',
+             lectures: [
+               { id: 'card-5', name: 'Chest Pain', content: 'Chest pain evaluation flowchart and approach...' },
+             ]
+           }
+         ]
+       },
+       {
+         id: 'obs-gyne',
+         name: 'Obs & Gyne',
+         folders: [
+           {
+             id: 'obstetrics',
+             name: 'Obstetrics',
+             lectures: []
+           },
+           {
+             id: 'gynecology',
+             name: 'Gynecology',
+             lectures: []
+           }
+         ]
+       }
+     ];
 
   // Check authentication only (allow all authenticated users)
   if (!isLoading && !user) {
@@ -683,38 +621,38 @@ export default function ApproachPage() {
                   <div className="ml-6 mt-2 space-y-1">
                     {subject.folders.map((folder) => (
                       <div key={folder.id}>
-                        <button 
-                          onClick={() => setSelectedFolder(selectedFolder === folder.id ? null : folder.id)}
-                          className={`flex items-center w-full transition-all duration-300 text-gray-400 hover:bg-gray-600 hover:text-white rounded-lg px-3 py-2 ${
-                            selectedFolder === folder.id ? 'bg-gray-600 text-white' : ''
-                          }`}
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
-                          </svg>
-                          <span className="ml-2 text-sm">{folder.name}</span>
-                        </button>
+                                                 <button 
+                           onClick={() => setSelectedFolder(selectedFolder === folder.id ? null : folder.id)}
+                           className={`flex items-center w-full transition-all duration-300 text-gray-400 hover:bg-gray-600 hover:text-white rounded-lg px-3 py-2 ${
+                             selectedFolder === folder.id ? 'bg-gray-600 text-white' : ''
+                           }`}
+                         >
+                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
+                           </svg>
+                           <span className="ml-2 text-sm">{folder.name}</span>
+                         </button>
 
-                        {/* Lectures - Only show if folder is selected */}
-                        {selectedFolder === folder.id && (
-                          <div className="ml-6 mt-1 space-y-1">
-                            {folder.lectures.map((lecture) => (
-                              <button 
-                                key={lecture.id}
-                                onClick={() => setSelectedLecture(lecture.id)}
-                                className={`flex items-center w-full transition-all duration-300 text-gray-500 hover:bg-gray-500 hover:text-white rounded-lg px-3 py-1 ${
-                                  selectedLecture === lecture.id ? 'bg-[#3A8431] text-white' : ''
-                                }`}
-                              >
-                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                </svg>
-                                <span className="ml-2 text-xs">{lecture.name}</span>
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                      </div>
+                         {/* Lectures - Only show if folder is selected */}
+                         {selectedFolder === folder.id && (
+                           <div className="ml-6 mt-1 space-y-1">
+                             {folder.lectures.map((lecture) => (
+                               <button 
+                                 key={lecture.id}
+                                 onClick={() => setSelectedLecture(lecture.id)}
+                                 className={`flex items-center w-full transition-all duration-300 text-gray-500 hover:bg-gray-500 hover:text-white rounded-lg px-3 py-1 ${
+                                   selectedLecture === lecture.id ? 'bg-[#3A8431] text-white' : ''
+                                 }`}
+                               >
+                                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                 </svg>
+                                 <span className="ml-2 text-xs">{lecture.name}</span>
+                               </button>
+                             ))}
+                           </div>
+                         )}
+                       </div>
                     ))}
                   </div>
                 )}
@@ -783,46 +721,46 @@ export default function ApproachPage() {
            <div className="w-6"></div>
          </header>
 
-                 {/* Main Content */}
-         <main className="flex-1 p-6 overflow-hidden">
-           {selectedContent && selectedContent.lecture ? (
-             <div className="h-full bg-white border-2 border-green-500 rounded-lg overflow-hidden">
-               {selectedContent.lecture.id === 'card-5' ? (
-                 // Render Chest Pain flowchart directly as component
-                 <ChestPainFlowchart />
-               ) : (
-                 // Default content for other lectures
-                 <div className="h-full flex items-center justify-center">
-                   <div className="text-center">
-                     <div className="w-40 h-40 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-8">
-                       <svg className="w-20 h-20 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                       </svg>
-                     </div>
-                     <h1 className="text-5xl font-bold text-gray-900 mb-6">Coming Soon</h1>
-                     <p className="text-2xl text-gray-600 max-w-lg mx-auto">
-                       {selectedContent.lecture.name} content will be available soon.
-                     </p>
-                   </div>
-                 </div>
-               )}
-             </div>
-           ) : (
-             <div className="h-full bg-white border-2 border-green-500 rounded-lg flex items-center justify-center">
-               <div className="text-center">
-                 <div className="w-40 h-40 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-8">
-                   <svg className="w-20 h-20 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                   </svg>
-                 </div>
-                 <h1 className="text-5xl font-bold text-gray-900 mb-6">Coming Soon</h1>
-                 <p className="text-2xl text-gray-600 max-w-lg mx-auto">
-                   The Approach content will be available soon.
-                 </p>
-               </div>
-             </div>
-           )}
-         </main>
+                                   {/* Main Content */}
+          <main className="flex-1 p-6 overflow-hidden">
+            {selectedContent && selectedContent.lecture ? (
+              <div className="h-full bg-white border-2 border-green-500 rounded-lg overflow-hidden">
+                {selectedContent.lecture.id === 'card-5' ? (
+                  // Render Chest Pain flowchart directly as component
+                  <ChestPainFlowchart />
+                ) : (
+                  // Default content for other lectures
+                  <div className="h-full flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="w-40 h-40 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-8">
+                        <svg className="w-20 h-20 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                      </div>
+                      <h1 className="text-5xl font-bold text-gray-900 mb-6">Coming Soon</h1>
+                      <p className="text-2xl text-gray-600 max-w-lg mx-auto">
+                        {selectedContent.lecture.name} content will be available soon.
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="h-full bg-white border-2 border-green-500 rounded-lg flex items-center justify-center">
+                <div className="text-center">
+                  <div className="w-40 h-40 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-8">
+                    <svg className="w-20 h-20 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                  </div>
+                  <h1 className="text-5xl font-bold text-gray-900 mb-6">Coming Soon</h1>
+                  <p className="text-2xl text-gray-600 max-w-lg mx-auto">
+                    The Approach content will be available soon.
+                  </p>
+                </div>
+              </div>
+            )}
+          </main>
       </div>
     </div>
   );
