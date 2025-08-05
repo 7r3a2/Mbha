@@ -240,40 +240,41 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
     setIsPanning(false);
   };
 
-  // Full screen toggle
-  const toggleFullScreen = () => {
-    setIsFullScreen(!isFullScreen);
-  };
+     // Full screen toggle - only for the flowchart frame
+   const toggleFullScreen = () => {
+     setIsFullScreen(!isFullScreen);
+   };
 
-     return (
-     <div className={`${isFullScreen ? 'fixed inset-0 z-50' : 'h-full'} bg-gradient-to-br from-blue-50 to-indigo-100 overflow-hidden`}>
-       {/* Header with full screen button */}
-       <div className="bg-white/90 backdrop-blur-sm p-3 sm:p-4 shadow-sm flex items-center justify-between">
-         <h1 className="text-lg sm:text-2xl font-bold text-blue-600">Chest Pain</h1>
-         <button
-           onClick={toggleFullScreen}
-           className="px-3 py-2 sm:px-4 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2 text-sm sm:text-base"
-         >
+   return (
+     <div className="h-full bg-gradient-to-br from-blue-50 to-indigo-100 overflow-hidden">
+                {/* Header with full screen button */}
+         <div className="bg-white/90 backdrop-blur-sm p-3 sm:p-4 shadow-sm flex items-center justify-between">
+           <h1 className="text-lg sm:text-2xl font-bold text-blue-600">Chest Pain</h1>
+           <button
+             onClick={toggleFullScreen}
+             className="px-3 py-2 sm:px-4 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2 text-sm sm:text-base"
+             title={isFullScreen ? "Exit Full Screen" : "Full Screen Frame"}
+           >
           {isFullScreen ? (
             <>
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
-              <span>Exit Full Screen</span>
-            </>
-          ) : (
-            <>
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-              </svg>
-              <span>Full Screen</span>
-            </>
-          )}
+                             <span>Exit Frame</span>
+             </>
+           ) : (
+             <>
+               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+               </svg>
+               <span>Full Frame</span>
+             </>
+           )}
         </button>
       </div>
 
                       {/* Main flowchart container */}
-        <div className="relative w-full h-full overflow-hidden">
+        <div className={`relative ${isFullScreen ? 'fixed inset-0 z-50 bg-gradient-to-br from-blue-50 to-indigo-100' : 'w-full h-full'} overflow-hidden`}>
           {/* Panning area - only around the flowchart content */}
           <div
             className="absolute inset-0 cursor-grab active:cursor-grabbing"
@@ -517,7 +518,7 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
              <div className="font-semibold mb-1">Touch & Drag:</div>
              <div>• Touch and drag empty areas to pan</div>
              <div>• Tap boxes to select and copy text</div>
-             <div>• Use full screen for better view</div>
+             <div>• Use full frame button for better view</div>
            </div>
          )}
        </div>
