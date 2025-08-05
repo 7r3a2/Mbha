@@ -21,6 +21,7 @@ const FlowchartBox = ({
     className={`
       border-2 border-gray-500 bg-white px-4 py-3 text-center
       rounded-lg shadow-md text-base font-medium text-gray-800
+      select-text cursor-text hover:bg-gray-50 transition-colors
       ${className}
     `}
     style={{
@@ -28,6 +29,8 @@ const FlowchartBox = ({
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
+      position: 'relative',
+      zIndex: 20,
       ...style
     }}
   >
@@ -39,12 +42,14 @@ const FlowchartBox = ({
 // Red reference box component
 const ReferenceBox = ({ text, style = {} }: { text: string; style?: React.CSSProperties }) => (
   <div 
-    className="bg-red-300 border-2 border-gray-500 px-4 py-3 text-center rounded-lg text-base font-semibold text-black shadow-md"
+    className="bg-red-300 border-2 border-gray-500 px-4 py-3 text-center rounded-lg text-base font-semibold text-black shadow-md select-text cursor-text hover:bg-red-400 transition-colors"
     style={{
       minHeight: '50px',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
+      position: 'relative',
+      zIndex: 20,
       ...style
     }}
   >
@@ -141,15 +146,18 @@ const ChestPainFlowchart = () => {
   const [isPanning, setIsPanning] = useState(false);
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
   const [scrollPos, setScrollPos] = useState({ x: 0, y: 0 });
+  const [isFullScreen, setIsFullScreen] = useState(false);
 
-  // Panning functionality
+  // Panning functionality with faster response
   const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
     setIsPanning(true);
     setStartPos({ x: e.clientX - scrollPos.x, y: e.clientY - scrollPos.y });
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!isPanning) return;
+    e.preventDefault();
     const newX = e.clientX - startPos.x;
     const newY = e.clientY - startPos.y;
     setScrollPos({ x: newX, y: newY });
@@ -159,30 +167,86 @@ const ChestPainFlowchart = () => {
     setIsPanning(false);
   };
 
+  // Touch events for mobile
+  const handleTouchStart = (e: React.TouchEvent) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    setIsPanning(true);
+    setStartPos({ x: touch.clientX - scrollPos.x, y: touch.clientY - scrollPos.y });
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isPanning) return;
+    e.preventDefault();
+    const touch = e.touches[0];
+    const newX = touch.clientX - startPos.x;
+    const newY = touch.clientY - startPos.y;
+    setScrollPos({ x: newX, y: newY });
+  };
+
+  const handleTouchEnd = () => {
+    setIsPanning(false);
+  };
+
+  // Full screen toggle
+  const toggleFullScreen = () => {
+    setIsFullScreen(!isFullScreen);
+  };
+
   return (
-    <div className="h-full bg-gray-100 overflow-hidden">
-      {/* Title */}
-      <div className="bg-white p-4 shadow-sm">
+    <div className={`${isFullScreen ? 'fixed inset-0 z-50' : 'h-full'} bg-gray-100 overflow-hidden`}>
+      {/* Header with full screen button */}
+      <div className="bg-white p-4 shadow-sm flex items-center justify-between">
         <h1 className="text-2xl font-bold text-blue-600">Chest Pain</h1>
+        <button
+          onClick={toggleFullScreen}
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+        >
+          {isFullScreen ? (
+            <>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              <span>Exit Full Screen</span>
+            </>
+          ) : (
+            <>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+              </svg>
+              <span>Full Screen</span>
+            </>
+          )}
+        </button>
       </div>
 
-      {/* Main flowchart container */}
-      <div
-        className="relative w-full h-full cursor-grab active:cursor-grabbing"
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-        style={{ cursor: isPanning ? 'grabbing' : 'grab' }}
-      >
-        <div
-          className="relative"
-          style={{
-            transform: `translate(${scrollPos.x}px, ${scrollPos.y}px)`,
-            width: '1600px',
-            height: '1300px',
-          }}
-        >
+             {/* Main flowchart container */}
+       <div className="relative w-full h-full overflow-hidden">
+         {/* Panning area - only around the flowchart */}
+         <div
+           className="absolute inset-0 cursor-grab active:cursor-grabbing"
+           onMouseDown={handleMouseDown}
+           onMouseMove={handleMouseMove}
+           onMouseUp={handleMouseUp}
+           onMouseLeave={handleMouseUp}
+           onTouchStart={handleTouchStart}
+           onTouchMove={handleTouchMove}
+           onTouchEnd={handleTouchEnd}
+           style={{ 
+             cursor: isPanning ? 'grabbing' : 'grab',
+             touchAction: 'none' // Prevents default touch behaviors
+           }}
+         />
+         
+         {/* Flowchart content - interactive */}
+         <div
+           className="relative"
+           style={{
+             transform: `translate(${scrollPos.x}px, ${scrollPos.y}px)`,
+             width: '1600px',
+             height: '1300px',
+           }}
+         >
           {/* Chest Pain - Main box */}
           <FlowchartBox
             title="Chest Pain"
@@ -338,18 +402,20 @@ const ChestPainFlowchart = () => {
           <HorizontalLine y={560} startX={910} endX={1020} />
           <ArrowHead x={1020} y={560} direction="right" />
 
-          {/* Large text box - now part of the moveable flowchart */}
-          <div 
-            className="absolute bg-white border-2 border-gray-500 p-6 rounded-lg shadow-lg"
-            style={{ 
-              left: 50, 
-              top: 720, 
-              width: 1500, 
-              height: 'auto',
-              minHeight: 400,
-              overflow: 'visible'
-            }}
-          >
+                     {/* Large text box - now part of the moveable flowchart */}
+           <div 
+             className="absolute bg-white border-2 border-gray-500 p-6 rounded-lg shadow-lg select-text cursor-text hover:bg-gray-50 transition-colors"
+             style={{ 
+               left: 50, 
+               top: 720, 
+               width: 1500, 
+               height: 'auto',
+               minHeight: 400,
+               overflow: 'visible',
+               position: 'relative',
+               zIndex: 20
+             }}
+           >
             <div className="text-sm leading-6 text-gray-800">
               <p className="mb-3">
                 <strong>Chest pain is one of the most common reasons in which a patient presents for medical care.</strong> There are many etiologies of chest pain or discomfort, 
@@ -390,12 +456,14 @@ const ChestPainFlowchart = () => {
         </div>
       </div>
 
-      {/* Instructions overlay */}
-      <div className="absolute bottom-4 right-4 bg-white p-3 rounded-lg shadow-lg text-sm text-gray-600">
-        <div className="font-semibold mb-1">Instructions:</div>
-        <div>• Click and drag to pan around the flowchart</div>
-        <div>• Use touch gestures on mobile devices</div>
-      </div>
+             {/* Instructions overlay */}
+       <div className="absolute bottom-4 right-4 bg-white p-3 rounded-lg shadow-lg text-sm text-gray-600">
+         <div className="font-semibold mb-1">Instructions:</div>
+         <div>• Click and drag empty areas to pan</div>
+         <div>• Touch and drag on mobile devices</div>
+         <div>• Click on boxes to select and copy text</div>
+         <div>• Use full screen button for better view</div>
+       </div>
     </div>
   );
 };
