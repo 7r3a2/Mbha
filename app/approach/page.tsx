@@ -156,16 +156,17 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
    useEffect(() => {
      const checkDevice = () => {
        const width = window.innerWidth;
+       const height = window.innerHeight;
        setIsMobile(width < 1024);
-       // Better scaling for consistent design
+       // Responsive scaling based on available space
        if (width < 640) {
-         setScale(0.5); // Small mobile
+         setScale(0.4); // Small mobile - smaller scale
        } else if (width < 768) {
-         setScale(0.6); // Large mobile
+         setScale(0.5); // Large mobile
        } else if (width < 1024) {
-         setScale(0.75); // Tablet
+         setScale(0.6); // Tablet - better for iPad
        } else {
-         setScale(1); // Desktop
+         setScale(0.8); // Desktop - fit better in frame
        }
      };
      
@@ -194,11 +195,11 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
     const newX = e.clientX - startPos.x;
     const newY = e.clientY - startPos.y;
     
-         // Constrain panning to keep flowchart visible - same for all devices
-     const maxX = 200; // Allow some panning to the right
-     const minX = -600; // Allow some panning to the left (balanced with right)
-     const maxY = 0; // Don't pan too far down (flowchart starts at 0)
-     const minY = -400; // Allow some panning up (medium size)
+         // Responsive panning constraints based on device
+     const maxX = isMobile ? 150 : 200; // Allow panning to the right
+     const minX = isMobile ? -800 : -600; // More panning left on mobile to see content
+     const maxY = isMobile ? 50 : 0; // Allow some down panning on mobile
+     const minY = isMobile ? -600 : -400; // Much more up panning on mobile to see full flowchart
     
     const constrainedX = Math.max(minX, Math.min(maxX, newX));
     const constrainedY = Math.max(minY, Math.min(maxY, newY));
@@ -229,11 +230,11 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
      const newX = touch.clientX - startPos.x;
      const newY = touch.clientY - startPos.y;
     
-         // Same constraints as desktop for consistent experience
-     const maxX = 200; // Allow some panning to the right
-     const minX = -600; // Allow some panning to the left (balanced with right)
-     const maxY = 0; // Don't pan too far down (flowchart starts at 0)
-     const minY = -400; // Allow some panning up (medium size)
+         // Responsive panning constraints for touch
+     const maxX = isMobile ? 150 : 200; // Allow panning to the right
+     const minX = isMobile ? -800 : -600; // More panning left on mobile to see content
+     const maxY = isMobile ? 50 : 0; // Allow some down panning on mobile
+     const minY = isMobile ? -600 : -400; // Much more up panning on mobile to see full flowchart
     
     const constrainedX = Math.max(minX, Math.min(maxX, newX));
     const constrainedY = Math.max(minY, Math.min(maxY, newY));
@@ -292,8 +293,10 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
             onTouchEnd={handleTouchEnd}
             style={{ 
               cursor: isPanning ? 'grabbing' : 'grab',
-              touchAction: 'none',
-              pointerEvents: 'auto'
+              touchAction: 'pan-x pan-y', // Allow native scrolling when needed
+              pointerEvents: 'auto',
+              WebkitTouchCallout: 'none', // Prevent iOS touch callouts
+              WebkitUserSelect: 'none' // Prevent text selection
             }}
           />
           
@@ -308,7 +311,10 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
                 transformOrigin: 'top left',
                 maxWidth: '100%',
                 maxHeight: '100%',
-                transition: isPanning ? 'none' : 'transform 0.1s ease-out'
+                transition: isPanning ? 'none' : 'transform 0.15s ease-out',
+                willChange: 'transform', // Optimize for animations
+                backfaceVisibility: 'hidden', // Reduce blur on touch
+                WebkitBackfaceVisibility: 'hidden' // Safari support
               }}
             >
                      {/* Chest Pain - Main box */}
