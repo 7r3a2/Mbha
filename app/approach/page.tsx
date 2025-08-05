@@ -158,6 +158,11 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
        const width = window.innerWidth;
        setIsMobile(width < 1024);
        setScale(width < 768 ? 0.6 : width < 1024 ? 0.8 : 1);
+       
+       // Auto fullscreen for iPad/tablet (768px - 1024px)
+       if (width >= 768 && width < 1024) {
+         setIsFullScreen(true);
+       }
      };
      
      checkDevice();
@@ -246,7 +251,7 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
    };
 
        return (
-      <div className={`${isFullScreen ? 'fixed inset-0 z-50' : 'h-full'} bg-gradient-to-br from-blue-50 to-indigo-100 overflow-hidden`}>
+      <div className="h-full bg-gradient-to-br from-blue-50 to-indigo-100 overflow-hidden">
                 {/* Header with full screen button */}
          <div className="bg-white/90 backdrop-blur-sm p-3 sm:p-4 shadow-sm flex items-center justify-between">
            <h1 className="text-lg sm:text-2xl font-bold text-blue-600">Chest Pain</h1>
@@ -274,7 +279,7 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
       </div>
 
                       {/* Main flowchart container */}
-        <div className="relative w-full h-full overflow-hidden">
+        <div className={`relative ${isFullScreen ? 'fixed inset-0 z-50 bg-gradient-to-br from-blue-50 to-indigo-100' : 'w-full h-full'} overflow-hidden`}>
           {/* Panning area - only around the flowchart content */}
           <div
             className="absolute inset-0 cursor-grab active:cursor-grabbing"
@@ -513,12 +518,22 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
                  </div>
          
          {/* Mobile-friendly instruction overlay */}
-         {isMobile && (
+         {isMobile && !isFullScreen && (
            <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm p-3 rounded-lg shadow-lg text-xs text-gray-600">
              <div className="font-semibold mb-1">Touch & Drag:</div>
              <div>• Touch and drag empty areas to pan</div>
              <div>• Tap boxes to select and copy text</div>
              <div>• Use full frame button for better view</div>
+           </div>
+         )}
+         
+         {/* Fullscreen instruction overlay */}
+         {isFullScreen && (
+           <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm p-3 rounded-lg shadow-lg text-xs text-gray-600">
+             <div className="font-semibold mb-1">Fullscreen Mode:</div>
+             <div>• Touch and drag empty areas to pan</div>
+             <div>• Tap boxes to select and copy text</div>
+             <div>• Use Exit Frame button to return</div>
            </div>
          )}
        </div>
