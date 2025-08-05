@@ -150,6 +150,11 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
     const [zoomScale, setZoomScale] = useState(1);
     const [isZooming, setIsZooming] = useState(false);
     const [initialDistance, setInitialDistance] = useState(0);
+    const [panX, setPanX] = useState(0);
+    const [panY, setPanY] = useState(0);
+    const [isPanning, setIsPanning] = useState(false);
+    const [lastTouchX, setLastTouchX] = useState(0);
+    const [lastTouchY, setLastTouchY] = useState(0);
 
            // Check if mobile/tablet on mount and resize
     useEffect(() => {
@@ -177,38 +182,60 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
       return () => window.removeEventListener('resize', checkDevice);
     }, []);
 
-     // Pinch-to-zoom functionality for mobile
-   const handleTouchStart = (e: React.TouchEvent) => {
-     if (e.touches.length === 2) {
-       // Two finger touch - start zooming
-       e.preventDefault();
-       setIsZooming(true);
-       const distance = Math.hypot(
-         e.touches[0].clientX - e.touches[1].clientX,
-         e.touches[0].clientY - e.touches[1].clientY
-       );
-       setInitialDistance(distance);
-     }
-   };
-
-       const handleTouchMove = (e: React.TouchEvent) => {
-      if (e.touches.length === 2 && isZooming) {
+           // Pinch-to-zoom and panning functionality for mobile
+    const handleTouchStart = (e: React.TouchEvent) => {
+      if (e.touches.length === 2) {
+        // Two finger touch - start zooming
         e.preventDefault();
+        setIsZooming(true);
+        setIsPanning(false);
         const distance = Math.hypot(
           e.touches[0].clientX - e.touches[1].clientX,
           e.touches[0].clientY - e.touches[1].clientY
         );
-        
-        const scaleFactor = distance / initialDistance;
-        const newZoomScale = Math.max(0.3, Math.min(5, zoomScale * scaleFactor));
-        setZoomScale(newZoomScale);
         setInitialDistance(distance);
+      } else if (e.touches.length === 1 && zoomScale > 1) {
+        // Single finger touch when zoomed - start panning
+        e.preventDefault();
+        setIsPanning(true);
+        setIsZooming(false);
+        setLastTouchX(e.touches[0].clientX);
+        setLastTouchY(e.touches[0].clientY);
       }
     };
 
-   const handleTouchEnd = () => {
-     setIsZooming(false);
-   };
+        const handleTouchMove = (e: React.TouchEvent) => {
+       if (e.touches.length === 2 && isZooming) {
+         // Two finger zoom
+         e.preventDefault();
+         const distance = Math.hypot(
+           e.touches[0].clientX - e.touches[1].clientX,
+           e.touches[0].clientY - e.touches[1].clientY
+         );
+         
+         const scaleFactor = distance / initialDistance;
+         const newZoomScale = Math.max(0.3, Math.min(5, zoomScale * scaleFactor));
+         setZoomScale(newZoomScale);
+         setInitialDistance(distance);
+       } else if (e.touches.length === 1 && isPanning && zoomScale > 1) {
+         // Single finger pan when zoomed
+         e.preventDefault();
+         const touch = e.touches[0];
+         const deltaX = touch.clientX - lastTouchX;
+         const deltaY = touch.clientY - lastTouchY;
+         
+         setPanX(prev => prev + deltaX);
+         setPanY(prev => prev + deltaY);
+         
+         setLastTouchX(touch.clientX);
+         setLastTouchY(touch.clientY);
+       }
+     };
+
+    const handleTouchEnd = () => {
+      setIsZooming(false);
+      setIsPanning(false);
+    };
 
      // Full screen toggle - only for the flowchart frame
    const toggleFullScreen = () => {
@@ -243,39 +270,39 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
          </button>
        </div>
 
-                                              {/* Main flowchart container - smaller frame */}
-          <div className="relative w-full h-full overflow-hidden flex items-center justify-center p-4">
-            {/* Touch area for pinch-to-zoom - only within the flowchart area */}
-            <div
-              className="relative w-full h-full max-w-6xl max-h-[80vh] bg-white/80 rounded-lg border-2 border-blue-200 shadow-lg"
-              onTouchStart={handleTouchStart}
-              onTouchMove={handleTouchMove}
-              onTouchEnd={handleTouchEnd}
-              style={{ 
-                touchAction: 'none', // Prevent page refresh on iPad
-                pointerEvents: 'auto',
-                WebkitTouchCallout: 'none', // Prevent iOS touch callouts
-                WebkitUserSelect: 'none' // Prevent text selection
-              }}
-            >
-           
-                                                                                         {/* Flowchart content - centered */}
-              <div
-                className="relative w-full h-full flex items-center justify-center"
-                style={{
-                  transform: `scale(${scale * zoomScale})`,
-                  width: '1600px',
-                  height: '1300px',
-                  pointerEvents: 'auto', // Enable interaction with boxes
-                  transformOrigin: 'center',
-                  maxWidth: '100%',
-                  maxHeight: '100%',
-                  transition: isZooming ? 'none' : 'transform 0.15s ease-out',
-                  willChange: 'transform', // Optimize for animations
-                  backfaceVisibility: 'hidden', // Reduce blur on touch
-                  WebkitBackfaceVisibility: 'hidden' // Safari support
-                }}
-              >
+                                                                                             {/* Main flowchart container - direct touch area */}
+           <div className="relative w-full h-full overflow-hidden flex items-center justify-center p-4">
+             {/* Touch area for pinch-to-zoom and panning */}
+             <div
+               className="relative w-full h-full max-w-6xl max-h-[80vh] bg-white/80 rounded-lg border-2 border-blue-200 shadow-lg overflow-hidden"
+               onTouchStart={handleTouchStart}
+               onTouchMove={handleTouchMove}
+               onTouchEnd={handleTouchEnd}
+               style={{ 
+                 touchAction: 'none', // Prevent page refresh on iPad
+                 pointerEvents: 'auto',
+                 WebkitTouchCallout: 'none', // Prevent iOS touch callouts
+                 WebkitUserSelect: 'none' // Prevent text selection
+               }}
+             >
+            
+                                                                                          {/* Flowchart content - with panning when zoomed */}
+               <div
+                 className="relative w-full h-full flex items-center justify-center"
+                 style={{
+                   transform: `scale(${scale * zoomScale}) translate(${panX}px, ${panY}px)`,
+                   width: '1600px',
+                   height: '1300px',
+                   pointerEvents: 'auto', // Enable interaction with boxes
+                   transformOrigin: 'center',
+                   maxWidth: '100%',
+                   maxHeight: '100%',
+                   transition: isZooming ? 'none' : 'transform 0.15s ease-out',
+                   willChange: 'transform', // Optimize for animations
+                   backfaceVisibility: 'hidden', // Reduce blur on touch
+                   WebkitBackfaceVisibility: 'hidden' // Safari support
+                 }}
+               >
                      {/* Chest Pain - Main box */}
            <FlowchartBox
              title="Chest Pain"
@@ -486,15 +513,16 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
                                    </div>
              </div>
           
-                    {/* Mobile-friendly instruction overlay */}
-           {isMobile && (
-             <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm p-3 rounded-lg shadow-lg text-xs text-gray-600">
-               <div className="font-semibold mb-1">Pinch to Zoom:</div>
-               <div>• Use two fingers to pinch and zoom</div>
-               <div>• Tap boxes to select and copy text</div>
-               <div>• Use full screen for better view</div>
-             </div>
-           )}
+                                         {/* Mobile-friendly instruction overlay */}
+            {isMobile && (
+              <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm p-3 rounded-lg shadow-lg text-xs text-gray-600">
+                <div className="font-semibold mb-1">Touch Controls:</div>
+                <div>• Two fingers: Pinch to zoom in/out</div>
+                <div>• One finger: Drag to pan when zoomed</div>
+                <div>• Tap boxes to select and copy text</div>
+                <div>• Use full screen for better view</div>
+              </div>
+            )}
         </div>
 
               
