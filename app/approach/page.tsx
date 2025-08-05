@@ -200,6 +200,7 @@ const ChestPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullScreen =
     if (!isPanning) return;
     e.preventDefault();
     
+    // Faster, more responsive panning
     const newX = e.clientX - mouseStartPos.x;
     const newY = e.clientY - mouseStartPos.y;
     
@@ -209,11 +210,11 @@ const ChestPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullScreen =
     const containerWidth = window.innerWidth;
     const containerHeight = window.innerHeight;
     
-    // Calculate border limits
-    const maxX = 100; // Can slide right a bit
-    const minX = -(scaledWidth - containerWidth + 100); // Can slide left to see content
-    const maxY = 50; // Can slide down a bit
-    const minY = -(scaledHeight - containerHeight + 100); // Can slide up to see content
+    // Calculate border limits with more generous bounds
+    const maxX = 200; // Can slide right more
+    const minX = -(scaledWidth - containerWidth + 200); // Can slide left more
+    const maxY = 100; // Can slide down more
+    const minY = -(scaledHeight - containerHeight + 200); // Can slide up more
     
     const constrainedX = Math.max(minX, Math.min(maxX, newX));
     const constrainedY = Math.max(minY, Math.min(maxY, newY));
@@ -279,7 +280,7 @@ const ChestPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullScreen =
       setZoomScale(newZoomScale);
       setInitialDistance(distance);
     } else if (e.touches.length === 1 && isPanning) {
-      // Single finger pan with borders
+      // Single finger pan with borders - faster and more responsive
       e.preventDefault();
       const touch = e.touches[0];
       const deltaX = touch.clientX - lastTouchX;
@@ -288,17 +289,17 @@ const ChestPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullScreen =
       const newX = panX + deltaX;
       const newY = panY + deltaY;
       
-      // Add sliding borders for touch too
+      // Add sliding borders for touch too with more generous bounds
       const scaledWidth = 1600 * scale * zoomScale;
       const scaledHeight = 1300 * scale * zoomScale;
       const containerWidth = window.innerWidth;
       const containerHeight = window.innerHeight;
       
-      // Calculate border limits
-      const maxX = 100;
-      const minX = -(scaledWidth - containerWidth + 100);
-      const maxY = 50;
-      const minY = -(scaledHeight - containerHeight + 100);
+      // Calculate border limits with more generous bounds
+      const maxX = 200;
+      const minX = -(scaledWidth - containerWidth + 200);
+      const maxY = 100;
+      const minY = -(scaledHeight - containerHeight + 200);
       
       const constrainedX = Math.max(minX, Math.min(maxX, newX));
       const constrainedY = Math.max(minY, Math.min(maxY, newY));
@@ -370,20 +371,20 @@ const ChestPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullScreen =
       >
         
         {/* Flowchart content - centered and responsive */}
-        <div
-          className="relative"
-          style={{
-            transform: `scale(${scale * zoomScale}) translate(${panX}px, ${panY}px)`,
-            width: '1600px',
-            height: '1300px',
-            pointerEvents: 'auto', // Enable interaction with boxes
-            transformOrigin: 'center',
-            transition: isZooming ? 'none' : 'transform 0.15s ease-out',
-            willChange: 'transform', // Optimize for animations
-            backfaceVisibility: 'hidden', // Reduce blur on touch
-            WebkitBackfaceVisibility: 'hidden' // Safari support
-          }}
-        >
+                 <div
+           className="relative"
+           style={{
+             transform: `scale(${scale * zoomScale}) translate(${panX}px, ${panY}px)`,
+             width: '1600px',
+             height: '1300px',
+             pointerEvents: 'auto', // Enable interaction with boxes
+             transformOrigin: 'center',
+             transition: isZooming ? 'none' : 'none', // Remove transition for instant panning
+             willChange: 'transform', // Optimize for animations
+             backfaceVisibility: 'hidden', // Reduce blur on touch
+             WebkitBackfaceVisibility: 'hidden' // Safari support
+           }}
+         >
           {/* Chest Pain - Main box */}
           <FlowchartBox
             title="Chest Pain"
