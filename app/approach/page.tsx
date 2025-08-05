@@ -772,7 +772,7 @@ export default function ApproachPage() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col min-w-0">
                  {/* Header */}
          <header className="bg-[#3A8431] shadow-md h-12 sm:h-14 md:h-16 flex items-center justify-between px-3 sm:px-4 md:px-6">
            <button 
@@ -788,9 +788,9 @@ export default function ApproachPage() {
          </header>
 
                                    {/* Main Content */}
-                     <main className="flex-1 p-2 sm:p-4 md:p-6 overflow-hidden">
+                     <main className="flex-1 p-2 sm:p-4 md:p-6 overflow-hidden min-w-0">
              {selectedContent && selectedContent.lecture ? (
-                               <div className={`${selectedContent.lecture.id === 'card-5' && isFrameFullscreen ? 'fixed inset-0 z-50' : 'h-full w-full max-w-full'} bg-white/95 backdrop-blur-sm border-2 border-blue-300 rounded-xl overflow-hidden shadow-xl`}>
+                               <div className={`${selectedContent.lecture.id === 'card-5' && isFrameFullscreen ? 'fixed inset-0 z-50' : 'h-full w-full'} bg-white/95 backdrop-blur-sm border-2 border-blue-300 rounded-xl overflow-hidden shadow-xl`}>
                 {selectedContent.lecture.id === 'card-5' ? (
                   // Render Chest Pain flowchart directly as component
                   <ChestPainFlowchart 
