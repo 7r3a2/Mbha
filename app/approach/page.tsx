@@ -160,16 +160,16 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
         const height = window.innerHeight;
         setIsMobile(width < 1024);
         
-        // Auto-fit flowchart to device - hug the screen
+        // Bigger flowchart with moderate scaling
         const flowchartWidth = 1600;
         const flowchartHeight = 1300;
         
-        // Calculate scale to fit both width and height
-        const scaleX = (width * 0.9) / flowchartWidth; // 90% of screen width
-        const scaleY = (height * 0.8) / flowchartHeight; // 80% of screen height (accounting for header)
+        // Calculate scale - keep it bigger but not too big
+        const scaleX = (width * 0.85) / flowchartWidth; // 85% of screen width
+        const scaleY = (height * 0.75) / flowchartHeight; // 75% of screen height
         
-        // Use the smaller scale to ensure it fits completely
-        const autoScale = Math.min(scaleX, scaleY, 1); // Never scale up beyond 1
+        // Use moderate scaling - not too small, not too big
+        const autoScale = Math.min(scaleX, scaleY, 0.9); // Cap at 0.9 to keep it big
         
         setScale(autoScale);
         
@@ -209,8 +209,20 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
          const newX = e.clientX - startPos.x;
      const newY = e.clientY - startPos.y;
      
-     // Free panning - no constraints
-     setScrollPos({ x: newX, y: newY });
+     // Sliding with border constraints - not too small, not too large
+     const scaledWidth = 1600 * scale;
+     const scaledHeight = 1300 * scale;
+     
+     // Calculate border limits - flowchart can move within these bounds
+     const maxX = 100; // Can slide right a bit
+     const minX = -(scaledWidth - window.innerWidth + 100); // Can slide left to see content
+     const maxY = 50; // Can slide down a bit
+     const minY = -(scaledHeight - window.innerHeight + 100); // Can slide up to see content
+     
+     const constrainedX = Math.max(minX, Math.min(maxX, newX));
+     const constrainedY = Math.max(minY, Math.min(maxY, newY));
+     
+     setScrollPos({ x: constrainedX, y: constrainedY });
   };
 
   const handleMouseUp = () => {
@@ -238,8 +250,20 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
           const newX = touch.clientX - startPos.x;
      const newY = touch.clientY - startPos.y;
      
-     // Free panning - no constraints
-     setScrollPos({ x: newX, y: newY });
+     // Sliding with border constraints - not too small, not too large
+     const scaledWidth = 1600 * scale;
+     const scaledHeight = 1300 * scale;
+     
+     // Calculate border limits - flowchart can move within these bounds
+     const maxX = 100; // Can slide right a bit
+     const minX = -(scaledWidth - window.innerWidth + 100); // Can slide left to see content
+     const maxY = 50; // Can slide down a bit
+     const minY = -(scaledHeight - window.innerHeight + 100); // Can slide up to see content
+     
+     const constrainedX = Math.max(minX, Math.min(maxX, newX));
+     const constrainedY = Math.max(minY, Math.min(maxY, newY));
+     
+     setScrollPos({ x: constrainedX, y: constrainedY });
   };
 
   const handleTouchEnd = () => {
