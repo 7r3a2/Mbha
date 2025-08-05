@@ -195,11 +195,11 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
     const newX = e.clientX - startPos.x;
     const newY = e.clientY - startPos.y;
     
-         // Responsive panning constraints - much more aggressive for iPad
-     const maxX = isMobile ? 150 : 200; // Allow panning to the right
-     const minX = isMobile ? -800 : -600; // More panning left on mobile to see content
-     const maxY = isMobile ? 800 : 0; // Much more down panning for iPad to see text box
-     const minY = isMobile ? -2000 : -400; // Much more up panning for iPad
+         // NO CONSTRAINTS for iPad - completely free panning
+     const maxX = isMobile ? 1000 : 200; // No right limit for iPad
+     const minX = isMobile ? -2000 : -600; // No left limit for iPad
+     const maxY = isMobile ? 2000 : 0; // No down limit for iPad
+     const minY = isMobile ? -3000 : -400; // No up limit for iPad
     
     const constrainedX = Math.max(minX, Math.min(maxX, newX));
     const constrainedY = Math.max(minY, Math.min(maxY, newY));
@@ -232,11 +232,11 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
      const newX = touch.clientX - startPos.x;
      const newY = touch.clientY - startPos.y;
     
-         // Responsive panning constraints for touch - much more aggressive for iPad
-     const maxX = isMobile ? 150 : 200; // Allow panning to the right
-     const minX = isMobile ? -800 : -600; // More panning left on mobile to see content
-     const maxY = isMobile ? 800 : 0; // Much more down panning for iPad to see text box
-     const minY = isMobile ? -2000 : -400; // Much more up panning for iPad
+         // NO CONSTRAINTS for iPad touch - completely free panning
+     const maxX = isMobile ? 1000 : 200; // No right limit for iPad
+     const minX = isMobile ? -2000 : -600; // No left limit for iPad
+     const maxY = isMobile ? 2000 : 0; // No down limit for iPad
+     const minY = isMobile ? -3000 : -400; // No up limit for iPad
     
     const constrainedX = Math.max(minX, Math.min(maxX, newX));
     const constrainedY = Math.max(minY, Math.min(maxY, newY));
