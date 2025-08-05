@@ -145,35 +145,49 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
 
  // Chest Pain Flowchart Component
  const ChestPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullScreen = () => {} }) => {
-   const [isPanning, setIsPanning] = useState(false);
-   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
-   const [scrollPos, setScrollPos] = useState({ x: 0, y: 0 });
-   // Remove local fullscreen state, use props instead
-   const [isMobile, setIsMobile] = useState(false);
-   const [scale, setScale] = useState(1);
+       const [isPanning, setIsPanning] = useState(false);
+    const [startPos, setStartPos] = useState({ x: 0, y: 0 });
+    const [scrollPos, setScrollPos] = useState({ x: 0, y: 0 });
+    // Remove local fullscreen state, use props instead
+    const [isMobile, setIsMobile] = useState(false);
+    const [scale, setScale] = useState(1);
+    const [centeredPos, setCenteredPos] = useState({ x: 0, y: 0 });
 
-   // Check if mobile/tablet on mount and resize
-   useEffect(() => {
-     const checkDevice = () => {
-       const width = window.innerWidth;
-       const height = window.innerHeight;
-       setIsMobile(width < 1024);
-       // Responsive scaling - fix only iPad, keep desktop original
-       if (width < 640) {
-         setScale(0.5); // Small mobile
-       } else if (width < 768) {
-         setScale(0.6); // Large mobile
-       } else if (width < 1024) {
-         setScale(0.65); // iPad only - better fit
-       } else {
-         setScale(1); // Desktop - back to original
-       }
-     };
-     
-     checkDevice();
-     window.addEventListener('resize', checkDevice);
-     return () => window.removeEventListener('resize', checkDevice);
-   }, []);
+       // Check if mobile/tablet on mount and resize
+    useEffect(() => {
+      const checkDevice = () => {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        setIsMobile(width < 1024);
+        
+        // Auto-fit flowchart to device - hug the screen
+        const flowchartWidth = 1600;
+        const flowchartHeight = 1300;
+        
+        // Calculate scale to fit both width and height
+        const scaleX = (width * 0.9) / flowchartWidth; // 90% of screen width
+        const scaleY = (height * 0.8) / flowchartHeight; // 80% of screen height (accounting for header)
+        
+        // Use the smaller scale to ensure it fits completely
+        const autoScale = Math.min(scaleX, scaleY, 1); // Never scale up beyond 1
+        
+        setScale(autoScale);
+        
+        // Calculate centered position
+        const scaledWidth = flowchartWidth * autoScale;
+        const scaledHeight = flowchartHeight * autoScale;
+        
+        const centerX = (width - scaledWidth) / 2;
+        const centerY = (height - scaledHeight) / 2;
+        
+        setCenteredPos({ x: centerX, y: centerY });
+        setScrollPos({ x: centerX, y: centerY }); // Set initial position to center
+      };
+      
+      checkDevice();
+      window.addEventListener('resize', checkDevice);
+      return () => window.removeEventListener('resize', checkDevice);
+    }, []);
 
   // Panning functionality with constraints and smooth movement
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -192,19 +206,11 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
     if (!isPanning) return;
     e.preventDefault();
     
-    const newX = e.clientX - startPos.x;
-    const newY = e.clientY - startPos.y;
-    
-         // NO CONSTRAINTS AT ALL - work exactly like desktop
-     const maxX = 2000; // No right limit for anyone
-     const minX = -2000; // No left limit for anyone
-     const maxY = 2000; // No down limit for anyone
-     const minY = -3000; // No up limit for anyone
-    
-    const constrainedX = Math.max(minX, Math.min(maxX, newX));
-    const constrainedY = Math.max(minY, Math.min(maxY, newY));
-    
-    setScrollPos({ x: constrainedX, y: constrainedY });
+         const newX = e.clientX - startPos.x;
+     const newY = e.clientY - startPos.y;
+     
+     // Free panning - no constraints
+     setScrollPos({ x: newX, y: newY });
   };
 
   const handleMouseUp = () => {
@@ -229,19 +235,11 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
      
      e.preventDefault(); // Prevent page refresh/bounce on iPad
      const touch = e.touches[0];
-     const newX = touch.clientX - startPos.x;
+          const newX = touch.clientX - startPos.x;
      const newY = touch.clientY - startPos.y;
-    
-         // NO CONSTRAINTS AT ALL - work exactly like desktop
-     const maxX = 2000; // No right limit for anyone
-     const minX = -2000; // No left limit for anyone
-     const maxY = 2000; // No down limit for anyone
-     const minY = -3000; // No up limit for anyone
-    
-    const constrainedX = Math.max(minX, Math.min(maxX, newX));
-    const constrainedY = Math.max(minY, Math.min(maxY, newY));
-    
-    setScrollPos({ x: constrainedX, y: constrainedY });
+     
+     // Free panning - no constraints
+     setScrollPos({ x: newX, y: newY });
   };
 
   const handleTouchEnd = () => {
