@@ -19,7 +19,7 @@ const FlowchartBox = ({
 }) => (
   <div 
     className={`
-      border-2 border-gray-500 bg-white px-4 py-3 text-center
+      flowchart-box border-2 border-gray-500 bg-white px-4 py-3 text-center
       rounded-lg shadow-md text-base font-medium text-gray-800
       select-text cursor-text hover:bg-gray-50 transition-colors
       ${className}
@@ -31,6 +31,7 @@ const FlowchartBox = ({
       justifyContent: 'center',
       position: 'relative',
       zIndex: 20,
+      pointerEvents: 'auto', // Re-enable pointer events for boxes
       ...style
     }}
   >
@@ -42,7 +43,7 @@ const FlowchartBox = ({
 // Red reference box component
 const ReferenceBox = ({ text, style = {} }: { text: string; style?: React.CSSProperties }) => (
   <div 
-    className="bg-red-300 border-2 border-gray-500 px-4 py-3 text-center rounded-lg text-base font-semibold text-black shadow-md select-text cursor-text hover:bg-red-400 transition-colors"
+    className="reference-box bg-red-300 border-2 border-gray-500 px-4 py-3 text-center rounded-lg text-base font-semibold text-black shadow-md select-text cursor-text hover:bg-red-400 transition-colors"
     style={{
       minHeight: '50px',
       display: 'flex',
@@ -50,6 +51,7 @@ const ReferenceBox = ({ text, style = {} }: { text: string; style?: React.CSSPro
       justifyContent: 'center',
       position: 'relative',
       zIndex: 20,
+      pointerEvents: 'auto', // Re-enable pointer events for boxes
       ...style
     }}
   >
@@ -148,8 +150,14 @@ const ChestPainFlowchart = () => {
   const [scrollPos, setScrollPos] = useState({ x: 0, y: 0 });
   const [isFullScreen, setIsFullScreen] = useState(false);
 
-  // Panning functionality with faster response
+  // Panning functionality with constraints and smooth movement
   const handleMouseDown = (e: React.MouseEvent) => {
+    // Only start panning if clicking on empty space (not on boxes)
+    const target = e.target as HTMLElement;
+    if (target.closest('.flowchart-box, .reference-box, .text-box')) {
+      return;
+    }
+    
     e.preventDefault();
     setIsPanning(true);
     setStartPos({ x: e.clientX - scrollPos.x, y: e.clientY - scrollPos.y });
@@ -158,9 +166,20 @@ const ChestPainFlowchart = () => {
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!isPanning) return;
     e.preventDefault();
+    
     const newX = e.clientX - startPos.x;
     const newY = e.clientY - startPos.y;
-    setScrollPos({ x: newX, y: newY });
+    
+    // Constrain panning to keep flowchart visible
+    const maxX = 0; // Don't pan too far right
+    const minX = -1200; // Don't pan too far left
+    const maxY = 0; // Don't pan too far down
+    const minY = -800; // Don't pan too far up
+    
+    const constrainedX = Math.max(minX, Math.min(maxX, newX));
+    const constrainedY = Math.max(minY, Math.min(maxY, newY));
+    
+    setScrollPos({ x: constrainedX, y: constrainedY });
   };
 
   const handleMouseUp = () => {
@@ -169,6 +188,11 @@ const ChestPainFlowchart = () => {
 
   // Touch events for mobile
   const handleTouchStart = (e: React.TouchEvent) => {
+    const target = e.target as HTMLElement;
+    if (target.closest('.flowchart-box, .reference-box, .text-box')) {
+      return;
+    }
+    
     e.preventDefault();
     const touch = e.touches[0];
     setIsPanning(true);
@@ -178,10 +202,21 @@ const ChestPainFlowchart = () => {
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!isPanning) return;
     e.preventDefault();
+    
     const touch = e.touches[0];
     const newX = touch.clientX - startPos.x;
     const newY = touch.clientY - startPos.y;
-    setScrollPos({ x: newX, y: newY });
+    
+    // Same constraints as mouse
+    const maxX = 0;
+    const minX = -1200;
+    const maxY = 0;
+    const minY = -800;
+    
+    const constrainedX = Math.max(minX, Math.min(maxX, newX));
+    const constrainedY = Math.max(minY, Math.min(maxY, newY));
+    
+    setScrollPos({ x: constrainedX, y: constrainedY });
   };
 
   const handleTouchEnd = () => {
@@ -222,7 +257,7 @@ const ChestPainFlowchart = () => {
 
              {/* Main flowchart container */}
        <div className="relative w-full h-full overflow-hidden">
-         {/* Panning area - only around the flowchart */}
+         {/* Panning area - only around the flowchart content */}
          <div
            className="absolute inset-0 cursor-grab active:cursor-grabbing"
            onMouseDown={handleMouseDown}
@@ -234,7 +269,8 @@ const ChestPainFlowchart = () => {
            onTouchEnd={handleTouchEnd}
            style={{ 
              cursor: isPanning ? 'grabbing' : 'grab',
-             touchAction: 'none' // Prevents default touch behaviors
+             touchAction: 'none',
+             pointerEvents: 'auto'
            }}
          />
          
@@ -245,6 +281,7 @@ const ChestPainFlowchart = () => {
              transform: `translate(${scrollPos.x}px, ${scrollPos.y}px)`,
              width: '1600px',
              height: '1300px',
+             pointerEvents: 'none' // Let panning area handle events
            }}
          >
           {/* Chest Pain - Main box */}
@@ -404,7 +441,7 @@ const ChestPainFlowchart = () => {
 
                      {/* Large text box - now part of the moveable flowchart */}
            <div 
-             className="absolute bg-white border-2 border-gray-500 p-6 rounded-lg shadow-lg select-text cursor-text hover:bg-gray-50 transition-colors"
+             className="text-box absolute bg-white border-2 border-gray-500 p-6 rounded-lg shadow-lg select-text cursor-text hover:bg-gray-50 transition-colors"
              style={{ 
                left: 50, 
                top: 720, 
@@ -413,7 +450,8 @@ const ChestPainFlowchart = () => {
                minHeight: 400,
                overflow: 'visible',
                position: 'relative',
-               zIndex: 20
+               zIndex: 20,
+               pointerEvents: 'auto' // Re-enable pointer events for text box
              }}
            >
             <div className="text-sm leading-6 text-gray-800">
@@ -459,9 +497,10 @@ const ChestPainFlowchart = () => {
              {/* Instructions overlay */}
        <div className="absolute bottom-4 right-4 bg-white p-3 rounded-lg shadow-lg text-sm text-gray-600">
          <div className="font-semibold mb-1">Instructions:</div>
-         <div>• Click and drag empty areas to pan</div>
+         <div>• Click and drag empty areas to pan around flowchart</div>
          <div>• Touch and drag on mobile devices</div>
          <div>• Click on boxes to select and copy text</div>
+         <div>• Panning is limited to keep flowchart visible</div>
          <div>• Use full screen button for better view</div>
        </div>
     </div>
