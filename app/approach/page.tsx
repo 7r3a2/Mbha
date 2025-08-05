@@ -195,11 +195,11 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
     const newX = e.clientX - startPos.x;
     const newY = e.clientY - startPos.y;
     
-         // Responsive panning constraints - allow panning in both directions to see all content
+         // Responsive panning constraints - much more aggressive for iPad
      const maxX = isMobile ? 150 : 200; // Allow panning to the right
      const minX = isMobile ? -800 : -600; // More panning left on mobile to see content
-     const maxY = isMobile ? 500 : 0; // Allow panning down to see bottom of text box
-     const minY = isMobile ? -1600 : -400; // Allow panning up to see top content
+     const maxY = isMobile ? 800 : 0; // Much more down panning for iPad to see text box
+     const minY = isMobile ? -2000 : -400; // Much more up panning for iPad
     
     const constrainedX = Math.max(minX, Math.min(maxX, newX));
     const constrainedY = Math.max(minY, Math.min(maxY, newY));
@@ -232,11 +232,11 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
      const newX = touch.clientX - startPos.x;
      const newY = touch.clientY - startPos.y;
     
-         // Responsive panning constraints for touch - allow panning in both directions to see all content
+         // Responsive panning constraints for touch - much more aggressive for iPad
      const maxX = isMobile ? 150 : 200; // Allow panning to the right
      const minX = isMobile ? -800 : -600; // More panning left on mobile to see content
-     const maxY = isMobile ? 500 : 0; // Allow panning down to see bottom of text box
-     const minY = isMobile ? -1600 : -400; // Allow panning up to see top content
+     const maxY = isMobile ? 800 : 0; // Much more down panning for iPad to see text box
+     const minY = isMobile ? -2000 : -400; // Much more up panning for iPad
     
     const constrainedX = Math.max(minX, Math.min(maxX, newX));
     const constrainedY = Math.max(minY, Math.min(maxY, newY));
