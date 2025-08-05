@@ -672,7 +672,23 @@ export default function ApproachPage() {
         {
           id: 'gynecology',
           name: 'Gynecology',
-          lectures: []
+          lectures: [
+            { id: 'acute-pelvic-pain', name: 'Acute Pelvic Pain', content: 'Acute pelvic pain evaluation and management...' },
+            { id: 'dyspareunia', name: 'Dyspareunia', content: 'Painful intercourse evaluation and treatment...' },
+            { id: 'vulvar-vaginal-cancers', name: 'Vulvar/Vaginal Cancers', content: 'Vulvar and vaginal cancer diagnosis and management...' },
+            { id: 'vulvar-vaginal-infections', name: 'Vulvar/Vaginal Infections and Inflammation', content: 'Infections and inflammatory conditions...' },
+            { id: 'vulvar-dystrophies', name: 'Vulvar Dystrophies', content: 'Vulvar dystrophic conditions...' },
+            { id: 'genital-ulcers', name: 'Genital Ulcers', content: 'Genital ulcer evaluation and differential diagnosis...' },
+            { id: 'abnormal-vaginal-discharge', name: 'Abnormal Vaginal Discharge', content: 'Evaluation of abnormal vaginal discharge...' },
+            { id: 'incontinence', name: 'Incontinence', content: 'Urinary and fecal incontinence management...' },
+            { id: 'primary-amenorrhea', name: 'Primary Amenorrhea', content: 'Primary amenorrhea evaluation and causes...' },
+            { id: 'secondary-amenorrhea', name: 'Secondary Amenorrhea', content: 'Secondary amenorrhea evaluation and management...' },
+            { id: 'dysmenorrhea', name: 'Dysmenorrhea', content: 'Painful menstruation evaluation and treatment...' },
+            { id: 'abnormal-uterine-bleeding', name: 'Abnormal Uterine Bleeding', content: 'Abnormal uterine bleeding evaluation...' },
+            { id: 'adnexal-mass', name: 'Adnexal Mass', content: 'Adnexal mass evaluation and management...' },
+            { id: 'ovarian-cancer', name: 'Ovarian Cancer', content: 'Ovarian cancer diagnosis and treatment...' },
+            { id: 'cervical-pathology', name: 'Cervical Pathology', content: 'Cervical pathology evaluation and management...' }
+          ]
         }
       ]
     }
