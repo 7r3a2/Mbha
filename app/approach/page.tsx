@@ -195,11 +195,11 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
     const newX = e.clientX - startPos.x;
     const newY = e.clientY - startPos.y;
     
-         // NO CONSTRAINTS for iPad - completely free panning
-     const maxX = isMobile ? 1000 : 200; // No right limit for iPad
-     const minX = isMobile ? -2000 : -600; // No left limit for iPad
-     const maxY = isMobile ? 2000 : 0; // No down limit for iPad
-     const minY = isMobile ? -3000 : -400; // No up limit for iPad
+         // NO CONSTRAINTS AT ALL - work exactly like desktop
+     const maxX = 2000; // No right limit for anyone
+     const minX = -2000; // No left limit for anyone
+     const maxY = 2000; // No down limit for anyone
+     const minY = -3000; // No up limit for anyone
     
     const constrainedX = Math.max(minX, Math.min(maxX, newX));
     const constrainedY = Math.max(minY, Math.min(maxY, newY));
@@ -232,11 +232,11 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
      const newX = touch.clientX - startPos.x;
      const newY = touch.clientY - startPos.y;
     
-         // NO CONSTRAINTS for iPad touch - completely free panning
-     const maxX = isMobile ? 1000 : 200; // No right limit for iPad
-     const minX = isMobile ? -2000 : -600; // No left limit for iPad
-     const maxY = isMobile ? 2000 : 0; // No down limit for iPad
-     const minY = isMobile ? -3000 : -400; // No up limit for iPad
+         // NO CONSTRAINTS AT ALL - work exactly like desktop
+     const maxX = 2000; // No right limit for anyone
+     const minX = -2000; // No left limit for anyone
+     const maxY = 2000; // No down limit for anyone
+     const minY = -3000; // No up limit for anyone
     
     const constrainedX = Math.max(minX, Math.min(maxX, newX));
     const constrainedY = Math.max(minY, Math.min(maxY, newY));
