@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Head from "next/head";
 
 // Main title box component (Green)
 const TitleBox = ({ title, style = {} }: { title: string; style?: React.CSSProperties }) => (
   <div 
-    className="bg-green-500 text-white px-6 py-4 text-center rounded-lg shadow-md text-lg font-bold"
+    className="flowchart-box bg-green-500 text-white px-6 py-4 text-center rounded-lg shadow-md text-lg font-bold"
     style={{
       minHeight: '60px',
       display: 'flex',
@@ -22,7 +22,7 @@ const TitleBox = ({ title, style = {} }: { title: string; style?: React.CSSPrope
 // Decision/Question box component (Gray)
 const DecisionBox = ({ title, style = {} }: { title: string; style?: React.CSSProperties }) => (
   <div 
-    className="bg-gray-200 border-2 border-gray-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
+    className="flowchart-box bg-gray-200 border-2 border-gray-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
     style={{
       minHeight: '50px',
       display: 'flex',
@@ -38,7 +38,7 @@ const DecisionBox = ({ title, style = {} }: { title: string; style?: React.CSSPr
 // Symptom/Finding box component (Green)
 const FindingBox = ({ title, icon, style = {} }: { title: string; icon?: string; style?: React.CSSProperties }) => (
   <div 
-    className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
+    className="flowchart-box bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
     style={{
       minHeight: '50px',
       display: 'flex',
@@ -57,7 +57,7 @@ const FindingBox = ({ title, icon, style = {} }: { title: string; icon?: string;
 // Diagnosis box component (Orange, Hexagonal)
 const DiagnosisBox = ({ title, style = {} }: { title: string; style?: React.CSSProperties }) => (
   <div 
-    className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
+    className="flowchart-box bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
     style={{
       minHeight: '50px',
       display: 'flex',
@@ -74,7 +74,7 @@ const DiagnosisBox = ({ title, style = {} }: { title: string; style?: React.CSSP
 // Treatment/Action box component (Light Blue)
 const TreatmentBox = ({ title, style = {} }: { title: string; style?: React.CSSProperties }) => (
   <div 
-    className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
+    className="flowchart-box bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
     style={{
       minHeight: '50px',
       display: 'flex',
@@ -90,7 +90,7 @@ const TreatmentBox = ({ title, style = {} }: { title: string; style?: React.CSSP
 // Reference box component (Red)
 const ReferenceBox = ({ text, style = {} }: { text: string; style?: React.CSSProperties }) => (
   <div 
-    className="bg-red-300 border-2 border-red-500 px-4 py-3 text-center rounded-lg shadow-md text-sm font-semibold text-black"
+    className="flowchart-box bg-red-300 border-2 border-red-500 px-4 py-3 text-center rounded-lg shadow-md text-sm font-semibold text-black"
     style={{
       minHeight: '50px',
       display: 'flex',
@@ -106,7 +106,7 @@ const ReferenceBox = ({ text, style = {} }: { text: string; style?: React.CSSPro
 // Footnotes box component (Gray)
 const FootnotesBox = ({ children, style = {} }: { children: React.ReactNode; style?: React.CSSProperties }) => (
   <div 
-    className="bg-gray-100 border-2 border-gray-400 px-4 py-3 rounded-lg shadow-md text-xs text-gray-700"
+    className="flowchart-box bg-gray-100 border-2 border-gray-400 px-4 py-3 rounded-lg shadow-md text-xs text-gray-700"
     style={{
       ...style
     }}
@@ -216,43 +216,137 @@ const PlusMinusIndicator = ({ type, x, y }: { type: 'plus' | 'minus'; x: number;
 export default function AcutePelvicPainFlowchart({ frameFullScreen = false, onToggleFrameFullScreen = () => {} }: { frameFullScreen?: boolean; onToggleFrameFullScreen?: () => void }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isPanning, setIsPanning] = useState(false);
-  const [startPos, setStartPos] = useState({ x: 0, y: 0 });
-  const [scrollPos, setScrollPos] = useState({ x: 0, y: 0 });
+  const [mouseStartPos, setMouseStartPos] = useState({ x: 0, y: 0 });
+  const [panX, setPanX] = useState(0);
+  const [panY, setPanY] = useState(0);
+  const [zoomScale, setZoomScale] = useState(1);
+  const [isZooming, setIsZooming] = useState(false);
+  const [initialDistance, setInitialDistance] = useState(0);
+  const [lastTouchX, setLastTouchX] = useState(0);
+  const [lastTouchY, setLastTouchY] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if device is mobile
+  useEffect(() => {
+    const checkDevice = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    checkDevice();
+    window.addEventListener('resize', checkDevice);
+    return () => window.removeEventListener('resize', checkDevice);
+  }, []);
 
   // Panning functionality
   const handleMouseDown = (e: React.MouseEvent) => {
+    // Only start panning if clicking on empty space (not on boxes)
+    const target = e.target as HTMLElement;
+    if (target.closest('.flowchart-box')) {
+      return;
+    }
+    
+    e.preventDefault();
     setIsPanning(true);
-    setStartPos({ x: e.clientX - scrollPos.x, y: e.clientY - scrollPos.y });
+    setMouseStartPos({ x: e.clientX - panX, y: e.clientY - panY });
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!isPanning) return;
-    const newX = e.clientX - startPos.x;
-    const newY = e.clientY - startPos.y;
-    setScrollPos({ x: newX, y: newY });
+    e.preventDefault();
+    
+    // Direct, responsive panning without borders
+    const newX = e.clientX - mouseStartPos.x;
+    const newY = e.clientY - mouseStartPos.y;
+    
+    setPanX(newX);
+    setPanY(newY);
   };
 
   const handleMouseUp = () => {
     setIsPanning(false);
   };
 
-  // Touch events for mobile
+  // Scroll to zoom functionality for desktop - zoom to mouse position
+  const handleWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+    
+    // Only zoom if not panning and not on mobile
+    if (!isPanning && !isMobile) {
+      const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1; // Zoom out on scroll down, zoom in on scroll up
+      const newZoomScale = Math.max(0.3, Math.min(5, zoomScale * zoomFactor));
+      
+      // Get mouse position relative to the flowchart container
+      const rect = e.currentTarget.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left - rect.width / 2;
+      const mouseY = e.clientY - rect.top - rect.height / 2;
+      
+      // Calculate new pan position to zoom towards mouse
+      const scaleChange = newZoomScale / zoomScale;
+      const newPanX = panX - (mouseX * (scaleChange - 1));
+      const newPanY = panY - (mouseY * (scaleChange - 1));
+      
+      setZoomScale(newZoomScale);
+      setPanX(newPanX);
+      setPanY(newPanY);
+    }
+  };
+
+  // Touch panning functionality
   const handleTouchStart = (e: React.TouchEvent) => {
-    const touch = e.touches[0];
-    setIsPanning(true);
-    setStartPos({ x: touch.clientX - scrollPos.x, y: touch.clientY - scrollPos.y });
+    if (e.touches.length === 2) {
+      // Two finger touch - start zooming
+      e.preventDefault();
+      setIsZooming(true);
+      setIsPanning(false);
+      const distance = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      setInitialDistance(distance);
+    } else if (e.touches.length === 1) {
+      // Single finger touch - start panning
+      const target = e.target as HTMLElement;
+      if (target.closest('.flowchart-box')) {
+        return;
+      }
+      
+      e.preventDefault();
+      setIsPanning(true);
+      setIsZooming(false);
+      setLastTouchX(e.touches[0].clientX);
+      setLastTouchY(e.touches[0].clientY);
+    }
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isPanning) return;
-    const touch = e.touches[0];
-    const newX = touch.clientX - startPos.x;
-    const newY = touch.clientY - startPos.y;
-    setScrollPos({ x: newX, y: newY });
+    if (e.touches.length === 2 && isZooming) {
+      // Two finger zoom
+      e.preventDefault();
+      const distance = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      
+      const scaleFactor = distance / initialDistance;
+      const newZoomScale = Math.max(0.3, Math.min(5, zoomScale * scaleFactor));
+      setZoomScale(newZoomScale);
+      setInitialDistance(distance);
+    } else if (e.touches.length === 1 && isPanning) {
+      // Single finger pan - direct and responsive
+      e.preventDefault();
+      const touch = e.touches[0];
+      const deltaX = touch.clientX - lastTouchX;
+      const deltaY = touch.clientY - lastTouchY;
+      
+      setPanX(panX + deltaX);
+      setPanY(panY + deltaY);
+      setLastTouchX(touch.clientX);
+      setLastTouchY(touch.clientY);
+    }
   };
 
   const handleTouchEnd = () => {
     setIsPanning(false);
+    setIsZooming(false);
   };
 
   return (
@@ -278,22 +372,30 @@ export default function AcutePelvicPainFlowchart({ frameFullScreen = false, onTo
         </div>
 
         {/* Main flowchart container */}
-        <div
+        <div 
           ref={containerRef}
-          className="relative w-full h-full cursor-grab active:cursor-grabbing"
+          className="relative w-full h-full overflow-hidden flex items-center justify-center"
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
+          onWheel={handleWheel}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
-          style={{ cursor: isPanning ? 'grabbing' : 'grab' }}
+          style={{ 
+            cursor: isPanning ? 'grabbing' : 'grab',
+            touchAction: 'none',
+            pointerEvents: 'auto',
+            WebkitTouchCallout: 'none',
+            WebkitUserSelect: 'none'
+          }}
         >
+          {/* Flowchart content - centered and responsive */}
           <div
             className="relative"
             style={{
-              transform: `translate(${scrollPos.x}px, ${scrollPos.y}px)`,
+              transform: `scale(${zoomScale}) translate(${panX}px, ${panY}px)`,
               width: '3600px',
               height: '2800px',
             }}
