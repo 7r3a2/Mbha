@@ -313,12 +313,12 @@ export default function WizaryExam() {
   const router = useRouter();
   const { user, isAuthenticated, isLoading, logout } = useAuth();
 
-  // Check if user has wizary exam access
+  // Check if user is authenticated (Wizary Exam is always available)
   useEffect(() => {
-    if (!isLoading && (!isAuthenticated || !user?.hasWizaryExamAccess)) {
+    if (!isLoading && !isAuthenticated) {
       router.push('/dashboard');
     }
-  }, [isLoading, isAuthenticated, user, router]);
+  }, [isLoading, isAuthenticated, router]);
   const [currentView, setCurrentView] = useState('dashboard'); // 'dashboard', 'exam-list', 'exam-taking', 'results'
   const [selectedExam, setSelectedExam] = useState<any>(null);
   const [questions, setQuestions] = useState<any[]>([]);
