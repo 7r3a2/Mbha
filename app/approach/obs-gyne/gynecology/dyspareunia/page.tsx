@@ -197,28 +197,40 @@ const PlusMinusIndicator = ({ type, x, y }: { type: 'plus' | 'minus'; x: number;
 export default function DyspareuniaPage({ frameFullScreen, onToggleFrameFullScreen }: { frameFullScreen: boolean; onToggleFrameFullScreen: () => void }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isPanning, setIsPanning] = useState(false);
+  const [startPos, setStartPos] = useState({ x: 0, y: 0 });
   const [scrollPos, setScrollPos] = useState({ x: 0, y: 0 });
-  const [lastMousePos, setLastMousePos] = useState({ x: 0, y: 0 });
-  const [lastTouchPos, setLastTouchPos] = useState({ x: 0, y: 0 });
   const [scale, setScale] = useState(1);
+  const [initialDistance, setInitialDistance] = useState(0);
+  const [initialScale, setInitialScale] = useState(1);
+
+  // Calculate distance between two touch points
+  const getDistance = (touch1: React.Touch, touch2: React.Touch) => {
+    const dx = touch1.clientX - touch2.clientX;
+    const dy = touch1.clientY - touch2.clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  };
+
+  // Calculate center point between two touch points
+  const getCenter = (touch1: React.Touch, touch2: React.Touch) => {
+    return {
+      x: (touch1.clientX + touch2.clientX) / 2,
+      y: (touch1.clientY + touch2.clientY) / 2
+    };
+  };
 
   const handleMouseDown = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
     if (target.closest('.flowchart-box')) return;
     setIsPanning(true);
-    setLastMousePos({ x: e.clientX, y: e.clientY });
+    setStartPos({ x: e.clientX - scrollPos.x, y: e.clientY - scrollPos.y });
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!isPanning) return;
     e.preventDefault();
-    const deltaX = e.clientX - lastMousePos.x;
-    const deltaY = e.clientY - lastMousePos.y;
-    setScrollPos(prev => ({
-      x: prev.x + deltaX,
-      y: prev.y + deltaY // Allow scrolling behind header
-    }));
-    setLastMousePos({ x: e.clientX, y: e.clientY });
+    const newX = e.clientX - startPos.x;
+    const newY = e.clientY - startPos.y;
+    setScrollPos({ x: newX, y: newY });
   };
 
   const handleMouseUp = () => {
@@ -228,26 +240,40 @@ export default function DyspareuniaPage({ frameFullScreen, onToggleFrameFullScre
   const handleTouchStart = (e: React.TouchEvent) => {
     const target = e.target as HTMLElement;
     if (target.closest('.flowchart-box')) return;
+    
     if (e.touches.length === 1) {
+      // Single touch - panning
       setIsPanning(true);
-      setLastTouchPos({ x: e.touches[0].clientX, y: e.touches[0].clientY });
+      setStartPos({ x: e.touches[0].clientX - scrollPos.x, y: e.touches[0].clientY - scrollPos.y });
+    } else if (e.touches.length === 2) {
+      // Two touches - zooming
+      setIsPanning(false);
+      const distance = getDistance(e.touches[0], e.touches[1]);
+      setInitialDistance(distance);
+      setInitialScale(scale);
     }
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isPanning || e.touches.length !== 1) return;
-    e.preventDefault();
-    const deltaX = e.touches[0].clientX - lastTouchPos.x;
-    const deltaY = e.touches[0].clientY - lastTouchPos.y;
-    setScrollPos(prev => ({
-      x: prev.x + deltaX,
-      y: prev.y + deltaY // Allow scrolling behind header
-    }));
-    setLastTouchPos({ x: e.touches[0].clientX, y: e.touches[0].clientY });
+    if (e.touches.length === 1 && isPanning) {
+      // Single touch panning
+      e.preventDefault();
+      const newX = e.touches[0].clientX - startPos.x;
+      const newY = e.touches[0].clientY - startPos.y;
+      setScrollPos({ x: newX, y: newY });
+    } else if (e.touches.length === 2) {
+      // Two touch zooming
+      e.preventDefault();
+      const distance = getDistance(e.touches[0], e.touches[1]);
+      const scaleFactor = distance / initialDistance;
+      const newScale = Math.max(0.5, Math.min(3, initialScale * scaleFactor));
+      setScale(newScale);
+    }
   };
 
   const handleTouchEnd = () => {
     setIsPanning(false);
+    setInitialDistance(0);
   };
 
   const handleWheel = (e: React.WheelEvent) => {
