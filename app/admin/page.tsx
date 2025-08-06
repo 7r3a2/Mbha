@@ -501,6 +501,7 @@ export default function AdminPage() {
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Gender</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">University</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Code Used</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Access</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Created</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
                       </tr>
@@ -520,6 +521,35 @@ export default function AdminPage() {
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.gender || 'N/A'}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.university || 'N/A'}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.uniqueCode}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                              <div className="flex flex-wrap gap-1">
+                                {user.hasWizaryExamAccess && (
+                                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    Wizary
+                                  </span>
+                                )}
+                                {user.hasApproachAccess && (
+                                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    Approach
+                                  </span>
+                                )}
+                                {user.hasQbankAccess && (
+                                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                    Qbank
+                                  </span>
+                                )}
+                                {user.hasCoursesAccess && (
+                                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                                    Courses
+                                  </span>
+                                )}
+                                {!user.hasWizaryExamAccess && !user.hasApproachAccess && !user.hasQbankAccess && !user.hasCoursesAccess && (
+                                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                    No Access
+                                  </span>
+                                )}
+                              </div>
+                            </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                               {new Date(user.createdAt).toLocaleDateString()}
                             </td>
@@ -550,7 +580,7 @@ export default function AdminPage() {
                         user.email.toLowerCase().includes(userSearchTerm.toLowerCase())
                       ).length === 0 && (
                         <tr>
-                          <td colSpan={7} className="px-6 py-8 text-center text-gray-500">
+                          <td colSpan={8} className="px-6 py-8 text-center text-gray-500">
                             {userSearchTerm ? (
                               <div>
                                 <p className="text-lg font-medium">No users found</p>
@@ -930,6 +960,10 @@ export default function AdminPage() {
                 email: formData.get('email'),
                 gender: formData.get('gender'),
                 university: formData.get('university'),
+                hasWizaryExamAccess: formData.get('hasWizaryExamAccess') === 'on',
+                hasApproachAccess: formData.get('hasApproachAccess') === 'on',
+                hasQbankAccess: formData.get('hasQbankAccess') === 'on',
+                hasCoursesAccess: formData.get('hasCoursesAccess') === 'on',
               });
             }}>
               <div className="space-y-4">
@@ -980,6 +1014,49 @@ export default function AdminPage() {
                     defaultValue={editingUser.university || ''}
                     className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 text-black"
                   />
+                </div>
+                
+                {/* Access Permissions Section */}
+                <div className="border-t pt-4">
+                  <h4 className="text-sm font-semibold text-gray-700 mb-3">Access Permissions</h4>
+                  <div className="space-y-3">
+                    <div className="flex items-center">
+                      <input
+                        name="hasWizaryExamAccess"
+                        type="checkbox"
+                        defaultChecked={editingUser.hasWizaryExamAccess}
+                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      />
+                      <label className="ml-2 text-sm text-gray-700">Wizary Exam Access</label>
+                    </div>
+                    <div className="flex items-center">
+                      <input
+                        name="hasApproachAccess"
+                        type="checkbox"
+                        defaultChecked={editingUser.hasApproachAccess}
+                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      />
+                      <label className="ml-2 text-sm text-gray-700">Approach Access</label>
+                    </div>
+                    <div className="flex items-center">
+                      <input
+                        name="hasQbankAccess"
+                        type="checkbox"
+                        defaultChecked={editingUser.hasQbankAccess}
+                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      />
+                      <label className="ml-2 text-sm text-gray-700">Qbank Access</label>
+                    </div>
+                    <div className="flex items-center">
+                      <input
+                        name="hasCoursesAccess"
+                        type="checkbox"
+                        defaultChecked={editingUser.hasCoursesAccess}
+                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      />
+                      <label className="ml-2 text-sm text-gray-700">Courses Access</label>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div className="flex justify-end space-x-2 mt-6">

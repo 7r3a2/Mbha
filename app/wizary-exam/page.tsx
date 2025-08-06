@@ -311,7 +311,14 @@ const generateQuestions = (count: number) => {
 
 export default function WizaryExam() {
   const router = useRouter();
-  const { user, isLoading, logout } = useAuth();
+  const { user, isAuthenticated, isLoading, logout } = useAuth();
+
+  // Check if user has wizary exam access
+  useEffect(() => {
+    if (!isLoading && (!isAuthenticated || !user?.hasWizaryExamAccess)) {
+      router.push('/dashboard');
+    }
+  }, [isLoading, isAuthenticated, user, router]);
   const [currentView, setCurrentView] = useState('dashboard'); // 'dashboard', 'exam-list', 'exam-taking', 'results'
   const [selectedExam, setSelectedExam] = useState<any>(null);
   const [questions, setQuestions] = useState<any[]>([]);

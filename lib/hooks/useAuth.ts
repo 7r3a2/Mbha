@@ -11,6 +11,10 @@ interface User {
   gender?: string;
   university?: string;
   uniqueCode: string;
+  hasWizaryExamAccess: boolean;
+  hasApproachAccess: boolean;
+  hasQbankAccess: boolean;
+  hasCoursesAccess: boolean;
   createdAt: string;
   updatedAt: string;
 }

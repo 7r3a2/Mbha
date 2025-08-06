@@ -6,8 +6,15 @@ import { useAuth } from '@/lib/hooks/useAuth';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 function CoursePageContent() {
-  const { user, isLoading } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
+
+  // Check if user has courses access
+  useEffect(() => {
+    if (!isLoading && (!isAuthenticated || !user?.hasCoursesAccess)) {
+      router.push('/dashboard');
+    }
+  }, [isLoading, isAuthenticated, user, router]);
   const searchParams = useSearchParams();
   
   const [courseId, setCourseId] = useState('obs-gyne');

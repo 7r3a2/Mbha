@@ -643,7 +643,14 @@ const QUESTION_MODES = [
 
 export default function Qbank() {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
+
+  // Check if user has qbank access
+  useEffect(() => {
+    if (!isLoading && (!isAuthenticated || !user?.hasQbankAccess)) {
+      router.push('/dashboard');
+    }
+  }, [isLoading, isAuthenticated, user, router]);
   const [isOpen, setIsOpen] = useState(true);
   const [activeView, setActiveView] = useState('create-test');
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>(['obgyn']);

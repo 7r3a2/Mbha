@@ -1666,9 +1666,9 @@ export default function ApproachPage() {
     }
   ];
 
-  // Check authentication only (allow all authenticated users)
-  if (!isLoading && !user) {
-    router.push('/login');
+  // Check authentication and approach access
+  if (!isLoading && (!user || !user.hasApproachAccess)) {
+    router.push('/dashboard');
     return null;
   }
 
