@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useRef, useState } from "react";
 import Head from "next/head";
 
@@ -213,7 +211,7 @@ const PlusMinusIndicator = ({ type, x, y }: { type: 'plus' | 'minus'; x: number;
   </div>
 );
 
-export default function AcutePelvicPainPage() {
+export default function AcutePelvicPainFlowchart() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isPanning, setIsPanning] = useState(false);
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
@@ -262,10 +260,10 @@ export default function AcutePelvicPainPage() {
         <meta name="description" content="Medical flowchart for acute pelvic pain evaluation" />
       </Head>
       
-      <div className="h-screen bg-gray-100 overflow-hidden">
+      <div className="h-screen bg-white overflow-hidden">
         {/* Title */}
         <div className="bg-white p-4 shadow-sm">
-          <h1 className="text-2xl font-bold text-purple-600">Acute Pelvic Pain</h1>
+          <h1 className="text-2xl font-bold text-blue-600">Acute Pelvic Pain</h1>
         </div>
 
         {/* Main flowchart container */}
@@ -285,382 +283,381 @@ export default function AcutePelvicPainPage() {
             className="relative"
             style={{
               transform: `translate(${scrollPos.x}px, ${scrollPos.y}px)`,
-              width: '1800px',
-              height: '1400px',
+              width: '3600px',
+              height: '2800px',
             }}
           >
-            {/* Main Title */}
+            {/* Main Title - Centered at top */}
             <TitleBox
               title="Acute Pelvic Pain"
-              style={{ position: 'absolute', left: 400, top: 20, width: 200 }}
+              style={{ position: 'absolute', left: 650, top: 50, width: 280 }}
             />
 
-            {/* Beta-hCG */}
+            {/* Beta-hCG - Directly below main title */}
             <DecisionBox
               title="Beta-hCG"
-              style={{ position: 'absolute', left: 450, top: 100, width: 100 }}
+              style={{ position: 'absolute', left: 690, top: 180, width: 200 }}
             />
 
-            {/* Abdominal and pelvic exam */}
+            {/* LEFT BRANCH: Beta-hCG Negative */}
+            {/* Abdominal and pelvic exam - SHIFTED LEFT */}
             <DecisionBox
               title="Abdominal and pelvic exam"
-              style={{ position: 'absolute', left: 200, top: 180, width: 160 }}
+              style={{ position: 'absolute', left: 50, top: 350, width: 220 }}
             />
 
-            {/* Intrauterine pregnancy on TVUS¹ */}
-            <FindingBox
-              title="Intrauterine pregnancy on TVUS¹"
-              icon="🔬"
-              style={{ position: 'absolute', left: 600, top: 180, width: 180 }}
-            />
-
-            {/* Findings from exam - Row 1 with proper spacing */}
+            {/* Four symptom boxes - MUCH WIDER SPACING for clear separation */}
             <FindingBox
               title="Cervical motion tenderness"
-              icon="🩺"
-              style={{ position: 'absolute', left: 50, top: 280, width: 140 }}
+              style={{ position: 'absolute', left: 50, top: 520, width: 200 }}
             />
 
             <FindingBox
               title="Severe unilateral pain"
-              icon="🩺"
-              style={{ position: 'absolute', left: 200, top: 280, width: 140 }}
+              style={{ position: 'absolute', left: 350, top: 520, width: 200 }}
             />
 
             <FindingBox
               title="Suprapubic tenderness"
-              icon="🩺"
-              style={{ position: 'absolute', left: 350, top: 280, width: 140 }}
+              style={{ position: 'absolute', left: 650, top: 520, width: 200 }}
             />
 
             <FindingBox
               title="Cyclic, monthly acute pain episodes"
-              icon="📅"
-              style={{ position: 'absolute', left: 500, top: 280, width: 160 }}
+              style={{ position: 'absolute', left: 950, top: 520, width: 280 }}
             />
 
-            {/* Tests - Row 2 with proper spacing */}
+            {/* PATH 1: Cervical motion tenderness - Complete vertical pathway */}
             <DecisionBox
               title="STI testing"
-              style={{ position: 'absolute', left: 120, top: 380, width: 100 }}
+              style={{ position: 'absolute', left: 80, top: 680, width: 140 }}
             />
 
-            <DecisionBox
-              title="Abdominal ultrasound"
-              style={{ position: 'absolute', left: 200, top: 380, width: 140 }}
-            />
-
-            <DecisionBox
-              title="Urinalysis, urine culture"
-              style={{ position: 'absolute', left: 350, top: 380, width: 140 }}
-            />
-
-            {/* TVUS¹ */}
             <DecisionBox
               title="TVUS¹"
-              style={{ position: 'absolute', left: 120, top: 480, width: 80 }}
+              style={{ position: 'absolute', left: 110, top: 840, width: 120 }}
             />
 
-            {/* Test Results - Row 3 with proper spacing */}
+            {/* Test results - Centered for proper branching */}
             <FindingBox
               title="Thick-walled cystic collection in adnexa?"
-              icon="🔬"
-              style={{ position: 'absolute', left: 50, top: 580, width: 160 }}
+              style={{ position: 'absolute', left: 50, top: 1000, width: 240 }}
             />
 
-            <FindingBox
-              title="UA: WBCs ± nitrites Urine culture: >100 K single organism colonies"
-              icon="🧪"
-              style={{ position: 'absolute', left: 350, top: 480, width: 250 }}
-            />
-
-            <FindingBox
-              title="Monthly mid-cycle pain"
-              icon="📅"
-              style={{ position: 'absolute', left: 500, top: 480, width: 140 }}
-            />
-
-            <FindingBox
-              title="Dysmenorrhea, GI or urinary symptoms"
-              icon="🔍"
-              style={{ position: 'absolute', left: 650, top: 480, width: 180 }}
-            />
-
-            {/* Diagnoses - Row 4 with proper spacing */}
-            <DiagnosisBox
-              title="Ectopic Pregnancy"
-              style={{ position: 'absolute', left: 800, top: 280, width: 140 }}
-            />
-
+            {/* Diagnoses - CLEAR LEFT/RIGHT BRANCHING with proper spacing */}
             <DiagnosisBox
               title="Pelvic Inflammatory Disease"
-              style={{ position: 'absolute', left: 50, top: 680, width: 140 }}
+              style={{ position: 'absolute', left: 20, top: 1180, width: 140 }}
             />
 
             <DiagnosisBox
               title="Tubo-ovarian Abscess"
-              style={{ position: 'absolute', left: 210, top: 680, width: 140 }}
+              style={{ position: 'absolute', left: 200, top: 1180, width: 140 }}
             />
 
-            <DiagnosisBox
-              title="Urinary Tract Infection²"
-              style={{ position: 'absolute', left: 350, top: 580, width: 140 }}
-            />
-
-            <DiagnosisBox
-              title="Mittelschmerz"
-              style={{ position: 'absolute', left: 500, top: 580, width: 120 }}
-            />
-
-            <DiagnosisBox
-              title="Endometriosis"
-              style={{ position: 'absolute', left: 650, top: 580, width: 120 }}
-            />
-
-            {/* Ultrasound Findings - Row 5 with better spacing */}
-            <FindingBox
-              title="Appendiceal diameter >6 mm or appendiceal wall thickening"
-              icon="🔬"
-              style={{ position: 'absolute', left: 50, top: 780, width: 180 }}
-            />
-
-            <FindingBox
-              title="Intraperitoneal fluid collection"
-              icon="🔬"
-              style={{ position: 'absolute', left: 240, top: 780, width: 160 }}
-            />
-
-            <FindingBox
-              title="↓ Ovarian artery flow"
-              icon="🔬"
-              style={{ position: 'absolute', left: 410, top: 780, width: 140 }}
-            />
-
-            {/* Final Diagnoses - Row 6 with proper spacing */}
-            <DiagnosisBox
-              title="Appendicitis"
-              style={{ position: 'absolute', left: 80, top: 880, width: 120 }}
-            />
-
-            <DiagnosisBox
-              title="Ovarian Cyst Rupture"
-              style={{ position: 'absolute', left: 240, top: 880, width: 140 }}
-            />
-
-            <DiagnosisBox
-              title="Ovarian Torsion"
-              style={{ position: 'absolute', left: 410, top: 880, width: 140 }}
-            />
-
-            {/* Treatments with proper spacing */}
-            <TreatmentBox
-              title="Methotrexate or laparoscopy"
-              style={{ position: 'absolute', left: 800, top: 380, width: 160 }}
-            />
-
+            {/* Treatments - ALIGNED UNDER PARENT DIAGNOSES */}
             <TreatmentBox
               title="Ceftriaxone 500 mg IM, doxycycline + metronidazole x14 days"
-              style={{ position: 'absolute', left: 50, top: 780, width: 180 }}
+              style={{ position: 'absolute', left: 10, top: 1320, width: 160 }}
             />
 
             <TreatmentBox
               title="Broad-spectrum antibiotics³ ± drainage or laparoscopy"
-              style={{ position: 'absolute', left: 210, top: 780, width: 200 }}
+              style={{ position: 'absolute', left: 190, top: 1320, width: 160 }}
+            />
+
+            {/* PATH 2: Severe unilateral pain - Complete vertical pathway with proper spacing */}
+            <DecisionBox
+              title="Abdominal ultrasound"
+              style={{ position: 'absolute', left: 380, top: 680, width: 180 }}
+            />
+
+            {/* Three findings with proper spacing - positioned BELOW PATH 1 treatments */}
+            <FindingBox
+              title="Appendiceal diameter >6 mm or appendiceal wall thickening"
+              style={{ position: 'absolute', left: 300, top: 1520, width: 140 }}
+            />
+
+            <FindingBox
+              title="Intraperitoneal fluid collection"
+              style={{ position: 'absolute', left: 470, top: 1520, width: 140 }}
+            />
+
+            <FindingBox
+              title="↓ Ovarian artery flow"
+              style={{ position: 'absolute', left: 640, top: 1520, width: 140 }}
+            />
+
+            {/* Diagnoses for PATH 2 */}
+            <DiagnosisBox
+              title="Appendicitis"
+              style={{ position: 'absolute', left: 320, top: 1680, width: 100 }}
+            />
+
+            <DiagnosisBox
+              title="Ovarian Cyst Rupture"
+              style={{ position: 'absolute', left: 480, top: 1680, width: 120 }}
+            />
+
+            <DiagnosisBox
+              title="Ovarian Torsion"
+              style={{ position: 'absolute', left: 650, top: 1680, width: 110 }}
+            />
+
+            {/* Treatments for PATH 2 diagnoses */}
+            <TreatmentBox
+              title="Supportive care (if stable), or exploratory laparoscopy (if unstable)"
+              style={{ position: 'absolute', left: 460, top: 1820, width: 160 }}
             />
 
             <TreatmentBox
+              title="Exploratory laparoscopy"
+              style={{ position: 'absolute', left: 635, top: 1820, width: 140 }}
+            />
+
+            {/* PATH 3: Suprapubic tenderness - Complete pathway */}
+            <DecisionBox
+              title="Urinalysis, urine culture"
+              style={{ position: 'absolute', left: 680, top: 680, width: 180 }}
+            />
+
+            {/* UA results box - positioned between Urinalysis and UTI diagnosis */}
+            <FindingBox
+              title="UA: WBCs ± nitrites\nUrine culture: >100 K\nsingle organism colonies"
+              style={{ position: 'absolute', left: 650, top: 840, width: 240 }}
+            />
+
+            <DiagnosisBox
+              title="Urinary Tract Infection²"
+              style={{ position: 'absolute', left: 700, top: 1000, width: 140 }}
+            />
+
+            {/* PATH 4: Cyclic pain - Placeholder for later */}
+            <FindingBox
+              title="Monthly mid-cycle pain"
+              style={{ position: 'absolute', left: 950, top: 680, width: 140 }}
+            />
+
+            <FindingBox
+              title="Dysmenorrhea, GI or urinary symptoms"
+              style={{ position: 'absolute', left: 1120, top: 680, width: 180 }}
+            />
+
+            <DiagnosisBox
+              title="Mittelschmerz"
+              style={{ position: 'absolute', left: 970, top: 840, width: 100 }}
+            />
+
+            <DiagnosisBox
+              title="Endometriosis"
+              style={{ position: 'absolute', left: 1140, top: 840, width: 140 }}
+            />
+
+            {/* RIGHT BRANCH: Beta-hCG Positive */}
+            <FindingBox
+              title="Intrauterine pregnancy on TVUS¹"
+              style={{ position: 'absolute', left: 1600, top: 350, width: 280 }}
+            />
+
+            <ReferenceBox
+              text="See Abdominal Pain in Pregnancy, Vaginal Bleeding in Pregnancy"
+              style={{ position: 'absolute', left: 1550, top: 520, width: 280 }}
+            />
+
+            <DiagnosisBox
+              title="Ectopic Pregnancy"
+              style={{ position: 'absolute', left: 1950, top: 520, width: 200 }}
+            />
+
+            {/* Remaining treatments for PATH 3 and 4 */}
+            <TreatmentBox
               title="Nitrofurantoin or TMP-SMX"
-              style={{ position: 'absolute', left: 350, top: 680, width: 140 }}
+              style={{ position: 'absolute', left: 680, top: 1140, width: 180 }}
             />
 
             <TreatmentBox
               title="Reassurance and supportive care"
-              style={{ position: 'absolute', left: 500, top: 680, width: 160 }}
+              style={{ position: 'absolute', left: 950, top: 1140, width: 140 }}
             />
 
             <TreatmentBox
               title="OCPs and NSAIDs. Consider diagnostic laparoscopy"
-              style={{ position: 'absolute', left: 650, top: 680, width: 180 }}
+              style={{ position: 'absolute', left: 1120, top: 1140, width: 180 }}
             />
 
             <TreatmentBox
-              title="Supportive care (if stable), or exploratory laparoscopy (if unstable)"
-              style={{ position: 'absolute', left: 80, top: 980, width: 280 }}
+              title="Methotrexate or laparoscopy"
+              style={{ position: 'absolute', left: 1950, top: 680, width: 250 }}
             />
 
-            <TreatmentBox
-              title="Exploratory laparoscopy"
-              style={{ position: 'absolute', left: 240, top: 980, width: 140 }}
-            />
-
-            <TreatmentBox
-              title="Exploratory laparoscopy"
-              style={{ position: 'absolute', left: 410, top: 980, width: 140 }}
-            />
-
-            {/* Reference */}
-            <ReferenceBox
-              text="See Abdominal Pain in Pregnancy, p. 644"
-              style={{ position: 'absolute', left: 650, top: 280, width: 180 }}
-            />
-
-            {/* Footnotes - Moved closer to flowchart */}
+            {/* Footnotes - Better positioned and styled with clear title */}
             <FootnotesBox
-              style={{ position: 'absolute', left: 600, top: 880, width: 280 }}
+              style={{ position: 'absolute', left: 1600, top: 1400, width: 550, minHeight: 120 }}
             >
-              <div className="text-xs leading-relaxed">
-                <div><strong>1.</strong> Transvaginal ultrasound.</div>
-                <div><strong>2.</strong> Cystitis or pyelonephritis.</div>
+              <div className="text-sm leading-relaxed">
+                <div className="font-bold text-lg mb-3 text-gray-800">Footnotes</div>
+                <div className="mb-2"><strong>1.</strong> Transvaginal ultrasound.</div>
+                <div className="mb-2"><strong>2.</strong> Cystitis or pyelonephritis.</div>
                 <div><strong>3.</strong> Cephalosporin + doxycycline ± metronidazole.</div>
               </div>
             </FootnotesBox>
 
-            {/* Lines and Arrows - Updated for new positioning */}
-            {/* From Acute Pelvic Pain to Beta-hCG */}
-            <VerticalLine x={500} startY={70} endY={100} />
-            <ArrowHead x={500} y={100} direction="down" />
-
-            {/* From Beta-hCG branching left and right */}
-            <VerticalLine x={500} startY={150} endY={170} />
-            <HorizontalLine y={170} startX={280} endX={690} />
+            {/* CONNECTING LINES AND ARROWS - COMPLETELY REDESIGNED */}
             
-            {/* Left branch to Abdominal and pelvic exam */}
-            <VerticalLine x={280} startY={170} endY={180} />
-            <ArrowHead x={280} y={180} direction="down" />
-            <PlusMinusIndicator type="minus" x={280} y={180} />
+            {/* From Main Title to Beta-hCG */}
+            <VerticalLine x={790} startY={110} endY={180} />
+            <ArrowHead x={790} y={180} direction="down" />
 
-            {/* Right branch to Intrauterine pregnancy */}
-            <VerticalLine x={690} startY={170} endY={180} />
-            <ArrowHead x={690} y={180} direction="down" />
-            <PlusMinusIndicator type="plus" x={690} y={180} />
-
-            {/* From Abdominal and pelvic exam to findings */}
-            <VerticalLine x={280} startY={240} endY={260} />
-            <HorizontalLine y={260} startX={120} endX={580} />
+            {/* From Beta-hCG split - Main branching */}
+            <VerticalLine x={790} startY={230} endY={290} />
+            <HorizontalLine y={290} startX={160} endX={1740} />
             
-            {/* To Cervical motion tenderness */}
-            <VerticalLine x={120} startY={260} endY={280} />
-            <ArrowHead x={120} y={280} direction="down" />
+            {/* To Abdominal exam (LEFT BRANCH - Beta-hCG Negative) */}
+            <VerticalLine x={160} startY={290} endY={350} />
+            <ArrowHead x={160} y={350} direction="down" />
+            <PlusMinusIndicator type="minus" x={160} y={320} />
             
-            {/* To Severe unilateral pain */}
-            <VerticalLine x={270} startY={260} endY={280} />
-            <ArrowHead x={270} y={280} direction="down" />
+            {/* To Intrauterine pregnancy (RIGHT BRANCH - Beta-hCG Positive) */}
+            <VerticalLine x={1740} startY={290} endY={350} />
+            <ArrowHead x={1740} y={350} direction="down" />
+            <PlusMinusIndicator type="plus" x={1740} y={320} />
+
+            {/* From Abdominal exam to 4 symptoms - UPDATED SPACING */}
+            <VerticalLine x={160} startY={400} endY={480} />
+            <HorizontalLine y={480} startX={150} endX={1090} />
             
-            {/* To Suprapubic tenderness */}
-            <VerticalLine x={420} startY={260} endY={280} />
-            <ArrowHead x={420} y={280} direction="down" />
+            {/* Clear vertical lines to each symptom box */}
+            <VerticalLine x={150} startY={480} endY={520} />
+            <VerticalLine x={450} startY={480} endY={520} />
+            <VerticalLine x={750} startY={480} endY={520} />
+            <VerticalLine x={1090} startY={480} endY={520} />
             
-            {/* To Cyclic pain */}
-            <VerticalLine x={580} startY={260} endY={280} />
-            <ArrowHead x={580} y={280} direction="down" />
+            <ArrowHead x={150} y={520} direction="down" />
+            <ArrowHead x={450} y={520} direction="down" />
+            <ArrowHead x={750} y={520} direction="down" />
+            <ArrowHead x={1090} y={520} direction="down" />
 
-            {/* From findings to next tests */}
-            {/* From Cervical motion tenderness to STI testing */}
-            <VerticalLine x={120} startY={350} endY={380} />
-            <ArrowHead x={170} y={380} direction="down" />
+            {/* PATH 1: Cervical motion tenderness → STI testing → TVUS → Cystic collection → PID/TOA → Treatments */}
+            <VerticalLine x={150} startY={570} endY={680} />
+            <ArrowHead x={150} y={680} direction="down" />
 
-            {/* From Severe unilateral pain to Abdominal ultrasound */}
-            <VerticalLine x={270} startY={350} endY={380} />
-            <ArrowHead x={270} y={380} direction="down" />
+            {/* From STI testing to TVUS - FIXED ARROW ALIGNMENT */}
+            <VerticalLine x={150} startY={730} endY={840} />
+            <ArrowHead x={150} y={840} direction="down" />
 
-            {/* From Suprapubic tenderness to Urinalysis */}
-            <VerticalLine x={420} startY={350} endY={380} />
-            <ArrowHead x={420} y={380} direction="down" />
+            {/* From TVUS to thick-walled cystic collection question - FIXED ALIGNMENT */}
+            <VerticalLine x={170} startY={890} endY={1000} />
+            <ArrowHead x={170} y={1000} direction="down" />
 
-            {/* From STI testing to TVUS */}
-            <VerticalLine x={170} startY={430} endY={480} />
-            <ArrowHead x={160} y={480} direction="down" />
-
-            {/* From TVUS to findings */}
-            <VerticalLine x={160} startY={530} endY={580} />
-            <ArrowHead x={130} y={580} direction="down" />
-
-            {/* From Thick-walled cystic collection branching */}
-            <VerticalLine x={130} startY={630} endY={650} />
-            <HorizontalLine y={650} startX={120} endX={280} />
+            {/* From thick-walled cystic collection CLEAR LEFT/RIGHT BRANCHING - ARROWS TO BOX BORDERS */}
+            <VerticalLine x={170} startY={1050} endY={1140} />
+            <HorizontalLine y={1140} startX={90} endX={270} />
             
-            {/* To PID */}
-            <VerticalLine x={120} startY={650} endY={680} />
-            <ArrowHead x={120} y={680} direction="down" />
-            <PlusMinusIndicator type="minus" x={120} y={680} />
+            {/* To PID (Negative result - NO cyst) - LEFT BRANCH - ARROW TO BOX BORDER */}
+            <VerticalLine x={90} startY={1140} endY={1180} />
+            <ArrowHead x={90} y={1180} direction="down" />
+            <PlusMinusIndicator type="minus" x={70} y={1160} />
             
-            {/* To Tubo-ovarian Abscess */}
-            <VerticalLine x={280} startY={650} endY={680} />
-            <ArrowHead x={280} y={680} direction="down" />
-            <PlusMinusIndicator type="plus" x={280} y={680} />
+            {/* To Tubo-ovarian Abscess (Positive result - YES cyst) - RIGHT BRANCH - ARROW TO BOX BORDER */}
+            <VerticalLine x={270} startY={1140} endY={1180} />
+            <ArrowHead x={270} y={1180} direction="down" />
+            <PlusMinusIndicator type="plus" x={290} y={1160} />
 
-            {/* From Abdominal ultrasound to findings */}
-            <VerticalLine x={270} startY={430} endY={450} />
-            <HorizontalLine y={450} startX={140} endX={490} />
-            <VerticalLine x={140} startY={450} endY={780} />
-            <VerticalLine x={320} startY={450} endY={780} />
-            <VerticalLine x={490} startY={450} endY={780} />
-            <ArrowHead x={140} y={780} direction="down" />
-            <ArrowHead x={320} y={780} direction="down" />
-            <ArrowHead x={490} y={780} direction="down" />
+            {/* From diagnoses to treatments - PATH 1 - FROM BOTTOM OF DIAGNOSIS TO TOP OF TREATMENT */}
+            <VerticalLine x={90} startY={1230} endY={1320} />
+            <ArrowHead x={90} y={1320} direction="down" />
 
-            {/* From Urinalysis to findings */}
-            <VerticalLine x={420} startY={430} endY={480} />
-            <ArrowHead x={475} y={480} direction="down" />
+            <VerticalLine x={270} startY={1230} endY={1320} />
+            <ArrowHead x={270} y={1320} direction="down" />
 
-            {/* From Cyclic pain to findings */}
-            <VerticalLine x={580} startY={350} endY={450} />
-            <HorizontalLine y={450} startX={570} endX={740} />
-            <VerticalLine x={570} startY={450} endY={480} />
-            <VerticalLine x={740} startY={450} endY={480} />
-            <ArrowHead x={570} y={480} direction="down" />
-            <ArrowHead x={740} y={480} direction="down" />
+            {/* PATH 2: Severe unilateral pain → Abdominal ultrasound → 3 findings → diagnoses → treatments */}
+            <VerticalLine x={450} startY={570} endY={680} />
+            <ArrowHead x={450} y={680} direction="down" />
 
-            {/* From Intrauterine pregnancy branching */}
-            <VerticalLine x={690} startY={240} endY={260} />
-            <HorizontalLine y={260} startX={740} endX={870} />
+            {/* From Abdominal ultrasound down with long space to be below PATH 1 treatments */}
+            <VerticalLine x={470} startY={730} endY={1480} />
+            <HorizontalLine y={1480} startX={370} endX={710} />
             
-            {/* To Ectopic Pregnancy */}
-            <VerticalLine x={870} startY={260} endY={280} />
-            <ArrowHead x={870} y={280} direction="down" />
-            <PlusMinusIndicator type="minus" x={870} y={280} />
+            {/* To three findings - ARROWS TO BOX BORDERS */}
+            <VerticalLine x={370} startY={1480} endY={1520} />
+            <VerticalLine x={540} startY={1480} endY={1520} />
+            <VerticalLine x={710} startY={1480} endY={1520} />
             
-            {/* To Reference */}
-            <VerticalLine x={740} startY={260} endY={280} />
-            <ArrowHead x={740} y={280} direction="down" />
-            <PlusMinusIndicator type="plus" x={740} y={280} />
+            <ArrowHead x={370} y={1520} direction="down" />
+            <ArrowHead x={540} y={1520} direction="down" />
+            <ArrowHead x={710} y={1520} direction="down" />
 
-            {/* From findings to diagnoses */}
-            <VerticalLine x={140} startY={830} endY={880} />
-            <VerticalLine x={320} startY={830} endY={880} />
-            <VerticalLine x={490} startY={830} endY={880} />
-            <ArrowHead x={140} y={880} direction="down" />
-            <ArrowHead x={320} y={880} direction="down" />
-            <ArrowHead x={490} y={880} direction="down" />
+            {/* From findings to diagnoses - FIXED TO CONNECT TO BOX BORDERS */}
+            <VerticalLine x={370} startY={1570} endY={1680} />
+            <VerticalLine x={540} startY={1570} endY={1680} />
+            <VerticalLine x={710} startY={1570} endY={1680} />
+            
+            <ArrowHead x={370} y={1680} direction="down" />
+            <ArrowHead x={540} y={1680} direction="down" />
+            <ArrowHead x={710} y={1680} direction="down" />
 
-            <VerticalLine x={475} startY={530} endY={580} />
-            <VerticalLine x={570} startY={530} endY={580} />
-            <VerticalLine x={740} startY={530} endY={580} />
-            <ArrowHead x={420} y={580} direction="down" />
-            <ArrowHead x={560} y={580} direction="down" />
-            <ArrowHead x={710} y={580} direction="down" />
+            {/* From Ovarian Cyst Rupture and Ovarian Torsion to their treatments - ONLY 2 ARROWS */}
+            <VerticalLine x={540} startY={1730} endY={1820} />
+            <ArrowHead x={540} y={1820} direction="down" />
 
-            {/* From diagnoses to treatments */}
-            <VerticalLine x={870} startY={330} endY={380} />
-            <ArrowHead x={880} y={380} direction="down" />
+            <VerticalLine x={710} startY={1730} endY={1820} />
+            <ArrowHead x={710} y={1820} direction="down" />
 
-            <VerticalLine x={120} startY={730} endY={780} />
-            <VerticalLine x={280} startY={730} endY={780} />
-            <VerticalLine x={420} startY={630} endY={680} />
-            <VerticalLine x={560} startY={630} endY={680} />
-            <VerticalLine x={740} startY={630} endY={680} />
-            <ArrowHead x={140} y={780} direction="down" />
-            <ArrowHead x={280} y={780} direction="down" />
-            <ArrowHead x={420} y={680} direction="down" />
-            <ArrowHead x={560} y={680} direction="down" />
-            <ArrowHead x={740} y={680} direction="down" />
+            {/* PATH 3: Suprapubic tenderness → Urinalysis → UA results → UTI → Treatment */}
+            <VerticalLine x={750} startY={570} endY={680} />
+            <ArrowHead x={750} y={680} direction="down" />
 
-            <VerticalLine x={140} startY={930} endY={980} />
-            <VerticalLine x={320} startY={930} endY={980} />
-            <VerticalLine x={490} startY={930} endY={980} />
-            <ArrowHead x={140} y={980} direction="down" />
-            <ArrowHead x={320} y={980} direction="down" />
-            <ArrowHead x={490} y={980} direction="down" />
+            {/* From Urinalysis to UA results - ARROW TO BOX BORDER */}
+            <VerticalLine x={770} startY={730} endY={840} />
+            <ArrowHead x={770} y={840} direction="down" />
+
+            {/* From UA results to UTI diagnosis - FIXED ALIGNMENT */}
+            <VerticalLine x={770} startY={890} endY={1000} />
+            <ArrowHead x={770} y={1000} direction="down" />
+
+            {/* From UTI to treatment - FIXED ALIGNMENT */}
+            <VerticalLine x={770} startY={1050} endY={1140} />
+            <ArrowHead x={770} y={1140} direction="down" />
+
+            {/* PATH 4: Cyclic pain → Two branches (simple pathway) */}
+            <VerticalLine x={1090} startY={570} endY={640} />
+            <HorizontalLine y={640} startX={1020} endX={1210} />
+            
+            <VerticalLine x={1020} startY={640} endY={680} />
+            <VerticalLine x={1210} startY={640} endY={680} />
+            
+            <ArrowHead x={1020} y={680} direction="down" />
+            <ArrowHead x={1210} y={680} direction="down" />
+
+            <VerticalLine x={1020} startY={730} endY={840} />
+            <VerticalLine x={1210} startY={730} endY={840} />
+            
+            <ArrowHead x={1020} y={840} direction="down" />
+            <ArrowHead x={1210} y={840} direction="down" />
+
+            <VerticalLine x={1020} startY={890} endY={1140} />
+            <VerticalLine x={1210} startY={890} endY={1140} />
+            
+            <ArrowHead x={1020} y={1140} direction="down" />
+            <ArrowHead x={1210} y={1140} direction="down" />
+
+            {/* RIGHT BRANCH: Intrauterine pregnancy split */}
+            <VerticalLine x={1740} startY={400} endY={480} />
+            <HorizontalLine y={480} startX={1690} endX={2050} />
+            
+            {/* To Reference (Positive - intrauterine pregnancy found) */}
+            <VerticalLine x={1690} startY={480} endY={520} />
+            <ArrowHead x={1690} y={520} direction="down" />
+            <PlusMinusIndicator type="plus" x={1710} y={500} />
+            
+            {/* To Ectopic Pregnancy (Negative - no intrauterine pregnancy) */}
+            <VerticalLine x={2050} startY={480} endY={520} />
+            <ArrowHead x={2050} y={520} direction="down" />
+            <PlusMinusIndicator type="minus" x={2070} y={500} />
+
+            {/* From Ectopic Pregnancy to treatment */}
+            <VerticalLine x={2050} startY={570} endY={680} />
+            <ArrowHead x={2050} y={680} direction="down" />
 
           </div>
         </div>
