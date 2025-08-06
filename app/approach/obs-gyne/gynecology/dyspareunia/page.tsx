@@ -202,6 +202,7 @@ export default function DyspareuniaPage({ frameFullScreen, onToggleFrameFullScre
   const [scale, setScale] = useState(1);
   const [initialDistance, setInitialDistance] = useState(0);
   const [initialScale, setInitialScale] = useState(1);
+  const [initialScrollPos, setInitialScrollPos] = useState({ x: 0, y: 0 });
 
   // Calculate distance between two touch points
   const getDistance = (touch1: React.Touch, touch2: React.Touch) => {
@@ -249,8 +250,10 @@ export default function DyspareuniaPage({ frameFullScreen, onToggleFrameFullScre
       // Two touches - zooming
       setIsPanning(false);
       const distance = getDistance(e.touches[0], e.touches[1]);
+      const center = getCenter(e.touches[0], e.touches[1]);
       setInitialDistance(distance);
       setInitialScale(scale);
+      setInitialScrollPos(scrollPos);
     }
   };
 
@@ -265,9 +268,24 @@ export default function DyspareuniaPage({ frameFullScreen, onToggleFrameFullScre
       // Two touch zooming
       e.preventDefault();
       const distance = getDistance(e.touches[0], e.touches[1]);
+      const center = getCenter(e.touches[0], e.touches[1]);
       const scaleFactor = distance / initialDistance;
       const newScale = Math.max(0.5, Math.min(3, initialScale * scaleFactor));
-      setScale(newScale);
+      
+      // Calculate zoom center relative to container
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        const centerX = center.x - rect.left;
+        const centerY = center.y - rect.top;
+        
+        // Calculate new scroll position to zoom towards the center point
+        const scaleChange = newScale / initialScale;
+        const newScrollX = centerX - (centerX - initialScrollPos.x) * scaleChange;
+        const newScrollY = centerY - (centerY - initialScrollPos.y) * scaleChange;
+        
+        setScale(newScale);
+        setScrollPos({ x: newScrollX, y: newScrollY });
+      }
     }
   };
 
@@ -280,7 +298,21 @@ export default function DyspareuniaPage({ frameFullScreen, onToggleFrameFullScre
     e.preventDefault();
     const delta = e.deltaY > 0 ? 0.9 : 1.1;
     const newScale = Math.max(0.5, Math.min(3, scale * delta));
-    setScale(newScale);
+    
+    // Calculate zoom center relative to container
+    if (containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      const centerX = e.clientX - rect.left;
+      const centerY = e.clientY - rect.top;
+      
+      // Calculate new scroll position to zoom towards the mouse position
+      const scaleChange = newScale / scale;
+      const newScrollX = centerX - (centerX - scrollPos.x) * scaleChange;
+      const newScrollY = centerY - (centerY - scrollPos.y) * scaleChange;
+      
+      setScale(newScale);
+      setScrollPos({ x: newScrollX, y: newScrollY });
+    }
   };
 
 
