@@ -266,7 +266,7 @@ export default function AcutePelvicPainFlowchart({ frameFullScreen = false, onTo
       
       <div className={`${frameFullScreen ? 'fixed inset-0 z-50 bg-gray-100' : 'h-screen bg-gray-100'} overflow-hidden`}>
         {/* Title */}
-        <div className="bg-white p-4 shadow-sm flex justify-between items-center">
+        <div className="bg-white p-4 shadow-sm flex justify-between items-center border-b border-gray-200">
           <h1 className="text-2xl font-bold text-blue-600">Acute Pelvic Pain</h1>
           <button
             onClick={onToggleFrameFullScreen}
@@ -282,7 +282,11 @@ export default function AcutePelvicPainFlowchart({ frameFullScreen = false, onTo
         {/* Main flowchart container */}
         <div
           ref={containerRef}
-          className="relative w-full h-full cursor-grab active:cursor-grabbing"
+          className="relative w-full cursor-grab active:cursor-grabbing"
+          style={{ 
+            height: 'calc(100vh - 80px)', 
+            cursor: isPanning ? 'grabbing' : 'grab' 
+          }}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
@@ -290,7 +294,6 @@ export default function AcutePelvicPainFlowchart({ frameFullScreen = false, onTo
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
-          style={{ cursor: isPanning ? 'grabbing' : 'grab' }}
         >
           <div
             className="relative"
