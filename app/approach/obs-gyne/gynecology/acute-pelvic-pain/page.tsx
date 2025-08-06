@@ -271,13 +271,13 @@ export default function AcutePelvicPainFlowchart({ frameFullScreen, onToggleFram
   return (
     <>
       <Head>
-        <title>Acute Pelvic Pain</title>
+        <title>Acute Pelvic Pain - MBHA</title>
         <meta name="description" content="Medical flowchart for acute pelvic pain evaluation" />
       </Head>
       
-      <div className={`${frameFullScreen ? 'fixed inset-0 z-50 bg-gray-100' : 'h-screen bg-gray-100'} overflow-hidden`}>
-        {/* Header */}
-        <div className="bg-white p-4 shadow-sm flex items-center justify-between">
+      <div className={`${frameFullScreen ? 'fixed inset-0 z-50 bg-gray-100' : 'h-screen bg-gray-100'} overflow-hidden flex flex-col`}>
+        {/* Header - Fixed at top */}
+        <div className="bg-white p-4 shadow-sm flex items-center justify-between flex-shrink-0 border-b border-gray-200">
           <div className="flex items-center space-x-4">
             <h1 className="text-2xl font-bold text-blue-600">Acute Pelvic Pain</h1>
           </div>
@@ -304,10 +304,10 @@ export default function AcutePelvicPainFlowchart({ frameFullScreen, onToggleFram
           </button>
         </div>
 
-        {/* Main flowchart container */}
+        {/* Main flowchart container - Takes remaining space */}
         <div
           ref={containerRef}
-          className="relative w-full h-full cursor-grab active:cursor-grabbing"
+          className="relative w-full flex-grow cursor-grab active:cursor-grabbing"
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
