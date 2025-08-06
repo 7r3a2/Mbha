@@ -200,6 +200,7 @@ export default function DyspareuniaPage({ frameFullScreen, onToggleFrameFullScre
   const [scrollPos, setScrollPos] = useState({ x: 0, y: 0 });
   const [lastMousePos, setLastMousePos] = useState({ x: 0, y: 0 });
   const [lastTouchPos, setLastTouchPos] = useState({ x: 0, y: 0 });
+  const [scale, setScale] = useState(1);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
@@ -215,7 +216,7 @@ export default function DyspareuniaPage({ frameFullScreen, onToggleFrameFullScre
     const deltaY = e.clientY - lastMousePos.y;
     setScrollPos(prev => ({
       x: prev.x + deltaX,
-      y: Math.max(0, prev.y + deltaY) // Prevent scrolling above the header
+      y: prev.y + deltaY // Allow scrolling behind header
     }));
     setLastMousePos({ x: e.clientX, y: e.clientY });
   };
@@ -240,13 +241,20 @@ export default function DyspareuniaPage({ frameFullScreen, onToggleFrameFullScre
     const deltaY = e.touches[0].clientY - lastTouchPos.y;
     setScrollPos(prev => ({
       x: prev.x + deltaX,
-      y: Math.max(0, prev.y + deltaY) // Prevent scrolling above the header
+      y: prev.y + deltaY // Allow scrolling behind header
     }));
     setLastTouchPos({ x: e.touches[0].clientX, y: e.touches[0].clientY });
   };
 
   const handleTouchEnd = () => {
     setIsPanning(false);
+  };
+
+  const handleWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+    const newScale = Math.max(0.5, Math.min(3, scale * delta));
+    setScale(newScale);
   };
 
 
@@ -298,12 +306,13 @@ export default function DyspareuniaPage({ frameFullScreen, onToggleFrameFullScre
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
+          onWheel={handleWheel}
           style={{ cursor: isPanning ? 'grabbing' : 'grab' }}
         >
           <div
             className="relative"
             style={{
-              transform: `translate3d(${scrollPos.x}px, ${scrollPos.y}px, 0)`,
+              transform: `translate3d(${scrollPos.x}px, ${scrollPos.y}px, 0) scale(${scale})`,
               width: '3600px',
               height: '2800px',
               willChange: 'transform',
