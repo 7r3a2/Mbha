@@ -516,7 +516,7 @@ export default function DyspareuniaPage({ frameFullScreen, onToggleFrameFullScre
 
             {/* Treatments from discharge pathway - MOVED FURTHER RIGHT */}
             <TreatmentBox
-              title="See Vaginal Discharge Algorithm, p. 694"
+              title="See Vaginal Discharge Algorithm"
               style={{ position: 'absolute', left: 700, top: 1060, width: 200 }}
             />
 
