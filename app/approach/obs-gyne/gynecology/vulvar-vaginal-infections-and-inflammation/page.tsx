@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useRef, useState, useEffect } from 'react';
-import Head from "next/head";
 
 // Main title box component (Gray)
 const TitleBox = ({ title, style = {} }: { title: string; style?: React.CSSProperties }) => (
@@ -317,13 +316,7 @@ export default function VulvarVaginalInfectionsAndInflammationPage({ frameFullSc
   };
 
   return (
-    <>
-      <Head>
-        <title>Vulvar/Vaginal Infections and Inflammation</title>
-        <meta name="description" content="Medical flowchart for vulvar and vaginal infections and inflammation evaluation" />
-      </Head>
-      
-      <div className={`${frameFullScreen ? 'fixed inset-0 z-50 bg-gray-100' : 'h-screen bg-gray-100'} overflow-hidden flex flex-col`}>
+    <div className={`${frameFullScreen ? 'fixed inset-0 z-50 bg-gray-100' : 'h-screen bg-gray-100'} overflow-hidden flex flex-col`}>
         {/* Header - Fixed at top */}
         <div className="bg-white p-4 shadow-sm flex items-center justify-between flex-shrink-0 border-b border-gray-200 z-10 relative">
           <div className="flex items-center space-x-4">
@@ -708,6 +701,5 @@ export default function VulvarVaginalInfectionsAndInflammationPage({ frameFullSc
           </div>
         </div>
       </div>
-    </>
   );
 } 
