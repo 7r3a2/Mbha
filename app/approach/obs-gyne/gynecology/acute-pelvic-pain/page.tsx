@@ -264,19 +264,21 @@ export default function AcutePelvicPainFlowchart({ frameFullScreen = false, onTo
         <meta name="description" content="Medical flowchart for acute pelvic pain evaluation" />
       </Head>
       
-      <div className={`${frameFullScreen ? 'fixed inset-0 z-50 bg-gray-100' : 'h-screen bg-gray-100'} overflow-hidden`}>
-        {/* Title */}
-        <div className="bg-white p-4 shadow-sm flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-blue-600">Acute Pelvic Pain</h1>
-          <button
-            onClick={onToggleFrameFullScreen}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 flex items-center space-x-2"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-            </svg>
-            <span>Full Screen</span>
-          </button>
+      <div className="h-screen bg-gray-100 overflow-hidden">
+        {/* Header with back button */}
+        <div className="bg-white p-4 shadow-sm flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <button 
+              onClick={() => window.history.back()}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              ← Back
+            </button>
+            <h1 className="text-2xl font-bold text-blue-600">Acute Pelvic Pain</h1>
+          </div>
+          <div className="text-sm text-gray-600">
+            Gynecology • Approach
+          </div>
         </div>
 
         {/* Main flowchart container */}

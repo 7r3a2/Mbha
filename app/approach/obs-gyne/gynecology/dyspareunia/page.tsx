@@ -250,31 +250,21 @@ export default function DyspareuniaPage({ frameFullScreen = false, onToggleFrame
         <meta name="description" content="Medical flowchart for dyspareunia evaluation" />
       </Head>
       
-      <div className={`${frameFullScreen ? 'fixed inset-0 z-50 bg-gray-100' : 'h-screen bg-gray-100'} overflow-hidden`}>
-        {/* Header with full screen button */}
+      <div className="h-screen bg-gray-100 overflow-hidden">
+        {/* Header with back button */}
         <div className="bg-white p-4 shadow-sm flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-blue-600">Dyspareunia</h1>
-          <button
-            onClick={toggleFullScreen}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
-            title={frameFullScreen ? "Exit Full Screen" : "Full Screen"}
-          >
-            {frameFullScreen ? (
-              <>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-                <span>Exit Full Screen</span>
-              </>
-            ) : (
-              <>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-                </svg>
-                <span>Full Screen</span>
-              </>
-            )}
-          </button>
+          <div className="flex items-center space-x-4">
+            <button 
+              onClick={() => window.history.back()}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              ← Back
+            </button>
+            <h1 className="text-2xl font-bold text-blue-600">Dyspareunia</h1>
+          </div>
+          <div className="text-sm text-gray-600">
+            Gynecology • Approach
+          </div>
         </div>
 
         {/* Main flowchart container */}
