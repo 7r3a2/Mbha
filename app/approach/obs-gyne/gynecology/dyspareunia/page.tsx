@@ -199,25 +199,6 @@ export default function DyspareuniaPage({ frameFullScreen, onToggleFrameFullScre
   const [isPanning, setIsPanning] = useState(false);
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
   const [scrollPos, setScrollPos] = useState({ x: 0, y: 0 });
-  const [scale, setScale] = useState(1);
-  const [initialDistance, setInitialDistance] = useState(0);
-  const [initialScale, setInitialScale] = useState(1);
-  const [initialScrollPos, setInitialScrollPos] = useState({ x: 0, y: 0 });
-
-  // Calculate distance between two touch points
-  const getDistance = (touch1: React.Touch, touch2: React.Touch) => {
-    const dx = touch1.clientX - touch2.clientX;
-    const dy = touch1.clientY - touch2.clientY;
-    return Math.sqrt(dx * dx + dy * dy);
-  };
-
-  // Calculate center point between two touch points
-  const getCenter = (touch1: React.Touch, touch2: React.Touch) => {
-    return {
-      x: (touch1.clientX + touch2.clientX) / 2,
-      y: (touch1.clientY + touch2.clientY) / 2
-    };
-  };
 
   const handleMouseDown = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
@@ -241,80 +222,23 @@ export default function DyspareuniaPage({ frameFullScreen, onToggleFrameFullScre
   const handleTouchStart = (e: React.TouchEvent) => {
     const target = e.target as HTMLElement;
     if (target.closest('.flowchart-box')) return;
-    
-    if (e.touches.length === 1) {
-      // Single touch - panning
-      setIsPanning(true);
-      setStartPos({ x: e.touches[0].clientX - scrollPos.x, y: e.touches[0].clientY - scrollPos.y });
-    } else if (e.touches.length === 2) {
-      // Two touches - zooming
-      setIsPanning(false);
-      const distance = getDistance(e.touches[0], e.touches[1]);
-      const center = getCenter(e.touches[0], e.touches[1]);
-      setInitialDistance(distance);
-      setInitialScale(scale);
-      setInitialScrollPos(scrollPos);
-    }
+    const touch = e.touches[0];
+    setIsPanning(true);
+    setStartPos({ x: touch.clientX - scrollPos.x, y: touch.clientY - scrollPos.y });
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (e.touches.length === 1 && isPanning) {
-      // Single touch panning
-      e.preventDefault();
-      const newX = e.touches[0].clientX - startPos.x;
-      const newY = e.touches[0].clientY - startPos.y;
-      setScrollPos({ x: newX, y: newY });
-    } else if (e.touches.length === 2) {
-      // Two touch zooming
-      e.preventDefault();
-      const distance = getDistance(e.touches[0], e.touches[1]);
-      const center = getCenter(e.touches[0], e.touches[1]);
-      const scaleFactor = distance / initialDistance;
-      const newScale = Math.max(0.5, Math.min(3, initialScale * scaleFactor));
-      
-      // Calculate zoom center relative to container
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        const centerX = center.x - rect.left;
-        const centerY = center.y - rect.top;
-        
-        // Calculate new scroll position to zoom towards the center point
-        const scaleChange = newScale / initialScale;
-        const newScrollX = centerX - (centerX - initialScrollPos.x) * scaleChange;
-        const newScrollY = centerY - (centerY - initialScrollPos.y) * scaleChange;
-        
-        setScale(newScale);
-        setScrollPos({ x: newScrollX, y: newScrollY });
-      }
-    }
+    if (!isPanning) return;
+    e.preventDefault();
+    const touch = e.touches[0];
+    const newX = touch.clientX - startPos.x;
+    const newY = touch.clientY - startPos.y;
+    setScrollPos({ x: newX, y: newY });
   };
 
   const handleTouchEnd = () => {
     setIsPanning(false);
-    setInitialDistance(0);
   };
-
-  const handleWheel = (e: React.WheelEvent) => {
-    e.preventDefault();
-    const delta = e.deltaY > 0 ? 0.9 : 1.1;
-    const newScale = Math.max(0.5, Math.min(3, scale * delta));
-    
-    // Calculate zoom center relative to container
-    if (containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect();
-      const centerX = e.clientX - rect.left;
-      const centerY = e.clientY - rect.top;
-      
-      // Calculate new scroll position to zoom towards the mouse position
-      const scaleChange = newScale / scale;
-      const newScrollX = centerX - (centerX - scrollPos.x) * scaleChange;
-      const newScrollY = centerY - (centerY - scrollPos.y) * scaleChange;
-      
-      setScale(newScale);
-      setScrollPos({ x: newScrollX, y: newScrollY });
-    }
-  };
-
 
 
   return (
@@ -364,13 +288,12 @@ export default function DyspareuniaPage({ frameFullScreen, onToggleFrameFullScre
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
-          onWheel={handleWheel}
           style={{ cursor: isPanning ? 'grabbing' : 'grab' }}
         >
           <div
             className="relative"
             style={{
-              transform: `translate3d(${scrollPos.x}px, ${scrollPos.y}px, 0) scale(${scale})`,
+              transform: `translate3d(${scrollPos.x}px, ${scrollPos.y}px, 0)`,
               width: '3600px',
               height: '2800px',
               willChange: 'transform',
