@@ -216,137 +216,43 @@ const PlusMinusIndicator = ({ type, x, y }: { type: 'plus' | 'minus'; x: number;
 export default function AcutePelvicPainFlowchart({ frameFullScreen = false, onToggleFrameFullScreen = () => {} }: { frameFullScreen?: boolean; onToggleFrameFullScreen?: () => void }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isPanning, setIsPanning] = useState(false);
-  const [mouseStartPos, setMouseStartPos] = useState({ x: 0, y: 0 });
-  const [panX, setPanX] = useState(0);
-  const [panY, setPanY] = useState(0);
-  const [zoomScale, setZoomScale] = useState(1);
-  const [isZooming, setIsZooming] = useState(false);
-  const [initialDistance, setInitialDistance] = useState(0);
-  const [lastTouchX, setLastTouchX] = useState(0);
-  const [lastTouchY, setLastTouchY] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
+  const [startPos, setStartPos] = useState({ x: 0, y: 0 });
+  const [scrollPos, setScrollPos] = useState({ x: 0, y: 0 });
 
-  // Check if device is mobile
-  useEffect(() => {
-    const checkDevice = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    checkDevice();
-    window.addEventListener('resize', checkDevice);
-    return () => window.removeEventListener('resize', checkDevice);
-  }, []);
-
-  // Panning functionality
+  // Panning functionality - smooth and fast like chest-pain
   const handleMouseDown = (e: React.MouseEvent) => {
-    // Only start panning if clicking on empty space (not on boxes)
-    const target = e.target as HTMLElement;
-    if (target.closest('.flowchart-box')) {
-      return;
-    }
-    
-    e.preventDefault();
     setIsPanning(true);
-    setMouseStartPos({ x: e.clientX - panX, y: e.clientY - panY });
+    setStartPos({ x: e.clientX - scrollPos.x, y: e.clientY - scrollPos.y });
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!isPanning) return;
-    e.preventDefault();
-    
-    // Direct, responsive panning without borders
-    const newX = e.clientX - mouseStartPos.x;
-    const newY = e.clientY - mouseStartPos.y;
-    
-    setPanX(newX);
-    setPanY(newY);
+    const newX = e.clientX - startPos.x;
+    const newY = e.clientY - startPos.y;
+    setScrollPos({ x: newX, y: newY });
   };
 
   const handleMouseUp = () => {
     setIsPanning(false);
   };
 
-  // Scroll to zoom functionality for desktop - zoom to mouse position
-  const handleWheel = (e: React.WheelEvent) => {
-    e.preventDefault();
-    
-    // Only zoom if not panning and not on mobile
-    if (!isPanning && !isMobile) {
-      const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1; // Zoom out on scroll down, zoom in on scroll up
-      const newZoomScale = Math.max(0.3, Math.min(5, zoomScale * zoomFactor));
-      
-      // Get mouse position relative to the flowchart container
-      const rect = e.currentTarget.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left - rect.width / 2;
-      const mouseY = e.clientY - rect.top - rect.height / 2;
-      
-      // Calculate new pan position to zoom towards mouse
-      const scaleChange = newZoomScale / zoomScale;
-      const newPanX = panX - (mouseX * (scaleChange - 1));
-      const newPanY = panY - (mouseY * (scaleChange - 1));
-      
-      setZoomScale(newZoomScale);
-      setPanX(newPanX);
-      setPanY(newPanY);
-    }
-  };
-
-  // Touch panning functionality
+  // Touch events for mobile - smooth and fast
   const handleTouchStart = (e: React.TouchEvent) => {
-    if (e.touches.length === 2) {
-      // Two finger touch - start zooming
-      e.preventDefault();
-      setIsZooming(true);
-      setIsPanning(false);
-      const distance = Math.hypot(
-        e.touches[0].clientX - e.touches[1].clientX,
-        e.touches[0].clientY - e.touches[1].clientY
-      );
-      setInitialDistance(distance);
-    } else if (e.touches.length === 1) {
-      // Single finger touch - start panning
-      const target = e.target as HTMLElement;
-      if (target.closest('.flowchart-box')) {
-        return;
-      }
-      
-      e.preventDefault();
-      setIsPanning(true);
-      setIsZooming(false);
-      setLastTouchX(e.touches[0].clientX);
-      setLastTouchY(e.touches[0].clientY);
-    }
+    const touch = e.touches[0];
+    setIsPanning(true);
+    setStartPos({ x: touch.clientX - scrollPos.x, y: touch.clientY - scrollPos.y });
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (e.touches.length === 2 && isZooming) {
-      // Two finger zoom
-      e.preventDefault();
-      const distance = Math.hypot(
-        e.touches[0].clientX - e.touches[1].clientX,
-        e.touches[0].clientY - e.touches[1].clientY
-      );
-      
-      const scaleFactor = distance / initialDistance;
-      const newZoomScale = Math.max(0.3, Math.min(5, zoomScale * scaleFactor));
-      setZoomScale(newZoomScale);
-      setInitialDistance(distance);
-    } else if (e.touches.length === 1 && isPanning) {
-      // Single finger pan - direct and responsive
-      e.preventDefault();
-      const touch = e.touches[0];
-      const deltaX = touch.clientX - lastTouchX;
-      const deltaY = touch.clientY - lastTouchY;
-      
-      setPanX(panX + deltaX);
-      setPanY(panY + deltaY);
-      setLastTouchX(touch.clientX);
-      setLastTouchY(touch.clientY);
-    }
+    if (!isPanning) return;
+    const touch = e.touches[0];
+    const newX = touch.clientX - startPos.x;
+    const newY = touch.clientY - startPos.y;
+    setScrollPos({ x: newX, y: newY });
   };
 
   const handleTouchEnd = () => {
     setIsPanning(false);
-    setIsZooming(false);
   };
 
   return (
@@ -372,30 +278,22 @@ export default function AcutePelvicPainFlowchart({ frameFullScreen = false, onTo
         </div>
 
         {/* Main flowchart container */}
-        <div 
+        <div
           ref={containerRef}
-          className="relative w-full h-full overflow-hidden flex items-center justify-center"
+          className="relative w-full h-full cursor-grab active:cursor-grabbing"
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
-          onWheel={handleWheel}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
-          style={{ 
-            cursor: isPanning ? 'grabbing' : 'grab',
-            touchAction: 'none',
-            pointerEvents: 'auto',
-            WebkitTouchCallout: 'none',
-            WebkitUserSelect: 'none'
-          }}
+          style={{ cursor: isPanning ? 'grabbing' : 'grab' }}
         >
-          {/* Flowchart content - centered and responsive */}
           <div
             className="relative"
             style={{
-              transform: `scale(${zoomScale}) translate(${panX}px, ${panY}px)`,
+              transform: `translate(${scrollPos.x}px, ${scrollPos.y}px)`,
               width: '3600px',
               height: '2800px',
             }}

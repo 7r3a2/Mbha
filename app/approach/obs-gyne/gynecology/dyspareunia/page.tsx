@@ -195,155 +195,44 @@ const PlusMinusIndicator = ({ type, x, y }: { type: 'plus' | 'minus'; x: number;
 );
 
 export default function DyspareuniaPage({ frameFullScreen = false, onToggleFrameFullScreen = () => {} }) {
-  const [isMobile, setIsMobile] = useState(false);
-  const [scale, setScale] = useState(1);
-  const [zoomScale, setZoomScale] = useState(1);
-  const [isZooming, setIsZooming] = useState(false);
-  const [initialDistance, setInitialDistance] = useState(0);
-  const [panX, setPanX] = useState(0);
-  const [panY, setPanY] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [isPanning, setIsPanning] = useState(false);
-  const [lastTouchX, setLastTouchX] = useState(0);
-  const [lastTouchY, setLastTouchY] = useState(0);
-  const [mouseStartPos, setMouseStartPos] = useState({ x: 0, y: 0 });
+  const [startPos, setStartPos] = useState({ x: 0, y: 0 });
+  const [scrollPos, setScrollPos] = useState({ x: 0, y: 0 });
 
-  // Check if mobile/tablet on mount and resize
-  useEffect(() => {
-    const checkDevice = () => {
-      const width = window.innerWidth;
-      const height = window.innerHeight;
-      setIsMobile(width < 1024);
-      
-      // Responsive flowchart that fits all devices
-      const flowchartWidth = 3600;
-      const flowchartHeight = 2800;
-      
-      // Calculate scale to fit the device properly
-      const scaleX = (width * 0.9) / flowchartWidth; // 90% of screen width
-      const scaleY = (height * 0.8) / flowchartHeight; // 80% of screen height
-      
-      // Use the smaller scale to ensure it fits completely
-      const autoScale = Math.min(scaleX, scaleY, 1); // Cap at 1.0
-      
-      setScale(autoScale);
-    };
-    
-    checkDevice();
-    window.addEventListener('resize', checkDevice);
-    return () => window.removeEventListener('resize', checkDevice);
-  }, []);
-
-  // Mouse and touch panning functionality
+  // Panning functionality - smooth and fast like chest-pain
   const handleMouseDown = (e: React.MouseEvent) => {
-    // Only start panning if clicking on empty space (not on boxes)
-    const target = e.target as HTMLElement;
-    if (target.closest('.flowchart-box')) {
-      return;
-    }
-    
-    e.preventDefault();
     setIsPanning(true);
-    setMouseStartPos({ x: e.clientX - panX, y: e.clientY - panY });
+    setStartPos({ x: e.clientX - scrollPos.x, y: e.clientY - scrollPos.y });
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!isPanning) return;
-    e.preventDefault();
-    
-    // Direct, responsive panning without borders
-    const newX = e.clientX - mouseStartPos.x;
-    const newY = e.clientY - mouseStartPos.y;
-    
-    setPanX(newX);
-    setPanY(newY);
+    const newX = e.clientX - startPos.x;
+    const newY = e.clientY - startPos.y;
+    setScrollPos({ x: newX, y: newY });
   };
 
   const handleMouseUp = () => {
     setIsPanning(false);
   };
 
-  // Scroll to zoom functionality for desktop - zoom to mouse position
-  const handleWheel = (e: React.WheelEvent) => {
-    e.preventDefault();
-    
-    // Only zoom if not panning and not on mobile
-    if (!isPanning && !isMobile) {
-      const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1; // Zoom out on scroll down, zoom in on scroll up
-      const newZoomScale = Math.max(0.3, Math.min(5, zoomScale * zoomFactor));
-      
-      // Get mouse position relative to the flowchart container
-      const rect = e.currentTarget.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left - rect.width / 2;
-      const mouseY = e.clientY - rect.top - rect.height / 2;
-      
-      // Calculate new pan position to zoom towards mouse
-      const scaleChange = newZoomScale / zoomScale;
-      const newPanX = panX - (mouseX * (scaleChange - 1));
-      const newPanY = panY - (mouseY * (scaleChange - 1));
-      
-      setZoomScale(newZoomScale);
-      setPanX(newPanX);
-      setPanY(newPanY);
-    }
-  };
-
-  // Touch panning functionality
+  // Touch events for mobile - smooth and fast
   const handleTouchStart = (e: React.TouchEvent) => {
-    if (e.touches.length === 2) {
-      // Two finger touch - start zooming
-      e.preventDefault();
-      setIsZooming(true);
-      setIsPanning(false);
-      const distance = Math.hypot(
-        e.touches[0].clientX - e.touches[1].clientX,
-        e.touches[0].clientY - e.touches[1].clientY
-      );
-      setInitialDistance(distance);
-    } else if (e.touches.length === 1) {
-      // Single finger touch - start panning
-      const target = e.target as HTMLElement;
-      if (target.closest('.flowchart-box')) {
-        return;
-      }
-      
-      e.preventDefault();
-      setIsPanning(true);
-      setIsZooming(false);
-      setLastTouchX(e.touches[0].clientX);
-      setLastTouchY(e.touches[0].clientY);
-    }
+    const touch = e.touches[0];
+    setIsPanning(true);
+    setStartPos({ x: touch.clientX - scrollPos.x, y: touch.clientY - scrollPos.y });
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (e.touches.length === 2 && isZooming) {
-      // Two finger zoom
-      e.preventDefault();
-      const distance = Math.hypot(
-        e.touches[0].clientX - e.touches[1].clientX,
-        e.touches[0].clientY - e.touches[1].clientY
-      );
-      
-      const scaleFactor = distance / initialDistance;
-      const newZoomScale = Math.max(0.3, Math.min(5, zoomScale * scaleFactor));
-      setZoomScale(newZoomScale);
-      setInitialDistance(distance);
-    } else if (e.touches.length === 1 && isPanning) {
-      // Single finger pan - direct and responsive
-      e.preventDefault();
-      const touch = e.touches[0];
-      const deltaX = touch.clientX - lastTouchX;
-      const deltaY = touch.clientY - lastTouchY;
-      
-      setPanX(prev => prev + deltaX);
-      setPanY(prev => prev + deltaY);
-      
-      setLastTouchX(touch.clientX);
-      setLastTouchY(touch.clientY);
-    }
+    if (!isPanning) return;
+    const touch = e.touches[0];
+    const newX = touch.clientX - startPos.x;
+    const newY = touch.clientY - startPos.y;
+    setScrollPos({ x: newX, y: newY });
   };
 
   const handleTouchEnd = () => {
-    setIsZooming(false);
     setIsPanning(false);
   };
 
@@ -387,30 +276,22 @@ export default function DyspareuniaPage({ frameFullScreen = false, onToggleFrame
         </div>
 
         {/* Main flowchart container */}
-        <div 
-          className="relative w-full h-full overflow-hidden flex items-center justify-center"
+        <div
+          ref={containerRef}
+          className="relative w-full h-full cursor-grab active:cursor-grabbing"
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
-          onWheel={handleWheel}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
-          style={{ 
-            cursor: isPanning ? 'grabbing' : 'grab',
-            touchAction: 'none',
-            pointerEvents: 'auto',
-            WebkitTouchCallout: 'none',
-            WebkitUserSelect: 'none'
-          }}
+          style={{ cursor: isPanning ? 'grabbing' : 'grab' }}
         >
-          
-          {/* Flowchart content - centered and responsive */}
           <div
             className="relative"
             style={{
-              transform: `scale(${scale * zoomScale}) translate(${panX}px, ${panY}px)`,
+              transform: `translate(${scrollPos.x}px, ${scrollPos.y}px)`,
               width: '3600px',
               height: '2800px',
             }}
