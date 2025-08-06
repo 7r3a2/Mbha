@@ -1853,7 +1853,10 @@ export default function ApproachPage() {
                 />
               ) : selectedContent.lecture.id === 'dyspareunia' ? (
                 // Render Dyspareunia page directly as component
-                <DyspareuniaPage />
+                <DyspareuniaPage 
+                  frameFullScreen={isFrameFullscreen}
+                  onToggleFrameFullScreen={() => setIsFrameFullscreen(!isFrameFullscreen)}
+                />
               ) : (
                 // Default content for other lectures
                 <div className="h-full flex items-center justify-center">
