@@ -250,7 +250,7 @@ export default function DyspareuniaPage({ frameFullScreen = false, onToggleFrame
         <meta name="description" content="Medical flowchart for dyspareunia evaluation" />
       </Head>
       
-      <div className={`${frameFullScreen ? 'fixed inset-0 z-50 bg-white' : 'h-screen bg-white'} overflow-hidden`}>
+      <div className={`${frameFullScreen ? 'fixed inset-0 z-50 bg-gray-100' : 'h-screen bg-gray-100'} overflow-hidden`}>
         {/* Header with full screen button */}
         <div className="bg-white p-4 shadow-sm flex items-center justify-between">
           <h1 className="text-2xl font-bold text-blue-600">Dyspareunia</h1>
