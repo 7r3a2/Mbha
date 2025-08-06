@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useRef, useState, useEffect } from "react";
+import Head from "next/head";
 
 // Main title box component (Gray)
 const TitleBox = ({ title, style = {} }: { title: string; style?: React.CSSProperties }) => (
@@ -193,13 +194,7 @@ const PlusMinusIndicator = ({ type, x, y }: { type: 'plus' | 'minus'; x: number;
   </div>
 );
 
-export default function DyspareuniaPage({ 
-  frameFullScreen = false, 
-  onToggleFrameFullScreen = () => {} 
-}: { 
-  frameFullScreen?: boolean; 
-  onToggleFrameFullScreen?: () => void; 
-}) {
+export default function DyspareuniaPage({ frameFullScreen = false, onToggleFrameFullScreen = () => {} }) {
   const [isMobile, setIsMobile] = useState(false);
   const [scale, setScale] = useState(1);
   const [zoomScale, setZoomScale] = useState(1);
@@ -299,517 +294,502 @@ export default function DyspareuniaPage({
       e.preventDefault();
       setIsZooming(true);
       setIsPanning(false);
-      
-      const touch1 = e.touches[0];
-      const touch2 = e.touches[1];
-      const distance = Math.sqrt(
-        Math.pow(touch2.clientX - touch1.clientX, 2) +
-        Math.pow(touch2.clientY - touch1.clientY, 2)
+      const distance = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
       );
       setInitialDistance(distance);
     } else if (e.touches.length === 1) {
-      // Single touch - start panning
-      const touch = e.touches[0];
+      // Single finger touch - start panning
+      const target = e.target as HTMLElement;
+      if (target.closest('.flowchart-box, .reference-box, .text-box')) {
+        return;
+      }
+      
+      e.preventDefault();
       setIsPanning(true);
       setIsZooming(false);
-      setLastTouchX(touch.clientX);
-      setLastTouchY(touch.clientY);
+      setLastTouchX(e.touches[0].clientX);
+      setLastTouchY(e.touches[0].clientY);
     }
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (e.touches.length === 2 && isZooming) {
-      // Two finger touch - zooming
+      // Two finger zoom
       e.preventDefault();
-      const touch1 = e.touches[0];
-      const touch2 = e.touches[1];
-      const distance = Math.sqrt(
-        Math.pow(touch2.clientX - touch1.clientX, 2) +
-        Math.pow(touch2.clientY - touch1.clientY, 2)
+      const distance = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
       );
       
-      if (initialDistance > 0) {
-        const scaleChange = distance / initialDistance;
-        const newZoomScale = Math.max(0.3, Math.min(5, zoomScale * scaleChange));
-        setZoomScale(newZoomScale);
-        setInitialDistance(distance);
-      }
+      const scaleFactor = distance / initialDistance;
+      const newZoomScale = Math.max(0.3, Math.min(5, zoomScale * scaleFactor));
+      setZoomScale(newZoomScale);
+      setInitialDistance(distance);
     } else if (e.touches.length === 1 && isPanning) {
-      // Single touch - panning
+      // Single finger pan - direct and responsive
       e.preventDefault();
       const touch = e.touches[0];
       const deltaX = touch.clientX - lastTouchX;
       const deltaY = touch.clientY - lastTouchY;
       
-      setPanX(panX + deltaX);
-      setPanY(panY + deltaY);
+      setPanX(prev => prev + deltaX);
+      setPanY(prev => prev + deltaY);
+      
       setLastTouchX(touch.clientX);
       setLastTouchY(touch.clientY);
     }
   };
 
   const handleTouchEnd = () => {
-    setIsPanning(false);
     setIsZooming(false);
-    setInitialDistance(0);
+    setIsPanning(false);
   };
 
+  // Full screen toggle - only for the flowchart frame
   const toggleFullScreen = () => {
     onToggleFrameFullScreen();
   };
 
   return (
-    <div className={`${frameFullScreen ? 'fixed inset-0 z-50 bg-white' : 'h-full'} bg-white overflow-hidden border-4 border-blue-500`}>
-      {/* Header with full screen button */}
-      <div className="bg-white p-4 shadow-sm flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-blue-600">Dyspareunia</h1>
-        <button
-          onClick={toggleFullScreen}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
-          title={frameFullScreen ? "Exit Full Screen" : "Full Screen"}
-        >
-          {frameFullScreen ? (
-            <>
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-              <span>Exit Full Screen</span>
-            </>
-          ) : (
-            <>
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-              </svg>
-              <span>Full Screen</span>
-            </>
-          )}
-        </button>
-      </div>
+    <>
+      <Head>
+        <title>Dyspareunia</title>
+        <meta name="description" content="Medical flowchart for dyspareunia evaluation" />
+      </Head>
+      
+      <div className="h-full bg-white overflow-hidden">
+        {/* Header with full screen button */}
+        <div className="bg-white p-4 shadow-sm flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-blue-600">Dyspareunia</h1>
+          <button
+            onClick={toggleFullScreen}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+            title={frameFullScreen ? "Exit Full Screen" : "Full Screen"}
+          >
+            {frameFullScreen ? (
+              <>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                <span>Exit Full Screen</span>
+              </>
+            ) : (
+              <>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                </svg>
+                <span>Full Screen</span>
+              </>
+            )}
+          </button>
+        </div>
 
-      {/* Main flowchart container */}
-      <div 
-        className="relative w-full h-full overflow-hidden flex items-center justify-center"
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-        onWheel={handleWheel}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        style={{ 
-          cursor: isPanning ? 'grabbing' : 'grab',
-          touchAction: 'none', // Prevent page refresh on iPad
-          pointerEvents: 'auto',
-          WebkitTouchCallout: 'none', // Prevent iOS touch callouts
-          WebkitUserSelect: 'none' // Prevent text selection
-        }}
-      >
-        
-        {/* Flowchart content - centered and responsive */}
-        <div
-          className="relative"
-          style={{
-            transform: `scale(${scale * zoomScale}) translate(${panX}px, ${panY}px)`,
-            width: '3600px',
-            height: '2800px',
-            pointerEvents: 'auto', // Enable interaction with boxes
-            transformOrigin: 'center',
-            transition: isZooming ? 'none' : 'none', // Remove transition for instant panning
-            willChange: 'transform', // Optimize for animations
-            backfaceVisibility: 'hidden', // Reduce blur on touch
-            WebkitBackfaceVisibility: 'hidden', // Safari support
-            // Improve rendering quality for zoom
-            imageRendering: 'crisp-edges',
-            // Better text rendering
-            textRendering: 'optimizeLegibility',
-            // Prevent blur during zoom
-            transformStyle: 'preserve-3d',
-            perspective: '1000px'
+        {/* Main flowchart container */}
+        <div 
+          className="relative w-full h-full overflow-hidden flex items-center justify-center"
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+          onWheel={handleWheel}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          style={{ 
+            cursor: isPanning ? 'grabbing' : 'grab',
+            touchAction: 'none',
+            pointerEvents: 'auto',
+            WebkitTouchCallout: 'none',
+            WebkitUserSelect: 'none'
           }}
         >
-          {/* Main Title - Centered at top - RAISED HIGHER */}
-          <TitleBox
-            title="Where Does the Pain Occur?"
-            style={{ position: 'absolute', left: 650, top: 20, width: 280 }}
-          />
-
-          {/* LEFT BRANCH: Vulva or introitus - Complete pathway */}
-          <FindingBox
-            title="Vulva or introitus"
-            style={{ position: 'absolute', left: 300, top: 180, width: 200 }}
-          />
-
-          {/* Visual inspection ± pelvic exam */}
-          <DecisionBox
-            title="Visual inspection ± pelvic exam"
-            style={{ position: 'absolute', left: 280, top: 320, width: 240 }}
-          />
-
-          {/* Three findings from Visual inspection - INCREASED SPACING */}
-          <FindingBox
-            title="Atrophy"
-            style={{ position: 'absolute', left: 50, top: 480, width: 120 }}
-          />
-
-          <FindingBox
-            title="Lesions, fissures, ulcerations"
-            style={{ position: 'absolute', left: 280, top: 480, width: 200 }}
-          />
-
-          <FindingBox
-            title="No abnormal findings or mild erythema"
-            style={{ position: 'absolute', left: 600, top: 480, width: 220 }}
-          />
-
-          {/* Diagnoses for first two findings - INCREASED SPACING */}
-          <DiagnosisBox
-            title="Atrophic Vaginitis"
-            style={{ position: 'absolute', left: 40, top: 620, width: 140 }}
-          />
-
-          <DiagnosisBox
-            title="Vaginal or Vulvar Lesion"
-            style={{ position: 'absolute', left: 280, top: 620, width: 200 }}
-          />
-
-          {/* Treatments for first two diagnoses - INCREASED SPACING */}
-          <TreatmentBox
-            title="Lubricants"
-            style={{ position: 'absolute', left: 60, top: 760, width: 100 }}
-          />
-
-          <TreatmentBox
-            title="See Vaginal/Vulvar Lesions"
-            style={{ position: 'absolute', left: 280, top: 760, width: 200 }}
-          />
-
-          {/* Additional treatment for Atrophic Vaginitis - INCREASED SPACING */}
-          <TreatmentBox
-            title="Topical estrogen"
-            style={{ position: 'absolute', left: 40, top: 900, width: 140 }}
-          />
-
-          {/* Third pathway - Localized vestibular tenderness - INCREASED SPACING */}
-          <FindingBox
-            title="Localized vestibular tenderness on pressure point testing¹"
-            style={{ position: 'absolute', left: 580, top: 620, width: 260 }}
-          />
-
-          {/* Split from Localized vestibular tenderness - UPDATED POSITIONS */}
-          <DiagnosisBox
-            title="Localized Vulvodynia²"
-            style={{ position: 'absolute', left: 500, top: 780, width: 180 }}
-          />
-
-          <FindingBox
-            title="Abnormal vaginal discharge"
-            style={{ position: 'absolute', left: 800, top: 780, width: 200 }}
-          />
-
-          {/* Treatments from Localized Vulvodynia - UPDATED POSITIONS */}
-          <TreatmentBox
-            title="Topical anesthetic"
-            style={{ position: 'absolute', left: 520, top: 920, width: 140 }}
-          />
-
-          {/* Split from Abnormal vaginal discharge - MOVED FURTHER RIGHT */}
-          <DiagnosisBox
-            title="Vaginitis or Cervicitis"
-            style={{ position: 'absolute', left: 720, top: 920, width: 160 }}
-          />
-
-          <DiagnosisBox
-            title="Vaginismus"
-            style={{ position: 'absolute', left: 980, top: 920, width: 120 }}
-          />
-
-          {/* Treatments from discharge pathway - MOVED FURTHER RIGHT */}
-          <TreatmentBox
-            title="See Vaginal Discharge Algorithm, p. 694"
-            style={{ position: 'absolute', left: 700, top: 1060, width: 200 }}
-          />
-
-          <TreatmentBox
-            title="Topical anesthetic, physical therapy, vaginal dilators, and cognitive behavioral therapy"
-            style={{ position: 'absolute', left: 940, top: 1060, width: 200 }}
-          />
-
-          {/* RIGHT BRANCH: Deep pelvis - MOVED FURTHER RIGHT */}
-          <FindingBox
-            title="Deep pelvis"
-            style={{ position: 'absolute', left: 1200, top: 180, width: 200 }}
-          />
-
-          {/* Pain associated with menstrual cycle - MOVED RIGHT */}
-          <FindingBox
-            title="Pain associated with menstrual cycle"
-            style={{ position: 'absolute', left: 1150, top: 320, width: 300 }}
-          />
-
-          {/* Dymenorrhea, pelvic ligament nodularity on exam - MOVED RIGHT */}
-          <FindingBox
-            title="Dymenorrhea, pelvic ligament nodularity on exam"
-            style={{ position: 'absolute', left: 1120, top: 480, width: 360 }}
-          />
-
-          {/* Endometriosis diagnosis - MOVED RIGHT */}
-          <DiagnosisBox
-            title="Endometriosis"
-            style={{ position: 'absolute', left: 1200, top: 620, width: 200 }}
-          />
-
-          {/* Bimanual exam - MOVED RIGHT */}
-          <DecisionBox
-            title="Bimanual exam"
-            style={{ position: 'absolute', left: 1650, top: 480, width: 160 }}
-          />
-
-          {/* Four findings from Bimanual exam - MOVED RIGHT */}
-          <FindingBox
-            title="Fixation of pelvic organs"
-            style={{ position: 'absolute', left: 1350, top: 700, width: 200 }}
-          />
-
-          <FindingBox
-            title="Adnexal fullness or mass"
-            style={{ position: 'absolute', left: 1600, top: 700, width: 200 }}
-          />
-
-          <FindingBox
-            title="Abnormal pelvic floor muscle"
-            style={{ position: 'absolute', left: 1850, top: 700, width: 200 }}
-          />
-
-          <FindingBox
-            title="Pudendal nerve pain"
-            style={{ position: 'absolute', left: 2100, top: 700, width: 180 }}
-          />
-
-          {/* Diagnoses for the four findings - MOVED RIGHT */}
-          <DiagnosisBox
-            title="Pelvic Adhesions"
-            style={{ position: 'absolute', left: 1380, top: 860, width: 140 }}
-          />
-
-          <DiagnosisBox
-            title="Ovarian Tumor²"
-            style={{ position: 'absolute', left: 1620, top: 860, width: 160 }}
-          />
-
-          <DiagnosisBox
-            title="Pelvic Floor Dysfunction³"
-            style={{ position: 'absolute', left: 1850, top: 860, width: 200 }}
-          />
-
-          <DiagnosisBox
-            title="Pudendal Neuralgia³"
-            style={{ position: 'absolute', left: 2100, top: 860, width: 180 }}
-          />
-
-          {/* Treatments - MOVED RIGHT */}
-          <TreatmentBox
-            title="Surgical resection"
-            style={{ position: 'absolute', left: 1380, top: 1020, width: 140 }}
-          />
-
-          <TreatmentBox
-            title="Ovarian tumor workup and treatment"
-            style={{ position: 'absolute', left: 1580, top: 1020, width: 240 }}
-          />
-
-          <TreatmentBox
-            title="Pelvic exercises ± physical therapy"
-            style={{ position: 'absolute', left: 1850, top: 1020, width: 200 }}
-          />
-
-          <TreatmentBox
-            title="Medication and physical therapy"
-            style={{ position: 'absolute', left: 2070, top: 1020, width: 240 }}
-          />
-
-          {/* Footnotes */}
-          <FootnotesBox
-            style={{ position: 'absolute', left: 200, top: 1200, width: 600, minHeight: 120 }}
+          
+          {/* Flowchart content - centered and responsive */}
+          <div
+            className="relative"
+            style={{
+              transform: `scale(${scale * zoomScale}) translate(${panX}px, ${panY}px)`,
+              width: '3600px',
+              height: '2800px',
+            }}
           >
-            <div className="text-sm leading-relaxed">
-              <div className="font-bold text-lg mb-3 text-gray-800">Footnotes</div>
-              <div className="mb-2"><strong>1.</strong> Pressure point testing is performed with a cotton swab.</div>
-              <div className="mb-2"><strong>2.</strong> Localized vulvodynia is also known as vulvar vestibulitis. Generalized vulvodynia often presents without specific physical exam findings.</div>
-              <div><strong>3.</strong> Pain can occur outside of sexual contact, such as with prolonged sitting.</div>
-            </div>
-          </FootnotesBox>
+            {/* Main Title - Centered at top - RAISED HIGHER */}
+            <TitleBox
+              title="Where Does the Pain Occur?"
+              style={{ position: 'absolute', left: 650, top: 20, width: 280 }}
+            />
 
-          {/* CONNECTING LINES AND ARROWS */}
-          
-          {/* From Main Title to left and right branches - UPDATED FOR RAISED TITLE */}
-          <VerticalLine x={790} startY={80} endY={150} />
-          <HorizontalLine y={150} startX={400} endX={1300} />
-          
-          {/* To Vulva or introitus (LEFT BRANCH) */}
-          <VerticalLine x={400} startY={150} endY={180} />
-          <ArrowHead x={400} y={180} direction="down" />
-          
-          {/* To Deep pelvis (RIGHT BRANCH) */}
-          <VerticalLine x={1300} startY={150} endY={180} />
-          <ArrowHead x={1300} y={180} direction="down" />
+            {/* LEFT BRANCH: Vulva or introitus - Complete pathway */}
+            <FindingBox
+              title="Vulva or introitus"
+              style={{ position: 'absolute', left: 300, top: 180, width: 200 }}
+            />
 
-          {/* LEFT BRANCH: Vulva or introitus pathway */}
-          {/* From Vulva or introitus to Visual inspection */}
-          <VerticalLine x={400} startY={230} endY={320} />
-          <ArrowHead x={400} y={320} direction="down" />
+            {/* Visual inspection ± pelvic exam */}
+            <DecisionBox
+              title="Visual inspection ± pelvic exam"
+              style={{ position: 'absolute', left: 280, top: 320, width: 240 }}
+            />
 
-          {/* From Visual inspection to three findings - UPDATED FOR NEW SPACING */}
-          <VerticalLine x={400} startY={370} endY={440} />
-          <HorizontalLine y={440} startX={110} endX={710} />
-          
-          {/* To three findings - UPDATED POSITIONS */}
-          <VerticalLine x={110} startY={440} endY={480} />
-          <VerticalLine x={380} startY={440} endY={480} />
-          <VerticalLine x={710} startY={440} endY={480} />
-          
-          <ArrowHead x={110} y={480} direction="down" />
-          <ArrowHead x={380} y={480} direction="down" />
-          <ArrowHead x={710} y={480} direction="down" />
+            {/* Three findings from Visual inspection - INCREASED SPACING */}
+            <FindingBox
+              title="Atrophy"
+              style={{ position: 'absolute', left: 50, top: 480, width: 120 }}
+            />
 
-          {/* From Atrophy to Atrophic Vaginitis - UPDATED */}
-          <VerticalLine x={110} startY={530} endY={620} />
-          <ArrowHead x={110} y={620} direction="down" />
+            <FindingBox
+              title="Lesions, fissures, ulcerations"
+              style={{ position: 'absolute', left: 280, top: 480, width: 200 }}
+            />
 
-          {/* From Lesions to Vaginal or Vulvar Lesion - UPDATED */}
-          <VerticalLine x={380} startY={530} endY={620} />
-          <ArrowHead x={380} y={620} direction="down" />
+            <FindingBox
+              title="No abnormal findings or mild erythema"
+              style={{ position: 'absolute', left: 600, top: 480, width: 220 }}
+            />
 
-          {/* From Atrophic Vaginitis to Lubricants - UPDATED */}
-          <VerticalLine x={110} startY={670} endY={760} />
-          <ArrowHead x={110} y={760} direction="down" />
+            {/* Diagnoses for first two findings - INCREASED SPACING */}
+            <DiagnosisBox
+              title="Atrophic Vaginitis"
+              style={{ position: 'absolute', left: 40, top: 620, width: 140 }}
+            />
 
-          {/* From Vaginal or Vulvar Lesion to See Vaginal/Vulvar Lesions - UPDATED */}
-          <VerticalLine x={380} startY={670} endY={760} />
-          <ArrowHead x={380} y={760} direction="down" />
+            <DiagnosisBox
+              title="Vaginal or Vulvar Lesion"
+              style={{ position: 'absolute', left: 280, top: 620, width: 200 }}
+            />
 
-          {/* From Lubricants to Topical estrogen - UPDATED */}
-          <VerticalLine x={110} startY={810} endY={900} />
-          <ArrowHead x={110} y={900} direction="down" />
+            {/* Treatments for first two diagnoses - INCREASED SPACING */}
+            <TreatmentBox
+              title="Lubricants"
+              style={{ position: 'absolute', left: 60, top: 760, width: 100 }}
+            />
 
-          {/* From No abnormal findings to Localized vestibular tenderness - UPDATED */}
-          <VerticalLine x={710} startY={530} endY={620} />
-          <ArrowHead x={710} y={620} direction="down" />
+            <TreatmentBox
+              title="See Vaginal/Vulvar Lesions"
+              style={{ position: 'absolute', left: 280, top: 760, width: 200 }}
+            />
 
-          {/* From Localized vestibular tenderness - split to two paths - UPDATED FOR MOVED DISCHARGE */}
-          <VerticalLine x={710} startY={670} endY={740} />
-          <HorizontalLine y={740} startX={590} endX={900} />
-          
-          {/* To Localized Vulvodynia (LEFT PATH - positive) - UPDATED */}
-          <VerticalLine x={590} startY={740} endY={780} />
-          <ArrowHead x={590} y={780} direction="down" />
-          <PlusMinusIndicator type="plus" x={570} y={760} />
-          
-          {/* To Abnormal vaginal discharge (RIGHT PATH - negative) - MOVED FURTHER RIGHT */}
-          <VerticalLine x={900} startY={740} endY={780} />
-          <ArrowHead x={900} y={780} direction="down" />
-          <PlusMinusIndicator type="minus" x={920} y={760} />
+            {/* Additional treatment for Atrophic Vaginitis - INCREASED SPACING */}
+            <TreatmentBox
+              title="Topical estrogen"
+              style={{ position: 'absolute', left: 40, top: 900, width: 140 }}
+            />
 
-          {/* From Localized Vulvodynia to Topical anesthetic - UPDATED */}
-          <VerticalLine x={590} startY={830} endY={920} />
-          <ArrowHead x={590} y={920} direction="down" />
+            {/* Third pathway - Localized vestibular tenderness - INCREASED SPACING */}
+            <FindingBox
+              title="Localized vestibular tenderness on pressure point testing¹"
+              style={{ position: 'absolute', left: 580, top: 620, width: 260 }}
+            />
 
-          {/* From Abnormal vaginal discharge - split to two diagnoses - UPDATED FOR MOVED POSITIONS */}
-          <VerticalLine x={900} startY={830} endY={880} />
-          <HorizontalLine y={880} startX={800} endX={1040} />
-          
-          {/* To Vaginitis or Cervicitis (LEFT PATH - positive) - UPDATED */}
-          <VerticalLine x={800} startY={880} endY={920} />
-          <ArrowHead x={800} y={920} direction="down" />
-          <PlusMinusIndicator type="plus" x={780} y={900} />
-          
-          {/* To Vaginismus (RIGHT PATH - negative) - UPDATED */}
-          <VerticalLine x={1040} startY={880} endY={920} />
-          <ArrowHead x={1040} y={920} direction="down" />
-          <PlusMinusIndicator type="minus" x={1060} y={900} />
+            {/* Split from Localized vestibular tenderness - UPDATED POSITIONS */}
+            <DiagnosisBox
+              title="Localized Vulvodynia²"
+              style={{ position: 'absolute', left: 500, top: 780, width: 180 }}
+            />
 
-          {/* From Vaginitis or Cervicitis to See Vaginal Discharge - UPDATED */}
-          <VerticalLine x={800} startY={970} endY={1060} />
-          <ArrowHead x={800} y={1060} direction="down" />
+            <FindingBox
+              title="Abnormal vaginal discharge"
+              style={{ position: 'absolute', left: 800, top: 780, width: 200 }}
+            />
 
-          {/* From Vaginismus to therapy treatment - UPDATED */}
-          <VerticalLine x={1040} startY={970} endY={1060} />
-          <ArrowHead x={1040} y={1060} direction="down" />
+            {/* Treatments from Localized Vulvodynia - UPDATED POSITIONS */}
+            <TreatmentBox
+              title="Topical anesthetic"
+              style={{ position: 'absolute', left: 520, top: 920, width: 140 }}
+            />
 
-          {/* RIGHT BRANCH: Deep pelvis pathway */}
-          {/* From Deep pelvis to Pain associated with menstrual cycle */}
-          <VerticalLine x={1300} startY={230} endY={320} />
-          <ArrowHead x={1300} y={320} direction="down" />
+            {/* Split from Abnormal vaginal discharge - MOVED FURTHER RIGHT */}
+            <DiagnosisBox
+              title="Vaginitis or Cervicitis"
+              style={{ position: 'absolute', left: 720, top: 920, width: 160 }}
+            />
 
-          {/* From Pain associated with menstrual cycle - split to two paths */}
-          <VerticalLine x={1300} startY={370} endY={440} />
-          <HorizontalLine y={440} startX={1300} endX={1730} />
-          
-          {/* To Dymenorrhea, pelvic ligament nodularity on exam (LEFT PATH - positive) */}
-          <VerticalLine x={1300} startY={440} endY={480} />
-          <ArrowHead x={1300} y={480} direction="down" />
-          <PlusMinusIndicator type="plus" x={1320} y={460} />
-          
-          {/* To Bimanual exam (RIGHT PATH - negative) */}
-          <VerticalLine x={1730} startY={440} endY={480} />
-          <ArrowHead x={1730} y={480} direction="down" />
-          <PlusMinusIndicator type="minus" x={1750} y={460} />
+            <DiagnosisBox
+              title="Vaginismus"
+              style={{ position: 'absolute', left: 980, top: 920, width: 120 }}
+            />
 
-          {/* From Dymenorrhea to Endometriosis */}
-          <VerticalLine x={1300} startY={530} endY={620} />
-          <ArrowHead x={1300} y={620} direction="down" />
+            {/* Treatments from discharge pathway - MOVED FURTHER RIGHT */}
+            <TreatmentBox
+              title="See Vaginal Discharge Algorithm, p. 694"
+              style={{ position: 'absolute', left: 700, top: 1060, width: 200 }}
+            />
 
-          {/* From Bimanual exam to four findings - LONG ARROW DOWN */}
-          <VerticalLine x={1730} startY={530} endY={660} />
-          <HorizontalLine y={660} startX={1450} endX={2190} />
-          
-          {/* To four findings */}
-          <VerticalLine x={1450} startY={660} endY={700} />
-          <VerticalLine x={1700} startY={660} endY={700} />
-          <VerticalLine x={1950} startY={660} endY={700} />
-          <VerticalLine x={2190} startY={660} endY={700} />
-          
-          <ArrowHead x={1450} y={700} direction="down" />
-          <ArrowHead x={1700} y={700} direction="down" />
-          <ArrowHead x={1950} y={700} direction="down" />
-          <ArrowHead x={2190} y={700} direction="down" />
+            <TreatmentBox
+              title="Topical anesthetic, physical therapy, vaginal dilators, and cognitive behavioral therapy"
+              style={{ position: 'absolute', left: 940, top: 1060, width: 200 }}
+            />
 
-          {/* From findings to diagnoses */}
-          <VerticalLine x={1450} startY={750} endY={860} />
-          <ArrowHead x={1450} y={860} direction="down" />
+            {/* RIGHT BRANCH: Deep pelvis - MOVED FURTHER RIGHT */}
+            <FindingBox
+              title="Deep pelvis"
+              style={{ position: 'absolute', left: 1200, top: 180, width: 200 }}
+            />
 
-          <VerticalLine x={1700} startY={750} endY={860} />
-          <ArrowHead x={1700} y={860} direction="down" />
+            {/* Pain associated with menstrual cycle - MOVED RIGHT */}
+            <FindingBox
+              title="Pain associated with menstrual cycle"
+              style={{ position: 'absolute', left: 1150, top: 320, width: 300 }}
+            />
 
-          <VerticalLine x={1950} startY={750} endY={860} />
-          <ArrowHead x={1950} y={860} direction="down" />
+            {/* Dymenorrhea, pelvic ligament nodularity on exam - MOVED RIGHT */}
+            <FindingBox
+              title="Dymenorrhea, pelvic ligament nodularity on exam"
+              style={{ position: 'absolute', left: 1120, top: 480, width: 360 }}
+            />
 
-          <VerticalLine x={2190} startY={750} endY={860} />
-          <ArrowHead x={2190} y={860} direction="down" />
+            {/* Endometriosis diagnosis - MOVED RIGHT */}
+            <DiagnosisBox
+              title="Endometriosis"
+              style={{ position: 'absolute', left: 1200, top: 620, width: 200 }}
+            />
 
-          {/* From diagnoses to treatments */}
-          <VerticalLine x={1450} startY={910} endY={1020} />
-          <ArrowHead x={1450} y={1020} direction="down" />
+            {/* Bimanual exam - MOVED RIGHT */}
+            <DecisionBox
+              title="Bimanual exam"
+              style={{ position: 'absolute', left: 1650, top: 480, width: 160 }}
+            />
 
-          <VerticalLine x={1700} startY={910} endY={1020} />
-          <ArrowHead x={1700} y={1020} direction="down" />
+            {/* Four findings from Bimanual exam - MOVED RIGHT */}
+            <FindingBox
+              title="Fixation of pelvic organs"
+              style={{ position: 'absolute', left: 1350, top: 700, width: 200 }}
+            />
 
-          <VerticalLine x={1950} startY={910} endY={1020} />
-          <ArrowHead x={1950} y={1020} direction="down" />
+            <FindingBox
+              title="Adnexal fullness or mass"
+              style={{ position: 'absolute', left: 1600, top: 700, width: 200 }}
+            />
 
-          <VerticalLine x={2190} startY={910} endY={1020} />
-          <ArrowHead x={2190} y={1020} direction="down" />
+            <FindingBox
+              title="Abnormal pelvic floor muscle"
+              style={{ position: 'absolute', left: 1850, top: 700, width: 200 }}
+            />
 
+            <FindingBox
+              title="Pudendal nerve pain"
+              style={{ position: 'absolute', left: 2100, top: 700, width: 180 }}
+            />
+
+            {/* Diagnoses for the four findings - MOVED RIGHT */}
+            <DiagnosisBox
+              title="Pelvic Adhesions"
+              style={{ position: 'absolute', left: 1380, top: 860, width: 140 }}
+            />
+
+            <DiagnosisBox
+              title="Ovarian Tumor²"
+              style={{ position: 'absolute', left: 1620, top: 860, width: 160 }}
+            />
+
+            <DiagnosisBox
+              title="Pelvic Floor Dysfunction³"
+              style={{ position: 'absolute', left: 1850, top: 860, width: 200 }}
+            />
+
+            <DiagnosisBox
+              title="Pudendal Neuralgia³"
+              style={{ position: 'absolute', left: 2100, top: 860, width: 180 }}
+            />
+
+            {/* Treatments - MOVED RIGHT */}
+            <TreatmentBox
+              title="Surgical resection"
+              style={{ position: 'absolute', left: 1380, top: 1020, width: 140 }}
+            />
+
+            <TreatmentBox
+              title="Ovarian tumor workup and treatment"
+              style={{ position: 'absolute', left: 1580, top: 1020, width: 240 }}
+            />
+
+            <TreatmentBox
+              title="Pelvic exercises ± physical therapy"
+              style={{ position: 'absolute', left: 1850, top: 1020, width: 200 }}
+            />
+
+            <TreatmentBox
+              title="Medication and physical therapy"
+              style={{ position: 'absolute', left: 2070, top: 1020, width: 240 }}
+            />
+
+            {/* Footnotes */}
+            <FootnotesBox
+              style={{ position: 'absolute', left: 200, top: 1200, width: 600, minHeight: 120 }}
+            >
+              <div className="text-sm leading-relaxed">
+                <div className="font-bold text-lg mb-3 text-gray-800">Footnotes</div>
+                <div className="mb-2"><strong>1.</strong> Pressure point testing is performed with a cotton swab.</div>
+                <div className="mb-2"><strong>2.</strong> Localized vulvodynia is also known as vulvar vestibulitis. Generalized vulvodynia often presents without specific physical exam findings.</div>
+                <div><strong>3.</strong> Pain can occur outside of sexual contact, such as with prolonged sitting.</div>
+              </div>
+            </FootnotesBox>
+
+            {/* CONNECTING LINES AND ARROWS */}
+            
+            {/* From Main Title to left and right branches - UPDATED FOR RAISED TITLE */}
+            <VerticalLine x={790} startY={80} endY={150} />
+            <HorizontalLine y={150} startX={400} endX={1300} />
+            
+            {/* To Vulva or introitus (LEFT BRANCH) */}
+            <VerticalLine x={400} startY={150} endY={180} />
+            <ArrowHead x={400} y={180} direction="down" />
+            
+            {/* To Deep pelvis (RIGHT BRANCH) */}
+            <VerticalLine x={1300} startY={150} endY={180} />
+            <ArrowHead x={1300} y={180} direction="down" />
+
+            {/* LEFT BRANCH: Vulva or introitus pathway */}
+            {/* From Vulva or introitus to Visual inspection */}
+            <VerticalLine x={400} startY={230} endY={320} />
+            <ArrowHead x={400} y={320} direction="down" />
+
+            {/* From Visual inspection to three findings - UPDATED FOR NEW SPACING */}
+            <VerticalLine x={400} startY={370} endY={440} />
+            <HorizontalLine y={440} startX={110} endX={710} />
+            
+            {/* To three findings - UPDATED POSITIONS */}
+            <VerticalLine x={110} startY={440} endY={480} />
+            <VerticalLine x={380} startY={440} endY={480} />
+            <VerticalLine x={710} startY={440} endY={480} />
+            
+            <ArrowHead x={110} y={480} direction="down" />
+            <ArrowHead x={380} y={480} direction="down" />
+            <ArrowHead x={710} y={480} direction="down" />
+
+            {/* From Atrophy to Atrophic Vaginitis - UPDATED */}
+            <VerticalLine x={110} startY={530} endY={620} />
+            <ArrowHead x={110} y={620} direction="down" />
+
+            {/* From Lesions to Vaginal or Vulvar Lesion - UPDATED */}
+            <VerticalLine x={380} startY={530} endY={620} />
+            <ArrowHead x={380} y={620} direction="down" />
+
+            {/* From Atrophic Vaginitis to Lubricants - UPDATED */}
+            <VerticalLine x={110} startY={670} endY={760} />
+            <ArrowHead x={110} y={760} direction="down" />
+
+            {/* From Vaginal or Vulvar Lesion to See Vaginal/Vulvar Lesions - UPDATED */}
+            <VerticalLine x={380} startY={670} endY={760} />
+            <ArrowHead x={380} y={760} direction="down" />
+
+            {/* From Lubricants to Topical estrogen - UPDATED */}
+            <VerticalLine x={110} startY={810} endY={900} />
+            <ArrowHead x={110} y={900} direction="down" />
+
+            {/* From No abnormal findings to Localized vestibular tenderness - UPDATED */}
+            <VerticalLine x={710} startY={530} endY={620} />
+            <ArrowHead x={710} y={620} direction="down" />
+
+            {/* From Localized vestibular tenderness - split to two paths - UPDATED FOR MOVED DISCHARGE */}
+            <VerticalLine x={710} startY={670} endY={740} />
+            <HorizontalLine y={740} startX={590} endX={900} />
+            
+            {/* To Localized Vulvodynia (LEFT PATH - positive) - UPDATED */}
+            <VerticalLine x={590} startY={740} endY={780} />
+            <ArrowHead x={590} y={780} direction="down" />
+            <PlusMinusIndicator type="plus" x={570} y={760} />
+            
+            {/* To Abnormal vaginal discharge (RIGHT PATH - negative) - MOVED FURTHER RIGHT */}
+            <VerticalLine x={900} startY={740} endY={780} />
+            <ArrowHead x={900} y={780} direction="down" />
+            <PlusMinusIndicator type="minus" x={920} y={760} />
+
+            {/* From Localized Vulvodynia to Topical anesthetic - UPDATED */}
+            <VerticalLine x={590} startY={830} endY={920} />
+            <ArrowHead x={590} y={920} direction="down" />
+
+            {/* From Abnormal vaginal discharge - split to two diagnoses - UPDATED FOR MOVED POSITIONS */}
+            <VerticalLine x={900} startY={830} endY={880} />
+            <HorizontalLine y={880} startX={800} endX={1040} />
+            
+            {/* To Vaginitis or Cervicitis (LEFT PATH - positive) - UPDATED */}
+            <VerticalLine x={800} startY={880} endY={920} />
+            <ArrowHead x={800} y={920} direction="down" />
+            <PlusMinusIndicator type="plus" x={780} y={900} />
+            
+            {/* To Vaginismus (RIGHT PATH - negative) - UPDATED */}
+            <VerticalLine x={1040} startY={880} endY={920} />
+            <ArrowHead x={1040} y={920} direction="down" />
+            <PlusMinusIndicator type="minus" x={1060} y={900} />
+
+            {/* From Vaginitis or Cervicitis to See Vaginal Discharge - UPDATED */}
+            <VerticalLine x={800} startY={970} endY={1060} />
+            <ArrowHead x={800} y={1060} direction="down" />
+
+            {/* From Vaginismus to therapy treatment - UPDATED */}
+            <VerticalLine x={1040} startY={970} endY={1060} />
+            <ArrowHead x={1040} y={1060} direction="down" />
+
+            {/* RIGHT BRANCH: Deep pelvis pathway */}
+            {/* From Deep pelvis to Pain associated with menstrual cycle */}
+            <VerticalLine x={1300} startY={230} endY={320} />
+            <ArrowHead x={1300} y={320} direction="down" />
+
+            {/* From Pain associated with menstrual cycle - split to two paths */}
+            <VerticalLine x={1300} startY={370} endY={440} />
+            <HorizontalLine y={440} startX={1300} endX={1730} />
+            
+            {/* To Dymenorrhea, pelvic ligament nodularity on exam (LEFT PATH - positive) */}
+            <VerticalLine x={1300} startY={440} endY={480} />
+            <ArrowHead x={1300} y={480} direction="down" />
+            <PlusMinusIndicator type="plus" x={1320} y={460} />
+            
+            {/* To Bimanual exam (RIGHT PATH - negative) */}
+            <VerticalLine x={1730} startY={440} endY={480} />
+            <ArrowHead x={1730} y={480} direction="down" />
+            <PlusMinusIndicator type="minus" x={1750} y={460} />
+
+            {/* From Dymenorrhea to Endometriosis */}
+            <VerticalLine x={1300} startY={530} endY={620} />
+            <ArrowHead x={1300} y={620} direction="down" />
+
+            {/* From Bimanual exam to four findings - LONG ARROW DOWN */}
+            <VerticalLine x={1730} startY={530} endY={660} />
+            <HorizontalLine y={660} startX={1450} endX={2190} />
+            
+            {/* To four findings */}
+            <VerticalLine x={1450} startY={660} endY={700} />
+            <VerticalLine x={1700} startY={660} endY={700} />
+            <VerticalLine x={1950} startY={660} endY={700} />
+            <VerticalLine x={2190} startY={660} endY={700} />
+            
+            <ArrowHead x={1450} y={700} direction="down" />
+            <ArrowHead x={1700} y={700} direction="down" />
+            <ArrowHead x={1950} y={700} direction="down" />
+            <ArrowHead x={2190} y={700} direction="down" />
+
+            {/* From findings to diagnoses */}
+            <VerticalLine x={1450} startY={750} endY={860} />
+            <ArrowHead x={1450} y={860} direction="down" />
+
+            <VerticalLine x={1700} startY={750} endY={860} />
+            <ArrowHead x={1700} y={860} direction="down" />
+
+            <VerticalLine x={1950} startY={750} endY={860} />
+            <ArrowHead x={1950} y={860} direction="down" />
+
+            <VerticalLine x={2190} startY={750} endY={860} />
+            <ArrowHead x={2190} y={860} direction="down" />
+
+            {/* From diagnoses to treatments */}
+            <VerticalLine x={1450} startY={910} endY={1020} />
+            <ArrowHead x={1450} y={1020} direction="down" />
+
+            <VerticalLine x={1700} startY={910} endY={1020} />
+            <ArrowHead x={1700} y={1020} direction="down" />
+
+            <VerticalLine x={1950} startY={910} endY={1020} />
+            <ArrowHead x={1950} y={1020} direction="down" />
+
+            <VerticalLine x={2190} startY={910} endY={1020} />
+            <ArrowHead x={2190} y={1020} direction="down" />
+
+          </div>
         </div>
       </div>
-
-      {/* Instructions overlay */}
-      <div className="absolute bottom-4 right-4 bg-white p-3 rounded-lg shadow-lg text-sm text-gray-600">
-        <div className="font-semibold mb-1">Instructions:</div>
-        <div>• Click and drag to pan around the flowchart</div>
-        <div>• Use touch gestures on mobile devices</div>
-        <div>• Scroll to zoom in/out</div>
-      </div>
-    </div>
+    </>
   );
 } 
