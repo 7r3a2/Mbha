@@ -264,9 +264,9 @@ export default function AcutePelvicPainFlowchart({ frameFullScreen = false, onTo
         <meta name="description" content="Medical flowchart for acute pelvic pain evaluation" />
       </Head>
       
-      <div className={`${frameFullScreen ? 'fixed inset-0 z-50 bg-gray-100' : 'h-screen bg-gray-100'} overflow-hidden`}>
+      <div className={`${frameFullScreen ? 'fixed inset-0 z-50 bg-gray-100' : 'h-screen bg-gray-100'} overflow-hidden flex flex-col`}>
         {/* Title */}
-        <div className="bg-white p-4 shadow-sm flex justify-between items-center">
+        <div className="bg-white p-4 shadow-sm border-b border-gray-200 flex justify-between items-center flex-shrink-0">
           <h1 className="text-2xl font-bold text-blue-600">Acute Pelvic Pain</h1>
           <button
             onClick={onToggleFrameFullScreen}
@@ -282,7 +282,7 @@ export default function AcutePelvicPainFlowchart({ frameFullScreen = false, onTo
         {/* Main flowchart container */}
         <div
           ref={containerRef}
-          className="relative w-full h-full cursor-grab active:cursor-grabbing"
+          className="relative w-full flex-grow cursor-grab active:cursor-grabbing"
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
