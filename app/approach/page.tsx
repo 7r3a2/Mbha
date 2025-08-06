@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { useRouter } from 'next/navigation';
+import DyspareuniaPage from './obs-gyne/gynecology/dyspareunia/page';
 
 // Box component that matches the image exactly
 const FlowchartBox = ({ 
@@ -33,71 +34,6 @@ const FlowchartBox = ({
   >
     <div className="text-base font-semibold">{title}</div>
     {children && <div className="mt-1">{children}</div>}
-  </div>
-);
-
-// Main title box component (Gray)
-const TitleBox = ({ title, style = {} }: { title: string; style?: React.CSSProperties }) => (
-  <div 
-    className="bg-gray-200 border-2 border-gray-400 px-6 py-4 text-center rounded-lg shadow-md text-lg font-bold text-gray-800"
-    style={{
-      minHeight: '60px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      ...style
-    }}
-  >
-    {title}
-  </div>
-);
-
-// Decision/Question box component (Gray)
-const DecisionBox = ({ title, style = {} }: { title: string; style?: React.CSSProperties }) => (
-  <div 
-    className="bg-gray-200 border-2 border-gray-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
-    style={{
-      minHeight: '50px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      ...style
-    }}
-  >
-    {title}
-  </div>
-);
-
-// Symptom/Finding box component (Light Green)
-const FindingBox = ({ title, style = {} }: { title: string; style?: React.CSSProperties }) => (
-  <div 
-    className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
-    style={{
-      minHeight: '50px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      ...style
-    }}
-  >
-    {title}
-  </div>
-);
-
-// Diagnosis box component (Orange, Hexagonal)
-const DiagnosisBox = ({ title, style = {} }: { title: string; style?: React.CSSProperties }) => (
-  <div 
-    className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
-    style={{
-      minHeight: '50px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      clipPath: 'polygon(10% 0%, 90% 0%, 100% 50%, 90% 100%, 10% 100%, 0% 50%)',
-      ...style
-    }}
-  >
-    {title}
   </div>
 );
 
@@ -140,31 +76,6 @@ const PlusMinusIndicator = ({ type, x, y }: { type: 'plus' | 'minus'; x: number;
     }}
   >
     {type === 'plus' ? '+' : '−'}
-  </div>
-);
-  <div 
-    className={`
-      flowchart-box border-2 border-gray-500 bg-white px-4 py-3 text-center
-      rounded-lg shadow-md text-base font-medium text-gray-800
-      select-text cursor-text hover:bg-gray-50 transition-colors
-      ${className}
-    `}
-    style={{
-      minHeight: '50px',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      position: 'relative',
-      zIndex: 20,
-      pointerEvents: 'auto', // Re-enable pointer events for boxes
-      // Better rendering quality
-      textRendering: 'optimizeLegibility',
-      imageRendering: 'crisp-edges',
-      ...style
-    }}
-  >
-    <div className="text-base font-semibold">{title}</div>
-    {children && <div className="mt-1">{children}</div>}
   </div>
 );
 
@@ -1197,106 +1108,8 @@ const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullSc
   );
 };
 
-// Dyspareunia Flowchart Component
-const DyspareuniaFlowchart = ({ frameFullScreen = false, onToggleFrameFullScreen = () => {} }) => {
-  const [isMobile, setIsMobile] = useState(false);
-  const [scale, setScale] = useState(1);
-  const [zoomScale, setZoomScale] = useState(1);
-  const [isZooming, setIsZooming] = useState(false);
-  const [initialDistance, setInitialDistance] = useState(0);
-  const [panX, setPanX] = useState(0);
-  const [panY, setPanY] = useState(0);
-  const [isPanning, setIsPanning] = useState(false);
-  const [lastTouchX, setLastTouchX] = useState(0);
-  const [lastTouchY, setLastTouchY] = useState(0);
-  const [mouseStartPos, setMouseStartPos] = useState({ x: 0, y: 0 });
 
-  // Check if mobile/tablet on mount and resize
-  useEffect(() => {
-    const checkDevice = () => {
-      const width = window.innerWidth;
-      const height = window.innerHeight;
-      setIsMobile(width < 1024);
-      
-      // Responsive flowchart that fits all devices
-      const flowchartWidth = 3600;
-      const flowchartHeight = 2800;
-      
-      // Calculate scale to fit the device properly
-      const scaleX = (width * 0.9) / flowchartWidth; // 90% of screen width
-      const scaleY = (height * 0.8) / flowchartHeight; // 80% of screen height
-      
-      // Use the smaller scale to ensure it fits completely
-      const autoScale = Math.min(scaleX, scaleY, 1); // Cap at 1.0
-      
-      setScale(autoScale);
-    };
-    
-    checkDevice();
-    window.addEventListener('resize', checkDevice);
-    return () => window.removeEventListener('resize', checkDevice);
-  }, []);
 
-  // Mouse and touch panning functionality
-  const handleMouseDown = (e: React.MouseEvent) => {
-    // Only start panning if clicking on empty space (not on boxes)
-    const target = e.target as HTMLElement;
-    if (target.closest('.flowchart-box, .reference-box, .text-box')) {
-      return;
-    }
-    
-    e.preventDefault();
-    setIsPanning(true);
-    setMouseStartPos({ x: e.clientX - panX, y: e.clientY - panY });
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isPanning) return;
-    e.preventDefault();
-    
-    // Direct, responsive panning without borders
-    const newX = e.clientX - mouseStartPos.x;
-    const newY = e.clientY - mouseStartPos.y;
-    
-    setPanX(newX);
-    setPanY(newY);
-  };
-
-  const handleMouseUp = () => {
-    setIsPanning(false);
-  };
-
-  // Scroll to zoom functionality for desktop - zoom to mouse position
-  const handleWheel = (e: React.WheelEvent) => {
-    e.preventDefault();
-    
-    // Only zoom if not panning and not on mobile
-    if (!isPanning && !isMobile) {
-      const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1; // Zoom out on scroll down, zoom in on scroll up
-      const newZoomScale = Math.max(0.3, Math.min(5, zoomScale * zoomFactor));
-      
-      // Get mouse position relative to the flowchart container
-      const rect = e.currentTarget.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left - rect.width / 2;
-      const mouseY = e.clientY - rect.top - rect.height / 2;
-      
-      // Calculate new pan position to zoom towards mouse
-      const scaleChange = newZoomScale / zoomScale;
-      const newPanX = panX - (mouseX * (scaleChange - 1));
-      const newPanY = panY - (mouseY * (scaleChange - 1));
-      
-      setZoomScale(newZoomScale);
-      setPanX(newPanX);
-      setPanY(newPanY);
-    }
-  };
-
-  // Touch panning functionality
-  const handleTouchStart = (e: React.TouchEvent) => {
-    if (e.touches.length === 1) {
-      // Single touch - panning
-      const touch = e.touches[0];
-      setIsPanning(true);
       setLastTouchX(touch.clientX);
       setLastTouchY(touch.clientY);
     } else if (e.touches.length === 2) {
@@ -2525,11 +2338,8 @@ export default function ApproachPage() {
                   onToggleFrameFullScreen={() => setIsFrameFullscreen(!isFrameFullscreen)}
                 />
               ) : selectedContent.lecture.id === 'dyspareunia' ? (
-                // Render Dyspareunia flowchart directly as component
-                <DyspareuniaFlowchart 
-                  frameFullScreen={isFrameFullscreen}
-                  onToggleFrameFullScreen={() => setIsFrameFullscreen(!isFrameFullscreen)}
-                />
+                // Render Dyspareunia page directly as component
+                <DyspareuniaPage />
               ) : (
                 // Default content for other lectures
                 <div className="h-full flex items-center justify-center">
