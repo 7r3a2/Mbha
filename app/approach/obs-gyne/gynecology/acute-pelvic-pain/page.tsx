@@ -234,7 +234,7 @@ export default function AcutePelvicPainFlowchart({ frameFullScreen, onToggleFram
     const deltaY = e.clientY - lastMousePos.y;
     setScrollPos(prev => ({
       x: prev.x + deltaX,
-      y: prev.y + deltaY
+      y: Math.max(0, prev.y + deltaY) // Prevent scrolling above the header
     }));
     setLastMousePos({ x: e.clientX, y: e.clientY });
   };
@@ -259,7 +259,7 @@ export default function AcutePelvicPainFlowchart({ frameFullScreen, onToggleFram
     const deltaY = e.touches[0].clientY - lastTouchPos.y;
     setScrollPos(prev => ({
       x: prev.x + deltaX,
-      y: prev.y + deltaY
+      y: Math.max(0, prev.y + deltaY) // Prevent scrolling above the header
     }));
     setLastTouchPos({ x: e.touches[0].clientX, y: e.touches[0].clientY });
   };
@@ -277,7 +277,7 @@ export default function AcutePelvicPainFlowchart({ frameFullScreen, onToggleFram
       
       <div className={`${frameFullScreen ? 'fixed inset-0 z-50 bg-gray-100' : 'h-screen bg-gray-100'} overflow-hidden flex flex-col`}>
         {/* Header - Fixed at top */}
-        <div className="bg-white p-4 shadow-sm flex items-center justify-between flex-shrink-0 border-b border-gray-200">
+        <div className="bg-white p-4 shadow-sm flex items-center justify-between flex-shrink-0 border-b border-gray-200 z-10 relative">
           <div className="flex items-center space-x-4">
             <h1 className="text-2xl font-bold text-blue-600">Acute Pelvic Pain</h1>
           </div>
@@ -307,7 +307,7 @@ export default function AcutePelvicPainFlowchart({ frameFullScreen, onToggleFram
         {/* Main flowchart container - Takes remaining space */}
         <div
           ref={containerRef}
-          className="relative w-full flex-grow cursor-grab active:cursor-grabbing"
+          className="relative w-full flex-grow cursor-grab active:cursor-grabbing overflow-hidden"
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
