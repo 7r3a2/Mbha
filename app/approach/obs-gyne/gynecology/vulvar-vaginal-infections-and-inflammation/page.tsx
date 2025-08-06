@@ -18,12 +18,12 @@ const TitleBox = ({ title, style = {} }: { title: string; style?: React.CSSPrope
   </div>
 );
 
-// Decision box component (Blue)
+// Decision/Question box component (Gray)
 const DecisionBox = ({ title, style = {} }: { title: string; style?: React.CSSProperties }) => (
   <div 
-    className="flowchart-box bg-blue-200 border-2 border-blue-400 px-6 py-4 text-center rounded-lg shadow-md text-lg font-bold text-blue-800"
+    className="flowchart-box bg-gray-200 border-2 border-gray-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
     style={{
-      minHeight: '60px',
+      minHeight: '50px',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -34,12 +34,12 @@ const DecisionBox = ({ title, style = {} }: { title: string; style?: React.CSSPr
   </div>
 );
 
-// Finding box component (Green)
+// Symptom/Finding box component (Light Green)
 const FindingBox = ({ title, style = {} }: { title: string; style?: React.CSSProperties }) => (
   <div 
-    className="flowchart-box bg-green-200 border-2 border-green-400 px-6 py-4 text-center rounded-lg shadow-md text-lg font-bold text-green-800"
+    className="flowchart-box bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
     style={{
-      minHeight: '60px',
+      minHeight: '50px',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -50,15 +50,16 @@ const FindingBox = ({ title, style = {} }: { title: string; style?: React.CSSPro
   </div>
 );
 
-// Diagnosis box component (Orange)
+// Diagnosis box component (Orange, Hexagonal)
 const DiagnosisBox = ({ title, style = {} }: { title: string; style?: React.CSSProperties }) => (
   <div 
-    className="flowchart-box bg-orange-200 border-2 border-orange-400 px-6 py-4 text-center rounded-lg shadow-md text-lg font-bold text-orange-800"
+    className="flowchart-box bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
     style={{
-      minHeight: '60px',
+      minHeight: '50px',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
+      clipPath: 'polygon(10% 0%, 90% 0%, 100% 50%, 90% 100%, 10% 100%, 0% 50%)',
       ...style
     }}
   >
@@ -66,12 +67,12 @@ const DiagnosisBox = ({ title, style = {} }: { title: string; style?: React.CSSP
   </div>
 );
 
-// Treatment box component (Purple)
+// Treatment/Action box component (Light Blue)
 const TreatmentBox = ({ title, style = {} }: { title: string; style?: React.CSSProperties }) => (
   <div 
-    className="flowchart-box bg-purple-200 border-2 border-purple-400 px-6 py-4 text-center rounded-lg shadow-md text-lg font-bold text-purple-800"
+    className="flowchart-box bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
     style={{
-      minHeight: '60px',
+      minHeight: '50px',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -82,12 +83,12 @@ const TreatmentBox = ({ title, style = {} }: { title: string; style?: React.CSSP
   </div>
 );
 
-// Assessment box component (Yellow)
+// Assessment box component (Light Gray)
 const AssessmentBox = ({ title, style = {} }: { title: string; style?: React.CSSProperties }) => (
   <div 
-    className="flowchart-box bg-yellow-200 border-2 border-yellow-400 px-6 py-4 text-center rounded-lg shadow-md text-lg font-bold text-yellow-800"
+    className="flowchart-box bg-gray-100 border-2 border-gray-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-700"
     style={{
-      minHeight: '60px',
+      minHeight: '50px',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -98,67 +99,12 @@ const AssessmentBox = ({ title, style = {} }: { title: string; style?: React.CSS
   </div>
 );
 
-// Footnotes box component (Light Gray)
-const FootnotesBox = ({ title, style = {} }: { title: string; style?: React.CSSProperties }) => (
+// Reference box component (Red)
+const ReferenceBox = ({ text, style = {} }: { text: string; style?: React.CSSProperties }) => (
   <div 
-    className="flowchart-box bg-gray-100 border-2 border-gray-300 px-6 py-4 text-center rounded-lg shadow-md text-lg font-bold text-gray-700"
+    className="flowchart-box bg-red-300 border-2 border-red-500 px-4 py-3 text-center rounded-lg shadow-md text-sm font-semibold text-black"
     style={{
-      minHeight: '60px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      ...style
-    }}
-  >
-    {title}
-  </div>
-);
-
-// Vertical line component
-const VerticalLine = ({ style = {} }: { style?: React.CSSProperties }) => (
-  <div 
-    className="bg-black"
-    style={{
-      width: '4px',
-      height: '60px',
-      margin: '0 auto',
-      ...style
-    }}
-  />
-);
-
-// Horizontal line component
-const HorizontalLine = ({ style = {} }: { style?: React.CSSProperties }) => (
-  <div 
-    className="bg-black"
-    style={{
-      height: '4px',
-      width: '100px',
-      margin: '0 auto',
-      ...style
-    }}
-  />
-);
-
-// Arrow head component
-const ArrowHead = ({ style = {} }: { style?: React.CSSProperties }) => (
-  <div 
-    className="border-l-8 border-l-transparent border-r-8 border-r-transparent border-t-8 border-t-black"
-    style={{
-      width: '0',
-      height: '0',
-      margin: '0 auto',
-      ...style
-    }}
-  />
-);
-
-// Plus/Minus indicator component
-const PlusMinusIndicator = ({ text, style = {} }: { text: string; style?: React.CSSProperties }) => (
-  <div 
-    className="flowchart-box bg-white border-2 border-black px-4 py-2 text-center rounded-lg shadow-md text-lg font-bold text-black"
-    style={{
-      minHeight: '40px',
+      minHeight: '50px',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -166,6 +112,116 @@ const PlusMinusIndicator = ({ text, style = {} }: { text: string; style?: React.
     }}
   >
     {text}
+  </div>
+);
+
+// Footnotes box component (Gray)
+const FootnotesBox = ({ children, style = {} }: { children: React.ReactNode; style?: React.CSSProperties }) => (
+  <div 
+    className="flowchart-box bg-gray-100 border-2 border-gray-400 px-4 py-3 rounded-lg shadow-md text-xs text-gray-700"
+    style={{
+      ...style
+    }}
+  >
+    {children}
+  </div>
+);
+
+// Vertical line component
+const VerticalLine = ({ x, startY, endY }: { x: number; startY: number; endY: number }) => (
+  <div
+    className="absolute pointer-events-none"
+    style={{
+      left: x - 0.5,
+      top: startY,
+      width: 1,
+      height: endY - startY,
+      backgroundColor: '#374151',
+      zIndex: 10,
+    }}
+  />
+);
+
+// Horizontal line component
+const HorizontalLine = ({ y, startX, endX }: { y: number; startX: number; endX: number }) => (
+  <div
+    className="absolute pointer-events-none"
+    style={{
+      left: startX,
+      top: y - 0.5,
+      width: endX - startX,
+      height: 1,
+      backgroundColor: '#374151',
+      zIndex: 10,
+    }}
+  />
+);
+
+// Arrow head component
+const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; direction?: 'down' | 'right' | 'left' | 'up' }) => {
+  const getArrowStyle = () => {
+    switch (direction) {
+      case 'down':
+        return {
+          left: x - 3,
+          top: y - 6,
+          borderLeft: '3px solid transparent',
+          borderRight: '3px solid transparent',
+          borderTop: '6px solid #374151',
+        };
+      case 'right':
+        return {
+          left: x - 6,
+          top: y - 3,
+          borderTop: '3px solid transparent',
+          borderBottom: '3px solid transparent',
+          borderLeft: '6px solid #374151',
+        };
+      case 'left':
+        return {
+          left: x,
+          top: y - 3,
+          borderTop: '3px solid transparent',
+          borderBottom: '3px solid transparent',
+          borderRight: '6px solid #374151',
+        };
+      case 'up':
+        return {
+          left: x - 3,
+          top: y,
+          borderLeft: '3px solid transparent',
+          borderRight: '3px solid transparent',
+          borderBottom: '6px solid #374151',
+        };
+      default:
+        return {};
+    }
+  };
+
+  return (
+    <div
+      className="absolute pointer-events-none"
+      style={{
+        width: 0,
+        height: 0,
+        zIndex: 11,
+        ...getArrowStyle(),
+      }}
+    />
+  );
+};
+
+// Plus/Minus indicator component
+const PlusMinusIndicator = ({ type, x, y }: { type: 'plus' | 'minus'; x: number; y: number }) => (
+  <div
+    className="absolute pointer-events-none bg-white border border-gray-400 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold text-gray-700"
+    style={{
+      left: x - 12,
+      top: y - 12,
+      zIndex: 12,
+    }}
+  >
+    {type === 'plus' ? '+' : '−'}
   </div>
 );
 
@@ -386,318 +442,340 @@ export default function VulvarVaginalInfectionsAndInflammationPage({ frameFullSc
               perspective: '1000px'
             }}
           >
-            {/* Main Title */}
-            <TitleBox
-              title="Vulvar/Vaginal Infections and Inflammation"
-              style={{ position: 'absolute', left: 1500, top: 50, width: 600 }}
-            />
-
-            {/* Initial Assessment */}
+            {/* Main Title - Centered at top */}
             <DecisionBox
-              title="Vulvar/Vaginal Symptoms Present?"
-              style={{ position: 'absolute', left: 1500, top: 150, width: 600 }}
+              title="Is the Lesion Painful?"
+              style={{ position: 'absolute', left: 650, top: 50, width: 300 }}
             />
 
-            {/* Yes Branch */}
-            <VerticalLine style={{ position: 'absolute', left: 1800, top: 210 }} />
-            <ArrowHead style={{ position: 'absolute', left: 1796, top: 270 }} />
-
-            {/* Symptom Assessment */}
-            <DecisionBox
-              title="Type of Symptoms?"
-              style={{ position: 'absolute', left: 1500, top: 320, width: 600 }}
+            {/* LEFT BRANCH: Painful */}
+            <FindingBox
+              title="Painful"
+              style={{ position: 'absolute', left: 300, top: 180, width: 150 }}
             />
 
-            {/* Itching Branch */}
-            <HorizontalLine style={{ position: 'absolute', left: 1600, top: 380, width: 200 }} />
-            <ArrowHead style={{ position: 'absolute', left: 1796, top: 376, transform: 'rotate(90deg)' }} />
+            {/* RIGHT BRANCH: Painless */}
+            <FindingBox
+              title="Painless"
+              style={{ position: 'absolute', left: 1500, top: 180, width: 150 }}
+            />
+
+            {/* PAINFUL BRANCH - Split into Chronic/Acute */}
+            <FindingBox
+              title="Chronic"
+              style={{ position: 'absolute', left: 150, top: 320, width: 120 }}
+            />
 
             <FindingBox
-              title="Itching"
-              style={{ position: 'absolute', left: 1300, top: 400, width: 200 }}
+              title="Acute"
+              style={{ position: 'absolute', left: 640, top: 320, width: 120 }}
             />
 
-            <VerticalLine style={{ position: 'absolute', left: 1400, top: 460 }} />
-            <ArrowHead style={{ position: 'absolute', left: 1396, top: 520 }} />
-
-            <DecisionBox
-              title="Associated Symptoms?"
-              style={{ position: 'absolute', left: 1200, top: 570, width: 400 }}
+            {/* CHRONIC PAINFUL - Two presentations */}
+            <FindingBox
+              title="Normal-appearing vulva ± erythema"
+              style={{ position: 'absolute', left: 50, top: 480, width: 200 }}
             />
-
-            {/* Discharge Branch */}
-            <HorizontalLine style={{ position: 'absolute', left: 1600, top: 380, width: 200, transform: 'translateX(200px)' }} />
-            <ArrowHead style={{ position: 'absolute', left: 1996, top: 376, transform: 'rotate(90deg)' }} />
 
             <FindingBox
-              title="Discharge"
-              style={{ position: 'absolute', left: 2100, top: 400, width: 200 }}
+              title="Erythematous nodules ± pustules"
+              style={{ position: 'absolute', left: 280, top: 480, width: 200 }}
             />
 
-            <VerticalLine style={{ position: 'absolute', left: 2200, top: 460 }} />
-            <ArrowHead style={{ position: 'absolute', left: 2196, top: 520 }} />
-
-            <DecisionBox
-              title="Discharge Characteristics?"
-              style={{ position: 'absolute', left: 2000, top: 570, width: 400 }}
+            {/* Normal-appearing vulva pathway */}
+            <AssessmentBox
+              title=">3 months, no identifiable etiology"
+              style={{ position: 'absolute', left: 70, top: 620, width: 160 }}
             />
-
-            {/* Pain Branch */}
-            <HorizontalLine style={{ position: 'absolute', left: 1600, top: 380, width: 200, transform: 'translateX(400px)' }} />
-            <ArrowHead style={{ position: 'absolute', left: 2196, top: 376, transform: 'rotate(90deg)' }} />
-
-            <FindingBox
-              title="Pain"
-              style={{ position: 'absolute', left: 2900, top: 400, width: 200 }}
-            />
-
-            <VerticalLine style={{ position: 'absolute', left: 3000, top: 460 }} />
-            <ArrowHead style={{ position: 'absolute', left: 2996, top: 520 }} />
-
-            <DecisionBox
-              title="Pain Characteristics?"
-              style={{ position: 'absolute', left: 2800, top: 570, width: 400 }}
-            />
-
-            {/* Itching Assessment */}
-            <HorizontalLine style={{ position: 'absolute', left: 1200, top: 630, width: 150 }} />
-            <ArrowHead style={{ position: 'absolute', left: 1346, top: 626, transform: 'rotate(90deg)' }} />
-
-            <FindingBox
-              title="White, curdy discharge"
-              style={{ position: 'absolute', left: 1000, top: 650, width: 200 }}
-            />
-
-            <HorizontalLine style={{ position: 'absolute', left: 1200, top: 630, width: 150, transform: 'translateX(200px)' }} />
-            <ArrowHead style={{ position: 'absolute', left: 1546, top: 626, transform: 'rotate(90deg)' }} />
-
-            <FindingBox
-              title="No discharge"
-              style={{ position: 'absolute', left: 1400, top: 650, width: 200 }}
-            />
-
-            <VerticalLine style={{ position: 'absolute', left: 1100, top: 710 }} />
-            <ArrowHead style={{ position: 'absolute', left: 1096, top: 770 }} />
-
-            <DiagnosisBox
-              title="Candidiasis"
-              style={{ position: 'absolute', left: 900, top: 820, width: 200 }}
-            />
-
-            <VerticalLine style={{ position: 'absolute', left: 1000, top: 880 }} />
-            <ArrowHead style={{ position: 'absolute', left: 996, top: 940 }} />
-
-            <TreatmentBox
-              title="Topical antifungal"
-              style={{ position: 'absolute', left: 800, top: 990, width: 200 }}
-            />
-
-            <VerticalLine style={{ position: 'absolute', left: 1500, top: 710 }} />
-            <ArrowHead style={{ position: 'absolute', left: 1496, top: 770 }} />
-
-            <DiagnosisBox
-              title="Contact dermatitis"
-              style={{ position: 'absolute', left: 1300, top: 820, width: 200 }}
-            />
-
-            <VerticalLine style={{ position: 'absolute', left: 1400, top: 880 }} />
-            <ArrowHead style={{ position: 'absolute', left: 1396, top: 940 }} />
-
-            <TreatmentBox
-              title="Remove irritant + topical steroid"
-              style={{ position: 'absolute', left: 1200, top: 990, width: 200 }}
-            />
-
-            {/* Discharge Assessment */}
-            <HorizontalLine style={{ position: 'absolute', left: 2000, top: 630, width: 150 }} />
-            <ArrowHead style={{ position: 'absolute', left: 2146, top: 626, transform: 'rotate(90deg)' }} />
-
-            <FindingBox
-              title="Yellow/green, foul odor"
-              style={{ position: 'absolute', left: 1800, top: 650, width: 200 }}
-            />
-
-            <HorizontalLine style={{ position: 'absolute', left: 2000, top: 630, width: 150, transform: 'translateX(200px)' }} />
-            <ArrowHead style={{ position: 'absolute', left: 2346, top: 626, transform: 'rotate(90deg)' }} />
-
-            <FindingBox
-              title="Gray, fishy odor"
-              style={{ position: 'absolute', left: 2200, top: 650, width: 200 }}
-            />
-
-            <VerticalLine style={{ position: 'absolute', left: 1900, top: 710 }} />
-            <ArrowHead style={{ position: 'absolute', left: 1896, top: 770 }} />
-
-            <DiagnosisBox
-              title="Trichomoniasis"
-              style={{ position: 'absolute', left: 1700, top: 820, width: 200 }}
-            />
-
-            <VerticalLine style={{ position: 'absolute', left: 1800, top: 880 }} />
-            <ArrowHead style={{ position: 'absolute', left: 1796, top: 940 }} />
-
-            <TreatmentBox
-              title="Metronidazole"
-              style={{ position: 'absolute', left: 1600, top: 990, width: 200 }}
-            />
-
-            <VerticalLine style={{ position: 'absolute', left: 2300, top: 710 }} />
-            <ArrowHead style={{ position: 'absolute', left: 2296, top: 770 }} />
-
-            <DiagnosisBox
-              title="Bacterial vaginosis"
-              style={{ position: 'absolute', left: 2100, top: 820, width: 200 }}
-            />
-
-            <VerticalLine style={{ position: 'absolute', left: 2200, top: 880 }} />
-            <ArrowHead style={{ position: 'absolute', left: 2196, top: 940 }} />
-
-            <TreatmentBox
-              title="Metronidazole or clindamycin"
-              style={{ position: 'absolute', left: 2000, top: 990, width: 200 }}
-            />
-
-            {/* Pain Assessment */}
-            <HorizontalLine style={{ position: 'absolute', left: 2800, top: 630, width: 150 }} />
-            <ArrowHead style={{ position: 'absolute', left: 2946, top: 626, transform: 'rotate(90deg)' }} />
-
-            <FindingBox
-              title="Dyspareunia"
-              style={{ position: 'absolute', left: 2600, top: 650, width: 200 }}
-            />
-
-            <HorizontalLine style={{ position: 'absolute', left: 2800, top: 630, width: 150, transform: 'translateX(200px)' }} />
-            <ArrowHead style={{ position: 'absolute', left: 3146, top: 626, transform: 'rotate(90deg)' }} />
-
-            <FindingBox
-              title="Vulvodynia"
-              style={{ position: 'absolute', left: 3000, top: 650, width: 200 }}
-            />
-
-            <VerticalLine style={{ position: 'absolute', left: 2700, top: 710 }} />
-            <ArrowHead style={{ position: 'absolute', left: 2696, top: 770 }} />
-
-            <DiagnosisBox
-              title="Vulvovaginitis"
-              style={{ position: 'absolute', left: 2500, top: 820, width: 200 }}
-            />
-
-            <VerticalLine style={{ position: 'absolute', left: 2600, top: 880 }} />
-            <ArrowHead style={{ position: 'absolute', left: 2596, top: 940 }} />
-
-            <TreatmentBox
-              title="Treat underlying cause"
-              style={{ position: 'absolute', left: 2400, top: 990, width: 200 }}
-            />
-
-            <VerticalLine style={{ position: 'absolute', left: 3100, top: 710 }} />
-            <ArrowHead style={{ position: 'absolute', left: 3096, top: 770 }} />
-
-            <DiagnosisBox
-              title="Vulvodynia"
-              style={{ position: 'absolute', left: 2900, top: 820, width: 200 }}
-            />
-
-            <VerticalLine style={{ position: 'absolute', left: 3000, top: 880 }} />
-            <ArrowHead style={{ position: 'absolute', left: 2996, top: 940 }} />
-
-            <TreatmentBox
-              title="Multimodal therapy"
-              style={{ position: 'absolute', left: 2800, top: 990, width: 200 }}
-            />
-
-            {/* Follow-up Assessment */}
-            <HorizontalLine style={{ position: 'absolute', left: 1600, top: 1050, width: 200 }} />
-            <ArrowHead style={{ position: 'absolute', left: 1796, top: 1046, transform: 'rotate(90deg)' }} />
 
             <AssessmentBox
-              title="Symptoms Resolved?"
-              style={{ position: 'absolute', left: 1500, top: 1070, width: 600 }}
+              title="Positive cotton swab test¹"
+              style={{ position: 'absolute', left: 80, top: 760, width: 140 }}
             />
 
-            {/* Yes Branch */}
-            <HorizontalLine style={{ position: 'absolute', left: 1500, top: 1130, width: 150 }} />
-            <ArrowHead style={{ position: 'absolute', left: 1646, top: 1126, transform: 'rotate(90deg)' }} />
+            <DiagnosisBox
+              title="Localized Provoked Vulvodynia"
+              style={{ position: 'absolute', left: 50, top: 900, width: 200 }}
+            />
 
             <TreatmentBox
-              title="Continue current treatment"
-              style={{ position: 'absolute', left: 1300, top: 1150, width: 200 }}
+              title="Lifestyle changes, pelvic floor PT, psychological intervention, medications. Vestibulectomy if no resolution"
+              style={{ position: 'absolute', left: 20, top: 1040, width: 260 }}
             />
 
-            {/* No Branch */}
-            <HorizontalLine style={{ position: 'absolute', left: 1500, top: 1130, width: 150, transform: 'translateX(300px)' }} />
-            <ArrowHead style={{ position: 'absolute', left: 1946, top: 1126, transform: 'rotate(90deg)' }} />
-
-            <DecisionBox
-              title="Re-evaluate Diagnosis"
-              style={{ position: 'absolute', left: 2100, top: 1150, width: 400 }}
+            {/* Erythematous nodules pathway */}
+            <DiagnosisBox
+              title="Hidradenitis Suppurativa"
+              style={{ position: 'absolute', left: 310, top: 620, width: 140 }}
             />
 
-            <VerticalLine style={{ position: 'absolute', left: 2300, top: 1210 }} />
-            <ArrowHead style={{ position: 'absolute', left: 2296, top: 1270 }} />
+            <ReferenceBox
+              text="See Dermatology"
+              style={{ position: 'absolute', left: 320, top: 760, width: 120 }}
+            />
+
+            {/* ACUTE PAINFUL - Two presentations */}
+            <FindingBox
+              title="Tender, warm, fluctuant mass posterior to vaginal introitus ± purulent discharge"
+              style={{ position: 'absolute', left: 500, top: 480, width: 240 }}
+            />
+
+            <FindingBox
+              title="Painful, fluid-filled vesicle(s) that evolve into pustules or ulcers"
+              style={{ position: 'absolute', left: 780, top: 480, width: 240 }}
+            />
+
+            {/* Bartholin Abscess pathway */}
+            <DiagnosisBox
+              title="Bartholin Abscess"
+              style={{ position: 'absolute', left: 570, top: 620, width: 100 }}
+            />
 
             <TreatmentBox
-              title="Consider specialist referral"
-              style={{ position: 'absolute', left: 2100, top: 1320, width: 400 }}
+              title="I&D with exudate culture, biopsy if malignancy concern"
+              style={{ position: 'absolute', left: 540, top: 760, width: 154 }}
+            />
+
+            {/* Herpes pathway */}
+            <DiagnosisBox
+              title="Herpes Simplex Virus"
+              style={{ position: 'absolute', left: 840, top: 620, width: 120 }}
+            />
+
+            <AssessmentBox
+              title="Viral culture, PCR, direct fluorescent antigen, serology or Tzanck smear"
+              style={{ position: 'absolute', left: 800, top: 760, width: 200 }}
+            />
+
+            <ReferenceBox
+              text="See Genital Ulcers"
+              style={{ position: 'absolute', left: 830, top: 900, width: 140 }}
+            />
+
+            {/* PAINLESS BRANCH - Four presentations */}
+            <FindingBox
+              title="Non-tender, soft mass posterior to vaginal introitus with white/clear discharge"
+              style={{ position: 'absolute', left: 1080, top: 320, width: 280 }}
+            />
+
+            <FindingBox
+              title="Firm, dome-shaped with central umbilication"
+              style={{ position: 'absolute', left: 1400, top: 320, width: 180 }}
+            />
+
+            <FindingBox
+              title="Hypopigmented, flat, wart-like, moist papules"
+              style={{ position: 'absolute', left: 1620, top: 320, width: 180 }}
+            />
+
+            <FindingBox
+              title="Soft, flat, pedunculated papules to large cauliflower-like lesions"
+              style={{ position: 'absolute', left: 1840, top: 320, width: 240 }}
+            />
+
+            {/* Bartholin Cyst pathway */}
+            <DiagnosisBox
+              title="Bartholin Cyst"
+              style={{ position: 'absolute', left: 1160, top: 480, width: 120 }}
+            />
+
+            <TreatmentBox
+              title="Monitor (<3 cm) or I&D (≥3 cm), biopsy if malignancy concern"
+              style={{ position: 'absolute', left: 1120, top: 620, width: 200 }}
+            />
+
+            {/* VERTICAL PATHWAY 1: Firm, dome-shaped → Pruritis → Molluscum Contagiosum → See Dermatology */}
+            <FindingBox
+              title="Pruritis"
+              style={{ position: 'absolute', left: 1430, top: 480, width: 120 }}
+            />
+
+            <DiagnosisBox
+              title="Molluscum Contagiosum"
+              style={{ position: 'absolute', left: 1410, top: 620, width: 160 }}
+            />
+
+            <ReferenceBox
+              text="See Dermatology"
+              style={{ position: 'absolute', left: 1430, top: 760, width: 120 }}
+            />
+
+            {/* VERTICAL PATHWAY 2: Hypopigmented → Rash → Serology → Condylomata Lata → See Genital Ulcers */}
+            <FindingBox
+              title="Rash, constitutional symptoms"
+              style={{ position: 'absolute', left: 1640, top: 480, width: 140 }}
+            />
+
+            <AssessmentBox
+              title="Serology, biopsy"
+              style={{ position: 'absolute', left: 1640, top: 620, width: 100 }}
+            />
+
+            <DiagnosisBox
+              title="Condylomata Lata"
+              style={{ position: 'absolute', left: 1640, top: 760, width: 120 }}
+            />
+
+            <ReferenceBox
+              text="See Genital Ulcers"
+              style={{ position: 'absolute', left: 1640, top: 900, width: 140 }}
+            />
+
+            {/* Condylomata Acuminata pathway */}
+            <DiagnosisBox
+              title="Condylomata Acuminata"
+              style={{ position: 'absolute', left: 1890, top: 480, width: 140 }}
+            />
+
+            <TreatmentBox
+              title="STI evaluation and counseling, medical treatment (if symptomatic), surgical treatment (if large or refractory)"
+              style={{ position: 'absolute', left: 1840, top: 620, width: 240 }}
             />
 
             {/* Footnotes */}
             <FootnotesBox
-              title="Consider STI testing if indicated"
-              style={{ position: 'absolute', left: 100, top: 1400, width: 300 }}
-            />
+              style={{ position: 'absolute', left: 1200, top: 1200, width: 600, minHeight: 80 }}
+            >
+              <div className="text-sm leading-relaxed">
+                <div className="font-bold text-lg mb-3 text-gray-800">Footnote</div>
+                <div className="mb-2"><strong>1.</strong> Significant pain provoked upon focal pressure point testing with a cotton swab.</div>
+              </div>
+            </FootnotesBox>
 
-            <FootnotesBox
-              title="Rule out malignancy in persistent cases"
-              style={{ position: 'absolute', left: 500, top: 1400, width: 300 }}
-            />
+            {/* CONNECTING LINES AND ARROWS */}
+            
+            {/* From Main Title to left and right branches */}
+            <VerticalLine x={800} startY={100} endY={140} />
+            <HorizontalLine y={140} startX={375} endX={1575} />
+            
+            {/* To Painful (LEFT BRANCH) */}
+            <VerticalLine x={375} startY={140} endY={180} />
+            <ArrowHead x={375} y={180} direction="down" />
+            <PlusMinusIndicator type="plus" x={355} y={160} />
+            
+            {/* To Painless (RIGHT BRANCH) */}
+            <VerticalLine x={1575} startY={140} endY={180} />
+            <ArrowHead x={1575} y={180} direction="down" />
+            <PlusMinusIndicator type="minus" x={1595} y={160} />
 
-            <FootnotesBox
-              title="Consider vulvar biopsy if suspicious"
-              style={{ position: 'absolute', left: 900, top: 1400, width: 300 }}
-            />
+            {/* PAINFUL BRANCH: Split into Chronic/Acute */}
+            <VerticalLine x={375} startY={230} endY={280} />
+            <HorizontalLine y={280} startX={210} endX={700} />
+            
+            <VerticalLine x={210} startY={280} endY={320} />
+            <VerticalLine x={700} startY={280} endY={320} />
+            
+            <ArrowHead x={210} y={320} direction="down" />
+            <ArrowHead x={700} y={320} direction="down" />
 
-            <FootnotesBox
-              title="Screen for diabetes in recurrent candidiasis"
-              style={{ position: 'absolute', left: 1300, top: 1400, width: 300 }}
-            />
+            {/* CHRONIC: Split into two presentations */}
+            <VerticalLine x={210} startY={370} endY={440} />
+            <HorizontalLine y={440} startX={150} endX={380} />
+            
+            <VerticalLine x={150} startY={440} endY={480} />
+            <VerticalLine x={380} startY={440} endY={480} />
+            
+            <ArrowHead x={150} y={480} direction="down" />
+            <ArrowHead x={380} y={480} direction="down" />
 
-            <FootnotesBox
-              title="Consider hormonal therapy for atrophic vaginitis"
-              style={{ position: 'absolute', left: 1700, top: 1400, width: 300 }}
-            />
+            {/* Normal-appearing vulva pathway */}
+            <VerticalLine x={150} startY={530} endY={620} />
+            <ArrowHead x={150} y={620} direction="down" />
 
-            <FootnotesBox
-              title="Evaluate for underlying systemic disease"
-              style={{ position: 'absolute', left: 2100, top: 1400, width: 300 }}
-            />
+            <VerticalLine x={150} startY={670} endY={760} />
+            <ArrowHead x={150} y={760} direction="down" />
 
-            <FootnotesBox
-              title="Consider psychological factors in chronic cases"
-              style={{ position: 'absolute', left: 2500, top: 1400, width: 300 }}
-            />
+            <VerticalLine x={150} startY={810} endY={900} />
+            <ArrowHead x={150} y={900} direction="down" />
 
-            <FootnotesBox
-              title="Document treatment response and side effects"
-              style={{ position: 'absolute', left: 2900, top: 1400, width: 300 }}
-            />
+            <VerticalLine x={150} startY={950} endY={1040} />
+            <ArrowHead x={150} y={1040} direction="down" />
 
-            {/* No Symptoms Branch */}
-            <HorizontalLine style={{ position: 'absolute', left: 1500, top: 150, width: 150, transform: 'translateX(300px)' }} />
-            <ArrowHead style={{ position: 'absolute', left: 1946, top: 146, transform: 'rotate(90deg)' }} />
+            {/* Erythematous nodules pathway */}
+            <VerticalLine x={380} startY={530} endY={620} />
+            <ArrowHead x={380} y={620} direction="down" />
 
-            <TreatmentBox
-              title="No treatment needed"
-              style={{ position: 'absolute', left: 2100, top: 170, width: 200 }}
-            />
+            <VerticalLine x={380} startY={670} endY={760} />
+            <ArrowHead x={380} y={760} direction="down" />
 
-            <VerticalLine style={{ position: 'absolute', left: 2200, top: 230 }} />
-            <ArrowHead style={{ position: 'absolute', left: 2196, top: 290 }} />
+            {/* ACUTE: Split into two presentations */}
+            <VerticalLine x={700} startY={370} endY={440} />
+            <HorizontalLine y={440} startX={620} endX={900} />
+            
+            <VerticalLine x={620} startY={440} endY={480} />
+            <VerticalLine x={900} startY={440} endY={480} />
+            
+            <ArrowHead x={620} y={480} direction="down" />
+            <ArrowHead x={900} y={480} direction="down" />
 
-            <AssessmentBox
-              title="Routine follow-up"
-              style={{ position: 'absolute', left: 2100, top: 340, width: 200 }}
-            />
+            {/* Bartholin Abscess pathway */}
+            <VerticalLine x={620} startY={530} endY={620} />
+            <ArrowHead x={620} y={620} direction="down" />
+
+            <VerticalLine x={620} startY={670} endY={760} />
+            <ArrowHead x={620} y={760} direction="down" />
+
+            {/* Herpes pathway */}
+            <VerticalLine x={900} startY={530} endY={620} />
+            <ArrowHead x={900} y={620} direction="down" />
+
+            <VerticalLine x={900} startY={670} endY={760} />
+            <ArrowHead x={900} y={760} direction="down" />
+
+            <VerticalLine x={900} startY={810} endY={900} />
+            <ArrowHead x={900} y={900} direction="down" />
+
+            {/* PAINLESS BRANCH: Split into four presentations */}
+            <VerticalLine x={1575} startY={230} endY={280} />
+            <HorizontalLine y={280} startX={1220} endX={1960} />
+            
+            <VerticalLine x={1220} startY={280} endY={320} />
+            <VerticalLine x={1490} startY={280} endY={320} />
+            <VerticalLine x={1710} startY={280} endY={320} />
+            <VerticalLine x={1960} startY={280} endY={320} />
+            
+            <ArrowHead x={1220} y={320} direction="down" />
+            <ArrowHead x={1490} y={320} direction="down" />
+            <ArrowHead x={1710} y={320} direction="down" />
+            <ArrowHead x={1960} y={320} direction="down" />
+
+            {/* Bartholin Cyst pathway */}
+            <VerticalLine x={1220} startY={370} endY={480} />
+            <ArrowHead x={1220} y={480} direction="down" />
+
+            <VerticalLine x={1220} startY={530} endY={620} />
+            <ArrowHead x={1220} y={620} direction="down" />
+
+            {/* Molluscum Contagiosum pathway - right vertical */}
+            <VerticalLine x={1490} startY={370} endY={480} />
+            <ArrowHead x={1490} y={480} direction="down" />
+
+            <VerticalLine x={1490} startY={530} endY={620} />
+            <ArrowHead x={1490} y={620} direction="down" />
+
+            <VerticalLine x={1490} startY={670} endY={760} />
+            <ArrowHead x={1490} y={760} direction="down" />
+
+            {/* Condylomata Lata pathway - left vertical */}
+            <VerticalLine x={1710} startY={370} endY={480} />
+            <ArrowHead x={1710} y={480} direction="down" />
+            
+            <VerticalLine x={1700} startY={530} endY={620} />
+            <ArrowHead x={1700} y={620} direction="down" />
+
+            <VerticalLine x={1700} startY={670} endY={760} />
+            <ArrowHead x={1700} y={760} direction="down" />
+
+            <VerticalLine x={1700} startY={810} endY={900} />
+            <ArrowHead x={1700} y={900} direction="down" />
+
+            {/* Condylomata Acuminata pathway */}
+            <VerticalLine x={1960} startY={370} endY={480} />
+            <ArrowHead x={1960} y={480} direction="down" />
+
+            <VerticalLine x={1960} startY={530} endY={620} />
+            <ArrowHead x={1960} y={620} direction="down" />
+
           </div>
         </div>
       </div>
