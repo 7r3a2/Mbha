@@ -19,10 +19,10 @@ export async function PUT(
         email: userData.email,
         gender: userData.gender,
         university: userData.university,
-        hasWizaryExamAccess: userData.hasWizaryExamAccess,
-        hasApproachAccess: userData.hasApproachAccess,
-        hasQbankAccess: userData.hasQbankAccess,
-        hasCoursesAccess: userData.hasCoursesAccess,
+             hasWizaryExamAccess: true, // Always enabled for all users
+     hasApproachAccess: userData.hasApproachAccess,
+     hasQbankAccess: userData.hasQbankAccess,
+     hasCoursesAccess: userData.hasCoursesAccess,
       },
     });
 

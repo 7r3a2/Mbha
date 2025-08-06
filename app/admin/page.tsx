@@ -522,33 +522,31 @@ export default function AdminPage() {
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.university || 'N/A'}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.uniqueCode}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                              <div className="flex flex-wrap gap-1">
-                                {user.hasWizaryExamAccess && (
-                                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                    Wizary
-                                  </span>
-                                )}
-                                {user.hasApproachAccess && (
-                                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                    Approach
-                                  </span>
-                                )}
-                                {user.hasQbankAccess && (
-                                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                                    Qbank
-                                  </span>
-                                )}
-                                {user.hasCoursesAccess && (
-                                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
-                                    Courses
-                                  </span>
-                                )}
-                                {!user.hasWizaryExamAccess && !user.hasApproachAccess && !user.hasQbankAccess && !user.hasCoursesAccess && (
-                                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                    No Access
-                                  </span>
-                                )}
-                              </div>
+                                                       <div className="flex flex-wrap gap-1">
+                           <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                             Wizary
+                           </span>
+                           {user.hasApproachAccess && (
+                             <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                               Approach
+                             </span>
+                           )}
+                           {user.hasQbankAccess && (
+                             <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                               Qbank
+                             </span>
+                           )}
+                           {user.hasCoursesAccess && (
+                             <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                               Courses
+                             </span>
+                           )}
+                           {!user.hasApproachAccess && !user.hasQbankAccess && !user.hasCoursesAccess && (
+                             <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                               Basic Access Only
+                             </span>
+                           )}
+                         </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                               {new Date(user.createdAt).toLocaleDateString()}
@@ -960,10 +958,10 @@ export default function AdminPage() {
                 email: formData.get('email'),
                 gender: formData.get('gender'),
                 university: formData.get('university'),
-                hasWizaryExamAccess: formData.get('hasWizaryExamAccess') === 'on',
-                hasApproachAccess: formData.get('hasApproachAccess') === 'on',
-                hasQbankAccess: formData.get('hasQbankAccess') === 'on',
-                hasCoursesAccess: formData.get('hasCoursesAccess') === 'on',
+                                 hasWizaryExamAccess: true, // Always enabled for all users
+                 hasApproachAccess: formData.get('hasApproachAccess') === 'on',
+                 hasQbankAccess: formData.get('hasQbankAccess') === 'on',
+                 hasCoursesAccess: formData.get('hasCoursesAccess') === 'on',
               });
             }}>
               <div className="space-y-4">
@@ -1016,48 +1014,47 @@ export default function AdminPage() {
                   />
                 </div>
                 
-                {/* Access Permissions Section */}
-                <div className="border-t pt-4">
-                  <h4 className="text-sm font-semibold text-gray-700 mb-3">Access Permissions</h4>
-                  <div className="space-y-3">
-                    <div className="flex items-center">
-                      <input
-                        name="hasWizaryExamAccess"
-                        type="checkbox"
-                        defaultChecked={editingUser.hasWizaryExamAccess}
-                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                      />
-                      <label className="ml-2 text-sm text-gray-700">Wizary Exam Access</label>
-                    </div>
-                    <div className="flex items-center">
-                      <input
-                        name="hasApproachAccess"
-                        type="checkbox"
-                        defaultChecked={editingUser.hasApproachAccess}
-                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                      />
-                      <label className="ml-2 text-sm text-gray-700">Approach Access</label>
-                    </div>
-                    <div className="flex items-center">
-                      <input
-                        name="hasQbankAccess"
-                        type="checkbox"
-                        defaultChecked={editingUser.hasQbankAccess}
-                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                      />
-                      <label className="ml-2 text-sm text-gray-700">Qbank Access</label>
-                    </div>
-                    <div className="flex items-center">
-                      <input
-                        name="hasCoursesAccess"
-                        type="checkbox"
-                        defaultChecked={editingUser.hasCoursesAccess}
-                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                      />
-                      <label className="ml-2 text-sm text-gray-700">Courses Access</label>
-                    </div>
-                  </div>
-                </div>
+                                   {/* Access Permissions Section */}
+                   <div className="border-t pt-4">
+                     <h4 className="text-sm font-semibold text-gray-700 mb-3">Access Permissions</h4>
+                     <div className="space-y-3">
+                       <div className="flex items-center">
+                         <div className="h-4 w-4 bg-green-100 border border-green-400 rounded flex items-center justify-center">
+                           <svg className="h-3 w-3 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                           </svg>
+                         </div>
+                         <label className="ml-2 text-sm text-gray-700 font-medium">Wizary Exam Access (Always Enabled)</label>
+                       </div>
+                       <div className="flex items-center">
+                         <input
+                           name="hasApproachAccess"
+                           type="checkbox"
+                           defaultChecked={editingUser.hasApproachAccess}
+                           className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                         />
+                         <label className="ml-2 text-sm text-gray-700">Approach Access</label>
+                       </div>
+                       <div className="flex items-center">
+                         <input
+                           name="hasQbankAccess"
+                           type="checkbox"
+                           defaultChecked={editingUser.hasQbankAccess}
+                           className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                         />
+                         <label className="ml-2 text-sm text-gray-700">Qbank Access</label>
+                       </div>
+                       <div className="flex items-center">
+                         <input
+                           name="hasCoursesAccess"
+                           type="checkbox"
+                           defaultChecked={editingUser.hasCoursesAccess}
+                           className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                         />
+                         <label className="ml-2 text-sm text-gray-700">Courses Access</label>
+                       </div>
+                     </div>
+                   </div>
               </div>
               <div className="flex justify-end space-x-2 mt-6">
                 <button
