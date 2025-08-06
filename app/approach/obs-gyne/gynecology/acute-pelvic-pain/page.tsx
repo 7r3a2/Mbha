@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState } from 'react';
 import Head from "next/head";
 
 // Main title box component (Green)
@@ -213,44 +213,55 @@ const PlusMinusIndicator = ({ type, x, y }: { type: 'plus' | 'minus'; x: number;
   </div>
 );
 
-export default function AcutePelvicPainFlowchart({ frameFullScreen = false, onToggleFrameFullScreen = () => {} }: { frameFullScreen?: boolean; onToggleFrameFullScreen?: () => void }) {
+export default function AcutePelvicPainFlowchart({ frameFullScreen, onToggleFrameFullScreen }: { frameFullScreen: boolean; onToggleFrameFullScreen: () => void }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isPanning, setIsPanning] = useState(false);
-  const [startPos, setStartPos] = useState({ x: 0, y: 0 });
   const [scrollPos, setScrollPos] = useState({ x: 0, y: 0 });
+  const [lastMousePos, setLastMousePos] = useState({ x: 0, y: 0 });
+  const [lastTouchPos, setLastTouchPos] = useState({ x: 0, y: 0 });
 
-  // Panning functionality - smooth and fast like chest-pain
   const handleMouseDown = (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement;
+    if (target.closest('.flowchart-box')) return;
     setIsPanning(true);
-    setStartPos({ x: e.clientX - scrollPos.x, y: e.clientY - scrollPos.y });
+    setLastMousePos({ x: e.clientX, y: e.clientY });
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!isPanning) return;
     e.preventDefault();
-    const newX = e.clientX - startPos.x;
-    const newY = e.clientY - startPos.y;
-    setScrollPos({ x: newX, y: newY });
+    const deltaX = e.clientX - lastMousePos.x;
+    const deltaY = e.clientY - lastMousePos.y;
+    setScrollPos(prev => ({
+      x: prev.x + deltaX,
+      y: prev.y + deltaY
+    }));
+    setLastMousePos({ x: e.clientX, y: e.clientY });
   };
 
   const handleMouseUp = () => {
     setIsPanning(false);
   };
 
-  // Touch events for mobile - smooth and fast
   const handleTouchStart = (e: React.TouchEvent) => {
-    const touch = e.touches[0];
-    setIsPanning(true);
-    setStartPos({ x: touch.clientX - scrollPos.x, y: touch.clientY - scrollPos.y });
+    const target = e.target as HTMLElement;
+    if (target.closest('.flowchart-box')) return;
+    if (e.touches.length === 1) {
+      setIsPanning(true);
+      setLastTouchPos({ x: e.touches[0].clientX, y: e.touches[0].clientY });
+    }
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isPanning) return;
+    if (!isPanning || e.touches.length !== 1) return;
     e.preventDefault();
-    const touch = e.touches[0];
-    const newX = touch.clientX - startPos.x;
-    const newY = touch.clientY - startPos.y;
-    setScrollPos({ x: newX, y: newY });
+    const deltaX = e.touches[0].clientX - lastTouchPos.x;
+    const deltaY = e.touches[0].clientY - lastTouchPos.y;
+    setScrollPos(prev => ({
+      x: prev.x + deltaX,
+      y: prev.y + deltaY
+    }));
+    setLastTouchPos({ x: e.touches[0].clientX, y: e.touches[0].clientY });
   };
 
   const handleTouchEnd = () => {
@@ -265,15 +276,9 @@ export default function AcutePelvicPainFlowchart({ frameFullScreen = false, onTo
       </Head>
       
       <div className={`${frameFullScreen ? 'fixed inset-0 z-50 bg-gray-100' : 'h-screen bg-gray-100'} overflow-hidden`}>
-        {/* Header with back button */}
+        {/* Header */}
         <div className="bg-white p-4 shadow-sm flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <button 
-              onClick={() => window.history.back()}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              ← Back
-            </button>
             <h1 className="text-2xl font-bold text-blue-600">Acute Pelvic Pain</h1>
           </div>
           <button
