@@ -16,6 +16,20 @@ export default function Dashboard() {
     }
   }, [isLoading, isAuthenticated, router]);
 
+  // Debug: Log user permissions
+  useEffect(() => {
+    if (user) {
+      console.log('🔍 Dashboard - User permissions:', {
+        email: user.email,
+        hasApproachAccess: user.hasApproachAccess,
+        hasQbankAccess: user.hasQbankAccess,
+        hasCoursesAccess: user.hasCoursesAccess,
+        hasWizaryExamAccess: user.hasWizaryExamAccess,
+        uniqueCode: user.uniqueCode
+      });
+    }
+  }, [user]);
+
   const courses = [
     {
       id: 1,
