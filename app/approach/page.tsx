@@ -6,6 +6,7 @@ import { useAuth } from '@/lib/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import DyspareuniaPage from './obs-gyne/gynecology/dyspareunia/page';
 import AcutePelvicPainPage from './obs-gyne/gynecology/acute-pelvic-pain/page';
+import VulvarVaginalCancersPage from './obs-gyne/gynecology/vulvar-vaginal-cancers/page';
 
 // Box component that matches the image exactly
 const FlowchartBox = ({ 
@@ -1849,7 +1850,7 @@ export default function ApproachPage() {
         {/* Main Content */}
         <main className="flex-1 p-2 sm:p-4 md:p-6 overflow-hidden min-w-0">
           {selectedContent && selectedContent.lecture ? (
-            <div className={`${(selectedContent.lecture.id === 'card-5' || selectedContent.lecture.id === 'acute-pelvic-pain' || selectedContent.lecture.id === 'dyspareunia') && isFrameFullscreen ? 'fixed inset-0 z-50' : 'h-full w-full'} bg-white/95 backdrop-blur-sm border-2 border-blue-300 rounded-xl overflow-hidden shadow-xl`}>
+            <div className={`${(selectedContent.lecture.id === 'card-5' || selectedContent.lecture.id === 'acute-pelvic-pain' || selectedContent.lecture.id === 'dyspareunia' || selectedContent.lecture.id === 'vulvar-vaginal-cancers') && isFrameFullscreen ? 'fixed inset-0 z-50' : 'h-full w-full'} bg-white/95 backdrop-blur-sm border-2 border-blue-300 rounded-xl overflow-hidden shadow-xl`}>
               {selectedContent.lecture.id === 'card-5' ? (
                 // Render Chest Pain flowchart directly as component
                 <ChestPainFlowchart 
@@ -1865,6 +1866,12 @@ export default function ApproachPage() {
               ) : selectedContent.lecture.id === 'dyspareunia' ? (
                 // Render Dyspareunia page directly as component
                 <DyspareuniaPage 
+                  frameFullScreen={isFrameFullscreen}
+                  onToggleFrameFullScreen={() => setIsFrameFullscreen(!isFrameFullscreen)}
+                />
+              ) : selectedContent.lecture.id === 'vulvar-vaginal-cancers' ? (
+                // Render Vulvar/Vaginal Cancers page directly as component
+                <VulvarVaginalCancersPage 
                   frameFullScreen={isFrameFullscreen}
                   onToggleFrameFullScreen={() => setIsFrameFullscreen(!isFrameFullscreen)}
                 />
