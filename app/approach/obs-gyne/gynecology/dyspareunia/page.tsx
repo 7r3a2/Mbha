@@ -243,21 +243,10 @@ export default function DyspareuniaPage() {
         <meta name="description" content="Medical flowchart for dyspareunia evaluation" />
       </Head>
       
-      <div className="h-screen bg-white overflow-hidden">
-        {/* Header with back button */}
-        <div className="bg-white p-4 shadow-sm flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <button 
-              onClick={() => window.history.back()}
-              className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-            >
-              ← Back
-            </button>
-            <h1 className="text-2xl font-bold text-purple-600">Dyspareunia</h1>
-          </div>
-          <div className="text-sm text-gray-600">
-            Gynecology • Approach
-          </div>
+      <div className="h-screen bg-gray-100 overflow-hidden">
+        {/* Title */}
+        <div className="bg-white p-4 shadow-sm">
+          <h1 className="text-2xl font-bold text-purple-600">Dyspareunia</h1>
         </div>
 
         {/* Main flowchart container */}
