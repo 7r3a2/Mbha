@@ -359,13 +359,13 @@ export default function DyspareuniaPage({
   };
 
   return (
-    <div className="h-full bg-white overflow-hidden">
+    <div className={`${frameFullScreen ? 'fixed inset-0 z-50 bg-white' : 'h-full'} bg-white overflow-hidden border-4 border-blue-500`}>
       {/* Header with full screen button */}
       <div className="bg-white p-4 shadow-sm flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-green-600">Dyspareunia</h1>
+        <h1 className="text-2xl font-bold text-blue-600">Dyspareunia</h1>
         <button
           onClick={toggleFullScreen}
-          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center space-x-2"
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
           title={frameFullScreen ? "Exit Full Screen" : "Full Screen"}
         >
           {frameFullScreen ? (
