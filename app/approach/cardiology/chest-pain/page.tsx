@@ -148,6 +148,7 @@ export default function ChestPainFlowchart() {
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!isPanning) return;
+    e.preventDefault();
     const newX = e.clientX - startPos.x;
     const newY = e.clientY - startPos.y;
     setScrollPos({ x: newX, y: newY });
@@ -166,6 +167,7 @@ export default function ChestPainFlowchart() {
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!isPanning) return;
+    e.preventDefault();
     const touch = e.touches[0];
     const newX = touch.clientX - startPos.x;
     const newY = touch.clientY - startPos.y;
@@ -216,9 +218,10 @@ export default function ChestPainFlowchart() {
           <div
             className="relative"
             style={{
-              transform: `translate(${scrollPos.x}px, ${scrollPos.y}px)`,
+              transform: `translate3d(${scrollPos.x}px, ${scrollPos.y}px, 0)`,
               width: '1600px',
               height: '1300px',
+              willChange: 'transform',
             }}
           >
             {/* Chest Pain - Main box */}

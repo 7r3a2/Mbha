@@ -208,6 +208,7 @@ export default function DyspareuniaPage({ frameFullScreen = false, onToggleFrame
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!isPanning) return;
+    e.preventDefault();
     const newX = e.clientX - startPos.x;
     const newY = e.clientY - startPos.y;
     setScrollPos({ x: newX, y: newY });
@@ -226,6 +227,7 @@ export default function DyspareuniaPage({ frameFullScreen = false, onToggleFrame
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!isPanning) return;
+    e.preventDefault();
     const touch = e.touches[0];
     const newX = touch.clientX - startPos.x;
     const newY = touch.clientY - startPos.y;
@@ -248,7 +250,7 @@ export default function DyspareuniaPage({ frameFullScreen = false, onToggleFrame
         <meta name="description" content="Medical flowchart for dyspareunia evaluation" />
       </Head>
       
-      <div className="h-full bg-white overflow-hidden">
+      <div className={`${frameFullScreen ? 'fixed inset-0 z-50 bg-white' : 'h-screen bg-white'} overflow-hidden`}>
         {/* Header with full screen button */}
         <div className="bg-white p-4 shadow-sm flex items-center justify-between">
           <h1 className="text-2xl font-bold text-blue-600">Dyspareunia</h1>
@@ -291,9 +293,10 @@ export default function DyspareuniaPage({ frameFullScreen = false, onToggleFrame
           <div
             className="relative"
             style={{
-              transform: `translate(${scrollPos.x}px, ${scrollPos.y}px)`,
+              transform: `translate3d(${scrollPos.x}px, ${scrollPos.y}px, 0)`,
               width: '3600px',
               height: '2800px',
+              willChange: 'transform',
             }}
           >
             {/* Main Title - Centered at top - RAISED HIGHER */}
