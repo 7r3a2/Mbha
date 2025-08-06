@@ -213,7 +213,7 @@ const PlusMinusIndicator = ({ type, x, y }: { type: 'plus' | 'minus'; x: number;
   </div>
 );
 
-export default function AcutePelvicPainFlowchart() {
+export default function AcutePelvicPainFlowchart({ frameFullScreen = false, onToggleFrameFullScreen = () => {} }: { frameFullScreen?: boolean; onToggleFrameFullScreen?: () => void }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isPanning, setIsPanning] = useState(false);
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
@@ -262,10 +262,19 @@ export default function AcutePelvicPainFlowchart() {
         <meta name="description" content="Medical flowchart for acute pelvic pain evaluation" />
       </Head>
       
-      <div className="h-screen bg-white overflow-hidden">
+      <div className={`${frameFullScreen ? 'fixed inset-0 z-50 bg-white' : 'h-screen bg-white'} overflow-hidden`}>
         {/* Title */}
-        <div className="bg-white p-4 shadow-sm">
+        <div className="bg-white p-4 shadow-sm flex justify-between items-center">
           <h1 className="text-2xl font-bold text-blue-600">Acute Pelvic Pain</h1>
+          <button
+            onClick={onToggleFrameFullScreen}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 flex items-center space-x-2"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+            </svg>
+            <span>Full Screen</span>
+          </button>
         </div>
 
         {/* Main flowchart container */}

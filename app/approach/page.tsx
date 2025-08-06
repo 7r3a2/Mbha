@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import DyspareuniaPage from './obs-gyne/gynecology/dyspareunia/page';
+import AcutePelvicPainPage from './obs-gyne/gynecology/acute-pelvic-pain/page';
 
 // Box component that matches the image exactly
 const FlowchartBox = ({ 
@@ -185,8 +186,18 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
   );
 };
 
-// Acute Pelvic Pain Flowchart Component
+// Acute Pelvic Pain Flowchart Component - Wrapper for imported component
 const AcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullScreen = () => {} }) => {
+  return (
+    <AcutePelvicPainPage 
+      frameFullScreen={frameFullScreen}
+      onToggleFrameFullScreen={onToggleFrameFullScreen}
+    />
+  );
+};
+
+// Old Acute Pelvic Pain Flowchart Component (replaced by imported version)
+const OldAcutePelvicPainFlowchart = ({ frameFullScreen = false, onToggleFrameFullScreen = () => {} }) => {
   const [isMobile, setIsMobile] = useState(false);
   const [scale, setScale] = useState(1);
   const [zoomScale, setZoomScale] = useState(1);
