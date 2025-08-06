@@ -6,7 +6,7 @@ import Head from "next/head";
 // Main title box component (Gray)
 const TitleBox = ({ title, style = {} }: { title: string; style?: React.CSSProperties }) => (
   <div 
-    className="bg-gray-200 border-2 border-gray-400 px-6 py-4 text-center rounded-lg shadow-md text-lg font-bold text-gray-800"
+    className="flowchart-box bg-gray-200 border-2 border-gray-400 px-6 py-4 text-center rounded-lg shadow-md text-lg font-bold text-gray-800"
     style={{
       minHeight: '60px',
       display: 'flex',
@@ -22,7 +22,7 @@ const TitleBox = ({ title, style = {} }: { title: string; style?: React.CSSPrope
 // Decision/Question box component (Gray)
 const DecisionBox = ({ title, style = {} }: { title: string; style?: React.CSSProperties }) => (
   <div 
-    className="bg-gray-200 border-2 border-gray-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
+    className="flowchart-box bg-gray-200 border-2 border-gray-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
     style={{
       minHeight: '50px',
       display: 'flex',
@@ -38,7 +38,7 @@ const DecisionBox = ({ title, style = {} }: { title: string; style?: React.CSSPr
 // Symptom/Finding box component (Light Green)
 const FindingBox = ({ title, style = {} }: { title: string; style?: React.CSSProperties }) => (
   <div 
-    className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
+    className="flowchart-box bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
     style={{
       minHeight: '50px',
       display: 'flex',
@@ -54,7 +54,7 @@ const FindingBox = ({ title, style = {} }: { title: string; style?: React.CSSPro
 // Diagnosis box component (Orange, Hexagonal)
 const DiagnosisBox = ({ title, style = {} }: { title: string; style?: React.CSSProperties }) => (
   <div 
-    className="bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
+    className="flowchart-box bg-orange-300 border-2 border-orange-500 px-4 py-3 text-center shadow-md text-sm font-bold text-gray-800"
     style={{
       minHeight: '50px',
       display: 'flex',
@@ -71,7 +71,7 @@ const DiagnosisBox = ({ title, style = {} }: { title: string; style?: React.CSSP
 // Treatment/Action box component (Light Blue)
 const TreatmentBox = ({ title, style = {} }: { title: string; style?: React.CSSProperties }) => (
   <div 
-    className="bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
+    className="flowchart-box bg-blue-200 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
     style={{
       minHeight: '50px',
       display: 'flex',
@@ -87,7 +87,7 @@ const TreatmentBox = ({ title, style = {} }: { title: string; style?: React.CSSP
 // Footnotes box component (Gray)
 const FootnotesBox = ({ children, style = {} }: { children: React.ReactNode; style?: React.CSSProperties }) => (
   <div 
-    className="bg-gray-100 border-2 border-gray-400 px-4 py-3 rounded-lg shadow-md text-xs text-gray-700"
+    className="flowchart-box bg-gray-100 border-2 border-gray-400 px-4 py-3 rounded-lg shadow-md text-xs text-gray-700"
     style={{
       ...style
     }}
@@ -237,7 +237,7 @@ export default function DyspareuniaPage({ frameFullScreen = false, onToggleFrame
   const handleMouseDown = (e: React.MouseEvent) => {
     // Only start panning if clicking on empty space (not on boxes)
     const target = e.target as HTMLElement;
-    if (target.closest('.flowchart-box, .reference-box, .text-box')) {
+    if (target.closest('.flowchart-box')) {
       return;
     }
     
@@ -302,7 +302,7 @@ export default function DyspareuniaPage({ frameFullScreen = false, onToggleFrame
     } else if (e.touches.length === 1) {
       // Single finger touch - start panning
       const target = e.target as HTMLElement;
-      if (target.closest('.flowchart-box, .reference-box, .text-box')) {
+      if (target.closest('.flowchart-box')) {
         return;
       }
       

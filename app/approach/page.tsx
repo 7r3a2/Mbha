@@ -1838,7 +1838,7 @@ export default function ApproachPage() {
         {/* Main Content */}
         <main className="flex-1 p-2 sm:p-4 md:p-6 overflow-hidden min-w-0">
           {selectedContent && selectedContent.lecture ? (
-            <div className={`${(selectedContent.lecture.id === 'card-5' || selectedContent.lecture.id === 'acute-pelvic-pain') && isFrameFullscreen ? 'fixed inset-0 z-50' : 'h-full w-full'} bg-white/95 backdrop-blur-sm border-2 border-blue-300 rounded-xl overflow-hidden shadow-xl`}>
+            <div className={`${(selectedContent.lecture.id === 'card-5' || selectedContent.lecture.id === 'acute-pelvic-pain' || selectedContent.lecture.id === 'dyspareunia') && isFrameFullscreen ? 'fixed inset-0 z-50' : 'h-full w-full'} bg-white/95 backdrop-blur-sm border-2 border-blue-300 rounded-xl overflow-hidden shadow-xl`}>
               {selectedContent.lecture.id === 'card-5' ? (
                 // Render Chest Pain flowchart directly as component
                 <ChestPainFlowchart 
