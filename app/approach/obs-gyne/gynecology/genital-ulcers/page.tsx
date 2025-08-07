@@ -491,6 +491,23 @@ export default function GenitalUlcersFlowchart({
                 style={{ objectFit: 'contain', width: '100%', height: '100%' }}
               />
             </div>
+            
+            {/* Caption for Image 1 */}
+            <div
+              style={{ 
+                position: 'absolute', 
+                left: 100, 
+                top: 810, 
+                width: 220, 
+                textAlign: 'center',
+                fontSize: '12px',
+                fontWeight: '500',
+                color: '#374151',
+                lineHeight: '1.2'
+              }}
+            >
+              Large, mononuclear cell with multiple Donovan bodies
+            </div>
 
             {/* LEFT SUB-BRANCH 2: Herpes Simplex */}
             <FindingBox
@@ -524,6 +541,23 @@ export default function GenitalUlcersFlowchart({
                 height={150}
                 style={{ objectFit: 'contain', width: '100%', height: '100%' }}
               />
+            </div>
+            
+            {/* Caption for Image 2 */}
+            <div
+              style={{ 
+                position: 'absolute', 
+                left: 360, 
+                top: 880, 
+                width: 220, 
+                textAlign: 'center',
+                fontSize: '12px',
+                fontWeight: '500',
+                color: '#374151',
+                lineHeight: '1.2'
+              }}
+            >
+              Multiple superficial ulcerations of primary genital herpes
             </div>
 
             {/* LEFT SUB-BRANCH 3: Chancroid */}
