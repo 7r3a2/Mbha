@@ -2,6 +2,7 @@
 
 import React, { useRef, useState } from "react";
 import Head from "next/head";
+import Image from "next/image";
 
 // Main title box component (Gray)
 const TitleBox = ({ title, style = {} }: { title: string; style?: React.CSSProperties }) => (
@@ -319,10 +320,17 @@ export default function VulvarDystrophiesFlowchart({
               style={{ position: 'absolute', left: 200, top: 200, width: 240 }}
             />
 
-            <ImageBox
-              title="[Image Placeholder - Will be added later]"
-              style={{ position: 'absolute', left: 200, top: 340, width: 240 }}
-            />
+            <div
+              style={{ position: 'absolute', left: 200, top: 340, width: 240, height: 120 }}
+            >
+              <Image
+                src="/images/approaches images/obs & gyne/Vulvar Dystrophies right.png"
+                alt="Vulvar Dystrophies Right"
+                width={240}
+                height={120}
+                style={{ objectFit: 'contain', width: '100%', height: '100%' }}
+              />
+            </div>
 
             <DecisionBox
               title="Confirm with biopsy"
@@ -376,10 +384,17 @@ export default function VulvarDystrophiesFlowchart({
               style={{ position: 'absolute', left: 1020, top: 340, width: 200 }}
             />
 
-            <ImageBox
-              title="[Image Placeholder - Will be added later]"
-              style={{ position: 'absolute', left: 1000, top: 480, width: 240 }}
-            />
+            <div
+              style={{ position: 'absolute', left: 1000, top: 480, width: 240, height: 120 }}
+            >
+              <Image
+                src="/images/approaches images/obs & gyne/Vulvar Dystrophies left.png"
+                alt="Vulvar Dystrophies Left"
+                width={240}
+                height={120}
+                style={{ objectFit: 'contain', width: '100%', height: '100%' }}
+              />
+            </div>
 
             <DiagnosisBox
               title="Lichen Simplex Chronicus"
