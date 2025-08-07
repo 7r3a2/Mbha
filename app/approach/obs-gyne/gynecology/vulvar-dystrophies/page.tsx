@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Head from "next/head";
 import Image from "next/image";
 
@@ -91,22 +91,6 @@ const AssessmentBox = ({ title, style = {} }: { title: string; style?: React.CSS
     className="bg-gray-100 border-2 border-gray-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-700"
     style={{
       minHeight: '50px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      ...style
-    }}
-  >
-    {title}
-  </div>
-);
-
-// Image placeholder box component (Light Pink)
-const ImageBox = ({ title, style = {} }: { title: string; style?: React.CSSProperties }) => (
-  <div 
-    className="bg-pink-100 border-2 border-pink-400 px-4 py-8 text-center rounded-lg shadow-md text-sm font-medium text-gray-700"
-    style={{
-      minHeight: '80px',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -220,45 +204,161 @@ export default function VulvarDystrophiesFlowchart({
   frameFullScreen?: boolean; 
   onToggleFrameFullScreen?: () => void; 
 }) {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [scale, setScale] = useState(1);
+  const [zoomScale, setZoomScale] = useState(1);
+  const [isZooming, setIsZooming] = useState(false);
+  const [initialDistance, setInitialDistance] = useState(0);
+  const [panX, setPanX] = useState(0);
+  const [panY, setPanY] = useState(0);
   const [isPanning, setIsPanning] = useState(false);
-  const [startPos, setStartPos] = useState({ x: 0, y: 0 });
-  const [scrollPos, setScrollPos] = useState({ x: 0, y: 0 });
+  const [lastTouchX, setLastTouchX] = useState(0);
+  const [lastTouchY, setLastTouchY] = useState(0);
+  const [mouseStartPos, setMouseStartPos] = useState({ x: 0, y: 0 });
 
-  // Panning functionality
+  // Check if mobile/tablet on mount and resize
+  useEffect(() => {
+    const checkDevice = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      setIsMobile(width < 1024);
+      
+      // Responsive flowchart that fits all devices
+      const flowchartWidth = 3600;
+      const flowchartHeight = 2800;
+      
+      // Calculate scale to fit the device properly
+      const scaleX = (width * 0.9) / flowchartWidth; // 90% of screen width
+      const scaleY = (height * 0.8) / flowchartHeight; // 80% of screen height
+      
+      // Use the smaller scale to ensure it fits completely
+      const autoScale = Math.min(scaleX, scaleY, 1); // Cap at 1.0
+      
+      setScale(autoScale);
+    };
+    
+    checkDevice();
+    window.addEventListener('resize', checkDevice);
+    return () => window.removeEventListener('resize', checkDevice);
+  }, []);
+
+  // Mouse and touch panning functionality
   const handleMouseDown = (e: React.MouseEvent) => {
+    // Only start panning if clicking on empty space (not on boxes)
+    const target = e.target as HTMLElement;
+    if (target.closest('.flowchart-box, .reference-box, .text-box')) {
+      return;
+    }
+    
+    e.preventDefault();
     setIsPanning(true);
-    setStartPos({ x: e.clientX - scrollPos.x, y: e.clientY - scrollPos.y });
+    setMouseStartPos({ x: e.clientX - panX, y: e.clientY - panY });
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!isPanning) return;
-    const newX = e.clientX - startPos.x;
-    const newY = e.clientY - startPos.y;
-    setScrollPos({ x: newX, y: newY });
+    e.preventDefault();
+    
+    // Direct, responsive panning without borders
+    const newX = e.clientX - mouseStartPos.x;
+    const newY = e.clientY - mouseStartPos.y;
+    
+    setPanX(newX);
+    setPanY(newY);
   };
 
   const handleMouseUp = () => {
     setIsPanning(false);
   };
 
-  // Touch events for mobile
+  // Scroll to zoom functionality for desktop - zoom to mouse position
+  const handleWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+    
+    // Only zoom if not panning and not on mobile
+    if (!isPanning && !isMobile) {
+      const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1; // Zoom out on scroll down, zoom in on scroll up
+      const newZoomScale = Math.max(0.3, Math.min(5, zoomScale * zoomFactor));
+      
+      // Get mouse position relative to the flowchart container
+      const rect = e.currentTarget.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left - rect.width / 2;
+      const mouseY = e.clientY - rect.top - rect.height / 2;
+      
+      // Calculate new pan position to zoom towards mouse
+      const scaleChange = newZoomScale / zoomScale;
+      const newPanX = panX - (mouseX * (scaleChange - 1));
+      const newPanY = panY - (mouseY * (scaleChange - 1));
+      
+      setZoomScale(newZoomScale);
+      setPanX(newPanX);
+      setPanY(newPanY);
+    }
+  };
+
+  // Touch panning functionality
   const handleTouchStart = (e: React.TouchEvent) => {
-    const touch = e.touches[0];
-    setIsPanning(true);
-    setStartPos({ x: touch.clientX - scrollPos.x, y: touch.clientY - scrollPos.y });
+    if (e.touches.length === 2) {
+      // Two finger touch - start zooming
+      e.preventDefault();
+      setIsZooming(true);
+      setIsPanning(false);
+      const distance = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      setInitialDistance(distance);
+    } else if (e.touches.length === 1) {
+      // Single finger touch - start panning
+      const target = e.target as HTMLElement;
+      if (target.closest('.flowchart-box, .reference-box, .text-box')) {
+        return;
+      }
+      
+      e.preventDefault();
+      setIsPanning(true);
+      setIsZooming(false);
+      setLastTouchX(e.touches[0].clientX);
+      setLastTouchY(e.touches[0].clientY);
+    }
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isPanning) return;
-    const touch = e.touches[0];
-    const newX = touch.clientX - startPos.x;
-    const newY = touch.clientY - startPos.y;
-    setScrollPos({ x: newX, y: newY });
+    if (e.touches.length === 2 && isZooming) {
+      // Two finger zoom
+      e.preventDefault();
+      const distance = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      
+      const scaleFactor = distance / initialDistance;
+      const newZoomScale = Math.max(0.3, Math.min(5, zoomScale * scaleFactor));
+      setZoomScale(newZoomScale);
+      setInitialDistance(distance);
+    } else if (e.touches.length === 1 && isPanning) {
+      // Single finger pan - direct and responsive
+      e.preventDefault();
+      const touch = e.touches[0];
+      const deltaX = touch.clientX - lastTouchX;
+      const deltaY = touch.clientY - lastTouchY;
+      
+      setPanX(prev => prev + deltaX);
+      setPanY(prev => prev + deltaY);
+      
+      setLastTouchX(touch.clientX);
+      setLastTouchY(touch.clientY);
+    }
   };
 
   const handleTouchEnd = () => {
+    setIsZooming(false);
     setIsPanning(false);
+  };
+
+  // Full screen toggle - only for the flowchart frame
+  const toggleFullScreen = () => {
+    onToggleFrameFullScreen();
   };
 
   return (
@@ -268,44 +368,73 @@ export default function VulvarDystrophiesFlowchart({
         <meta name="description" content="Medical flowchart for vulvar dystrophies evaluation" />
       </Head>
       
-      <div className={`${frameFullScreen ? 'fixed inset-0 z-50' : 'h-screen'} bg-white overflow-hidden`}>
-        {/* Title */}
-        <div className="bg-white p-4 shadow-sm flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-blue-600">Vulvar Dystrophies</h1>
+      <div className="h-full bg-gradient-to-br from-blue-50 to-indigo-100 overflow-hidden">
+        {/* Header with full screen button */}
+        <div className="bg-white/90 backdrop-blur-sm p-3 sm:p-4 shadow-sm flex items-center justify-between">
+          <h1 className="text-lg sm:text-2xl font-bold text-blue-600">Vulvar Dystrophies</h1>
           <button
-            onClick={onToggleFrameFullScreen}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-300 flex items-center space-x-2"
+            onClick={toggleFullScreen}
+            className="px-3 py-2 sm:px-4 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2 text-sm sm:text-base"
+            title={frameFullScreen ? "Exit Full Screen" : "Full Screen"}
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {frameFullScreen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-              )}
-            </svg>
-            <span>{frameFullScreen ? 'Exit Fullscreen' : 'Fullscreen'}</span>
+            {frameFullScreen ? (
+              <>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                <span>Exit Full Screen</span>
+              </>
+            ) : (
+              <>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                </svg>
+                <span>Full Screen</span>
+              </>
+            )}
           </button>
         </div>
 
-        {/* Main flowchart container */}
-        <div
-          ref={containerRef}
-          className="relative w-full h-full cursor-grab active:cursor-grabbing"
+        {/* Main flowchart container - no nested frame */}
+        <div 
+          className="relative w-full h-full overflow-hidden flex items-center justify-center"
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
+          onWheel={handleWheel}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
-          style={{ cursor: isPanning ? 'grabbing' : 'grab' }}
+          style={{ 
+            cursor: isPanning ? 'grabbing' : 'grab',
+            touchAction: 'none', // Prevent page refresh on iPad
+            pointerEvents: 'auto',
+            WebkitTouchCallout: 'none', // Prevent iOS touch callouts
+            WebkitUserSelect: 'none' // Prevent text selection
+          }}
         >
+          
+          {/* Flowchart content - centered and responsive */}
           <div
             className="relative"
             style={{
-              transform: `translate(${scrollPos.x}px, ${scrollPos.y}px)`,
+              transform: `scale(${scale * zoomScale}) translate(${panX}px, ${panY}px)`,
               width: '3600px',
               height: '2800px',
+              pointerEvents: 'auto', // Enable interaction with boxes
+              transformOrigin: 'center',
+              transition: isZooming ? 'none' : 'none', // Remove transition for instant panning
+              willChange: 'transform', // Optimize for animations
+              backfaceVisibility: 'hidden', // Reduce blur on touch
+              WebkitBackfaceVisibility: 'hidden', // Safari support
+              // Improve rendering quality for zoom
+              imageRendering: 'crisp-edges',
+              // Better text rendering
+              textRendering: 'optimizeLegibility',
+              // Prevent blur during zoom
+              transformStyle: 'preserve-3d',
+              perspective: '1000px'
             }}
           >
             {/* Main Title - Starting Point */}
@@ -320,31 +449,32 @@ export default function VulvarDystrophiesFlowchart({
               style={{ position: 'absolute', left: 200, top: 200, width: 240 }}
             />
 
+            {/* Left side image - bigger size */}
             <div
-              style={{ position: 'absolute', left: 200, top: 340, width: 240, height: 120 }}
+              style={{ position: 'absolute', left: 200, top: 340, width: 300, height: 200 }}
             >
               <Image
                 src="/images/approaches images/obs & gyne/Vulvar Dystrophies right.png"
                 alt="Vulvar Dystrophies Right"
-                width={240}
-                height={120}
+                width={300}
+                height={200}
                 style={{ objectFit: 'contain', width: '100%', height: '100%' }}
               />
             </div>
 
             <DecisionBox
               title="Confirm with biopsy"
-              style={{ position: 'absolute', left: 240, top: 480, width: 160 }}
+              style={{ position: 'absolute', left: 240, top: 580, width: 160 }}
             />
 
             <DiagnosisBox
               title="Lichen Sclerosus"
-              style={{ position: 'absolute', left: 250, top: 620, width: 140 }}
+              style={{ position: 'absolute', left: 250, top: 720, width: 140 }}
             />
 
             <TreatmentBox
               title="Topical corticosteroids, topical calcineurin inhibitors (if refractory)"
-              style={{ position: 'absolute', left: 180, top: 760, width: 280 }}
+              style={{ position: 'absolute', left: 180, top: 860, width: 280 }}
             />
 
             {/* CENTER BRANCH: Vulvar pain ± oral involvement */}
@@ -384,31 +514,32 @@ export default function VulvarDystrophiesFlowchart({
               style={{ position: 'absolute', left: 1020, top: 340, width: 200 }}
             />
 
+            {/* Right side image - bigger size */}
             <div
-              style={{ position: 'absolute', left: 1000, top: 480, width: 240, height: 120 }}
+              style={{ position: 'absolute', left: 1000, top: 480, width: 300, height: 200 }}
             >
               <Image
                 src="/images/approaches images/obs & gyne/Vulvar Dystrophies left.png"
                 alt="Vulvar Dystrophies Left"
-                width={240}
-                height={120}
+                width={300}
+                height={200}
                 style={{ objectFit: 'contain', width: '100%', height: '100%' }}
               />
             </div>
 
             <DiagnosisBox
               title="Lichen Simplex Chronicus"
-              style={{ position: 'absolute', left: 1040, top: 620, width: 160 }}
+              style={{ position: 'absolute', left: 1040, top: 720, width: 160 }}
             />
 
             <TreatmentBox
               title="Avoid irritants. Topical corticosteroids, antihistamines, or TCAs. If refractory, systemic corticosteroids, calcineurin inhibitors."
-              style={{ position: 'absolute', left: 960, top: 760, width: 320 }}
+              style={{ position: 'absolute', left: 960, top: 860, width: 320 }}
             />
 
             {/* Footnotes */}
             <FootnotesBox
-              style={{ position: 'absolute', left: 400, top: 1000, width: 600, minHeight: 80 }}
+              style={{ position: 'absolute', left: 400, top: 1100, width: 600, minHeight: 80 }}
             >
               <div className="text-sm leading-relaxed">
                 <div className="font-bold text-lg mb-3 text-gray-800">Footnote</div>
@@ -438,14 +569,15 @@ export default function VulvarDystrophiesFlowchart({
             <VerticalLine x={320} startY={250} endY={340} />
             <ArrowHead x={320} y={340} direction="down" />
 
-            <VerticalLine x={320} startY={420} endY={480} />
-            <ArrowHead x={320} y={480} direction="down" />
+            {/* Line from image to decision box - positioned below image */}
+            <VerticalLine x={320} startY={540} endY={580} />
+            <ArrowHead x={320} y={580} direction="down" />
 
-            <VerticalLine x={320} startY={530} endY={620} />
-            <ArrowHead x={320} y={620} direction="down" />
+            <VerticalLine x={320} startY={630} endY={720} />
+            <ArrowHead x={320} y={720} direction="down" />
 
-            <VerticalLine x={320} startY={670} endY={760} />
-            <ArrowHead x={320} y={760} direction="down" />
+            <VerticalLine x={320} startY={770} endY={860} />
+            <ArrowHead x={320} y={860} direction="down" />
 
             {/* CENTER BRANCH connections */}
             <VerticalLine x={700} startY={250} endY={340} />
@@ -465,13 +597,14 @@ export default function VulvarDystrophiesFlowchart({
             <ArrowHead x={1120} y={340} direction="down" />
 
             <VerticalLine x={1120} startY={390} endY={480} />
-            <ArrowHead x={1120} y={390} direction="down" />
+            <ArrowHead x={1120} y={480} direction="down" />
 
-            <VerticalLine x={1120} startY={560} endY={620} />
-            <ArrowHead x={1120} y={620} direction="down" />
+            {/* Line from image to diagnosis box - positioned below image */}
+            <VerticalLine x={1120} startY={680} endY={720} />
+            <ArrowHead x={1120} y={720} direction="down" />
 
-            <VerticalLine x={1120} startY={670} endY={760} />
-            <ArrowHead x={1120} y={760} direction="down" />
+            <VerticalLine x={1120} startY={770} endY={860} />
+            <ArrowHead x={1120} y={860} direction="down" />
 
           </div>
         </div>
