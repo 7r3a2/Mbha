@@ -9,6 +9,7 @@ import AcutePelvicPainPage from './obs-gyne/gynecology/acute-pelvic-pain/page';
 import VulvarVaginalCancersPage from './obs-gyne/gynecology/vulvar-vaginal-cancers/page';
 import VulvarVaginalInfectionsAndInflammationPage from './obs-gyne/gynecology/vulvar-vaginal-infections-and-inflammation/page';
 import VulvarDystrophiesPage from './obs-gyne/gynecology/vulvar-dystrophies/page';
+import GenitalUlcersPage from './obs-gyne/gynecology/genital-ulcers/page';
 
 // Box component that matches the image exactly
 const FlowchartBox = ({ 
@@ -1852,7 +1853,7 @@ export default function ApproachPage() {
         {/* Main Content */}
         <main className="flex-1 p-2 sm:p-4 md:p-6 overflow-hidden min-w-0">
           {selectedContent && selectedContent.lecture ? (
-            <div className={`${(selectedContent.lecture.id === 'card-5' || selectedContent.lecture.id === 'acute-pelvic-pain' || selectedContent.lecture.id === 'dyspareunia' || selectedContent.lecture.id === 'vulvar-vaginal-cancers' || selectedContent.lecture.id === 'vulvar-vaginal-infections-and-inflammation' || selectedContent.lecture.id === 'vulvar-dystrophies') && isFrameFullscreen ? 'fixed inset-0 z-50' : 'h-full w-full'} bg-white/95 backdrop-blur-sm border-2 border-blue-300 rounded-xl overflow-hidden shadow-xl`}>
+            <div className={`${(selectedContent.lecture.id === 'card-5' || selectedContent.lecture.id === 'acute-pelvic-pain' || selectedContent.lecture.id === 'dyspareunia' || selectedContent.lecture.id === 'vulvar-vaginal-cancers' || selectedContent.lecture.id === 'vulvar-vaginal-infections-and-inflammation' || selectedContent.lecture.id === 'vulvar-dystrophies' || selectedContent.lecture.id === 'genital-ulcers') && isFrameFullscreen ? 'fixed inset-0 z-50' : 'h-full w-full'} bg-white/95 backdrop-blur-sm border-2 border-blue-300 rounded-xl overflow-hidden shadow-xl`}>
               {selectedContent.lecture.id === 'card-5' ? (
                 // Render Chest Pain flowchart directly as component
                 <ChestPainFlowchart 
@@ -1886,6 +1887,12 @@ export default function ApproachPage() {
               ) : selectedContent.lecture.id === 'vulvar-dystrophies' ? (
                 // Render Vulvar Dystrophies page directly as component
                 <VulvarDystrophiesPage 
+                  frameFullScreen={isFrameFullscreen}
+                  onToggleFrameFullScreen={() => setIsFrameFullscreen(!isFrameFullscreen)}
+                />
+              ) : selectedContent.lecture.id === 'genital-ulcers' ? (
+                // Render Genital Ulcers page directly as component
+                <GenitalUlcersPage 
                   frameFullScreen={isFrameFullscreen}
                   onToggleFrameFullScreen={() => setIsFrameFullscreen(!isFrameFullscreen)}
                 />
