@@ -449,32 +449,42 @@ export default function VulvarDystrophiesFlowchart({
               style={{ position: 'absolute', left: 200, top: 200, width: 240 }}
             />
 
-            {/* Left side image - bigger size */}
+            {/* Left side image - bigger size with pink border */}
             <div
-              style={{ position: 'absolute', left: 200, top: 340, width: 300, height: 200 }}
+              style={{ 
+                position: 'absolute', 
+                left: 200, 
+                top: 480, 
+                width: 300, 
+                height: 200,
+                border: '3px solid #ec4899',
+                borderRadius: '8px',
+                padding: '4px',
+                backgroundColor: 'white'
+              }}
             >
               <Image
                 src="/images/approaches images/obs & gyne/Vulvar Dystrophies right.png"
                 alt="Vulvar Dystrophies Right"
                 width={300}
                 height={200}
-                style={{ objectFit: 'contain', width: '100%', height: '100%' }}
+                style={{ objectFit: 'contain', width: '100%', height: '100%', borderRadius: '4px' }}
               />
             </div>
 
             <DecisionBox
               title="Confirm with biopsy"
-              style={{ position: 'absolute', left: 240, top: 580, width: 160 }}
+              style={{ position: 'absolute', left: 240, top: 720, width: 160 }}
             />
 
             <DiagnosisBox
               title="Lichen Sclerosus"
-              style={{ position: 'absolute', left: 250, top: 720, width: 140 }}
+              style={{ position: 'absolute', left: 250, top: 860, width: 140 }}
             />
 
             <TreatmentBox
               title="Topical corticosteroids, topical calcineurin inhibitors (if refractory)"
-              style={{ position: 'absolute', left: 180, top: 860, width: 280 }}
+              style={{ position: 'absolute', left: 180, top: 1000, width: 280 }}
             />
 
             {/* CENTER BRANCH: Vulvar pain ± oral involvement */}
@@ -514,32 +524,42 @@ export default function VulvarDystrophiesFlowchart({
               style={{ position: 'absolute', left: 1020, top: 340, width: 200 }}
             />
 
-            {/* Right side image - bigger size */}
+            {/* Right side image - bigger size with pink border */}
             <div
-              style={{ position: 'absolute', left: 1000, top: 480, width: 300, height: 200 }}
+              style={{ 
+                position: 'absolute', 
+                left: 1000, 
+                top: 480, 
+                width: 300, 
+                height: 200,
+                border: '3px solid #ec4899',
+                borderRadius: '8px',
+                padding: '4px',
+                backgroundColor: 'white'
+              }}
             >
               <Image
                 src="/images/approaches images/obs & gyne/Vulvar Dystrophies left.png"
                 alt="Vulvar Dystrophies Left"
                 width={300}
                 height={200}
-                style={{ objectFit: 'contain', width: '100%', height: '100%' }}
+                style={{ objectFit: 'contain', width: '100%', height: '100%', borderRadius: '4px' }}
               />
             </div>
 
             <DiagnosisBox
               title="Lichen Simplex Chronicus"
-              style={{ position: 'absolute', left: 1040, top: 720, width: 160 }}
+              style={{ position: 'absolute', left: 1040, top: 860, width: 160 }}
             />
 
             <TreatmentBox
               title="Avoid irritants. Topical corticosteroids, antihistamines, or TCAs. If refractory, systemic corticosteroids, calcineurin inhibitors."
-              style={{ position: 'absolute', left: 960, top: 860, width: 320 }}
+              style={{ position: 'absolute', left: 960, top: 1000, width: 320 }}
             />
 
             {/* Footnotes */}
             <FootnotesBox
-              style={{ position: 'absolute', left: 400, top: 1100, width: 600, minHeight: 80 }}
+              style={{ position: 'absolute', left: 400, top: 1200, width: 600, minHeight: 80 }}
             >
               <div className="text-sm leading-relaxed">
                 <div className="font-bold text-lg mb-3 text-gray-800">Footnote</div>
@@ -570,14 +590,14 @@ export default function VulvarDystrophiesFlowchart({
             <ArrowHead x={320} y={340} direction="down" />
 
             {/* Line from image to decision box - positioned below image */}
-            <VerticalLine x={320} startY={540} endY={580} />
-            <ArrowHead x={320} y={580} direction="down" />
-
-            <VerticalLine x={320} startY={630} endY={720} />
+            <VerticalLine x={320} startY={680} endY={720} />
             <ArrowHead x={320} y={720} direction="down" />
 
             <VerticalLine x={320} startY={770} endY={860} />
             <ArrowHead x={320} y={860} direction="down" />
+
+            <VerticalLine x={320} startY={870} endY={960} />
+            <ArrowHead x={320} y={960} direction="down" />
 
             {/* CENTER BRANCH connections */}
             <VerticalLine x={700} startY={250} endY={340} />
@@ -605,6 +625,9 @@ export default function VulvarDystrophiesFlowchart({
 
             <VerticalLine x={1120} startY={770} endY={860} />
             <ArrowHead x={1120} y={860} direction="down" />
+
+            <VerticalLine x={1120} startY={870} endY={960} />
+            <ArrowHead x={1120} y={960} direction="down" />
 
           </div>
         </div>
