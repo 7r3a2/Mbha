@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
       'obgyn': 'Obstetric & Gynecology',
       'im': 'Internal Medicine',
       'surgery': 'Surgery',
-      'pediatrics': 'Pediatrics'
+      'pediatrics': 'Pediatric'
     };
 
     // Transform the data to match the expected format for wizary-exam page
