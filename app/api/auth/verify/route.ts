@@ -3,10 +3,17 @@ import jwt from 'jsonwebtoken';
 import { findUserById } from '@/lib/db-utils';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { kvGet } from '@/lib/db-utils';
 
 const SUBS_FILE = path.join(process.cwd(), 'data', 'subscriptions.json');
 
 async function readSubs(): Promise<Record<string, { expiresAt: string }>> {
+  // Prefer KV store (Postgres)
+  try {
+    const kv = await kvGet<Record<string, { expiresAt: string }>>('subscriptions', null as any);
+    if (kv) return kv;
+  } catch {}
+  // Fallback to local file (dev)
   try {
     const raw = await fs.readFile(SUBS_FILE, 'utf-8');
     return JSON.parse(raw || '{}');

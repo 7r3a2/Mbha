@@ -1,10 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { kvGet } from '@/lib/db-utils';
 
 const QUESTIONS_FILE = path.join(process.cwd(), 'data', 'qbank-questions.json');
+const KV_KEY = 'qbank-questions';
 
 async function readQuestions(): Promise<any[]> {
+  // KV first
+  try {
+    const kv = await kvGet<any[]>(KV_KEY, null as any);
+    if (kv) return kv;
+  } catch {}
+  // Fallback to file
   try {
     const data = await fs.readFile(QUESTIONS_FILE, 'utf-8');
     return JSON.parse(data);
@@ -50,9 +58,9 @@ export async function GET(request: NextRequest) {
       const limited = shuffle(filtered).slice(0, Math.max(0, count));
       const transformed = limited.map((q, idx) => ({
         id: q.id ?? idx + 1,
-        text: q.text,
+        text: q.text || q.question,
         options: q.options ?? [],
-        correct: typeof q.correct === 'number' ? q.correct : 0,
+        correct: typeof q.correct === 'number' ? q.correct : (typeof q.correctAnswer === 'number' ? q.correctAnswer : 0),
         source: q.source ?? '',
         explanation: {
           correct: q.explanation?.correct ?? '',
@@ -92,9 +100,9 @@ export async function GET(request: NextRequest) {
 
     const transformed = result.map((q, i) => ({
       id: q.id ?? i + 1,
-      text: q.text,
+      text: q.text || q.question,
       options: q.options ?? [],
-      correct: typeof q.correct === 'number' ? q.correct : 0,
+      correct: typeof q.correct === 'number' ? q.correct : (typeof q.correctAnswer === 'number' ? q.correctAnswer : 0),
       source: q.source ?? '',
       explanation: {
         correct: q.explanation?.correct ?? '',

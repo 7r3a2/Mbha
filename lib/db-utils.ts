@@ -13,6 +13,25 @@ export const verifyPassword = async (password: string, hashedPassword: string): 
   return bcrypt.compare(password, hashedPassword);
 };
 
+// Key-Value helpers for JSON persistence in Postgres
+export const kvGet = async <T = any>(key: string, fallback: T): Promise<T> => {
+  try {
+    const row = await prisma.keyValue.findUnique({ where: { key } });
+    if (!row) return fallback;
+    return (row.value as unknown as T) ?? fallback;
+  } catch {
+    return fallback;
+  }
+};
+
+export const kvSet = async (key: string, value: any) => {
+  await prisma.keyValue.upsert({
+    where: { key },
+    update: { value },
+    create: { key, value },
+  });
+};
+
 // User functions
 export const createUser = async (userData: {
   firstName: string;

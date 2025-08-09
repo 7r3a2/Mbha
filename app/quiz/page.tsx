@@ -412,7 +412,7 @@ function QuizPageContent() {
       // Current question: blue stroke, blue text
       if (index === currentQuestionIndex) {
         return "bg-white border-blue-600 text-blue-700";
-      }
+        }
       // Answered but not submitted: keep default gray (no blue)
       if (answers[index] !== null) {
         return "bg-white border-gray-300 text-gray-700";
@@ -425,9 +425,9 @@ function QuizPageContent() {
       if (testMode === 'exam') {
         return "bg-blue-500 border-blue-600 text-white";
       }
-      const isCorrect = answers[index] === questions[index].correct;
-      return isCorrect ? "bg-green-100 border-green-500 text-green-700" : "bg-red-100 border-red-500 text-red-700";
-    }
+        const isCorrect = answers[index] === questions[index].correct;
+        return isCorrect ? "bg-green-100 border-green-500 text-green-700" : "bg-red-100 border-red-500 text-red-700";
+      }
     return "bg-white border-gray-300 text-gray-700";
   };
 

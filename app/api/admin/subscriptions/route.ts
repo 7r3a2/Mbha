@@ -1,10 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { kvGet, kvSet } from '@/lib/db-utils';
 
 const SUBS_FILE = path.join(process.cwd(), 'data', 'subscriptions.json');
+const KV_KEY = 'subscriptions';
 
 async function readSubs(): Promise<Record<string, { expiresAt: string }>> {
+  try {
+    // Prefer KV (Postgres)
+    const kv = await kvGet<Record<string, { expiresAt: string }>>(KV_KEY, null as any);
+    if (kv) return kv;
+  } catch {}
+  // Fallback to local file
   try {
     const raw = await fs.readFile(SUBS_FILE, 'utf-8');
     return JSON.parse(raw || '{}');
@@ -15,8 +23,12 @@ async function readSubs(): Promise<Record<string, { expiresAt: string }>> {
 }
 
 async function writeSubs(data: Record<string, { expiresAt: string }>) {
-  await fs.mkdir(path.dirname(SUBS_FILE), { recursive: true });
-  await fs.writeFile(SUBS_FILE, JSON.stringify(data, null, 2), 'utf-8');
+  // Write both KV and file (best-effort)
+  try { await kvSet(KV_KEY, data); } catch {}
+  try {
+    await fs.mkdir(path.dirname(SUBS_FILE), { recursive: true });
+    await fs.writeFile(SUBS_FILE, JSON.stringify(data, null, 2), 'utf-8');
+  } catch {}
 }
 
 export async function GET() {
