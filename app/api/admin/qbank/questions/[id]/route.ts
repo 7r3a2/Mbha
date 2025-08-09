@@ -1,22 +1,39 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { kvGet, kvSet } from '@/lib/db-utils';
 
 const QUESTIONS_FILE = path.join(process.cwd(), 'data', 'qbank-questions.json');
+const KV_KEY = 'qbank-questions';
 
 async function readAll() {
+  // KV first
+  try {
+    const kv = await kvGet<any[]>(KV_KEY, null as any);
+    if (kv) return kv;
+  } catch {}
+  // File fallback
   try {
     const raw = await fs.readFile(QUESTIONS_FILE, 'utf-8');
     return JSON.parse(raw);
   } catch (e: any) {
     if (e.code === 'ENOENT') return [];
-    throw e;
+    return [];
   }
 }
 
 async function writeAll(list: any[]) {
-  await fs.mkdir(path.dirname(QUESTIONS_FILE), { recursive: true });
-  await fs.writeFile(QUESTIONS_FILE, JSON.stringify(list, null, 2), 'utf-8');
+  // KV first
+  try { await kvSet(KV_KEY, list); } catch {}
+  // File best-effort
+  try {
+    await fs.mkdir(path.dirname(QUESTIONS_FILE), { recursive: true });
+    await fs.writeFile(QUESTIONS_FILE, JSON.stringify(list, null, 2), 'utf-8');
+  } catch (e: any) {
+    if (e?.code !== 'EROFS') {
+      // ignore read-only on Vercel
+    }
+  }
 }
 
 export async function GET(_: NextRequest, { params }: { params: { id: string } }) {

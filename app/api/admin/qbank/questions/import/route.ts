@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { kvGet, kvSet } from '@/lib/db-utils';
 
 const QUESTIONS_FILE = path.join(process.cwd(), 'data', 'qbank-questions.json');
+const KV_KEY = 'qbank-questions';
 
 // Function to parse full CSV text, handling quoted fields, escaped quotes, and newlines inside quoted fields
 function parseCSV(text: string): string[][] {
@@ -102,18 +104,34 @@ function cleanJsonString(jsonStr: string): string {
 }
 
 async function readAll() {
+  // Prefer KV
+  try {
+    const kv = await kvGet<any[]>(KV_KEY, null as any);
+    if (kv) return kv;
+  } catch {}
+  // Fallback to file for local dev
   try {
     const raw = await fs.readFile(QUESTIONS_FILE, 'utf-8');
     return JSON.parse(raw);
   } catch (e: any) {
     if (e.code === 'ENOENT') return [];
-    throw e;
+    return [];
   }
 }
 
 async function writeAll(list: any[]) {
-  await fs.mkdir(path.dirname(QUESTIONS_FILE), { recursive: true });
-  await fs.writeFile(QUESTIONS_FILE, JSON.stringify(list, null, 2), 'utf-8');
+  // Write to KV (Postgres)
+  try { await kvSet(KV_KEY, list); } catch {}
+  // Best-effort write to file (will fail on Vercel, ignore EROFS)
+  try {
+    await fs.mkdir(path.dirname(QUESTIONS_FILE), { recursive: true });
+    await fs.writeFile(QUESTIONS_FILE, JSON.stringify(list, null, 2), 'utf-8');
+  } catch (e: any) {
+    if (e?.code !== 'EROFS') {
+      // Ignore read-only filesystem errors on Vercel, rethrow others
+      // console.warn('File write skipped:', e?.message);
+    }
+  }
 }
 
 export async function POST(request: NextRequest) {
@@ -125,8 +143,6 @@ export async function POST(request: NextRequest) {
     const sourceKey = (formData.get('sourceKey') as string) || '';
     const lecture = formData.get('lecture') as string;
     const topic = formData.get('topic') as string;
-
-    console.log('Import request:', { subject, sourceLabel, sourceKey, lecture, topic, fileName: file?.name });
 
     if (!file || !subject || !lecture || !topic || (!sourceLabel && !sourceKey)) {
       return NextResponse.json({ 
@@ -179,13 +195,6 @@ export async function POST(request: NextRequest) {
       missingHeaders = oldFormatHeaders.filter(h => !headers.includes(h));
     }
     
-    console.log('📊 Detected format:', formatType);
-    console.log('📋 Found headers:', headers);
-    console.log('📋 Original headers:', originalHeaders);
-    console.log('📋 Total rows:', rows.length);
-    console.log('📋 First data row:', rows[1]);
-    console.log('📋 Missing headers:', missingHeaders);
-    
     if (missingHeaders.length > 0) {
       return NextResponse.json({ 
         error: `Missing required headers: ${missingHeaders.join(', ')}`,
@@ -200,10 +209,7 @@ export async function POST(request: NextRequest) {
 
     for (let i = 1; i < rows.length; i++) {
       const values = rows[i].map((v) => (v ?? '').trim());
-      console.log(`🔍 Row ${i + 1}: ${values.length} columns, headers: ${headers.length}`);
-      console.log(`🔍 Row ${i + 1} values:`, values.map(v => `"${v.substring(0, 50)}..."`));
       if (values.length < headers.length) {
-        console.log(`❌ Skipping row ${i + 1}: Insufficient columns (${values.length} vs ${headers.length})`);
         continue;
       }
 
@@ -217,174 +223,73 @@ export async function POST(request: NextRequest) {
       let explanation: any = { correct: '', incorrect: [], objective: '' };
 
       if (formatType === 'new') {
-        // New format with JSON columns
         try {
           options = JSON.parse(questionData.options || '[]');
           const incorrectOptions = JSON.parse(questionData.incorrect_options || '[]');
-          
-          if (!Array.isArray(options) || options.length < 2) {
-            console.log(`Skipping row ${i + 1}: Invalid options JSON`);
-            continue;
-          }
-
-          correctIndex = parseInt(questionData.correct_options) - 1; // Convert 1-based to 0-based
-          
+          if (!Array.isArray(options) || options.length < 2) continue;
+          correctIndex = parseInt(questionData.correct_options) - 1;
           explanation = {
             correct: questionData.explanation || '',
             incorrect: Array.isArray(incorrectOptions) ? incorrectOptions : [],
             objective: questionData.educational_objective || ''
           };
-        } catch (error) {
-          console.log(`Skipping row ${i + 1}: Invalid JSON in options or incorrect_options`);
+        } catch {
           continue;
         }
       } else if (formatType === 'user') {
-        // User's specific format
         try {
-          console.log(`🔄 Processing row ${i + 1}:`, { 
-            question: questionData.question?.substring(0, 50) + '...',
-            options: questionData.options?.substring(0, 100) + '...',
-            correct_option: questionData.correct_option,
-            explanation: questionData.explanation?.substring(0, 50) + '...',
-            allKeys: Object.keys(questionData)
-          });
-          
-          // Clean and parse options JSON
           const cleanedOptions = cleanJsonString(questionData.options || '[]');
-          console.log(`🔧 Cleaned options:`, cleanedOptions.substring(0, 100) + '...');
           options = JSON.parse(cleanedOptions);
-          
-          if (!Array.isArray(options) || options.length < 2) {
-            console.log(`❌ Skipping row ${i + 1}: Invalid options JSON - not an array or too few options`);
-            continue;
-          }
-
-          correctIndex = parseInt(questionData.correct_option) - 1; // Convert 1-based to 0-based
-          
-          if (isNaN(correctIndex) || correctIndex < 0 || correctIndex >= options.length) {
-            console.log(`❌ Skipping row ${i + 1}: Invalid correct_option ${questionData.correct_option} for ${options.length} options`);
-            continue;
-          }
-          
-          // Parse the "Why the other options are incorrect" JSON
-          let incorrectExplanations: string[] = [];
-          try {
-            // Find the correct header name for the incorrect options field
-            const incorrectFieldName = originalHeaders.find(h => h.toLowerCase().includes('why the other options are incorrect')) || 'Why the other options are incorrect:';
-            const cleanedIncorrect = cleanJsonString(questionData[incorrectFieldName] || '{}');
-            console.log(`🔧 Cleaned incorrect data:`, cleanedIncorrect.substring(0, 100) + '...');
-            const incorrectData = JSON.parse(cleanedIncorrect);
-            // Convert object format to array format
-            incorrectExplanations = Object.values(incorrectData).filter((val: any) => typeof val === 'string');
-            console.log(`✅ Parsed ${incorrectExplanations.length} incorrect explanations`);
-          } catch (error) {
-            console.log(`❌ Skipping row ${i + 1}: Invalid JSON in incorrect options:`, error);
-            continue;
-          }
-          
-          // Find the correct header name for educational objective
+          if (!Array.isArray(options) || options.length < 2) continue;
+          correctIndex = parseInt(questionData.correct_option) - 1;
+          if (isNaN(correctIndex) || correctIndex < 0 || correctIndex >= options.length) continue;
+          // Find the correct header name for the incorrect options field
+          const incorrectFieldName = originalHeaders.find(h => h.toLowerCase().includes('why the other options are incorrect')) || 'Why the other options are incorrect:';
+          const cleanedIncorrect = cleanJsonString(questionData[incorrectFieldName] || '{}');
+          const incorrectData = JSON.parse(cleanedIncorrect);
+          const incorrectExplanations = Object.values(incorrectData).filter((val: any) => typeof val === 'string');
           const objectiveFieldName = originalHeaders.find(h => h.toLowerCase().includes('educational objective')) || 'Educational objective';
           explanation = {
             correct: questionData.explanation || '',
             incorrect: incorrectExplanations,
             objective: questionData[objectiveFieldName] || ''
           };
-          
-          console.log(`✅ Successfully processed row ${i + 1}`);
-        } catch (error) {
-          console.log(`❌ Skipping row ${i + 1}: Invalid JSON in options:`, error);
+        } catch {
           continue;
         }
       } else if (formatType === 'simple') {
-        // Simple format with pipe-separated values
         try {
-          console.log(`🔄 Processing row ${i + 1} (simple format):`, { 
-            options: questionData.options?.substring(0, 100) + '...',
-            correct_option: questionData.correct_option,
-            explanation: questionData.explanation?.substring(0, 50) + '...'
-          });
-          
-          // Parse pipe-separated options
           options = (questionData.options || '').split('|').filter((opt: string) => opt.trim());
-          
-          if (options.length < 2) {
-            console.log(`❌ Skipping row ${i + 1}: Insufficient options (${options.length})`);
-            continue;
-          }
-
-          correctIndex = parseInt(questionData.correct_option) - 1; // Convert 1-based to 0-based
-          
-          if (isNaN(correctIndex) || correctIndex < 0 || correctIndex >= options.length) {
-            console.log(`❌ Skipping row ${i + 1}: Invalid correct_option ${questionData.correct_option} for ${options.length} options`);
-            continue;
-          }
-          
-          // Parse pipe-separated incorrect reasons
+          if (options.length < 2) continue;
+          correctIndex = parseInt(questionData.correct_option) - 1;
+          if (isNaN(correctIndex) || correctIndex < 0 || correctIndex >= options.length) continue;
           const incorrectExplanations = (questionData.incorrect_reasons || '').split('|').filter((reason: string) => reason.trim());
-          console.log(`✅ Parsed ${incorrectExplanations.length} incorrect explanations`);
-          
           explanation = {
             correct: questionData.explanation || '',
             incorrect: incorrectExplanations,
             objective: questionData.educational_objective || ''
           };
-          
-          console.log(`✅ Successfully processed row ${i + 1} (simple format)`);
-        } catch (error) {
-          console.log(`❌ Skipping row ${i + 1}: Error processing simple format:`, error);
+        } catch {
           continue;
         }
       } else if (formatType === 'wizard') {
-        // Old wizard format
-        options = [
-          questionData.a,
-          questionData.b,
-          questionData.c,
-          questionData.d
-        ].filter((opt: string) => opt.trim());
-
-        correctIndex = parseInt(questionData.answer) - 1; // Convert 1-based to 0-based
-        
-        // Build incorrect explanations array
+        options = [questionData.a, questionData.b, questionData.c, questionData.d].filter((opt: string) => opt?.trim());
+        correctIndex = parseInt(questionData.answer) - 1;
         const incorrectExplanations = [] as string[];
         if (questionData.incorrect_a) incorrectExplanations.push(questionData.incorrect_a);
         if (questionData.incorrect_b) incorrectExplanations.push(questionData.incorrect_b);
         if (questionData.incorrect_c) incorrectExplanations.push(questionData.incorrect_c);
         if (questionData.incorrect_d) incorrectExplanations.push(questionData.incorrect_d);
-
-        explanation = {
-          correct: questionData.explanation || '',
-          incorrect: incorrectExplanations,
-          objective: questionData.objective || ''
-        };
+        explanation = { correct: questionData.explanation || '', incorrect: incorrectExplanations, objective: questionData.objective || '' };
       } else {
-        // Very old format
-        options = [
-          questionData.option_a,
-          questionData.option_b,
-          questionData.option_c,
-          questionData.option_d
-        ].filter((opt: string) => (opt || '').trim());
-
-        correctIndex = parseInt(questionData.correct) - 1; // Convert 1-based to 0-based
-
-        explanation = {
-          correct: questionData.explanation || '',
-          incorrect: [],
-          objective: questionData.objective || ''
-        };
+        options = [questionData.option_a, questionData.option_b, questionData.option_c, questionData.option_d].filter((opt: string) => (opt || '').trim());
+        correctIndex = parseInt(questionData.correct) - 1;
+        explanation = { correct: questionData.explanation || '', incorrect: [], objective: questionData.objective || '' };
       }
 
-      // Validate required fields
       const questionText = formatType === 'new' ? questionData.questions : questionData.question;
-      if (!questionText || options.length < 2) {
-        console.log(`Skipping row ${i + 1}: Missing question or insufficient options`);
-        continue;
-      }
-      if (isNaN(correctIndex) || correctIndex < 0 || correctIndex >= options.length) {
-        console.log(`Skipping row ${i + 1}: Invalid correct index`);
-        continue;
-      }
+      if (!questionText || options.length < 2) continue;
+      if (isNaN(correctIndex) || correctIndex < 0 || correctIndex >= options.length) continue;
 
       const newQuestion: any = {
         id: maxId + newQuestions.length + 1,
@@ -402,10 +307,9 @@ export async function POST(request: NextRequest) {
     }
 
     if (newQuestions.length === 0) {
-      console.log('❌ No valid questions found in CSV');
       return NextResponse.json({ 
         error: 'No valid questions found in CSV', 
-        details: 'All rows were skipped due to parsing errors. Check the console for specific issues.',
+        details: 'All rows were skipped due to parsing errors.',
         format: formatType,
         totalRows: rows.length - 1
       }, { status: 400 });
@@ -413,9 +317,6 @@ export async function POST(request: NextRequest) {
 
     const updatedQuestions = [...existingQuestions, ...newQuestions];
     await writeAll(updatedQuestions);
-
-    console.log(`✅ Successfully imported ${newQuestions.length} questions using ${formatType} format`);
-    console.log(`📊 Summary: ${rows.length - 1} total rows, ${newQuestions.length} imported`);
 
     return NextResponse.json({ 
       message: `Successfully imported ${newQuestions.length} questions`,
