@@ -71,6 +71,26 @@ function QuizPageContent() {
           // Shuffle questions randomly
           const shuffled = [...fetchedQuestions].sort(() => Math.random() - 0.5);
           setQuestions(shuffled);
+
+          // Initialize state arrays to full length to avoid sparse-array issues
+          const initAnswers = Array(shuffled.length).fill(null);
+          const initSubmitted = Array(shuffled.length).fill(false);
+          const initFlagged = Array(shuffled.length).fill(false);
+          setAnswers(initAnswers);
+          setSubmitted(initSubmitted);
+          setFlagged(initFlagged);
+
+          // Reset navigation and UI state
+          setCurrentQuestionIndex(0);
+          setShowExplanation(false);
+          setShowScoreOverlay(false);
+          setEndTime(null);
+
+          // Reset exam timer if in exam mode
+          if (testMode === 'exam') {
+            setStartTime(Date.now());
+            setTimeLeft(customTimeMinutes * 60);
+          }
         }
       } catch (err) {
         setError('Failed to load questions. Please try again.');
@@ -81,7 +101,7 @@ function QuizPageContent() {
     };
 
     loadQuestions();
-  }, [sources, topics, questionCount]);
+  }, [sources, topics, questionCount, testMode, customTimeMinutes]);
 
   // Defer deriving current question until after loading/error/empty guards
 
@@ -319,7 +339,8 @@ function QuizPageContent() {
       
       // In exam mode, check if all questions are submitted and auto-end quiz
       if (testMode === 'exam') {
-        const allSubmitted = newSubmitted.every(submitted => submitted === true);
+        const submittedCount = newSubmitted.filter((v) => v === true).length;
+        const allSubmitted = submittedCount === questions.length;
         if (allSubmitted) {
           // Auto-end the quiz after a short delay
           setTimeout(() => {
