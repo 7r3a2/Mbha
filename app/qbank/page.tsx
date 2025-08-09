@@ -637,13 +637,15 @@ const SUBJECTS = [
 const QUESTION_MODES = [
   { key: 'all', label: 'All' },
   { key: 'unused', label: 'Unused' },
-  { key: 'incorrect', label: 'Incorrect' },
-  { key: 'correct', label: 'Correct' },
 ];
 
 export default function Qbank() {
   const router = useRouter();
   const { user, isAuthenticated, isLoading } = useAuth();
+
+  // Dynamic subjects from database
+  const [subjects, setSubjects] = useState<any[]>(SUBJECTS); // Fallback to hardcoded
+  const [loadingSubjects, setLoadingSubjects] = useState(false);
 
   // Check if user has qbank access
   useEffect(() => {
@@ -651,6 +653,71 @@ export default function Qbank() {
       router.push('/dashboard');
     }
   }, [isLoading, isAuthenticated, user, router]);
+
+  // Load subjects from database
+  useEffect(() => {
+    const loadSubjects = async () => {
+      setLoadingSubjects(true);
+      try {
+        console.log('🔄 Loading subjects from API...');
+        const response = await fetch('/api/qbank/structure');
+        if (response.ok) {
+          const dynamicSubjects = await response.json();
+          console.log('📥 Raw subjects data:', dynamicSubjects);
+          
+          if (dynamicSubjects.length > 0) {
+            // Transform the data to match the expected structure
+            const transformedSubjects = dynamicSubjects.map((subject: any) => {
+              // Handle both old (key-based) and new (id-based) structures
+              const subjectKey = subject.key || subject.id || `subject_${Date.now()}`;
+              
+              return {
+                key: subjectKey,
+                label: subject.label,
+                color: subject.color || '#0072b7',
+                lectures: (subject.lectures || []).map((lecture: any) => ({
+                  title: lecture.title,
+                  topics: (lecture.topics || []).map((topic: any) => 
+                    typeof topic === 'string' ? topic : topic.title
+                  )
+                })),
+                sources: (subject.sources || []).map((source: any) => ({
+                  key: source.key || source.id || `source_${Date.now()}`,
+                  label: source.label
+                }))
+              };
+            });
+            
+            console.log('🔄 Transformed subjects:', transformedSubjects);
+            setSubjects(transformedSubjects);
+            
+            // Update selected subjects to use the first dynamic subject
+            if (transformedSubjects[0]?.key) {
+              console.log('✅ Setting first subject as selected:', transformedSubjects[0].key);
+              setSelectedSubjects([transformedSubjects[0].key]);
+            }
+            
+            // Check which topics have questions
+            checkAllTopicsForQuestions(transformedSubjects);
+          } else {
+            console.log('⚠️ No subjects found in API response');
+          }
+        } else {
+          console.error('❌ Failed to load subjects:', response.status, response.statusText);
+        }
+      } catch (error) {
+        console.error('❌ Error loading subjects:', error);
+        // Keep using hardcoded subjects as fallback
+      } finally {
+        setLoadingSubjects(false);
+      }
+    };
+
+    if (isAuthenticated && user?.hasQbankAccess) {
+      loadSubjects();
+    }
+  }, [isAuthenticated, user?.hasQbankAccess]);
+
   const [isOpen, setIsOpen] = useState(true);
   const [activeView, setActiveView] = useState('create-test');
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>(['obgyn']);
@@ -662,38 +729,7 @@ export default function Qbank() {
   const [testName, setTestName] = useState('');
   const [examMode, setExamMode] = useState(false); // false = Study mode, true = Exam mode
   const [customTime, setCustomTime] = useState(60); // Default 60 minutes
-  const [previousTests, setPreviousTests] = useState([
-    {
-      id: 1,
-      name: 'Obstetrics Review 1',
-      date: '15/07/24',
-      questionCount: 25,
-      subjects: ['obgyn'],
-      sources: ['apgo', 'acog'],
-      examMode: true,
-      time: 45
-    },
-    {
-      id: 2,
-      name: 'Gynecology Basics',
-      date: '12/07/24',
-      questionCount: 30,
-      subjects: ['obgyn'],
-      sources: ['uworld'],
-      examMode: false,
-      time: 0
-    },
-    {
-      id: 3,
-      name: 'Menstruation Cycle Test',
-      date: '10/07/24',
-      questionCount: 20,
-      subjects: ['obgyn'],
-      sources: ['acog'],
-      examMode: true,
-      time: 30
-    }
-  ]);
+  // Previous tests section removed per request
 
   // Dropdown states
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -702,6 +738,7 @@ export default function Qbank() {
   // New states for search functionality
   const [showSearch, setShowSearch] = useState<Record<string, boolean>>({});
   const [searchTerms, setSearchTerms] = useState<Record<string, string>>({});
+  const [topicsWithQuestions, setTopicsWithQuestions] = useState<{ [key: string]: boolean }>({});
 
 
 
@@ -712,21 +749,42 @@ export default function Qbank() {
     window.location.href = '/dashboard';
   };
 
-  const handleReplayTest = (test: any) => {
-    const mode = test.examMode ? 'exam' : 'study';
-    const timeParam = test.examMode ? `&time=${test.time || 60}` : '';
-    router.push(`/quiz?count=${test.questionCount}&testName=${encodeURIComponent(test.name)}&mode=${mode}${timeParam}`);
-  };
+  // Previous tests actions removed per request
 
-  const handleRemoveTest = (testId: number) => {
-    if (confirm('Are you sure you want to remove this test?')) {
-      setPreviousTests(prev => prev.filter(test => test.id !== testId));
+
+
+  // Check if a topic has questions
+  const checkTopicHasQuestions = async (topicName: string): Promise<boolean> => {
+    try {
+      const response = await fetch(`/api/qbank/questions?topic=${encodeURIComponent(topicName)}&limit=1`);
+      if (response.ok) {
+        const data = await response.json();
+        const arr = Array.isArray(data) ? data : data?.questions;
+        return Array.isArray(arr) && arr.length > 0;
+      }
+    } catch (error) {
+      console.error('Error checking topic questions:', error);
     }
+    return false;
   };
 
+  // Check all topics for questions when subjects are loaded
+  const checkAllTopicsForQuestions = async (subjectsData: any[]) => {
+    const topicsMap: { [key: string]: boolean } = {};
+    
+    for (const subject of subjectsData) {
+      for (const lecture of subject.lectures) {
+        for (const topic of lecture.topics) {
+          const hasQuestions = await checkTopicHasQuestions(topic);
+          topicsMap[topic] = hasQuestions;
+        }
+      }
+    }
+    
+    setTopicsWithQuestions(topicsMap);
+  };
 
-
-  const handleGenerateTest = () => {
+  const handleGenerateTest = async () => {
     if (!testName.trim()) {
       alert('Please enter a test name');
       return;
@@ -737,23 +795,111 @@ export default function Qbank() {
       return;
     }
 
-    // Create new test and add to previous tests
-    const newTest = {
-      id: Date.now(),
-      name: testName.trim(),
-      date: new Date().toLocaleDateString('en-GB'),
-      questionCount: questionCount,
-      subjects: selectedSubjects,
-      sources: selectedSources,
-      examMode: examMode,
-      time: examMode ? customTime : 0
-    };
+    // Check if at least one source is selected
+    if (selectedSources.length === 0) {
+      alert('Please select at least one source');
+      return;
+    }
 
-    setPreviousTests(prev => [newTest, ...prev]);
+    // Check if at least one topic or lecture with no topics is selected
+    let hasSelectedTopics = false;
+    let selectedTopicNames: string[] = [];
+    let hasSelectedLecturesWithNoTopics = false;
     
-    // Navigate to quiz with test data and mode
-    const timeParam = examMode ? `&time=${customTime}` : '';
-    router.push(`/quiz?count=${questionCount}&testName=${encodeURIComponent(testName.trim())}&mode=${examMode ? 'exam' : 'study'}${timeParam}`);
+    for (const s of subjects) {
+      if (!selectedSubjects.includes(s.key)) continue;
+      const lectureChecks = topicChecks[s.key] || {};
+      for (const [lectureIdxStr, checkedIdxs] of Object.entries(lectureChecks)) {
+        const lectureIdx = Number(lectureIdxStr);
+        if (!Array.isArray(checkedIdxs) || checkedIdxs.length === 0) continue;
+        const lecture = s.lectures[lectureIdx];
+        
+        if (lecture && lecture.topics && lecture.topics.length > 0) {
+          // This lecture has topics
+          for (const topicIdx of checkedIdxs) {
+            if (lecture.topics[topicIdx] !== undefined) {
+              hasSelectedTopics = true;
+              selectedTopicNames.push(lecture.topics[topicIdx]);
+            }
+          }
+        } else if (lecture && (!lecture.topics || lecture.topics.length === 0)) {
+          // This lecture has no topics, but is selected (checkedIdxs contains [0])
+          hasSelectedLecturesWithNoTopics = true;
+        }
+      }
+    }
+
+    if (!hasSelectedTopics && !hasSelectedLecturesWithNoTopics) {
+      alert('Please select at least one topic or lecture');
+      return;
+    }
+
+    // Check if selected topics have questions
+    const topicsWithQuestions = await Promise.all(
+      selectedTopicNames.map(async (topicName) => {
+        const hasQuestions = await checkTopicHasQuestions(topicName);
+        return { topicName, hasQuestions };
+      })
+    );
+
+    const topicsWithoutQuestions = topicsWithQuestions.filter(t => !t.hasQuestions);
+    if (topicsWithoutQuestions.length > 0) {
+      const topicList = topicsWithoutQuestions.map(t => t.topicName).join(', ');
+      alert(`The following topics have no questions and cannot be selected: ${topicList}`);
+      return;
+    }
+
+    // Collect all selected sources and topics
+    const allSelectedSources: string[] = [];
+    const allSelectedTopics: string[] = [];
+    
+    // Get all selected sources
+    for (const sourceKey of selectedSources) {
+      const allAvailSources = subjects.filter((s) => selectedSubjects.includes(s.key))
+        .flatMap((s) => s.sources);
+      const sourceObj = allAvailSources.find((s) => s.key === sourceKey);
+      if (sourceObj?.label) {
+        allSelectedSources.push(sourceObj.label);
+      }
+    }
+    
+    // Get all selected topics
+    for (const s of subjects) {
+      if (!selectedSubjects.includes(s.key)) continue;
+      const lectureChecks = topicChecks[s.key] || {};
+      for (const [lectureIdxStr, checkedIdxs] of Object.entries(lectureChecks)) {
+        const lectureIdx = Number(lectureIdxStr);
+        if (!Array.isArray(checkedIdxs) || checkedIdxs.length === 0) continue;
+        const lecture = s.lectures[lectureIdx];
+        if (lecture && lecture.topics && lecture.topics.length > 0) {
+          for (const topicIdx of checkedIdxs) {
+            if (lecture.topics[topicIdx] !== undefined) {
+              allSelectedTopics.push(lecture.topics[topicIdx]);
+            }
+          }
+        }
+        // Note: Lectures with no topics are handled by not adding any topic names,
+        // which means the API will return questions from all topics in that lecture's subject
+        // The filtering will be done by source, which is linked to the subject
+      }
+    }
+
+    // Navigate to quiz with test data, mode, and all selected sources/topics for DB fetch
+    const params = new URLSearchParams();
+    params.set('count', String(questionCount));
+    params.set('testName', testName.trim());
+    params.set('mode', examMode ? 'exam' : 'study');
+    if (examMode) params.set('time', String(customTime));
+    
+    // Add all selected sources and topics as comma-separated values
+    if (allSelectedSources.length > 0) {
+      params.set('sources', allSelectedSources.join(','));
+    }
+    if (allSelectedTopics.length > 0) {
+      params.set('topics', allSelectedTopics.join(','));
+    }
+    
+    router.push(`/quiz?${params.toString()}`);
   };
 
   // Subject selection
@@ -807,14 +953,14 @@ export default function Qbank() {
   };
 
   // Filter sources by selected subjects
-  const availableSources = SUBJECTS.filter((s) => selectedSubjects.includes(s.key))
+  const availableSources = subjects.filter((s) => selectedSubjects.includes(s.key))
     .flatMap((s) => s.sources)
     .filter((v, i, arr) => arr.findIndex((x) => x.key === v.key) === i);
 
   // Bulk select for subjects
-  const allSubjectsSelected = selectedSubjects.length === SUBJECTS.length;
+  const allSubjectsSelected = selectedSubjects.length === subjects.length;
   const toggleAllSubjects = () => {
-    setSelectedSubjects(allSubjectsSelected ? [] : SUBJECTS.map((s) => s.key));
+    setSelectedSubjects(allSubjectsSelected ? [] : subjects.map((s) => s.key));
   };
   // Bulk select for sources
   const allSourcesSelected = selectedSources.length === availableSources.length && availableSources.length > 0;
@@ -842,31 +988,91 @@ export default function Qbank() {
     const checked = topicChecks[subjectKey]?.[lectureIdx] || [];
     return checked.length === topicCount;
   };
-  const toggleAllTopics = (subjectKey: string, lectureIdx: number, topicCount: number) => {
-    setTopicChecks((prev) => {
-      const checked = prev[subjectKey]?.[lectureIdx] || [];
-      let newChecked: number[];
-      
-      if (topicCount === 0) {
-        // For lectures with no topics, toggle between selected and not selected
-        newChecked = checked.length > 0 ? [] : [0]; // Use [0] to mark as selected
-      } else {
-        // For lectures with topics, toggle all topics
-        newChecked = checked.length === topicCount ? [] : Array.from({ length: topicCount }, (_, i) => i);
-      }
-      
-      return {
+  const toggleAllTopics = async (subjectKey: string, lectureIdx: number, topicCount: number) => {
+    const subject = subjects.find(s => s.key === subjectKey);
+    if (!subject || !subject.lectures[lectureIdx]) {
+      return;
+    }
+    
+    const lecture = subject.lectures[lectureIdx];
+    const checked = topicChecks[subjectKey]?.[lectureIdx] || [];
+    
+    if (topicCount === 0) {
+      // For lectures with no topics, toggle between selected and not selected
+      const newChecked = checked.length > 0 ? [] : [0]; // Use [0] to mark as selected
+      setTopicChecks((prev) => ({
         ...prev,
         [subjectKey]: {
           ...prev[subjectKey],
           [lectureIdx]: newChecked,
         },
-      };
-    });
+      }));
+    } else {
+      // For lectures with topics, check if we're trying to select all
+      if (checked.length === topicCount) {
+        // We're deselecting all, which is always allowed
+        setTopicChecks((prev) => ({
+          ...prev,
+          [subjectKey]: {
+            ...prev[subjectKey],
+            [lectureIdx]: [],
+          },
+        }));
+      } else {
+        // We're trying to select all, check if all topics have questions
+        const topicNames = lecture.topics || [];
+        const topicsWithQuestions = await Promise.all(
+          topicNames.map(async (topicName: string) => {
+            const hasQuestions = await checkTopicHasQuestions(topicName);
+            return { topicName, hasQuestions };
+          })
+        );
+        
+        const topicsWithoutQuestions = topicsWithQuestions.filter(t => !t.hasQuestions);
+        if (topicsWithoutQuestions.length > 0) {
+          const topicList = topicsWithoutQuestions.map(t => t.topicName).join(', ');
+          alert(`The following topics have no questions and cannot be selected: ${topicList}`);
+          return;
+        }
+        
+        // All topics have questions, select all
+        setTopicChecks((prev) => ({
+          ...prev,
+          [subjectKey]: {
+            ...prev[subjectKey],
+            [lectureIdx]: Array.from({ length: topicCount }, (_, i) => i),
+          },
+        }));
+      }
+    }
   };
   // Track checked topics
   const [topicChecks, setTopicChecks] = useState<Record<string, Record<number, number[]>>>({});
-  const toggleTopic = (subjectKey: string, lectureIdx: number, topicIdx: number, topicCount: number) => {
+  const toggleTopic = async (subjectKey: string, lectureIdx: number, topicIdx: number, topicCount: number) => {
+    // Get the topic name
+    const subject = subjects.find(s => s.key === subjectKey);
+    if (!subject || !subject.lectures[lectureIdx] || !subject.lectures[lectureIdx].topics) {
+      return;
+    }
+    
+    const topicName = subject.lectures[lectureIdx].topics[topicIdx];
+    if (!topicName) {
+      return;
+    }
+
+    // Check if we're trying to select this topic
+    const checked = topicChecks[subjectKey]?.[lectureIdx] || [];
+    const exists = checked.includes(topicIdx);
+    
+    if (!exists) {
+      // We're trying to select this topic, check if it has questions
+      const hasQuestions = await checkTopicHasQuestions(topicName);
+      if (!hasQuestions) {
+        alert(`Topic "${topicName}" has no questions and cannot be selected.`);
+        return;
+      }
+    }
+
     setTopicChecks((prev) => {
       const checked = prev[subjectKey]?.[lectureIdx] || [];
       const exists = checked.includes(topicIdx);
@@ -882,17 +1088,17 @@ export default function Qbank() {
   };
 
   // Helper functions for allTopicsCheckedForSubject and toggleAllTopicsForSubject
-  const allTopicsCheckedForSubject = (subject: typeof SUBJECTS[0]) => {
-    return subject.lectures.every((lecture, idx) => {
+  const allTopicsCheckedForSubject = (subject: any) => {
+    return subject.lectures.every((lecture: any, idx: number) => {
       return allTopicsChecked(subject.key, idx, lecture.topics.length);
     });
   };
 
-  const toggleAllTopicsForSubject = (subject: typeof SUBJECTS[0]) => {
+  const toggleAllTopicsForSubject = (subject: any) => {
     setTopicChecks(prev => {
       const newTopicChecks: Record<string, Record<number, number[]>> = { ...prev };
       const lectureChecks: Record<number, number[]> = {};
-      subject.lectures.forEach((lecture, idx) => {
+      subject.lectures.forEach((lecture: any, idx: number) => {
         const topicCount = lecture.topics.length;
         const currentChecked = prev[subject.key]?.[idx] || [];
         
@@ -958,28 +1164,7 @@ export default function Qbank() {
                 {isOpen && <span className="ml-3 font-medium text-sm">Create Test</span>}
               </button>
             </li>
-            {/* Previous Tests */}
-            <li>
-              <button
-                onClick={() => setActiveView('previous-tests')}
-                onMouseEnter={() => setSidebarHover('previous-tests')}
-                onMouseLeave={() => setSidebarHover('')}
-                className={`flex items-center w-full transition-all duration-200 rounded-lg ${
-                  isOpen ? 'px-4 py-3' : 'justify-center p-3'
-                } ${
-                  activeView === 'previous-tests'
-                    ? 'bg-white text-[#0072b7] shadow-lg border border-[#0072b7]'
-                    : sidebarHover === 'previous-tests'
-                    ? 'bg-[#003a6d] text-white shadow-md'
-                    : 'text-white hover:bg-[#003a6d] hover:shadow-md'
-                }`}
-              >
-                <svg className={`${isOpen ? 'w-5 h-5' : 'w-6 h-6'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                {isOpen && <span className="ml-3 font-medium text-sm">Previous Test</span>}
-              </button>
-            </li>
+            {/* Previous Tests removed per request */}
 
           </ul>
         </nav>
@@ -1101,7 +1286,7 @@ export default function Qbank() {
                     </button>
                     {openDropdown === 'subjects' && (
                       <div className="absolute z-10 mt-1 w-full bg-white shadow-lg border border-gray-200 rounded-md p-2 space-y-2">
-                        {SUBJECTS.map((subject) => (
+                        {subjects.map((subject) => (
                           <div key={subject.key} className="flex items-center">
                             <input
                               type="checkbox"
@@ -1160,7 +1345,7 @@ export default function Qbank() {
               </div>
               {/* Lectures Container */}
               <div className="mt-8 bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:border-[#0072b7] focus-within:border-[#0072b7] focus-within:ring-1 focus-within:ring-[#0072b7] transition-all duration-300">
-                {SUBJECTS.filter((s) => selectedSubjects.includes(s.key)).map((subject) => (
+                {subjects.filter((s) => selectedSubjects.includes(s.key)).map((subject) => (
                   <div key={subject.key} className="mb-8 bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:border-[#0072b7] focus-within:border-[#0072b7] focus-within:ring-1 focus-within:ring-[#0072b7] transition-all duration-300">
                     <div className="flex justify-between items-center mb-4">
                       <div className="flex items-center">
@@ -1205,7 +1390,7 @@ export default function Qbank() {
                     {expandedSections[subject.key] && (
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {subject.lectures
-                          .map((lecture, idx) => {
+                          .map((lecture: any, idx: number) => {
                             const search = (searchTerms[subject.key] || '').toLowerCase();
                             let showLecture = false;
                             let filteredTopics = lecture.topics;
@@ -1213,7 +1398,7 @@ export default function Qbank() {
                               if (lecture.title.toLowerCase().includes(search)) {
                                 showLecture = true;
                               } else {
-                                filteredTopics = lecture.topics.filter(topic => topic.toLowerCase().includes(search));
+                                filteredTopics = lecture.topics.filter((topic: string) => topic.toLowerCase().includes(search));
                                 showLecture = filteredTopics.length > 0;
                               }
                             } else {
@@ -1248,17 +1433,24 @@ export default function Qbank() {
                                 </div>
                                 {expandedLectures[subject.key]?.includes(idx) && filteredTopics && (
                                   <div className="p-3 space-y-2 border-t border-gray-100">
-                                    {filteredTopics.map((topic, topicIdx) => (
-                                      <div key={topic} className="flex items-center">
-                                        <input
-                                          type="checkbox"
-                                          checked={topicChecks[subject.key]?.[idx]?.includes(topicIdx) || false}
-                                          onChange={() => toggleTopic(subject.key, idx, topicIdx, lecture.topics.length)}
-                                          className="h-4 w-4 border-2 border-[#0072b7] text-[#0072b7] focus:ring-[#0072b7] rounded mr-2"
-                                        />
-                                        <label className="ml-2 text-sm text-gray-600">{topic}</label>
-                                      </div>
-                                    ))}
+                                    {filteredTopics.map((topic: string, topicIdx: number) => {
+                                      const hasQuestions = topicsWithQuestions[topic] !== false; // Default to true if not checked yet
+                                      return (
+                                        <div key={topic} className={`flex items-center ${!hasQuestions ? 'opacity-50' : ''}`}>
+                                          <input
+                                            type="checkbox"
+                                            checked={topicChecks[subject.key]?.[idx]?.includes(topicIdx) || false}
+                                            onChange={() => toggleTopic(subject.key, idx, topicIdx, lecture.topics.length)}
+                                            disabled={!hasQuestions}
+                                            className={`h-4 w-4 border-2 border-[#0072b7] text-[#0072b7] focus:ring-[#0072b7] rounded mr-2 ${!hasQuestions ? 'cursor-not-allowed opacity-50' : ''}`}
+                                          />
+                                          <label className={`ml-2 text-sm ${!hasQuestions ? 'text-gray-400 cursor-not-allowed' : 'text-gray-600'}`}>
+                                            {topic}
+                                            {!hasQuestions && <span className="ml-1 text-xs text-red-500">(No questions)</span>}
+                                          </label>
+                                        </div>
+                                      );
+                                    })}
                                   </div>
                                 )}
                               </div>
@@ -1364,141 +1556,7 @@ export default function Qbank() {
               </footer>
             </div>
           )}
-          {activeView === 'previous-tests' && (
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-              <h2 className="text-2xl font-bold text-gray-800 mb-6">Previous Tests</h2>
-              {previousTests.length === 0 ? (
-                <div className="text-center py-8">
-                  <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                  <p className="text-gray-500 text-lg">No previous tests found</p>
-                  <p className="text-gray-400 text-sm">Create your first test to see it here</p>
-                </div>
-              ) : (
-                <>
-                  {/* Mobile Card View */}
-                  <div className="block sm:hidden space-y-4">
-                    {previousTests.map((test) => (
-                      <div key={test.id} className="bg-white border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
-                        <div className="flex justify-between items-start mb-3">
-                          <div className="flex-1">
-                            <h4 className="font-semibold text-gray-800 text-sm mb-1">{test.name}</h4>
-                            <p className="text-gray-600 text-xs mb-2">
-                              {test.subjects.map(subject => 
-                                SUBJECTS.find(s => s.key === subject)?.label
-                              ).join(', ')}
-                            </p>
-                            <div className="flex flex-wrap gap-2 mb-3">
-                              <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded">
-                                {test.questionCount} questions
-                              </span>
-                              <span className={`text-xs font-medium px-2 py-1 rounded ${
-                                test.examMode 
-                                  ? 'bg-orange-100 text-orange-800' 
-                                  : 'bg-green-100 text-green-800'
-                              }`}>
-                                {test.examMode ? 'Exam' : 'Study'}
-                              </span>
-                            </div>
-                            <p className="text-gray-500 text-xs">{test.date}</p>
-                          </div>
-                          <div className="flex items-center space-x-2 ml-4">
-                            <button 
-                              onClick={() => handleReplayTest(test)}
-                              className="text-[#0072b7] hover:text-[#003a6d] transition-colors duration-200 p-2"
-                              title="Replay Test"
-                            >
-                              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M8 5v14l11-7z" />
-                              </svg>
-                            </button>
-                            <button 
-                              onClick={() => handleRemoveTest(test.id)}
-                              className="text-red-500 hover:text-red-700 transition-colors duration-200 p-2"
-                              title="Remove Test"
-                            >
-                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                              </svg>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Desktop Table View */}
-                  <div className="hidden sm:block overflow-x-auto">
-                    <table className="w-full text-left table-auto">
-                      <thead>
-                        <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
-                          <th className="py-3 px-6">Test Name</th>
-                          <th className="py-3 px-6 text-center">Questions</th>
-                          <th className="py-3 px-6 text-center">Mode</th>
-                          <th className="py-3 px-6 text-center">Actions</th>
-                          <th className="py-3 px-6 text-right">Date</th>
-                        </tr>
-                      </thead>
-                      <tbody className="text-gray-600 text-sm font-light">
-                        {previousTests.map((test) => (
-                          <tr key={test.id} className="border-b border-gray-200 hover:bg-gray-50">
-                            <td className="py-3 px-6">
-                              <div>
-                                <div className="font-medium text-gray-800">{test.name}</div>
-                                <div className="text-xs text-gray-500">
-                                  {test.subjects.map(subject => 
-                                    SUBJECTS.find(s => s.key === subject)?.label
-                                  ).join(', ')}
-                                </div>
-                              </div>
-                            </td>
-                            <td className="py-3 px-6 text-center">
-                              <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                                {test.questionCount} questions
-                              </span>
-                            </td>
-                            <td className="py-3 px-6 text-center">
-                              <span className={`text-xs font-medium px-2.5 py-0.5 rounded ${
-                                test.examMode 
-                                  ? 'bg-orange-100 text-orange-800' 
-                                  : 'bg-green-100 text-green-800'
-                              }`}>
-                                {test.examMode ? 'Exam' : 'Study'}
-                              </span>
-                            </td>
-                            <td className="py-3 px-6 text-center">
-                              <div className="flex items-center justify-center space-x-4">
-                                <button 
-                                  onClick={() => handleReplayTest(test)}
-                                  className="text-[#0072b7] hover:text-[#003a6d] transition-colors duration-200"
-                                  title="Replay Test"
-                                >
-                                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M8 5v14l11-7z" />
-                                  </svg>
-                                </button>
-                                <button 
-                                  onClick={() => handleRemoveTest(test.id)}
-                                  className="text-red-500 hover:text-red-700 transition-colors duration-200"
-                                  title="Remove Test"
-                                >
-                                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                  </svg>
-                                </button>
-                              </div>
-                            </td>
-                            <td className="py-3 px-6 text-right">{test.date}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </>
-              )}
-            </div>
-          )}
+          {/* Previous tests view removed per request */}
 
         </main>
       </div>

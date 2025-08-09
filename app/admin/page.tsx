@@ -35,6 +35,46 @@ export default function AdminPage() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [examView, setExamView] = useState<'list' | 'create'>('list');
+const [qbankStructure, setQbankStructure] = useState<any[]>([]);
+const [selectedSubjectId, setSelectedSubjectId] = useState<string | null>(null);
+const [selectedLectureId, setSelectedLectureId] = useState<string | null>(null);
+const [adding, setAdding] = useState<{ entity: 'subject'|'source'|'lecture'|'topic'|null, parentId?: string|null }>({ entity: null });
+const [newName, setNewName] = useState<string>('');
+const [selectedSourceId, setSelectedSourceId] = useState<string | null>(null);
+const [questionsList, setQuestionsList] = useState<any[]>([]);
+const [editingQuestion, setEditingQuestion] = useState<any | null>(null);
+
+// New Qbank state variables
+const [newSubjectName, setNewSubjectName] = useState('');
+const [newSourceName, setNewSourceName] = useState('');
+const [newLectureName, setNewLectureName] = useState('');
+const [newTopicName, setNewTopicName] = useState('');
+const [selectedSubjectForSource, setSelectedSubjectForSource] = useState('');
+const [selectedSubjectForLecture, setSelectedSubjectForLecture] = useState('');
+const [selectedLectureForTopic, setSelectedLectureForTopic] = useState('');
+const [importSubject, setImportSubject] = useState('');
+const [importSource, setImportSource] = useState('');
+const [importLecture, setImportLecture] = useState('');
+const [importTopic, setImportTopic] = useState('');
+const [importFile, setImportFile] = useState<File | null>(null);
+const [manageSubject, setManageSubject] = useState('');
+const [questionFilterSubject, setQuestionFilterSubject] = useState('');
+const [questionFilterTopic, setQuestionFilterTopic] = useState('');
+const [questionFilterSource, setQuestionFilterSource] = useState('');
+const [filteredQuestions, setFilteredQuestions] = useState<any[]>([]);
+const [csvPreview, setCsvPreview] = useState<any[]>([]);
+const [csvPreviewCount, setCsvPreviewCount] = useState(0);
+const [csvPreviewQuestion, setCsvPreviewQuestion] = useState<any | null>(null);
+
+const loadQbankStructure = async () => {
+    try {
+      const res = await fetch('/api/qbank/structure');
+      if (res.ok) {
+        const data = await res.json();
+        setQbankStructure(data);
+      }
+    } catch {}
+  };
 
   useEffect(() => {
     // Check if user is admin (any user with admin code)
@@ -47,6 +87,143 @@ export default function AdminPage() {
       loadData();
     }
   }, [user, isLoading, router]);
+
+  useEffect(() => {
+    if (activeTab === 'qbank') {
+      loadQbankStructure();
+    }
+  }, [activeTab]);
+
+// Helpers for IDs and persistence
+const generateId = () => Math.random().toString(36).slice(2);
+const persistStructure = async (next: any[]) => {
+  setQbankStructure(next);
+  await fetch('/api/qbank/structure', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(next)
+  });
+};
+
+// Actions
+const moveToTop = async (type: 'subject'|'source'|'lecture'|'topic', ids: { subjectId?: string, lectureId?: string, id: string }) => {
+  const next = qbankStructure.map((s: any) => ({ ...s }));
+  if (type === 'subject') {
+    const idx = next.findIndex((s: any) => s.id === ids.id);
+    if (idx > -1) {
+      const [item] = next.splice(idx, 1);
+      next.unshift(item);
+    }
+  } else if (type === 'source') {
+    const subj = next.find((s: any) => s.id === ids.subjectId);
+    if (subj) {
+      subj.sources = subj.sources || [];
+      const idx = subj.sources.findIndex((x: any) => x.id === ids.id);
+      if (idx > -1) {
+        const [item] = subj.sources.splice(idx, 1);
+        subj.sources.unshift(item);
+      }
+    }
+  } else if (type === 'lecture') {
+    const subj = next.find((s: any) => s.id === ids.subjectId);
+    if (subj) {
+      subj.lectures = subj.lectures || [];
+      const idx = subj.lectures.findIndex((x: any) => x.id === ids.id);
+      if (idx > -1) {
+        const [item] = subj.lectures.splice(idx, 1);
+        subj.lectures.unshift(item);
+      }
+    }
+  } else if (type === 'topic') {
+    const subj = next.find((s: any) => s.id === ids.subjectId);
+    const lec = subj?.lectures?.find((l: any) => l.id === ids.lectureId);
+    if (lec) {
+      lec.topics = lec.topics || [];
+      const idx = lec.topics.findIndex((x: any) => x.id === ids.id);
+      if (idx > -1) {
+        const [item] = lec.topics.splice(idx, 1);
+        lec.topics.unshift(item);
+      }
+    }
+  }
+  await persistStructure(next);
+};
+
+const removeEntity = async (type: 'subject'|'source'|'lecture'|'topic', ids: { subjectId?: string, lectureId?: string, id: string }) => {
+  let next = qbankStructure.map((s: any) => ({ ...s }));
+  if (type === 'subject') {
+    next = next.filter((s: any) => s.id !== ids.id);
+  } else if (type === 'source') {
+    const subj = next.find((s: any) => s.id === ids.subjectId);
+    if (subj) subj.sources = (subj.sources || []).filter((x: any) => x.id !== ids.id);
+  } else if (type === 'lecture') {
+    const subj = next.find((s: any) => s.id === ids.subjectId);
+    if (subj) subj.lectures = (subj.lectures || []).filter((x: any) => x.id !== ids.id);
+  } else if (type === 'topic') {
+    const subj = next.find((s: any) => s.id === ids.subjectId);
+    const lec = subj?.lectures?.find((l: any) => l.id === ids.lectureId);
+    if (lec) lec.topics = (lec.topics || []).filter((x: any) => x.id !== ids.id);
+  }
+  await persistStructure(next);
+};
+
+const renameEntity = async (type: 'subject'|'source'|'lecture'|'topic', ids: { subjectId?: string, lectureId?: string, id: string }, newLabel: string) => {
+  const next = qbankStructure.map((s: any) => ({ ...s }));
+  if (type === 'subject') {
+    const subj = next.find((s: any) => s.id === ids.id);
+    if (subj) subj.label = newLabel;
+  } else if (type === 'source') {
+    const subj = next.find((s: any) => s.id === ids.subjectId);
+    const src = subj?.sources?.find((x: any) => x.id === ids.id);
+    if (src) src.label = newLabel;
+  } else if (type === 'lecture') {
+    const subj = next.find((s: any) => s.id === ids.subjectId);
+    const lec = subj?.lectures?.find((x: any) => x.id === ids.id);
+    if (lec) lec.title = newLabel;
+  } else if (type === 'topic') {
+    const subj = next.find((s: any) => s.id === ids.subjectId);
+    const lec = subj?.lectures?.find((x: any) => x.id === ids.lectureId);
+    const top = lec?.topics?.find((x: any) => x.id === ids.id);
+    if (top) top.title = newLabel;
+  }
+  await persistStructure(next);
+};
+
+const startAdd = (entity: 'subject'|'source'|'lecture'|'topic', parentId?: string|null) => {
+  setAdding({ entity, parentId: parentId || null });
+  setNewName('');
+};
+
+const saveAdd = async () => {
+  if (!adding.entity || !newName.trim()) { setAdding({ entity: null }); return; }
+  const next = qbankStructure.map((s: any) => ({ ...s }));
+  if (adding.entity === 'subject') {
+    next.push({ id: generateId(), key: newName.trim().toLowerCase().replace(/\s+/g,'-'), label: newName.trim(), color: '#0072b7', lectures: [], sources: [] });
+  } else if (adding.entity === 'source') {
+    const subj = next.find((s: any) => s.id === adding.parentId);
+    if (subj) {
+      subj.sources = subj.sources || [];
+      subj.sources.push({ id: generateId(), key: newName.trim().toLowerCase().replace(/\s+/g,'-'), label: newName.trim() });
+    }
+  } else if (adding.entity === 'lecture') {
+    const subj = next.find((s: any) => s.id === adding.parentId);
+    if (subj) {
+      subj.lectures = subj.lectures || [];
+      subj.lectures.push({ id: generateId(), title: newName.trim(), topics: [] });
+    }
+  } else if (adding.entity === 'topic') {
+    // parentId is lectureId; find it inside selectedSubjectId
+    const subj = next.find((s: any) => s.id === selectedSubjectId);
+    const lec = subj?.lectures?.find((l: any) => l.id === adding.parentId);
+    if (lec) {
+      lec.topics = lec.topics || [];
+      lec.topics.push({ id: generateId(), title: newName.trim() });
+    }
+  }
+  setAdding({ entity: null });
+  setNewName('');
+  await persistStructure(next);
+};
 
   const loadData = async () => {
     setLoading(true);
@@ -395,6 +572,453 @@ export default function AdminPage() {
     }
   };
 
+  const activeSubject = qbankStructure.find((s: any) => s.id === selectedSubjectId);
+  const activeLecture = activeSubject?.lectures?.find((l: any) => l.id === selectedLectureId);
+  const activeSource = activeSubject?.sources?.find((src: any) => src.id === selectedSourceId);
+
+  const loadQuestionsByFilter = async () => {
+  if (!activeSubject || !activeSource || !activeLecture) { setQuestionsList([]); return; }
+  const topicTitles = (activeLecture.topics || []).map((t: any) => t.title.toLowerCase());
+    // Load all for this trio and then filter client-side by topic list
+  const params = new URLSearchParams({
+    subject: activeSubject.label,
+    source: activeSource.label,
+    });
+    const res = await fetch(`/api/admin/qbank/questions?${params}`);
+    if (res.ok) {
+      const data = await res.json();
+      setQuestionsList(data.filter((q: any) => topicTitles.includes((q.topic || '').toLowerCase())));
+    }
+  };
+
+  useEffect(() => { loadQuestionsByFilter(); }, [selectedSubjectId, selectedSourceId, selectedLectureId]);
+
+  const startEditQuestion = (q?: any) => {
+  setEditingQuestion(q || { subject: activeSubject?.label || '', source: activeSource?.label || '', topic: '', text: '', options: ['', ''], correct: 0, explanation: { correct: '', incorrect: ['', ''], objective: '' } });
+  };
+
+  const saveQuestion = async () => {
+    if (!editingQuestion) return;
+    const payload = editingQuestion;
+    const url = editingQuestion.id ? `/api/admin/qbank/questions/${editingQuestion.id}` : '/api/admin/qbank/questions';
+    const method = editingQuestion.id ? 'PUT' : 'POST';
+    const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+    if (res.ok) {
+      setEditingQuestion(null);
+      await loadQuestionsByFilter();
+    }
+  };
+
+  const deleteQuestion = async (id: number) => {
+    if (!confirm('Delete this question?')) return;
+    await fetch(`/api/admin/qbank/questions/${id}`, { method: 'DELETE' });
+    await loadQuestionsByFilter();
+  };
+
+  // New Qbank functions
+  const addSubject = async () => {
+    if (!newSubjectName.trim()) return;
+    const updatedStructure = [...qbankStructure];
+    const newSubject = {
+      key: Date.now().toString(),
+      label: newSubjectName.trim(),
+      color: '#0072b7',
+      sources: [],
+      lectures: []
+    };
+    updatedStructure.push(newSubject);
+    await updateQbankStructure(updatedStructure);
+    setNewSubjectName('');
+  };
+
+  const addSource = async () => {
+    if (!selectedSubjectForSource || !newSourceName.trim()) return;
+    const updatedStructure = qbankStructure.map((subject: any) => {
+      if (subject.key === selectedSubjectForSource || subject.id === selectedSubjectForSource) {
+        return {
+          ...subject,
+          sources: [...(subject.sources || []), {
+            key: Date.now().toString(),
+            label: newSourceName.trim()
+          }]
+        };
+      }
+      return subject;
+    });
+    await updateQbankStructure(updatedStructure);
+    setNewSourceName('');
+    setSelectedSubjectForSource('');
+  };
+
+  const addLecture = async () => {
+    if (!selectedSubjectForLecture || !newLectureName.trim()) return;
+    const updatedStructure = qbankStructure.map((subject: any) => {
+      if (subject.key === selectedSubjectForLecture || subject.id === selectedSubjectForLecture) {
+        return {
+          ...subject,
+          lectures: [...(subject.lectures || []), {
+            title: newLectureName.trim(),
+            topics: []
+          }]
+        };
+      }
+      return subject;
+    });
+    await updateQbankStructure(updatedStructure);
+    setNewLectureName('');
+    setSelectedSubjectForLecture('');
+  };
+
+  const addTopic = async () => {
+    if (!selectedLectureForTopic || !newTopicName.trim()) return;
+    
+    console.log('🔄 Adding topic:', { selectedLectureForTopic, newTopicName });
+    console.log('📊 Current structure:', qbankStructure);
+    
+    const updatedStructure = qbankStructure.map((subject: any) => ({
+      ...subject,
+      lectures: (subject.lectures || []).map((lecture: any) => {
+        if (lecture.title === selectedLectureForTopic) {
+          console.log('✅ Found matching lecture:', lecture.title);
+          return {
+            ...lecture,
+            topics: [...(lecture.topics || []), newTopicName.trim()]
+          };
+        }
+        return lecture;
+      })
+    }));
+    
+    console.log('🔄 Updated structure:', updatedStructure);
+    await updateQbankStructure(updatedStructure);
+    setNewTopicName('');
+    setSelectedLectureForTopic('');
+  };
+
+  const importQuestions = async () => {
+    if (!importFile || !importSubject || !importSource || !importLecture || !importTopic) return;
+    const formData = new FormData();
+    formData.append('file', importFile);
+    formData.append('subject', importSubject);
+    // importSource holds the key now
+    formData.append('sourceKey', importSource);
+    // Derive source label for convenience
+    const sourceLabel = qbankStructure.find((s: any) => s.label === importSubject)?.sources?.find((src: any) => (src.key || src.id) === importSource)?.label || '';
+    formData.append('sourceLabel', sourceLabel);
+    formData.append('lecture', importLecture);
+    formData.append('topic', importTopic);
+    try {
+      const response = await fetch('/api/admin/qbank/questions/import', { method: 'POST', body: formData });
+      const data = await response.json().catch(() => ({}));
+      if (response.ok) {
+        alert(`Questions imported successfully! Imported: ${data.imported || ''}`);
+        setImportFile(null);
+        setImportSubject('');
+        setImportSource('');
+        setImportLecture('');
+        setImportTopic('');
+        setCsvPreview([]);
+        setCsvPreviewCount(0);
+        setCsvPreviewQuestion(null);
+      } else {
+        console.error('Import failed:', data);
+        alert(`Failed to import questions\n${data.error || ''}${data.details ? `\nDetails: ${data.details}` : ''}${data.expectedFormat ? `\nExpected format: ${data.expectedFormat}` : ''}`);
+      }
+    } catch (error: any) {
+      console.error('Error importing questions:', error);
+      alert(`Error importing questions: ${String(error?.message || error)}`);
+    }
+  };
+
+  const deleteSource = async (subjectId: string, sourceId: string) => {
+    if (!confirm('Delete this source?')) return;
+    const updatedStructure = qbankStructure.map((subject: any) => {
+      if (subject.key === subjectId || subject.id === subjectId) {
+        return {
+          ...subject,
+          sources: (subject.sources || []).filter((s: any) => s.key !== sourceId && s.id !== sourceId)
+        };
+      }
+      return subject;
+    });
+    await updateQbankStructure(updatedStructure);
+  };
+
+  const moveLectureToTop = async (subjectId: string, lectureId: string) => {
+    const updatedStructure = qbankStructure.map((subject: any) => {
+      if (subject.key === subjectId || subject.id === subjectId) {
+        const lectures = [...(subject.lectures || [])];
+        const lectureIndex = lectures.findIndex((l: any) => l.title === lectureId);
+        if (lectureIndex > 0) {
+          const [lecture] = lectures.splice(lectureIndex, 1);
+          lectures.unshift(lecture);
+        }
+        return { ...subject, lectures };
+      }
+      return subject;
+    });
+    await updateQbankStructure(updatedStructure);
+  };
+
+  const deleteLecture = async (subjectId: string, lectureId: string) => {
+    if (!confirm('Delete this lecture?')) return;
+    const updatedStructure = qbankStructure.map((subject: any) => {
+      if (subject.key === subjectId || subject.id === subjectId) {
+        return {
+          ...subject,
+          lectures: (subject.lectures || []).filter((l: any) => l.title !== lectureId)
+        };
+      }
+      return subject;
+    });
+    await updateQbankStructure(updatedStructure);
+  };
+
+  const deleteSubject = async (subjectId: string) => {
+    if (!confirm('Delete this subject? This will also delete all its sources, lectures, and topics.')) return;
+    const updatedStructure = qbankStructure.filter((subject: any) => subject.key !== subjectId && subject.id !== subjectId);
+    await updateQbankStructure(updatedStructure);
+    setManageSubject('');
+  };
+
+  const deleteTopic = async (subjectId: string, lectureId: string, topicId: string) => {
+    if (!confirm('Delete this topic?')) return;
+    const updatedStructure = qbankStructure.map((subject: any) => {
+      if (subject.key === subjectId || subject.id === subjectId) {
+        return {
+          ...subject,
+          lectures: (subject.lectures || []).map((lecture: any) => {
+            if (lecture.title === lectureId) {
+              return {
+                ...lecture,
+                topics: (lecture.topics || []).filter((t: any) => t.id !== topicId && t !== topicId)
+              };
+            }
+            return lecture;
+          })
+        };
+      }
+      return subject;
+    });
+    await updateQbankStructure(updatedStructure);
+  };
+
+  const loadFilteredQuestions = async () => {
+    if (!questionFilterSubject || !questionFilterTopic) return;
+    try {
+      const params = new URLSearchParams({
+        subject: questionFilterSubject,
+        topic: questionFilterTopic,
+        ...(questionFilterSource ? { sourceKey: questionFilterSource } : {})
+      });
+      const response = await fetch(`/api/admin/qbank/questions?${params}`);
+      if (response.ok) {
+        const data = await response.json();
+        setFilteredQuestions(data);
+      }
+    } catch (error) {
+      console.error('Error loading filtered questions:', error);
+    }
+  };
+
+  const updateQbankStructure = async (newStructure: any[]) => {
+    try {
+      const response = await fetch('/api/qbank/structure', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newStructure)
+      });
+      if (response.ok) {
+        setQbankStructure(newStructure);
+      }
+    } catch (error) {
+      console.error('Error updating structure:', error);
+    }
+  };
+
+  // Robust CSV utilities for preview parsing
+  function parseCSV(text: string): string[][] {
+    const rows: string[][] = [];
+    let currentField = '';
+    let currentRow: string[] = [];
+    let inQuotes = false;
+
+    for (let i = 0; i < text.length; i++) {
+      const char = text[i];
+      if (inQuotes) {
+        if (char === '"') {
+          if (i + 1 < text.length && text[i + 1] === '"') {
+            currentField += '"';
+            i++;
+          } else {
+            inQuotes = false;
+          }
+        } else {
+          currentField += char;
+        }
+      } else {
+        if (char === '"') {
+          inQuotes = true;
+        } else if (char === ',') {
+          currentRow.push(currentField);
+          currentField = '';
+        } else if (char === '\n' || char === '\r') {
+          if (char === '\r' && i + 1 < text.length && text[i + 1] === '\n') i++;
+          currentRow.push(currentField);
+          if (currentRow.some((c) => (c ?? '').trim() !== '')) rows.push(currentRow);
+          currentRow = [];
+          currentField = '';
+        } else {
+          currentField += char;
+        }
+      }
+    }
+    if (currentField.length > 0 || currentRow.length > 0) {
+      currentRow.push(currentField);
+      if (currentRow.some((c) => (c ?? '').trim() !== '')) rows.push(currentRow);
+    }
+    return rows;
+  }
+  function cleanJsonString(jsonStr: string): string {
+    let cleaned = (jsonStr || '').trim();
+    if (cleaned.startsWith('"') && cleaned.endsWith('"')) cleaned = cleaned.slice(1, -1);
+    cleaned = cleaned.replace(/\\\"/g, '"').replace(/""/g, '"');
+    return cleaned;
+  }
+
+  const previewCsvFile = async (file: File) => {
+    try {
+      const text = await file.text();
+      const rows = parseCSV(text);
+
+      if (rows.length < 2) {
+        setCsvPreview([]);
+        setCsvPreviewCount(0);
+        setCsvPreviewQuestion(null);
+        return;
+      }
+
+      const headers = rows[0].map(h => (h || '').trim().toLowerCase());
+
+      // Check format
+      const isNewFormat = headers.includes('questions') && headers.includes('options') && headers.includes('correct_options');
+      const isUserFormat = headers.includes('question') && headers.includes('options') && headers.includes('correct_option') && headers.includes('why the other options are incorrect:');
+      const isSimpleFormat = headers.includes('question') && headers.includes('options') && headers.includes('correct_option') && headers.includes('incorrect_reasons');
+      const isWizardFormat = headers.includes('a') && headers.includes('b') && headers.includes('answer');
+
+      let requiredHeaders: string[] = [];
+      let formatType = 'unknown';
+
+      if (isNewFormat) {
+        formatType = 'new';
+        requiredHeaders = ['questions', 'options', 'correct_options', 'explanation', 'incorrect_options', 'educational_objective'];
+      } else if (isUserFormat) {
+        formatType = 'user';
+        requiredHeaders = ['question', 'options', 'correct_option', 'explanation', 'why the other options are incorrect:', 'educational objective'];
+      } else if (isSimpleFormat) {
+        formatType = 'simple';
+        requiredHeaders = ['question', 'options', 'correct_option', 'explanation', 'incorrect_reasons', 'educational_objective'];
+      } else if (isWizardFormat) {
+        formatType = 'wizard';
+        requiredHeaders = ['question', 'a', 'b', 'c', 'd', 'answer', 'explanation', 'incorrect_a', 'incorrect_b', 'incorrect_c', 'incorrect_d', 'objective'];
+      } else {
+        formatType = 'old';
+        requiredHeaders = ['question', 'option_a', 'option_b', 'option_c', 'option_d', 'correct', 'explanation', 'objective'];
+      }
+
+      const missingHeaders = requiredHeaders.filter(h => !headers.includes(h));
+      if (missingHeaders.length > 0) {
+        alert(`Missing required headers: ${missingHeaders.join(', ')}\n\nExpected format: ${formatType}`);
+        setCsvPreview([]);
+        setCsvPreviewCount(0);
+        setCsvPreviewQuestion(null);
+        return;
+      }
+
+      const preview: any[] = [];
+      let validCount = 0;
+      let firstPreviewQuestion: any | null = null;
+
+      for (let i = 1; i < Math.min(rows.length, 6); i++) {
+        const values = rows[i].map(v => (v ?? '').trim());
+        if (values.length < headers.length) continue;
+
+        const questionData: any = {};
+        headers.forEach((header, index) => { questionData[header] = values[index] || ''; });
+
+        let options: string[] = [];
+        let correct: string = '';
+        let explanation: string = '';
+        let objective: string = '';
+
+        if (formatType === 'new') {
+          try {
+            options = JSON.parse(questionData.options || '[]');
+            correct = questionData.correct_options;
+            explanation = questionData.explanation;
+            objective = questionData.educational_objective;
+          } catch { continue; }
+        } else if (formatType === 'user') {
+          try {
+            options = JSON.parse(cleanJsonString(questionData.options || '[]'));
+            correct = questionData.correct_option;
+            explanation = questionData.explanation;
+            objective = questionData['educational objective'];
+          } catch { continue; }
+        } else if (formatType === 'simple') {
+          options = (questionData.options || '').split('|').filter((opt: string) => opt.trim());
+          correct = questionData.correct_option;
+          explanation = questionData.explanation;
+          objective = questionData.educational_objective;
+        } else if (formatType === 'wizard') {
+          options = [questionData.a, questionData.b, questionData.c, questionData.d].filter((opt: string) => (opt || '').trim());
+          correct = questionData.answer;
+          explanation = questionData.explanation;
+          objective = questionData.objective;
+        } else {
+          options = [questionData.option_a, questionData.option_b, questionData.option_c, questionData.option_d].filter((opt: string) => (opt || '').trim());
+          correct = questionData.correct;
+          explanation = questionData.explanation;
+          objective = questionData.objective;
+        }
+
+        const questionText = formatType === 'new' ? questionData.questions : questionData.question;
+        if (questionText && options.length >= 2) {
+          if (i < 6) {
+            preview.push({
+              question: questionText.substring(0, 50) + '...',
+              options: options,
+              correct: correct,
+              explanation: explanation ? 'Yes' : 'No',
+              objective: objective ? 'Yes' : 'No',
+              format: formatType
+            });
+          }
+          if (!firstPreviewQuestion) {
+            const correctIndex = (typeof correct === 'string' ? parseInt(correct) - 1 : Number(correct) - 1) || 0;
+            firstPreviewQuestion = {
+              id: 1,
+              text: questionText,
+              options,
+              correct: Math.max(0, Math.min(correctIndex, options.length - 1)),
+              explanation: { correct: explanation || '', incorrect: [], objective: objective || '' }
+            };
+          }
+          validCount++;
+        }
+      }
+
+      setCsvPreview(preview);
+      setCsvPreviewCount(validCount);
+      setCsvPreviewQuestion(firstPreviewQuestion);
+    } catch (error) {
+      console.error('Error previewing CSV:', error);
+      setCsvPreview([]);
+      setCsvPreviewCount(0);
+      setCsvPreviewQuestion(null);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -435,7 +1059,7 @@ export default function AdminPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
         <div className="border-b border-gray-200">
           <nav className="-mb-px flex">
-            {['users', 'exams', 'codes'].map((tab) => (
+            {['users', 'exams', 'codes', 'qbank'].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
@@ -445,7 +1069,7 @@ export default function AdminPage() {
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
-                {tab} ({tab === 'users' ? users.length : tab === 'exams' ? exams.length : uniqueCodes.length})
+                {tab} {tab === 'users' ? `(${users.length})` : tab === 'exams' ? `(${exams.length})` : tab === 'codes' ? `(${uniqueCodes.length})` : ''}
               </button>
             ))}
           </nav>
@@ -937,6 +1561,422 @@ export default function AdminPage() {
                       ))}
                     </tbody>
                   </table>
+                </div>
+              </div>
+            )}
+
+            {/* Qbank Management */}
+            {activeTab === 'qbank' && (
+              <div className="space-y-6">
+                <div className="bg-white rounded-lg shadow p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Qbank Management</h3>
+                  
+                  {/* Section 1: Add Structure */}
+                  <div className="mb-8">
+                    <h4 className="text-md font-medium text-gray-800 mb-3 border-b pb-2">1. Add Structure</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                      {/* Add Subject */}
+                      <div className="border rounded-lg p-4">
+                        <h5 className="font-medium text-gray-700 mb-2">Add Subject</h5>
+                        <div className="space-y-2">
+                          <input
+                            type="text"
+                            placeholder="Subject name"
+                            value={newSubjectName}
+                            onChange={(e) => setNewSubjectName(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white"
+                          />
+                          <button
+                            onClick={addSubject}
+                            disabled={!newSubjectName.trim()}
+                            className="w-full px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+                          >
+                            Add Subject
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Add Source */}
+                      <div className="border rounded-lg p-4">
+                        <h5 className="font-medium text-gray-700 mb-2">Add Source</h5>
+                        <div className="space-y-2">
+                          <select
+                            value={selectedSubjectForSource || ''}
+                            onChange={(e) => setSelectedSubjectForSource(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white"
+                          >
+                            <option value="">Select Subject</option>
+                            {qbankStructure.map((subject: any) => (
+                              <option key={subject.key || subject.id} value={subject.key || subject.id}>{subject.label}</option>
+                            ))}
+                          </select>
+                          <input
+                            type="text"
+                            placeholder="Source name"
+                            value={newSourceName}
+                            onChange={(e) => setNewSourceName(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white"
+                          />
+                          <button
+                            onClick={addSource}
+                            disabled={!selectedSubjectForSource || !newSourceName.trim()}
+                            className="w-full px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50"
+                          >
+                            Add Source
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Add Lecture */}
+                      <div className="border rounded-lg p-4">
+                        <h5 className="font-medium text-gray-700 mb-2">Add Lecture</h5>
+                        <div className="space-y-2">
+                          <select
+                            value={selectedSubjectForLecture || ''}
+                            onChange={(e) => setSelectedSubjectForLecture(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white"
+                          >
+                            <option value="">Select Subject</option>
+                            {qbankStructure.map((subject: any) => (
+                              <option key={subject.key || subject.id} value={subject.key || subject.id}>{subject.label}</option>
+                            ))}
+                          </select>
+                          <input
+                            type="text"
+                            placeholder="Lecture name"
+                            value={newLectureName}
+                            onChange={(e) => setNewLectureName(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white"
+                          />
+                          <button
+                            onClick={addLecture}
+                            disabled={!selectedSubjectForLecture || !newLectureName.trim()}
+                            className="w-full px-3 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50"
+                          >
+                            Add Lecture
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Add Topic */}
+                      <div className="border rounded-lg p-4">
+                        <h5 className="font-medium text-gray-700 mb-2">Add Topic</h5>
+                        <div className="space-y-2">
+                          <select
+                            value={selectedLectureForTopic || ''}
+                            onChange={(e) => setSelectedLectureForTopic(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white"
+                          >
+                            <option value="">Select Lecture</option>
+                            {qbankStructure.map((subject: any) => 
+                              (subject.lectures || []).map((lecture: any) => (
+                                <option key={lecture.id || lecture.title} value={lecture.id || lecture.title}>{subject.label} - {lecture.title}</option>
+                              ))
+                            ).flat()}
+                          </select>
+                          <input
+                            type="text"
+                            placeholder="Topic name"
+                            value={newTopicName}
+                            onChange={(e) => setNewTopicName(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white"
+                          />
+                          <button
+                            onClick={addTopic}
+                            disabled={!selectedLectureForTopic || !newTopicName.trim()}
+                            className="w-full px-3 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 disabled:opacity-50"
+                          >
+                            Add Topic
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Section 2: Import Questions */}
+                  <div className="mb-8">
+                    <h4 className="text-md font-medium text-gray-800 mb-3 border-b pb-2">2. Import Questions</h4>
+                    <div className="border rounded-lg p-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                        <select
+                          value={importSubject || ''}
+                          onChange={(e) => setImportSubject(e.target.value)}
+                          className="px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white"
+                        >
+                          <option value="">Select Subject</option>
+                          {qbankStructure.map((subject: any) => (
+                            <option key={subject.key || subject.id} value={subject.label}>{subject.label}</option>
+                          ))}
+                        </select>
+                        <select
+                          value={importSource || ''}
+                          onChange={(e) => setImportSource(e.target.value)}
+                          className="px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white"
+                        >
+                          <option value="">Select Source</option>
+                          {qbankStructure.find((s: any) => s.label === importSubject)?.sources?.map((source: any) => (
+                            <option key={source.key || source.id} value={source.key || source.id}>{source.label}</option>
+                          )) || []}
+                        </select>
+                        <select
+                          value={importLecture || ''}
+                          onChange={(e) => setImportLecture(e.target.value)}
+                          className="px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white"
+                        >
+                          <option value="">Select Lecture</option>
+                          {qbankStructure.find((s: any) => s.label === importSubject)?.lectures?.map((lecture: any) => (
+                            <option key={lecture.id || lecture.title} value={lecture.title}>{lecture.title}</option>
+                          )) || []}
+                        </select>
+                        <select
+                          value={importTopic || ''}
+                          onChange={(e) => setImportTopic(e.target.value)}
+                          className="px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white"
+                        >
+                          <option value="">Select Topic</option>
+                          {qbankStructure.find((s: any) => s.label === importSubject)?.lectures?.find((l: any) => l.title === importLecture)?.topics?.map((topic: any) => (
+                            <option key={topic.id || topic} value={typeof topic === 'string' ? topic : topic.title}>{typeof topic === 'string' ? topic : topic.title}</option>
+                          )) || []}
+                        </select>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <input
+                          type="file"
+                          accept=".csv"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0] || null;
+                            setImportFile(file);
+                            if (file) {
+                              previewCsvFile(file);
+                            } else {
+                              setCsvPreview([]);
+                              setCsvPreviewCount(0);
+                            }
+                          }}
+                          className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white"
+                        />
+                        <button
+                          onClick={importQuestions}
+                          disabled={!importSubject || !importSource || !importLecture || !importTopic || !importFile}
+                          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+                        >
+                          Import Questions
+                        </button>
+                      </div>
+                      {csvPreviewCount > 0 && (
+                        <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                          <div className="text-sm font-medium text-blue-900 mb-2">
+                            CSV Preview: {csvPreviewCount} questions will be imported ({csvPreview[0]?.format || 'Unknown'} format)
+                          </div>
+                          {csvPreviewQuestion && (
+                            <div className="mb-3 bg-white rounded-lg border p-3">
+                              <div className="text-gray-900 font-semibold mb-2">How it will appear</div>
+                              <div className="text-black mb-3">{csvPreviewQuestion.text}</div>
+                              <div className="space-y-2">
+                                {csvPreviewQuestion.options.map((opt: string, idx: number) => (
+                                  <div key={idx} className={`p-2 border rounded ${idx === csvPreviewQuestion.correct ? 'bg-green-50 border-green-400' : 'border-gray-300'}`}>
+                                    {String.fromCharCode(65 + idx)}. {opt}
+                                  </div>
+                                ))}
+                              </div>
+                              {(csvPreviewQuestion.explanation?.correct || csvPreviewQuestion.explanation?.objective) && (
+                                <div className="mt-3 text-sm text-gray-600">
+                                  {csvPreviewQuestion.explanation.correct && (
+                                    <div className="mb-1"><span className="font-medium text-gray-800">Explanation:</span> {csvPreviewQuestion.explanation.correct}</div>
+                                  )}
+                                  {csvPreviewQuestion.explanation.objective && (
+                                    <div><span className="font-medium text-gray-800">Educational Objective:</span> {csvPreviewQuestion.explanation.objective}</div>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          )}
+                          <div className="space-y-2 max-h-40 overflow-y-auto">
+                            {csvPreview.map((item, index) => (
+                              <div key={index} className="text-xs bg-white p-2 rounded border">
+                                <div className="font-medium text-gray-900">{item.question}</div>
+                                <div className="text-gray-600 text-xs">
+                                  Options: {item.options.length} | Correct: {item.correct} | 
+                                  Explanation: {item.explanation} | Objective: {item.objective}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Section 3: Control & Manage */}
+                  <div>
+                    <h4 className="text-md font-medium text-gray-800 mb-3 border-b pb-2">3. Control & Manage</h4>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      {/* Structure Management */}
+                      <div className="border rounded-lg p-4">
+                        <h5 className="font-medium text-gray-700 mb-3">Structure Management</h5>
+                        <select
+                          value={manageSubject || ''}
+                          onChange={(e) => setManageSubject(e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white mb-3"
+                        >
+                          <option value="">Select Subject to Manage</option>
+                          {qbankStructure.map((subject: any) => (
+                            <option key={subject.key || subject.id} value={subject.key || subject.id}>{subject.label}</option>
+                          ))}
+                        </select>
+                        {manageSubject && (
+                          <div className="space-y-3">
+                            <div>
+                              <h6 className="font-medium text-gray-600 mb-2">Subject</h6>
+                              <div className="flex items-center justify-between p-2 bg-red-50 rounded">
+                                <span className="text-gray-900 font-medium">
+                                  {qbankStructure.find((s: any) => s.key === manageSubject || s.id === manageSubject)?.label}
+                                </span>
+                                <button
+                                  onClick={() => deleteSubject(manageSubject)}
+                                  className="px-2 py-1 text-xs bg-red-100 text-red-800 rounded hover:bg-red-200"
+                                >
+                                  Delete Subject
+                                </button>
+                              </div>
+                            </div>
+                            <div>
+                              <h6 className="font-medium text-gray-600 mb-2">Sources</h6>
+                              <div className="space-y-1">
+                                {qbankStructure.find((s: any) => s.key === manageSubject || s.id === manageSubject)?.sources?.map((source: any) => (
+                                  <div key={source.key || source.id} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                                    <span className="text-gray-900">{source.label}</span>
+                                    <button
+                                      onClick={() => deleteSource(manageSubject, source.key || source.id)}
+                                      className="px-2 py-1 text-xs bg-red-100 text-red-800 rounded hover:bg-red-200"
+                                    >
+                                      Delete
+                                    </button>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                            <div>
+                              <h6 className="font-medium text-gray-600 mb-2">Lectures</h6>
+                              <div className="space-y-1">
+                                {qbankStructure.find((s: any) => s.key === manageSubject || s.id === manageSubject)?.lectures?.map((lecture: any) => (
+                                  <div key={lecture.id || lecture.title} className="space-y-2">
+                                    <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                                      <span className="text-gray-900">{lecture.title}</span>
+                                      <div className="flex gap-1">
+                                        <button
+                                          onClick={() => moveLectureToTop(manageSubject, lecture.id || lecture.title)}
+                                          className="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded hover:bg-blue-200"
+                                        >
+                                          Top
+                                        </button>
+                                        <button
+                                          onClick={() => deleteLecture(manageSubject, lecture.id || lecture.title)}
+                                          className="px-2 py-1 text-xs bg-red-100 text-red-800 rounded hover:bg-red-200"
+                                        >
+                                          Delete
+                                        </button>
+                                      </div>
+                                    </div>
+                                    {/* Topics for this lecture */}
+                                    <div className="ml-4 space-y-1">
+                                      <div className="text-xs font-medium text-gray-500">Topics:</div>
+                                      {(lecture.topics || []).map((topic: any) => (
+                                        <div key={topic.id || topic} className="flex items-center justify-between p-1 bg-gray-25 rounded text-sm">
+                                          <span className="text-gray-700">{typeof topic === 'string' ? topic : topic.title}</span>
+                                          <button
+                                            onClick={() => deleteTopic(manageSubject, lecture.id || lecture.title, topic.id || topic)}
+                                            className="px-1 py-0.5 text-xs bg-red-100 text-red-800 rounded hover:bg-red-200"
+                                          >
+                                            Delete
+                                          </button>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Questions Management */}
+                      <div className="border rounded-lg p-4">
+                        <h5 className="font-medium text-gray-700 mb-3">Questions Management</h5>
+                        <div className="space-y-3">
+                          <select
+                            value={questionFilterSubject || ''}
+                            onChange={(e) => setQuestionFilterSubject(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white"
+                          >
+                            <option value="">Select Subject</option>
+                            {qbankStructure.map((subject: any) => (
+                              <option key={subject.key || subject.id} value={subject.label}>{subject.label}</option>
+                            ))}
+                          </select>
+                          <select
+                            value={questionFilterTopic || ''}
+                            onChange={(e) => setQuestionFilterTopic(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white"
+                          >
+                            <option value="">Select Topic</option>
+                            {qbankStructure.find((s: any) => s.label === questionFilterSubject)?.lectures?.map((lecture: any) => 
+                              (lecture.topics || []).map((topic: any) => (
+                                <option key={topic.id || topic} value={typeof topic === 'string' ? topic : topic.title}>{typeof topic === 'string' ? topic : topic.title}</option>
+                              ))
+                            ).flat() || []}
+                          </select>
+                          <select
+                            value={questionFilterSource || ''}
+                            onChange={(e) => setQuestionFilterSource(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white"
+                          >
+                            <option value="">Select Source (optional)</option>
+                            {qbankStructure.find((s: any) => s.label === questionFilterSubject)?.sources?.map((source: any) => (
+                              <option key={source.key || source.id} value={source.key || source.id}>{source.label}</option>
+                            )) || []}
+                          </select>
+                          <button
+                            onClick={loadFilteredQuestions}
+                            disabled={!questionFilterSubject || !questionFilterTopic || !questionFilterSource}
+                            className="w-full px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50"
+                          >
+                            Load Questions
+                          </button>
+                        </div>
+                        {filteredQuestions.length > 0 && (
+                          <div className="mt-4">
+                            <h6 className="font-medium text-gray-600 mb-2">Questions ({filteredQuestions.length})</h6>
+                            <div className="max-h-60 overflow-y-auto space-y-2">
+                              {filteredQuestions.map((q: any) => (
+                                <div key={q.id} className="p-2 bg-gray-50 rounded text-sm flex items-start justify-between gap-2">
+                                  <div className="flex-1 min-w-0">
+                                    <div className="font-medium text-gray-900 truncate">Q{q.id}: {q.text}</div>
+                                    <div className="text-gray-600">Source: {q.source} | Topic: {q.topic}</div>
+                                  </div>
+                                  <div className="flex items-center gap-2 shrink-0">
+                                    <button
+                                      onClick={async () => {
+                                        if (!confirm('Delete this question?')) return;
+                                        const res = await fetch(`/api/admin/qbank/questions/${q.id}`, { method: 'DELETE' });
+                                        if (res.ok) {
+                                          setFilteredQuestions((prev) => prev.filter((x: any) => x.id !== q.id));
+                                        }
+                                      }}
+                                      className="px-2 py-1 text-xs bg-red-100 text-red-800 rounded hover:bg-red-200"
+                                    >
+                                      Delete
+                                    </button>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}

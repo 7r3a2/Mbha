@@ -2,261 +2,28 @@
 import { useState, useEffect, useRef, Suspense } from "react";
 import { useSearchParams } from 'next/navigation';
 
-const sampleQuestions = [
-  {
-    id: 1,
-    text: `A 65-year-old man with a history of hypertension and type 2 diabetes presents with sudden onset of left-sided weakness and facial droop. A non-contrast CT scan of the head is performed. Which of the following findings would be most indicative of an acute ischemic stroke?`,
-    options: [
-      "Cerebral edema and mass effect",
-      "Hyperdense MCA sign",
-      "Intraparenchymal hemorrhage",
-      "Subarachnoid blood",
-      "Normal findings",
-    ],
-    correct: 1,
-    explanation: {
-      correct:
-        "The hyperdense MCA sign on a non-contrast CT scan represents a thrombus within the middle cerebral artery. It's an early and specific sign of ischemic stroke.",
-      incorrect: [
-        "Cerebral edema and mass effect are typically seen later in the course of a large ischemic stroke, not in the acute phase.",
-        "This indicates a hemorrhagic stroke, not an ischemic one.",
-        "This indicates a subarachnoid hemorrhage, a different type of stroke.",
-        "A CT scan can be normal in the very early hours of an ischemic stroke, but the hyperdense MCA sign is a positive finding.",
-      ],
-      objective:
-        "Recognize early signs of ischemic stroke on non-contrast CT.",
-    },
-  },
-  {
-    id: 2,
-    text: `A 28-year-old woman in her third trimester of pregnancy complains of persistent heartburn. She has tried dietary modifications without relief. Which of the following medications is considered safest for her condition?`,
-    options: [
-      "Omeprazole",
-      "Misoprostol",
-      "Sodium bicarbonate",
-      "Aluminum hydroxide",
-      "Ranitidine",
-    ],
-    correct: 3,
-    explanation: {
-      correct:
-        "Antacids like aluminum hydroxide are considered a first-line and safe option for heartburn during pregnancy as they are not systemically absorbed.",
-      incorrect: [
-        "Proton pump inhibitors like omeprazole are generally reserved for more severe cases and after other options have failed.",
-        "Misoprostol is an abortifacient and is contraindicated in pregnancy.",
-        "Sodium bicarbonate can cause metabolic alkalosis and fluid overload and should be avoided.",
-        "H2 blockers like Ranitidine are considered second-line after antacids but are generally safe.",
-      ],
-      objective:
-        "Identify safe pharmacological treatments for common ailments during pregnancy.",
-    },
-  },
-  {
-    id: 3,
-    text: "A 5-year-old child is brought to the emergency department with a 2-day history of fever, sore throat, and a 'sandpaper' like rash. On examination, he has circumoral pallor and a strawberry tongue. What is the most likely diagnosis?",
-    options: [
-      "Measles (Rubeola)",
-      "Kawasaki disease",
-      "Scarlet fever",
-      "Rubella (German Measles)",
-      "Roseola infantum",
-    ],
-    correct: 2,
-    explanation: {
-      correct:
-        "The combination of fever, pharyngitis, a sandpaper rash, circumoral pallor, and strawberry tongue are classic signs of Scarlet fever, which is caused by Group A Streptococcus.",
-      incorrect: [
-        "Measles presents with cough, coryza, conjunctivitis, and Koplik spots, followed by a maculopapular rash.",
-        "Kawasaki disease involves fever, conjunctivitis, rash, extremity changes, and lymphadenopathy, but the rash is typically not sandpaper-like and a strawberry tongue is common but the constellation fits Scarlet fever better.",
-        "Rubella presents with a milder rash and postauricular lymphadenopathy.",
-        "Roseola is characterized by high fever that resolves, followed by the appearance of a rash.",
-      ],
-      objective:
-        "Differentiate common childhood exanthems based on clinical presentation.",
-    },
-  },
-  {
-    id: 4,
-    text: "A 45-year-old woman presents with a 3-month history of fatigue, weight gain, and cold intolerance. Physical examination reveals dry skin and a goiter. Laboratory studies show an elevated TSH and low free T4. What is the most likely diagnosis?",
-    options: [
-      "Graves' disease",
-      "Hashimoto's thyroiditis",
-      "Subacute thyroiditis",
-      "Toxic multinodular goiter",
-      "Thyroid cancer",
-    ],
-    correct: 1,
-    explanation: {
-      correct:
-        "The clinical presentation of fatigue, weight gain, cold intolerance, dry skin, and goiter with elevated TSH and low free T4 is classic for hypothyroidism due to Hashimoto's thyroiditis.",
-      incorrect: [
-        "Graves' disease typically presents with hyperthyroidism (weight loss, heat intolerance, tachycardia) and elevated T4 with suppressed TSH.",
-        "Subacute thyroiditis typically presents with neck pain and transient hyperthyroidism followed by hypothyroidism.",
-        "Toxic multinodular goiter presents with hyperthyroidism, not hypothyroidism.",
-        "Thyroid cancer typically presents as a painless nodule without systemic symptoms of hypothyroidism.",
-      ],
-      objective:
-        "Recognize the clinical presentation and laboratory findings of Hashimoto's thyroiditis.",
-    },
-  },
-  {
-    id: 5,
-    text: "A 60-year-old man with a history of smoking presents with acute onset of severe chest pain that radiates to his left arm and jaw. ECG shows ST-segment elevation in leads II, III, and aVF. Which coronary artery is most likely occluded?",
-    options: [
-      "Left anterior descending artery",
-      "Left circumflex artery",
-      "Right coronary artery",
-      "Left main coronary artery",
-      "Posterior descending artery",
-    ],
-    correct: 2,
-    explanation: {
-      correct:
-        "ST-segment elevation in leads II, III, and aVF indicates an inferior wall myocardial infarction, which is typically caused by occlusion of the right coronary artery.",
-      incorrect: [
-        "Left anterior descending artery occlusion typically causes ST elevation in leads V1-V4 (anterior wall MI).",
-        "Left circumflex artery occlusion typically causes ST elevation in leads I, aVL, V5, and V6 (lateral wall MI).",
-        "Left main coronary artery occlusion would cause widespread ST elevation and is often fatal.",
-        "Posterior descending artery is a branch of the right coronary artery and would cause similar findings.",
-      ],
-      objective:
-        "Correlate ECG findings with coronary artery anatomy in acute myocardial infarction.",
-    },
-  },
-  {
-    id: 6,
-    text: "A 25-year-old woman presents with acute onset of severe lower abdominal pain and vaginal bleeding. She has a positive pregnancy test. Transvaginal ultrasound shows no intrauterine pregnancy but a complex adnexal mass. What is the most likely diagnosis?",
-    options: [
-      "Normal intrauterine pregnancy",
-      "Ectopic pregnancy",
-      "Spontaneous abortion",
-      "Ovarian cyst rupture",
-      "Pelvic inflammatory disease",
-    ],
-    correct: 1,
-    explanation: {
-      correct:
-        "The combination of positive pregnancy test, no intrauterine pregnancy on ultrasound, and complex adnexal mass is highly suggestive of ectopic pregnancy, which is a medical emergency.",
-      incorrect: [
-        "Normal intrauterine pregnancy would show a gestational sac in the uterus on ultrasound.",
-        "Spontaneous abortion would typically show products of conception in the uterus or cervical os.",
-        "Ovarian cyst rupture would not cause a positive pregnancy test.",
-        "Pelvic inflammatory disease would not cause a positive pregnancy test.",
-      ],
-      objective:
-        "Recognize the clinical presentation and diagnostic findings of ectopic pregnancy.",
-    },
-  },
-  {
-    id: 7,
-    text: "A 70-year-old man presents with progressive dyspnea and a dry cough for 3 months. Chest X-ray shows bilateral interstitial infiltrates. High-resolution CT reveals honeycombing and traction bronchiectasis. What is the most likely diagnosis?",
-    options: [
-      "Pneumonia",
-      "Pulmonary embolism",
-      "Idiopathic pulmonary fibrosis",
-      "Chronic obstructive pulmonary disease",
-      "Congestive heart failure",
-    ],
-    correct: 2,
-    explanation: {
-      correct:
-        "The clinical presentation of progressive dyspnea, dry cough, and radiographic findings of honeycombing and traction bronchiectasis is classic for idiopathic pulmonary fibrosis.",
-      incorrect: [
-        "Pneumonia typically presents with fever, productive cough, and focal infiltrates, not honeycombing.",
-        "Pulmonary embolism typically presents with acute dyspnea and chest pain, not chronic symptoms.",
-        "COPD typically presents with productive cough and airflow obstruction on spirometry.",
-        "Congestive heart failure would show cardiomegaly and pulmonary edema, not honeycombing.",
-      ],
-      objective:
-        "Recognize the clinical and radiographic features of idiopathic pulmonary fibrosis.",
-    },
-  },
-  {
-    id: 8,
-    text: "A 35-year-old woman presents with a 2-week history of fatigue, polyuria, and polydipsia. Random blood glucose is 350 mg/dL. Which of the following is the most appropriate initial treatment?",
-    options: [
-      "Oral metformin",
-      "Insulin therapy",
-      "Lifestyle modification only",
-      "Sulfonylurea",
-      "DPP-4 inhibitor",
-    ],
-    correct: 1,
-    explanation: {
-      correct:
-        "A blood glucose of 350 mg/dL with symptoms of polyuria and polydipsia indicates severe hyperglycemia requiring immediate insulin therapy to prevent diabetic ketoacidosis.",
-      incorrect: [
-        "Oral metformin is not appropriate for severe hyperglycemia and should not be used in patients with significant symptoms.",
-        "Lifestyle modification alone is insufficient for blood glucose of 350 mg/dL.",
-        "Sulfonylureas can cause hypoglycemia and are not first-line for severe hyperglycemia.",
-        "DPP-4 inhibitors are not appropriate for severe hyperglycemia.",
-      ],
-      objective:
-        "Recognize when insulin therapy is required for severe hyperglycemia.",
-    },
-  },
-  {
-    id: 9,
-    text: "A 50-year-old man presents with acute onset of severe epigastric pain that radiates to his back. Serum amylase and lipase are elevated. CT scan shows pancreatic inflammation and peripancreatic fluid collections. What is the most likely diagnosis?",
-    options: [
-      "Peptic ulcer disease",
-      "Acute pancreatitis",
-      "Cholecystitis",
-      "Gastroenteritis",
-      "Mesenteric ischemia",
-    ],
-    correct: 1,
-    explanation: {
-      correct:
-        "The combination of epigastric pain radiating to the back, elevated pancreatic enzymes, and CT findings of pancreatic inflammation is diagnostic of acute pancreatitis.",
-      incorrect: [
-        "Peptic ulcer disease typically presents with epigastric pain that is relieved by food, not radiating to the back.",
-        "Cholecystitis typically presents with right upper quadrant pain and fever.",
-        "Gastroenteritis typically presents with nausea, vomiting, and diarrhea.",
-        "Mesenteric ischemia typically presents with severe abdominal pain out of proportion to physical examination.",
-      ],
-      objective:
-        "Recognize the clinical presentation and diagnostic criteria for acute pancreatitis.",
-    },
-  },
-  {
-    id: 10,
-    text: "A 65-year-old woman presents with a 6-month history of progressive memory loss and difficulty with daily activities. She frequently misplaces items and has trouble following conversations. What is the most likely diagnosis?",
-    options: [
-      "Major depressive disorder",
-      "Alzheimer's disease",
-      "Vascular dementia",
-      "Lewy body dementia",
-      "Frontotemporal dementia",
-    ],
-    correct: 1,
-    explanation: {
-      correct:
-        "The gradual onset of memory loss, difficulty with daily activities, and problems with object location and conversation following are classic features of Alzheimer's disease.",
-      incorrect: [
-        "Major depressive disorder typically presents with mood symptoms, not progressive cognitive decline.",
-        "Vascular dementia typically has a stepwise progression and focal neurological signs.",
-        "Lewy body dementia typically presents with visual hallucinations and parkinsonism.",
-        "Frontotemporal dementia typically presents with personality changes and language difficulties.",
-      ],
-      objective:
-        "Recognize the clinical presentation of Alzheimer's disease.",
-    },
-  },
-];
+// Sample questions removed - will fetch from database
 
-// Function to generate questions based on count
-const generateQuestions = (count: number) => {
-  const questions = [];
-  for (let i = 0; i < count; i++) {
-    const sample = sampleQuestions[i % sampleQuestions.length];
-    questions.push({
-      ...sample,
-      id: i + 1,
-      text: `Q${i + 1}: ${sample.text}`,
+// Function to fetch questions from database
+const fetchQuestions = async (sources: string, topics: string, count: number) => {
+  try {
+    const params = new URLSearchParams({
+      sources,
+      topics,
+      count: count.toString()
     });
+    
+    const response = await fetch(`/api/qbank/questions?${params}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch questions');
+    }
+    
+    const data = await response.json();
+    return data.questions || [];
+  } catch (error) {
+    console.error('Error fetching questions:', error);
+    return [];
   }
-  return questions;
 };
 
 function QuizPageContent() {
@@ -264,12 +31,17 @@ function QuizPageContent() {
   const questionCount = parseInt(searchParams.get('count') || '20');
   const testMode = searchParams.get('mode') || 'study'; // 'exam' or 'study'
   const customTimeMinutes = parseInt(searchParams.get('time') || '60'); // Default 60 minutes if not provided
-  const questions = generateQuestions(questionCount);
+  const sources = searchParams.get('sources') || '';
+  const topics = searchParams.get('topics') || '';
+  
+  const [questions, setQuestions] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [answers, setAnswers] = useState<number[]>(new Array(questions.length).fill(null));
-  const [flagged, setFlagged] = useState<boolean[]>(new Array(questions.length).fill(false));
-  const [submitted, setSubmitted] = useState<boolean[]>(new Array(questions.length).fill(false));
+  const [answers, setAnswers] = useState<number[]>([]);
+  const [flagged, setFlagged] = useState<boolean[]>([]);
+  const [submitted, setSubmitted] = useState<boolean[]>([]);
   const [timeLeft, setTimeLeft] = useState(testMode === 'exam' ? customTimeMinutes * 60 : 0); // Custom time for exam mode, no timer for study mode
   const [startTime, setStartTime] = useState(Date.now()); // Track when exam started
   const [endTime, setEndTime] = useState<number | null>(null); // Track when exam ended
@@ -285,10 +57,33 @@ function QuizPageContent() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const explanationRef = useRef<HTMLDivElement>(null);
 
-  const currentQuestion = questions[currentQuestionIndex];
-  const userAnswer = answers[currentQuestionIndex];
-  const isSubmitted = submitted[currentQuestionIndex];
-  const isCorrect = userAnswer === currentQuestion.correct;
+  // Fetch questions from database
+  useEffect(() => {
+    const loadQuestions = async () => {
+      setLoading(true);
+      setError(null);
+      
+      try {
+        const fetchedQuestions = await fetchQuestions(sources, topics, questionCount);
+        if (fetchedQuestions.length === 0) {
+          setError('No questions found for the selected criteria. Please try different sources or topics.');
+        } else {
+          // Shuffle questions randomly
+          const shuffled = [...fetchedQuestions].sort(() => Math.random() - 0.5);
+          setQuestions(shuffled);
+        }
+      } catch (err) {
+        setError('Failed to load questions. Please try again.');
+        console.error('Error loading questions:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadQuestions();
+  }, [sources, topics, questionCount]);
+
+  // Defer deriving current question until after loading/error/empty guards
 
   useEffect(() => {
     // Only start timer for exam mode
@@ -313,16 +108,6 @@ function QuizPageContent() {
     }, 1000);
     return () => clearInterval(timer);
   }, [testMode, questions, answers]);
-
-  // Reset state arrays when question count changes
-  useEffect(() => {
-    setAnswers(new Array(questions.length).fill(null));
-    setFlagged(new Array(questions.length).fill(false));
-    setSubmitted(new Array(questions.length).fill(false));
-    setCurrentQuestionIndex(0);
-    setShowExplanation(false);
-    setTimeLeft(testMode === 'exam' ? customTimeMinutes * 60 : 0); // Custom time for exam mode, no timer for study mode
-  }, [questions.length, testMode, customTimeMinutes]);
 
   // Highlighter functionality
   const [highlighterActive, setHighlighterActive] = useState(false);
@@ -515,7 +300,7 @@ function QuizPageContent() {
     if (currentQuestionIndex > 0) goToQuestion(currentQuestionIndex - 1);
   };
   const selectAnswer = (optionIndex: number) => {
-    if (!isSubmitted) {
+    if (!submitted[currentQuestionIndex]) {
       const newAnswers = [...answers];
       newAnswers[currentQuestionIndex] = optionIndex;
       setAnswers(newAnswers);
@@ -525,7 +310,8 @@ function QuizPageContent() {
     }
   };
   const submitAnswer = () => {
-    if (userAnswer !== null) {
+    const currentUserAnswer = answers[currentQuestionIndex];
+    if (currentUserAnswer !== null && currentUserAnswer !== undefined) {
       const newSubmitted = [...submitted];
       newSubmitted[currentQuestionIndex] = true;
       setSubmitted(newSubmitted);
@@ -597,48 +383,97 @@ function QuizPageContent() {
 
   // Navigation button color logic
   const getNavButtonState = (index: number) => {
-    // Only show colors after submitting answers
+    // Only show colors before submission
     if (!submitted[index]) {
-      // Check if flagged (highest priority - overrides everything including current question)
       if (flagged[index]) {
         return "bg-orange-100 border-orange-500 text-orange-700";
       }
-      
-      // Check if current question
+      // Current question: blue stroke, blue text
       if (index === currentQuestionIndex) {
-        if (testMode === 'exam') {
-          return "bg-white border-blue-500 text-blue-700";
-        }
-        return "bg-blue-100 border-blue-500 text-blue-700";
+        return "bg-white border-blue-600 text-blue-700";
       }
-      
-      // Check if answered but not submitted
+      // Answered but not submitted: keep default gray (no blue)
       if (answers[index] !== null) {
-        if (testMode === 'exam') {
-          return "bg-white border-blue-500 text-blue-700";
-        }
-        return "bg-blue-100 border-blue-500 text-blue-700";
+        return "bg-white border-gray-300 text-gray-700";
       }
-      
-      // Default state
-      return "bg-white border-gray-300 text-gray-700 hover:bg-gray-50";
+      // Default: gray
+      return "bg-white border-gray-300 text-gray-700";
     }
-    
-    // After submitting, show answer colors based on mode (flagged status is secondary to answer status)
+    // After submit
     if (answers[index] !== null) {
       if (testMode === 'exam') {
-        // Exam mode: full blue background for answered
         return "bg-blue-500 border-blue-600 text-white";
-      } else {
-        // Study mode: show correct/incorrect colors
-        const isCorrect = answers[index] === questions[index].correct;
-        return isCorrect ? "bg-green-100 border-green-500 text-green-700" : "bg-red-100 border-red-500 text-red-700";
       }
+      const isCorrect = answers[index] === questions[index].correct;
+      return isCorrect ? "bg-green-100 border-green-500 text-green-700" : "bg-red-100 border-red-500 text-red-700";
     }
-    
-    // Default state
-    return "bg-white border-gray-300 text-gray-700 hover:bg-gray-50";
+    return "bg-white border-gray-300 text-gray-700";
   };
+
+  // Derive current question only when we have questions
+  const currentQuestion = questions[currentQuestionIndex];
+  const userAnswer = answers[currentQuestionIndex];
+  const isSubmitted = submitted[currentQuestionIndex];
+  const isCorrect = currentQuestion ? userAnswer === currentQuestion.correct : false;
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="flex h-screen bg-gray-100 items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">Loading Questions...</h2>
+          <p className="text-gray-600">Please wait while we fetch your questions from the database.</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="flex h-screen bg-gray-100 items-center justify-center">
+        <div className="text-center max-w-md mx-auto p-6">
+          <div className="text-red-500 mb-4">
+            <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">No Questions Available</h2>
+          <p className="text-gray-600 mb-6">{error}</p>
+          <button
+            onClick={() => window.location.href = "/qbank"}
+            className="bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors duration-200"
+          >
+            Back to QBank
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Show empty state if no questions
+  if (questions.length === 0) {
+    return (
+      <div className="flex h-screen bg-gray-100 items-center justify-center">
+        <div className="text-center max-w-md mx-auto p-6">
+          <div className="text-gray-500 mb-4">
+            <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">No Questions Found</h2>
+          <p className="text-gray-600 mb-6">No questions match your selected criteria. Please try different sources or topics.</p>
+          <button
+            onClick={() => window.location.href = "/qbank"}
+            className="bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors duration-200"
+          >
+            Back to QBank
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen bg-gray-100 quiz-page">
@@ -1032,7 +867,10 @@ function QuizPageContent() {
               <div className={`bg-white p-3 sm:p-4 md:p-8 rounded-2xl shadow-xl border border-gray-200 flex flex-col min-h-0 transition-all duration-300 ${showExplanation && testMode === 'study' ? "w-1/2" : "w-full"}`}>
                 <div className="flex justify-between items-start mb-4 sm:mb-6">
                   <div>
-                    <span className="text-lg sm:text-2xl font-bold text-black">Q#{currentQuestion.id}</span>
+                    <span className="text-lg sm:text-2xl font-bold text-black">Q#{currentQuestionIndex + 1}</span>
+                    {currentQuestion.source && (
+                      <div className="text-sm text-gray-600 mt-1">Source: <span className="font-medium text-gray-800">{currentQuestion.source}</span></div>
+                    )}
                   </div>
                   <div className="flex items-center space-x-2 sm:space-x-4">
                     {/* Calculator */}
@@ -1167,7 +1005,7 @@ function QuizPageContent() {
                     {currentQuestion.text}
                   </div>
                   <div className="space-y-4">
-                    {currentQuestion.options.map((option, index) => (
+                    {currentQuestion.options.map((option: string, index: number) => (
                       <div
                         key={index}
                         className={`flex items-center p-4 border rounded-lg cursor-pointer transition-all duration-200 ${
@@ -1295,7 +1133,7 @@ function QuizPageContent() {
                                               <div className="p-4">
                           <p className="text-black font-semibold" style={{ fontSize: `${fontSize}px` }}>Incorrect Options:</p>
                           <div className="space-y-2 mt-2 text-black">
-                            {currentQuestion.options.map((opt, i) => {
+                            {currentQuestion.options.map((opt: string, i: number) => {
                               if (i !== currentQuestion.correct) {
                                 const incorrectExplanationIndex = i > currentQuestion.correct ? i - 1 : i;
                                 const explanationText = currentQuestion.explanation.incorrect[incorrectExplanationIndex] || "Explanation not available.";
@@ -1524,7 +1362,7 @@ function QuizPageContent() {
             {/* Content */}
             <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
               <div className="space-y-6">
-                {questions.map((question, index) => {
+                {questions.map((question: any, index: number) => {
                   const userAnswer = answers[index];
                   const isCorrect = userAnswer === question.correct;
                   const isAnswered = userAnswer !== null;
@@ -1572,7 +1410,7 @@ function QuizPageContent() {
 
                       {/* Options */}
                       <div className="space-y-2">
-                        {question.options.map((option, optionIndex) => {
+                        {question.options.map((option: string, optionIndex: number) => {
                           const isUserChoice = userAnswer === optionIndex;
                           const isCorrectAnswer = optionIndex === question.correct;
                           
@@ -1653,12 +1491,11 @@ function QuizPageContent() {
       )}
     </div>
   );
-}
-
-export default function QuizPage() {
+}export default function QuizPage() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <QuizPageContent />
     </Suspense>
   );
 }
+

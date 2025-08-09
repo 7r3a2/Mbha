@@ -1,0 +1,25 @@
+[
+  {
+    "key": "1754739107645",
+    "label": "subject 1",
+    "color": "#0072b7",
+    "sources": [
+      {
+        "key": "1754739112532",
+        "label": "source 1"
+      },
+      {
+        "key": "1754741088875",
+        "label": "source 2"
+      }
+    ],
+    "lectures": [
+      {
+        "title": "lecture 1",
+        "topics": [
+          "topic 1"
+        ]
+      }
+    ]
+  }
+]

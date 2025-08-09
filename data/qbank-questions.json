@@ -1,0 +1,572 @@
+[
+  {
+    "id": 1,
+    "subject": "Obstetrics & Gynecology",
+    "source": "APGO",
+    "lecture": "Basic sign and normal pregnancy",
+    "topic": "Physiological changes in pregnancy",
+    "text": "What is the most common cause of abnormal uterine bleeding in reproductive-age women?",
+    "options": [
+      "Uterine fibroids",
+      "Endometrial polyps",
+      "Adenomyosis",
+      "Endometrial hyperplasia"
+    ],
+    "correct": 0,
+    "explanation": {
+      "correct": "Uterine fibroids are the most common cause of abnormal uterine bleeding in reproductive-age women, affecting 20-40% of women.",
+      "incorrect": [
+        "Endometrial polyps are less common and typically cause intermenstrual bleeding rather than heavy menstrual bleeding.",
+        "Adenomyosis causes heavy and painful periods but is less common than fibroids.",
+        "Endometrial hyperplasia is a precancerous condition that can cause bleeding but is less common than fibroids."
+      ],
+      "objective": "Understand the differential diagnosis of abnormal uterine bleeding in reproductive-age women."
+    }
+  },
+  {
+    "id": 2,
+    "subject": "Obstetrics & Gynecology",
+    "source": "ACOG",
+    "lecture": "Maternal Medicine",
+    "topic": "D.M. in pregnancy",
+    "text": "Which of the following is the gold standard for diagnosing endometrial cancer?",
+    "options": [
+      "Transvaginal ultrasound",
+      "Endometrial biopsy",
+      "Hysteroscopy",
+      "CA-125 level"
+    ],
+    "correct": 1,
+    "explanation": {
+      "correct": "Endometrial biopsy is the gold standard for diagnosing endometrial cancer as it provides tissue for histopathological examination.",
+      "incorrect": [
+        "Transvaginal ultrasound can show endometrial thickness but cannot definitively diagnose cancer.",
+        "Hysteroscopy allows direct visualization but biopsy is still needed for definitive diagnosis.",
+        "CA-125 is a tumor marker but is not specific for endometrial cancer."
+      ],
+      "objective": "Know the diagnostic approach for endometrial cancer evaluation."
+    }
+  },
+  {
+    "id": 3,
+    "subject": "test",
+    "source": "tesst",
+    "lecture": "sss",
+    "topic": "haha",
+    "text": "A woman requesting induction of labour, as she is at 41 weeks. A relative contraindication for induction of labour includes which one of the followings?",
+    "options": [
+      "Prolonged pregnancy",
+      "Severe pre-eclampsia",
+      "Intrauterine growth restriction",
+      "Previous myomectomy entering the uterine cavity at the fundus",
+      "Prolonged rupture of membranes without labor"
+    ],
+    "correct": 2,
+    "explanation": {
+      "correct": "A history of myomectomy that involved entry into the uterine cavity, particularly in the fundal region, carries a significant risk of uterine rupture during labor, especially when uterotonic agents are used for induction. This makes it a relative contraindication to labor induction. In most cases, elective cesarean section is recommended.",
+      "incorrect": [
+        "Prolonged pregnancy – ❌ Indication, not a contraindication. Induction is recommended at or after 41 weeks to prevent stillbirth and other complications.",
+        "Severe pre-eclampsia – ❌ Indication for delivery. Induction is often initiated to reduce maternal and fetal risk.",
+        "Intrauterine growth restriction – ❌ Indication for delivery, especially if fetal testing is non-reassuring or growth is severely restricted.",
+        "Prolonged rupture of membranes without labor – ❌ Indication to reduce the risk of intrauterine infection (e.g., chorioamnionitis), especially if the patient is Group B Strep positive."
+      ],
+      "objective": "A previous myomectomy involving the uterine cavity is a relative contraindication to labor induction, particularly with prostaglandins or oxytocin, due to the risk of uterine rupture. Most other options listed are clear indications for induction of labor."
+    }
+  },
+  {
+    "id": 4,
+    "subject": "test",
+    "source": "tesst",
+    "lecture": "sss",
+    "topic": "haha",
+    "text": "A 25-years-old primigravida at 37 weeks presented with decrease fetal movement. Non stress test was done 2 times in the labour room and it was non-reactive. The doctor arranged for biophysical profiles test. Which of the following is not part of this test?",
+    "options": [
+      "Fetal tone",
+      "Fetal breathing",
+      "Fetal body movement",
+      "Contraction stress test",
+      "Amniotic fluid volume measurement"
+    ],
+    "correct": 2,
+    "explanation": {
+      "correct": "The biophysical profile (BPP) is a test used to assess fetal well-being, especially when concerns arise from a non-reactive NST or decreased fetal movements. It combines ultrasound evaluation with a non-stress test to evaluate five parameters, each scored as 0 or 2:\n\nNST (reactive = 2 points)\n\nFetal tone\n\nFetal breathing movements\n\nFetal body movements\n\nAmniotic fluid volume\n\nA score of 8–10 is considered reassuring; ≤4 suggests fetal hypoxia or acidosis and may warrant immediate delivery depending on gestational age.",
+      "incorrect": [
+        "Prolonged pregnancy – ❌ Indication, not a contraindication. Induction is recommended at or after 41 weeks to prevent stillbirth and other complications.",
+        "Severe pre-eclampsia – ❌ Indication for delivery. Induction is often initiated to reduce maternal and fetal risk.",
+        "Intrauterine growth restriction – ❌ Indication for delivery, especially if fetal testing is non-reassuring or growth is severely restricted.",
+        "Prolonged rupture of membranes without labor – ❌ Indication to reduce the risk of intrauterine infection (e.g., chorioamnionitis), especially if the patient is Group B Strep positive."
+      ],
+      "objective": "The biophysical profile (BPP) is a comprehensive test used to evaluate fetal well-being and includes: NST, fetal tone, fetal breathing movements, fetal body movements, and amniotic fluid volume. The contraction stress test is a separate test that evaluates the fetal heart rate response to uterine contractions and is not part of the BPP."
+    }
+  },
+  {
+    "id": 5,
+    "subject": "test",
+    "source": "tesst",
+    "lecture": "sss",
+    "topic": "haha",
+    "text": "A 36-year-old multiparous woman presented at 37 weeks of gestation to the emergency department with a history of vaginal bleeding since the last two hours. She reports good fetal movement. On examination, she had a soft abdomen with blood pressure of 110/80 mmHg. Considering this presentation, what is the most likely diagnosis?",
+    "options": [
+      "Placental abruption",
+      "Placenta previa",
+      "Uterine rupture",
+      "Vasa previa",
+      "Preterm labor"
+    ],
+    "correct": 0,
+    "explanation": {
+      "correct": "Placenta previa refers to the implantation of the placenta over or near the cervical os. It typically presents with:\n\nPainless vaginal bleeding in the third trimester\n\nA soft, non-tender uterus\n\nStable maternal vital signs\n\nNo signs of fetal distress, especially in early presentation\n\nThis patient's profile (painless third-trimester bleeding, soft abdomen, stable vitals, reassuring fetal movement) is classic for placenta previa.",
+      "incorrect": [
+        "Prolonged pregnancy – ❌ Indication, not a contraindication. Induction is recommended at or after 41 weeks to prevent stillbirth and other complications.",
+        "Severe pre-eclampsia – ❌ Indication for delivery. Induction is often initiated to reduce maternal and fetal risk.",
+        "Intrauterine growth restriction – ❌ Indication for delivery, especially if fetal testing is non-reassuring or growth is severely restricted.",
+        "Prolonged rupture of membranes without labor – ❌ Indication to reduce the risk of intrauterine infection (e.g., chorioamnionitis), especially if the patient is Group B Strep positive."
+      ],
+      "objective": "Placenta previa should be suspected in any pregnant woman beyond 20 weeks gestation who presents with painless vaginal bleeding and a soft, non-tender uterus. Diagnosis is confirmed via transabdominal or transvaginal ultrasound, and digital vaginal exams are contraindicated until placenta previa is ruled out."
+    }
+  },
+  {
+    "id": 6,
+    "subject": "test",
+    "source": "tesst",
+    "lecture": "sss",
+    "topic": "haha",
+    "text": "A patient has just delivered her first twin vaginally at 37 weeks. PV reveals a fully dilated cervix and a shoulder presenting second twin with a bulging amniotic sac. Fetal heart rate is reassuring. The best management is?",
+    "options": [
+      "Amniotomy and oxytocin",
+      "External cephalic version and wait for spontaneous cephalic delivery",
+      "Amniotomy, internal podalic version and breech extraction",
+      "Immediate CS",
+      "No action and wait for spontaneous expulsion"
+    ],
+    "correct": 1,
+    "explanation": {
+      "correct": "In the setting of a shoulder presentation (transverse lie) of the second twin after the first twin has been delivered vaginally, and with a fully dilated cervix and intact membranes, the most appropriate and time-sensitive management is:\n\nAmniotomy (to rupture membranes)\n\nInternal podalic version (manual repositioning to breech by grasping a fetal foot)\n\nBreech extraction (immediate delivery after version)\n\nThis approach is preferred and safe in experienced hands when the second twin is non-cephalic and accessible. Since the first twin is already delivered, and the cervix is fully dilated, rapid delivery of the second twin is often indicated to prevent complications such as cord prolapse or uterine atony.",
+      "incorrect": [
+        "Prolonged pregnancy – ❌ Indication, not a contraindication. Induction is recommended at or after 41 weeks to prevent stillbirth and other complications.",
+        "Severe pre-eclampsia – ❌ Indication for delivery. Induction is often initiated to reduce maternal and fetal risk.",
+        "Intrauterine growth restriction – ❌ Indication for delivery, especially if fetal testing is non-reassuring or growth is severely restricted.",
+        "Prolonged rupture of membranes without labor – ❌ Indication to reduce the risk of intrauterine infection (e.g., chorioamnionitis), especially if the patient is Group B Strep positive."
+      ],
+      "objective": "In twin deliveries, when the second twin is in a transverse lie after vaginal delivery of the first twin, and the cervix is fully dilated with intact membranes, the recommended management is amniotomy followed by internal podalic version and breech extraction, provided there are no contraindications and experienced personnel are available."
+    }
+  },
+  {
+    "id": 7,
+    "subject": "test",
+    "source": "tesst",
+    "lecture": "sss",
+    "topic": "haha",
+    "text": "A pregnant woman with intramural fibroid in the uterus develops acute severe local pain in abdomen with low grade fever and mild elevation in WBC count, at 28 weeks gestation. The most likely diagnosis:",
+    "options": [
+      "Preterm labour.",
+      "Torsion of the fibroid.",
+      "Red degeneration of fibroid.",
+      "Infection of fibroid.",
+      "Calcification of fibroid"
+    ],
+    "correct": 1,
+    "explanation": {
+      "correct": "Red degeneration (carneous degeneration) is a common complication of fibroids during pregnancy, particularly in the second and third trimesters. It is caused by venous thrombosis and hemorrhagic infarction within the fibroid due to rapid growth and compromised blood supply.\n\nClinical features include:\n\nSudden onset localized abdominal pain\n\nLow-grade fever\n\nLeukocytosis\n\nTender fibroid mass",
+      "incorrect": [
+        "Prolonged pregnancy – ❌ Indication, not a contraindication. Induction is recommended at or after 41 weeks to prevent stillbirth and other complications.",
+        "Severe pre-eclampsia – ❌ Indication for delivery. Induction is often initiated to reduce maternal and fetal risk.",
+        "Intrauterine growth restriction – ❌ Indication for delivery, especially if fetal testing is non-reassuring or growth is severely restricted.",
+        "Prolonged rupture of membranes without labor – ❌ Indication to reduce the risk of intrauterine infection (e.g., chorioamnionitis), especially if the patient is Group B Strep positive."
+      ],
+      "objective": "Red degeneration is the most common fibroid-related complication during pregnancy, presenting with acute pain, low-grade fever, and localized tenderness. It is usually self-limiting and managed conservatively with analgesics and observation."
+    }
+  },
+  {
+    "id": 8,
+    "subject": "test",
+    "source": "tesst",
+    "lecture": "sss",
+    "topic": "haha",
+    "text": "A pregnant woman at term presents to the labor and delivery unit experiencing contractions. The healthcare team assesses her to determine if she is in true labor. Which of the following criteria would support the diagnosis of true labor?",
+    "options": [
+      "Regular contractions that are relieved by rest and hydration",
+      "Cervical dilation progressing at a rate of 1 cm per hour in active phase of labor.",
+      "Foetal heart rate variability observed during contractions",
+      "Absence of bloody show or mucus discharge",
+      "Contractions that decrease in intensity with walking or position changes"
+    ],
+    "correct": 0,
+    "explanation": {
+      "correct": "True labor is defined by regular, painful uterine contractions that lead to progressive cervical dilation and effacement. In the active phase (typically >6 cm dilation), cervical dilation progresses at approximately 1 cm/hour.",
+      "incorrect": [
+        "Prolonged pregnancy – ❌ Indication, not a contraindication. Induction is recommended at or after 41 weeks to prevent stillbirth and other complications.",
+        "Severe pre-eclampsia – ❌ Indication for delivery. Induction is often initiated to reduce maternal and fetal risk.",
+        "Intrauterine growth restriction – ❌ Indication for delivery, especially if fetal testing is non-reassuring or growth is severely restricted.",
+        "Prolonged rupture of membranes without labor – ❌ Indication to reduce the risk of intrauterine infection (e.g., chorioamnionitis), especially if the patient is Group B Strep positive."
+      ],
+      "objective": "True labor is characterized by regular, painful contractions leading to progressive cervical dilation and effacement, typically with no relief from rest or hydration. Cervical change is the most reliable indicator."
+    }
+  },
+  {
+    "id": 9,
+    "subject": "test",
+    "source": "2",
+    "lecture": "sss",
+    "topic": "haha",
+    "text": "A woman requesting induction of labour, as she is at 41 weeks. A relative contraindication for induction of labour includes which one of the followings?",
+    "options": [
+      "Prolonged pregnancy",
+      "Severe pre-eclampsia",
+      "Intrauterine growth restriction",
+      "Previous myomectomy entering the uterine cavity at the fundus",
+      "Prolonged rupture of membranes without labor"
+    ],
+    "correct": 2,
+    "explanation": {
+      "correct": "A history of myomectomy that involved entry into the uterine cavity, particularly in the fundal region, carries a significant risk of uterine rupture during labor, especially when uterotonic agents are used for induction. This makes it a relative contraindication to labor induction. In most cases, elective cesarean section is recommended.\n\nWhy the other options are incorrect:\nA. Prolonged pregnancy – ❌ Indication, not a contraindication. Induction is recommended at or after 41 weeks to prevent stillbirth and other complications.\n\nB. Severe pre-eclampsia – ❌ Indication for delivery. Induction is often initiated to reduce maternal and fetal risk.\n\nC. Intrauterine growth restriction – ❌ Indication for delivery, especially if fetal testing is non-reassuring or growth is severely restricted.\n\nE. Prolonged rupture of membranes without labor – ❌ Indication to reduce the risk of intrauterine infection (e.g., chorioamnionitis), especially if the patient is Group B Strep positive.\n\nEducational Objective:\nA previous myomectomy involving the uterine cavity is a relative contraindication to labor induction, particularly with prostaglandins or oxytocin, due to the risk of uterine rupture. Most other options listed are clear indications for induction of labor.",
+      "incorrect": [
+        "Prolonged pregnancy – ❌ Indication, not a contraindication. Induction is recommended at or after 41 weeks to prevent stillbirth and other complications.",
+        "Severe pre-eclampsia – ❌ Indication for delivery. Induction is often initiated to reduce maternal and fetal risk.",
+        "Intrauterine growth restriction – ❌ Indication for delivery, especially if fetal testing is non-reassuring or growth is severely restricted.",
+        "Prolonged rupture of membranes without labor – ❌ Indication to reduce the risk of intrauterine infection (e.g., chorioamnionitis), especially if the patient is Group B Strep positive."
+      ],
+      "objective": "A previous myomectomy involving the uterine cavity is a relative contraindication to labor induction, particularly with prostaglandins or oxytocin, due to the risk of uterine rupture. Most other options listed are clear indications for induction of labor."
+    }
+  },
+  {
+    "id": 10,
+    "subject": "test",
+    "source": "2",
+    "lecture": "sss",
+    "topic": "haha",
+    "text": "A 25-years-old primigravida at 37 weeks presented with decrease fetal movement. Non stress test was done 2 times in the labour room and it was non-reactive. The doctor arranged for biophysical profiles test. Which of the following is not part of this test?",
+    "options": [
+      "Fetal tone",
+      "Fetal breathing",
+      "Fetal body movement",
+      "Contraction stress test",
+      "Amniotic fluid volume measurement"
+    ],
+    "correct": 2,
+    "explanation": {
+      "correct": "The biophysical profile (BPP) is a test used to assess fetal well-being, especially when concerns arise from a non-reactive NST or decreased fetal movements. It combines ultrasound evaluation with a non-stress test to evaluate five parameters, each scored as 0 or 2:\n\nNST (reactive = 2 points)\n\nFetal tone\n\nFetal breathing movements\n\nFetal body movements\n\nAmniotic fluid volume\n\nA score of 8–10 is considered reassuring; ≤4 suggests fetal hypoxia or acidosis and may warrant immediate delivery depending on gestational age.\n\nWhy the other options are incorrect:\nA. Fetal tone – ❌ Included in BPP. Assesses flexion and extension of fetal limbs/spine.\n\nB. Fetal breathing – ❌ Included in BPP. Evaluates for at least one episode of breathing motion lasting ≥30 seconds.\n\nC. Fetal body movement – ❌ Included in BPP. Looks for gross movements such as trunk or limb motion.\n\nE. Amniotic fluid volume measurement – ❌ Included in BPP. Adequate volume (usually a single pocket ≥2 cm) suggests normal placental function.\n\nEducational Objective:\nThe biophysical profile (BPP) is a comprehensive test used to evaluate fetal well-being and includes: NST, fetal tone, fetal breathing movements, fetal body movements, and amniotic fluid volume. The contraction stress test is a separate test that evaluates the fetal heart rate response to uterine contractions and is not part of the BPP.",
+      "incorrect": [
+        "Prolonged pregnancy – ❌ Indication, not a contraindication. Induction is recommended at or after 41 weeks to prevent stillbirth and other complications.",
+        "Severe pre-eclampsia – ❌ Indication for delivery. Induction is often initiated to reduce maternal and fetal risk.",
+        "Intrauterine growth restriction – ❌ Indication for delivery, especially if fetal testing is non-reassuring or growth is severely restricted.",
+        "Prolonged rupture of membranes without labor – ❌ Indication to reduce the risk of intrauterine infection (e.g., chorioamnionitis), especially if the patient is Group B Strep positive."
+      ],
+      "objective": "The biophysical profile (BPP) is a comprehensive test used to evaluate fetal well-being and includes: NST, fetal tone, fetal breathing movements, fetal body movements, and amniotic fluid volume. The contraction stress test is a separate test that evaluates the fetal heart rate response to uterine contractions and is not part of the BPP."
+    }
+  },
+  {
+    "id": 11,
+    "subject": "test",
+    "source": "2",
+    "lecture": "sss",
+    "topic": "haha",
+    "text": "A 36-year-old multiparous woman presented at 37 weeks of gestation to the emergency department with a history of vaginal bleeding since the last two hours. She reports good fetal movement. On examination, she had a soft abdomen with blood pressure of 110/80 mmHg. Considering this presentation, what is the most likely diagnosis?",
+    "options": [
+      "Placental abruption",
+      "Placenta previa",
+      "Uterine rupture",
+      "Vasa previa",
+      "Preterm labor"
+    ],
+    "correct": 0,
+    "explanation": {
+      "correct": "Placenta previa refers to the implantation of the placenta over or near the cervical os. It typically presents with:\n\nPainless vaginal bleeding in the third trimester\n\nA soft, non-tender uterus\n\nStable maternal vital signs\n\nNo signs of fetal distress, especially in early presentation\n\nThis patient's profile (painless third-trimester bleeding, soft abdomen, stable vitals, reassuring fetal movement) is classic for placenta previa.\n\nWhy the other options are incorrect:\nA. Placental abruption – ❌ Typically presents with painful vaginal bleeding, a firm or tender uterus, and often non-reassuring fetal status (e.g., decreased movement or abnormal heart rate).\n\nC. Uterine rupture – ❌ Presents with sudden, severe abdominal pain, loss of fetal station, and abnormal fetal heart patterns, especially in women with a history of uterine surgery.\n\nD. Vasa previa – ❌ Usually presents with painless bleeding after rupture of membranes, and the bleeding is fetal in origin, often accompanied by fetal bradycardia or demise.\n\nE. Preterm labor – ❌ May have vaginal bleeding, but typically associated with uterine contractions and cervical dilation, which are not mentioned here.\n\nEducational Objective:\nPlacenta previa should be suspected in any pregnant woman beyond 20 weeks gestation who presents with painless vaginal bleeding and a soft, non-tender uterus. Diagnosis is confirmed via transabdominal or transvaginal ultrasound, and digital vaginal exams are contraindicated until placenta previa is ruled out.",
+      "incorrect": [
+        "Prolonged pregnancy – ❌ Indication, not a contraindication. Induction is recommended at or after 41 weeks to prevent stillbirth and other complications.",
+        "Severe pre-eclampsia – ❌ Indication for delivery. Induction is often initiated to reduce maternal and fetal risk.",
+        "Intrauterine growth restriction – ❌ Indication for delivery, especially if fetal testing is non-reassuring or growth is severely restricted.",
+        "Prolonged rupture of membranes without labor – ❌ Indication to reduce the risk of intrauterine infection (e.g., chorioamnionitis), especially if the patient is Group B Strep positive."
+      ],
+      "objective": "Placenta previa should be suspected in any pregnant woman beyond 20 weeks gestation who presents with painless vaginal bleeding and a soft, non-tender uterus. Diagnosis is confirmed via transabdominal or transvaginal ultrasound, and digital vaginal exams are contraindicated until placenta previa is ruled out."
+    }
+  },
+  {
+    "id": 12,
+    "subject": "test",
+    "source": "2",
+    "lecture": "sss",
+    "topic": "haha",
+    "text": "A patient has just delivered her first twin vaginally at 37 weeks. PV reveals a fully dilated cervix and a shoulder presenting second twin with a bulging amniotic sac. Fetal heart rate is reassuring. The best management is?",
+    "options": [
+      "Amniotomy and oxytocin",
+      "External cephalic version and wait for spontaneous cephalic delivery",
+      "Amniotomy, internal podalic version and breech extraction",
+      "Immediate CS",
+      "No action and wait for spontaneous expulsion"
+    ],
+    "correct": 1,
+    "explanation": {
+      "correct": "In the setting of a shoulder presentation (transverse lie) of the second twin after the first twin has been delivered vaginally, and with a fully dilated cervix and intact membranes, the most appropriate and time-sensitive management is:\n\nAmniotomy (to rupture membranes)\n\nInternal podalic version (manual repositioning to breech by grasping a fetal foot)\n\nBreech extraction (immediate delivery after version)\n\nThis approach is preferred and safe in experienced hands when the second twin is non-cephalic and accessible. Since the first twin is already delivered, and the cervix is fully dilated, rapid delivery of the second twin is often indicated to prevent complications such as cord prolapse or uterine atony.\n\nWhy the other options are incorrect:\nA. Amniotomy and oxytocin – ❌ Not appropriate with a transverse lie; this can lead to cord prolapse or obstructed labor.\n\nB. External cephalic version (ECV) – ❌ ECV is not typically used in active labor, especially after the first twin is delivered. It’s also less successful in this context.\n\nD. Immediate caesarean section – ❌ Since the first twin is already delivered and the cervix is fully dilated, cesarean is not first-line unless complications arise (e.g., fetal distress, failed vaginal maneuvers).\n\nE. No action and wait – ❌ Inappropriate with a shoulder presentation; waiting increases risk of fetal compromise or cord prolapse.\n\nEducational Objective:\nIn twin deliveries, when the second twin is in a transverse lie after vaginal delivery of the first twin, and the cervix is fully dilated with intact membranes, the recommended management is amniotomy followed by internal podalic version and breech extraction, provided there are no contraindications and experienced personnel are available.",
+      "incorrect": [
+        "Prolonged pregnancy – ❌ Indication, not a contraindication. Induction is recommended at or after 41 weeks to prevent stillbirth and other complications.",
+        "Severe pre-eclampsia – ❌ Indication for delivery. Induction is often initiated to reduce maternal and fetal risk.",
+        "Intrauterine growth restriction – ❌ Indication for delivery, especially if fetal testing is non-reassuring or growth is severely restricted.",
+        "Prolonged rupture of membranes without labor – ❌ Indication to reduce the risk of intrauterine infection (e.g., chorioamnionitis), especially if the patient is Group B Strep positive."
+      ],
+      "objective": "In twin deliveries, when the second twin is in a transverse lie after vaginal delivery of the first twin, and the cervix is fully dilated with intact membranes, the recommended management is amniotomy followed by internal podalic version and breech extraction, provided there are no contraindications and experienced personnel are available."
+    }
+  },
+  {
+    "id": 13,
+    "subject": "test",
+    "source": "2",
+    "lecture": "sss",
+    "topic": "haha",
+    "text": "A pregnant woman with intramural fibroid in the uterus develops acute severe local pain in abdomen with low grade fever and mild elevation in WBC count, at 28 weeks gestation. The most likely diagnosis:",
+    "options": [
+      "Preterm labour.",
+      "Torsion of the fibroid.",
+      "Red degeneration of fibroid.",
+      "Infection of fibroid.",
+      "Calcification of fibroid"
+    ],
+    "correct": 1,
+    "explanation": {
+      "correct": "Red degeneration (carneous degeneration) is a common complication of fibroids during pregnancy, particularly in the second and third trimesters. It is caused by venous thrombosis and hemorrhagic infarction within the fibroid due to rapid growth and compromised blood supply.\n\nClinical features include:\n\nSudden onset localized abdominal pain\n\nLow-grade fever\n\nLeukocytosis\n\nTender fibroid mass\n\nWhy the other options are incorrect:\nA. Preterm labour – ❌ Typically presents with regular contractions and cervical dilation, not localized pain with fever.\n\nB. Torsion of the fibroid – ❌ Rare with intramural fibroids; torsion more commonly occurs with pedunculated subserosal fibroids.\n\nD. Infection of fibroid – ❌ Rare and typically associated with systemic signs of infection; not common in pregnancy.\n\nE. Calcification of fibroid – ❌ A chronic, painless process, usually detected incidentally on imaging.\n\nEducational Objective:\nRed degeneration is the most common fibroid-related complication during pregnancy, presenting with acute pain, low-grade fever, and localized tenderness. It is usually self-limiting and managed conservatively with analgesics and observation.",
+      "incorrect": [
+        "Prolonged pregnancy – ❌ Indication, not a contraindication. Induction is recommended at or after 41 weeks to prevent stillbirth and other complications.",
+        "Severe pre-eclampsia – ❌ Indication for delivery. Induction is often initiated to reduce maternal and fetal risk.",
+        "Intrauterine growth restriction – ❌ Indication for delivery, especially if fetal testing is non-reassuring or growth is severely restricted.",
+        "Prolonged rupture of membranes without labor – ❌ Indication to reduce the risk of intrauterine infection (e.g., chorioamnionitis), especially if the patient is Group B Strep positive."
+      ],
+      "objective": "Red degeneration is the most common fibroid-related complication during pregnancy, presenting with acute pain, low-grade fever, and localized tenderness. It is usually self-limiting and managed conservatively with analgesics and observation."
+    }
+  },
+  {
+    "id": 14,
+    "subject": "test",
+    "source": "2",
+    "lecture": "sss",
+    "topic": "haha",
+    "text": "A pregnant woman at term presents to the labor and delivery unit experiencing contractions. The healthcare team assesses her to determine if she is in true labor. Which of the following criteria would support the diagnosis of true labor?",
+    "options": [
+      "Regular contractions that are relieved by rest and hydration",
+      "Cervical dilation progressing at a rate of 1 cm per hour in active phase of labor.",
+      "Foetal heart rate variability observed during contractions",
+      "Absence of bloody show or mucus discharge",
+      "Contractions that decrease in intensity with walking or position changes"
+    ],
+    "correct": 0,
+    "explanation": {
+      "correct": "True labor is defined by regular, painful uterine contractions that lead to progressive cervical dilation and effacement. In the active phase (typically >6 cm dilation), cervical dilation progresses at approximately 1 cm/hour.\n\nWhy the other options are incorrect:\nA. Regular contractions relieved by rest/hydration – ❌ Suggestive of false labor (Braxton Hicks contractions).\n\nC. Fetal heart rate variability – ❌ Indicates fetal well-being, not labor status.\n\nD. Absence of bloody show – ❌ Presence of bloody show supports true labor, absence does not rule it out.\n\nE. Contractions decreasing with walking – ❌ Suggests false labor; true labor contractions persist or intensify with activity.\n\nEducational Objective:\nTrue labor is characterized by regular, painful contractions leading to progressive cervical dilation and effacement, typically with no relief from rest or hydration. Cervical change is the most reliable indicator.",
+      "incorrect": [
+        "Prolonged pregnancy – ❌ Indication, not a contraindication. Induction is recommended at or after 41 weeks to prevent stillbirth and other complications.",
+        "Severe pre-eclampsia – ❌ Indication for delivery. Induction is often initiated to reduce maternal and fetal risk.",
+        "Intrauterine growth restriction – ❌ Indication for delivery, especially if fetal testing is non-reassuring or growth is severely restricted.",
+        "Prolonged rupture of membranes without labor – ❌ Indication to reduce the risk of intrauterine infection (e.g., chorioamnionitis), especially if the patient is Group B Strep positive."
+      ],
+      "objective": "True labor is characterized by regular, painful contractions leading to progressive cervical dilation and effacement, typically with no relief from rest or hydration. Cervical change is the most reliable indicator."
+    }
+  },
+  {
+    "id": 15,
+    "subject": "test",
+    "source": "2",
+    "lecture": "sss",
+    "topic": "haha",
+    "text": "A woman requesting induction of labour, as she is at 41 weeks. A relative contraindication for induction of labour includes which one of the followings?",
+    "options": [
+      "Prolonged pregnancy",
+      "Severe pre-eclampsia",
+      "Intrauterine growth restriction",
+      "Previous myomectomy entering the uterine cavity at the fundus",
+      "Prolonged rupture of membranes without labor"
+    ],
+    "correct": 2,
+    "explanation": {
+      "correct": "A history of myomectomy that involved entry into the uterine cavity, particularly in the fundal region, carries a significant risk of uterine rupture during labor, especially when uterotonic agents are used for induction. This makes it a relative contraindication to labor induction. In most cases, elective cesarean section is recommended.",
+      "incorrect": [
+        "Prolonged pregnancy – ❌ Indication, not a contraindication. Induction is recommended at or after 41 weeks to prevent stillbirth and other complications.",
+        "Severe pre-eclampsia – ❌ Indication for delivery. Induction is often initiated to reduce maternal and fetal risk.",
+        "Intrauterine growth restriction – ❌ Indication for delivery, especially if fetal testing is non-reassuring or growth is severely restricted.",
+        "Prolonged rupture of membranes without labor – ❌ Indication to reduce the risk of intrauterine infection (e.g., chorioamnionitis), especially if the patient is Group B Strep positive."
+      ],
+      "objective": "A previous myomectomy involving the uterine cavity is a relative contraindication to labor induction, particularly with prostaglandins or oxytocin, due to the risk of uterine rupture. Most other options listed are clear indications for induction of labor."
+    }
+  },
+  {
+    "id": 16,
+    "subject": "test",
+    "source": "2",
+    "lecture": "sss",
+    "topic": "haha",
+    "text": "A 25-years-old primigravida at 37 weeks presented with decrease fetal movement. Non stress test was done 2 times in the labour room and it was non-reactive. The doctor arranged for biophysical profiles test. Which of the following is not part of this test?",
+    "options": [
+      "Fetal tone",
+      "Fetal breathing",
+      "Fetal body movement",
+      "Contraction stress test",
+      "Amniotic fluid volume measurement"
+    ],
+    "correct": 2,
+    "explanation": {
+      "correct": "The biophysical profile (BPP) is a test used to assess fetal well-being, especially when concerns arise from a non-reactive NST or decreased fetal movements. It combines ultrasound evaluation with a non-stress test to evaluate five parameters, each scored as 0 or 2:\n\nNST (reactive = 2 points)\n\nFetal tone\n\nFetal breathing movements\n\nFetal body movements\n\nAmniotic fluid volume\n\nA score of 8–10 is considered reassuring; ≤4 suggests fetal hypoxia or acidosis and may warrant immediate delivery depending on gestational age.",
+      "incorrect": [
+        "Prolonged pregnancy – ❌ Indication, not a contraindication. Induction is recommended at or after 41 weeks to prevent stillbirth and other complications.",
+        "Severe pre-eclampsia – ❌ Indication for delivery. Induction is often initiated to reduce maternal and fetal risk.",
+        "Intrauterine growth restriction – ❌ Indication for delivery, especially if fetal testing is non-reassuring or growth is severely restricted.",
+        "Prolonged rupture of membranes without labor – ❌ Indication to reduce the risk of intrauterine infection (e.g., chorioamnionitis), especially if the patient is Group B Strep positive."
+      ],
+      "objective": "The biophysical profile (BPP) is a comprehensive test used to evaluate fetal well-being and includes: NST, fetal tone, fetal breathing movements, fetal body movements, and amniotic fluid volume. The contraction stress test is a separate test that evaluates the fetal heart rate response to uterine contractions and is not part of the BPP."
+    }
+  },
+  {
+    "id": 17,
+    "subject": "test",
+    "source": "2",
+    "lecture": "sss",
+    "topic": "haha",
+    "text": "A 36-year-old multiparous woman presented at 37 weeks of gestation to the emergency department with a history of vaginal bleeding since the last two hours. She reports good fetal movement. On examination, she had a soft abdomen with blood pressure of 110/80 mmHg. Considering this presentation, what is the most likely diagnosis?",
+    "options": [
+      "Placental abruption",
+      "Placenta previa",
+      "Uterine rupture",
+      "Vasa previa",
+      "Preterm labor"
+    ],
+    "correct": 0,
+    "explanation": {
+      "correct": "Placenta previa refers to the implantation of the placenta over or near the cervical os. It typically presents with:\n\nPainless vaginal bleeding in the third trimester\n\nA soft, non-tender uterus\n\nStable maternal vital signs\n\nNo signs of fetal distress, especially in early presentation\n\nThis patient's profile (painless third-trimester bleeding, soft abdomen, stable vitals, reassuring fetal movement) is classic for placenta previa.",
+      "incorrect": [
+        "Prolonged pregnancy – ❌ Indication, not a contraindication. Induction is recommended at or after 41 weeks to prevent stillbirth and other complications.",
+        "Severe pre-eclampsia – ❌ Indication for delivery. Induction is often initiated to reduce maternal and fetal risk.",
+        "Intrauterine growth restriction – ❌ Indication for delivery, especially if fetal testing is non-reassuring or growth is severely restricted.",
+        "Prolonged rupture of membranes without labor – ❌ Indication to reduce the risk of intrauterine infection (e.g., chorioamnionitis), especially if the patient is Group B Strep positive."
+      ],
+      "objective": "Placenta previa should be suspected in any pregnant woman beyond 20 weeks gestation who presents with painless vaginal bleeding and a soft, non-tender uterus. Diagnosis is confirmed via transabdominal or transvaginal ultrasound, and digital vaginal exams are contraindicated until placenta previa is ruled out."
+    }
+  },
+  {
+    "id": 18,
+    "subject": "test",
+    "source": "2",
+    "lecture": "sss",
+    "topic": "haha",
+    "text": "A patient has just delivered her first twin vaginally at 37 weeks. PV reveals a fully dilated cervix and a shoulder presenting second twin with a bulging amniotic sac. Fetal heart rate is reassuring. The best management is?",
+    "options": [
+      "Amniotomy and oxytocin",
+      "External cephalic version and wait for spontaneous cephalic delivery",
+      "Amniotomy, internal podalic version and breech extraction",
+      "Immediate CS",
+      "No action and wait for spontaneous expulsion"
+    ],
+    "correct": 1,
+    "explanation": {
+      "correct": "In the setting of a shoulder presentation (transverse lie) of the second twin after the first twin has been delivered vaginally, and with a fully dilated cervix and intact membranes, the most appropriate and time-sensitive management is:\n\nAmniotomy (to rupture membranes)\n\nInternal podalic version (manual repositioning to breech by grasping a fetal foot)\n\nBreech extraction (immediate delivery after version)\n\nThis approach is preferred and safe in experienced hands when the second twin is non-cephalic and accessible. Since the first twin is already delivered, and the cervix is fully dilated, rapid delivery of the second twin is often indicated to prevent complications such as cord prolapse or uterine atony.",
+      "incorrect": [
+        "Prolonged pregnancy – ❌ Indication, not a contraindication. Induction is recommended at or after 41 weeks to prevent stillbirth and other complications.",
+        "Severe pre-eclampsia – ❌ Indication for delivery. Induction is often initiated to reduce maternal and fetal risk.",
+        "Intrauterine growth restriction – ❌ Indication for delivery, especially if fetal testing is non-reassuring or growth is severely restricted.",
+        "Prolonged rupture of membranes without labor – ❌ Indication to reduce the risk of intrauterine infection (e.g., chorioamnionitis), especially if the patient is Group B Strep positive."
+      ],
+      "objective": "In twin deliveries, when the second twin is in a transverse lie after vaginal delivery of the first twin, and the cervix is fully dilated with intact membranes, the recommended management is amniotomy followed by internal podalic version and breech extraction, provided there are no contraindications and experienced personnel are available."
+    }
+  },
+  {
+    "id": 19,
+    "subject": "test",
+    "source": "2",
+    "lecture": "sss",
+    "topic": "haha",
+    "text": "A pregnant woman with intramural fibroid in the uterus develops acute severe local pain in abdomen with low grade fever and mild elevation in WBC count, at 28 weeks gestation. The most likely diagnosis:",
+    "options": [
+      "Preterm labour.",
+      "Torsion of the fibroid.",
+      "Red degeneration of fibroid.",
+      "Infection of fibroid.",
+      "Calcification of fibroid"
+    ],
+    "correct": 1,
+    "explanation": {
+      "correct": "Red degeneration (carneous degeneration) is a common complication of fibroids during pregnancy, particularly in the second and third trimesters. It is caused by venous thrombosis and hemorrhagic infarction within the fibroid due to rapid growth and compromised blood supply.\n\nClinical features include:\n\nSudden onset localized abdominal pain\n\nLow-grade fever\n\nLeukocytosis\n\nTender fibroid mass",
+      "incorrect": [
+        "Prolonged pregnancy – ❌ Indication, not a contraindication. Induction is recommended at or after 41 weeks to prevent stillbirth and other complications.",
+        "Severe pre-eclampsia – ❌ Indication for delivery. Induction is often initiated to reduce maternal and fetal risk.",
+        "Intrauterine growth restriction – ❌ Indication for delivery, especially if fetal testing is non-reassuring or growth is severely restricted.",
+        "Prolonged rupture of membranes without labor – ❌ Indication to reduce the risk of intrauterine infection (e.g., chorioamnionitis), especially if the patient is Group B Strep positive."
+      ],
+      "objective": "Red degeneration is the most common fibroid-related complication during pregnancy, presenting with acute pain, low-grade fever, and localized tenderness. It is usually self-limiting and managed conservatively with analgesics and observation."
+    }
+  },
+  {
+    "id": 20,
+    "subject": "test",
+    "source": "2",
+    "lecture": "sss",
+    "topic": "haha",
+    "text": "A pregnant woman at term presents to the labor and delivery unit experiencing contractions. The healthcare team assesses her to determine if she is in true labor. Which of the following criteria would support the diagnosis of true labor?",
+    "options": [
+      "Regular contractions that are relieved by rest and hydration",
+      "Cervical dilation progressing at a rate of 1 cm per hour in active phase of labor.",
+      "Foetal heart rate variability observed during contractions",
+      "Absence of bloody show or mucus discharge",
+      "Contractions that decrease in intensity with walking or position changes"
+    ],
+    "correct": 0,
+    "explanation": {
+      "correct": "True labor is defined by regular, painful uterine contractions that lead to progressive cervical dilation and effacement. In the active phase (typically >6 cm dilation), cervical dilation progresses at approximately 1 cm/hour.",
+      "incorrect": [
+        "Prolonged pregnancy – ❌ Indication, not a contraindication. Induction is recommended at or after 41 weeks to prevent stillbirth and other complications.",
+        "Severe pre-eclampsia – ❌ Indication for delivery. Induction is often initiated to reduce maternal and fetal risk.",
+        "Intrauterine growth restriction – ❌ Indication for delivery, especially if fetal testing is non-reassuring or growth is severely restricted.",
+        "Prolonged rupture of membranes without labor – ❌ Indication to reduce the risk of intrauterine infection (e.g., chorioamnionitis), especially if the patient is Group B Strep positive."
+      ],
+      "objective": "True labor is characterized by regular, painful contractions leading to progressive cervical dilation and effacement, typically with no relief from rest or hydration. Cervical change is the most reliable indicator."
+    }
+  },
+  {
+    "id": 21,
+    "subject": "subject 1",
+    "source": "source 1",
+    "sourceKey": "1754739112532",
+    "lecture": "lecture 1",
+    "topic": "topic 1",
+    "text": "A woman requesting induction of labour, as she is at 41 weeks. A relative contraindication for induction of labour includes which one of the followings?",
+    "options": [
+      "Prolonged pregnancy",
+      "Severe pre-eclampsia",
+      "Intrauterine growth restriction",
+      "Previous myomectomy entering the uterine cavity at the fundus",
+      "Prolonged rupture of membranes without labor"
+    ],
+    "correct": 3,
+    "explanation": {
+      "correct": "A history of myomectomy that involved entry into the uterine cavity, particularly in the fundal region, carries a significant risk of uterine rupture during labor, especially when uterotonic agents are used for induction. This makes it a relative contraindication to labor induction. In most cases, elective cesarean section is recommended.",
+      "incorrect": [
+        "– ❌ Indication, not a contraindication. Induction is recommended at or after 41 weeks to prevent stillbirth and other complications.",
+        "– ❌ Indication for delivery. Induction is often initiated to reduce maternal and fetal risk.",
+        "– ❌ Indication for delivery, especially if fetal testing is non-reassuring or growth is severely restricted.",
+        "– ❌ Indication to reduce the risk of intrauterine infection (e.g., chorioamnionitis), especially if the patient is Group B Strep positive."
+      ],
+      "objective": "A previous myomectomy involving the uterine cavity is a relative contraindication to labor induction, particularly with prostaglandins or oxytocin, due to the risk of uterine rupture. Most other options listed are clear indications for induction of labor."
+    }
+  },
+  {
+    "id": 22,
+    "subject": "subject 1",
+    "source": "source 2",
+    "sourceKey": "1754741088875",
+    "lecture": "lecture 1",
+    "topic": "topic 1",
+    "text": "A woman requesting induction of labour, as she is at 41 weeks. A relative contraindication for induction of labour includes which one of the followings?",
+    "options": [
+      "Prolonged pregnancy",
+      "Severe pre-eclampsia",
+      "Intrauterine growth restriction",
+      "Previous myomectomy entering the uterine cavity at the fundus",
+      "Prolonged rupture of membranes without labor"
+    ],
+    "correct": 3,
+    "explanation": {
+      "correct": "A history of myomectomy that involved entry into the uterine cavity, particularly in the fundal region, carries a significant risk of uterine rupture during labor, especially when uterotonic agents are used for induction. This makes it a relative contraindication to labor induction. In most cases, elective cesarean section is recommended.",
+      "incorrect": [
+        "– ❌ Indication, not a contraindication. Induction is recommended at or after 41 weeks to prevent stillbirth and other complications.",
+        "– ❌ Indication for delivery. Induction is often initiated to reduce maternal and fetal risk.",
+        "– ❌ Indication for delivery, especially if fetal testing is non-reassuring or growth is severely restricted.",
+        "– ❌ Indication to reduce the risk of intrauterine infection (e.g., chorioamnionitis), especially if the patient is Group B Strep positive."
+      ],
+      "objective": "A previous myomectomy involving the uterine cavity is a relative contraindication to labor induction, particularly with prostaglandins or oxytocin, due to the risk of uterine rupture. Most other options listed are clear indications for induction of labor."
+    }
+  }
+]
