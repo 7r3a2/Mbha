@@ -17,6 +17,10 @@ interface User {
   hasCoursesAccess: boolean;
   createdAt: string;
   updatedAt: string;
+  trialActive?: boolean;
+  trialEndsAt?: string;
+  subscriptionActive?: boolean;
+  subscriptionExpiresAt?: string;
 }
 
 interface LoginData {

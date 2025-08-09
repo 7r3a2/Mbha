@@ -142,7 +142,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'CSV file must have at least a header and one data row' }, { status: 400 });
     }
 
-    const headers = rows[0].map((h) => (h || '').trim().toLowerCase());
+    const originalHeaders = rows[0].map((h) => (h || '').trim().replace(/^"|"$/g, ''));
+    const headers = originalHeaders.map(h => h.toLowerCase());
+    
+    // Create mapping from lowercase headers to original headers for data access
+    const headerMap: { [key: string]: string } = {};
+    headers.forEach((header, index) => {
+      headerMap[header] = originalHeaders[index];
+    });
     
     // Support multiple formats
     const newFormatHeaders = ['questions', 'options', 'correct_options', 'explanation', 'incorrect_options', 'educational_objective'];
@@ -174,6 +181,10 @@ export async function POST(request: NextRequest) {
     
     console.log('📊 Detected format:', formatType);
     console.log('📋 Found headers:', headers);
+    console.log('📋 Original headers:', originalHeaders);
+    console.log('📋 Total rows:', rows.length);
+    console.log('📋 First data row:', rows[1]);
+    console.log('📋 Missing headers:', missingHeaders);
     
     if (missingHeaders.length > 0) {
       return NextResponse.json({ 
@@ -189,13 +200,15 @@ export async function POST(request: NextRequest) {
 
     for (let i = 1; i < rows.length; i++) {
       const values = rows[i].map((v) => (v ?? '').trim());
+      console.log(`🔍 Row ${i + 1}: ${values.length} columns, headers: ${headers.length}`);
+      console.log(`🔍 Row ${i + 1} values:`, values.map(v => `"${v.substring(0, 50)}..."`));
       if (values.length < headers.length) {
-        console.log(`Skipping row ${i + 1}: Insufficient columns (${values.length} vs ${headers.length})`);
+        console.log(`❌ Skipping row ${i + 1}: Insufficient columns (${values.length} vs ${headers.length})`);
         continue;
       }
 
       const questionData: any = {};
-      headers.forEach((header, index) => {
+      originalHeaders.forEach((header, index) => {
         questionData[header] = values[index] || '';
       });
 
@@ -229,9 +242,11 @@ export async function POST(request: NextRequest) {
         // User's specific format
         try {
           console.log(`🔄 Processing row ${i + 1}:`, { 
+            question: questionData.question?.substring(0, 50) + '...',
             options: questionData.options?.substring(0, 100) + '...',
             correct_option: questionData.correct_option,
-            explanation: questionData.explanation?.substring(0, 50) + '...'
+            explanation: questionData.explanation?.substring(0, 50) + '...',
+            allKeys: Object.keys(questionData)
           });
           
           // Clean and parse options JSON
@@ -254,7 +269,9 @@ export async function POST(request: NextRequest) {
           // Parse the "Why the other options are incorrect" JSON
           let incorrectExplanations: string[] = [];
           try {
-            const cleanedIncorrect = cleanJsonString(questionData['why the other options are incorrect:'] || '{}');
+            // Find the correct header name for the incorrect options field
+            const incorrectFieldName = originalHeaders.find(h => h.toLowerCase().includes('why the other options are incorrect')) || 'Why the other options are incorrect:';
+            const cleanedIncorrect = cleanJsonString(questionData[incorrectFieldName] || '{}');
             console.log(`🔧 Cleaned incorrect data:`, cleanedIncorrect.substring(0, 100) + '...');
             const incorrectData = JSON.parse(cleanedIncorrect);
             // Convert object format to array format
@@ -265,10 +282,12 @@ export async function POST(request: NextRequest) {
             continue;
           }
           
+          // Find the correct header name for educational objective
+          const objectiveFieldName = originalHeaders.find(h => h.toLowerCase().includes('educational objective')) || 'Educational objective';
           explanation = {
             correct: questionData.explanation || '',
             incorrect: incorrectExplanations,
-            objective: questionData['educational objective'] || ''
+            objective: questionData[objectiveFieldName] || ''
           };
           
           console.log(`✅ Successfully processed row ${i + 1}`);

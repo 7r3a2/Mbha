@@ -191,6 +191,40 @@ export default function Dashboard() {
 
         {/* User Profile & Logout */}
         <div className="border-t border-gray-700">
+          {/* Subscription Status */}
+          {isOpen && (
+            <div className="px-4 py-2 border-b border-gray-700">
+              <div className="text-center">
+                {(() => {
+                  if (user?.trialActive && !user?.subscriptionActive && user?.trialEndsAt) {
+                    const trialEnd = new Date(user.trialEndsAt);
+                    return (
+                      <div className="bg-blue-500/20 border border-blue-400 rounded-lg px-3 py-2">
+                        <p className="text-xs font-medium text-blue-300">Free Trial</p>
+                        <p className="text-xs text-blue-200">Until {trialEnd.toLocaleDateString()}</p>
+                      </div>
+                    );
+                  }
+                  if (user?.subscriptionActive && user?.subscriptionExpiresAt) {
+                    const subEnd = new Date(user.subscriptionExpiresAt);
+                    return (
+                      <div className="bg-green-500/20 border border-green-400 rounded-lg px-3 py-2">
+                        <p className="text-xs font-medium text-green-300">Subscribed</p>
+                        <p className="text-xs text-green-200">Until {subEnd.toLocaleDateString()}</p>
+                      </div>
+                    );
+                  }
+                  return (
+                    <div className="bg-gray-500/20 border border-gray-400 rounded-lg px-3 py-2">
+                      <p className="text-xs font-medium text-gray-300">No Subscription</p>
+                      <p className="text-xs text-gray-400">Basic Access Only</p>
+                    </div>
+                  );
+                })()}
+              </div>
+            </div>
+          )}
+
           {/* User Profile */}
           <div className={`p-4 ${isOpen ? '' : 'pb-2'}`}>
             <div className={`flex items-center ${isOpen ? 'mb-3' : 'justify-center'}`}>
@@ -262,11 +296,11 @@ export default function Dashboard() {
              </div>
              <div className="ml-3">
                <h3 className="text-sm font-medium text-yellow-800">
-                 Limited Access
+                 Basic Access
                </h3>
                <div className="mt-2 text-sm text-yellow-700">
                  <p>
-                   You currently only have access to Wizary Exam. Contact an administrator to get access to Approach, Qbank, and Courses sections.
+                   You currently have Basic Access (Wizary Exam only). Get a subscription to unlock Full Access to all sections.
                  </p>
                </div>
              </div>

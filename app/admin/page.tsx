@@ -9,6 +9,8 @@ export default function AdminPage() {
   const { user, isLoading } = useAuth();
   const router = useRouter();
   const [users, setUsers] = useState([]);
+  const [subscriptions, setSubscriptions] = useState<Record<string, { expiresAt: string }>>({});
+  const [grantDuration, setGrantDuration] = useState<Record<string, string>>({});
   const [exams, setExams] = useState([]);
   
   // Debug: Log when exams state changes
@@ -91,6 +93,15 @@ const loadQbankStructure = async () => {
   useEffect(() => {
     if (activeTab === 'qbank') {
       loadQbankStructure();
+    }
+  }, [activeTab]);
+
+  useEffect(() => {
+    if (activeTab === 'users') {
+      fetch('/api/admin/subscriptions')
+        .then((r) => (r.ok ? r.json() : {}))
+        .then((data) => setSubscriptions(data || {}))
+        .catch(() => {});
     }
   }, [activeTab]);
 
@@ -1126,6 +1137,7 @@ const saveAdd = async () => {
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">University</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Code Used</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Access</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Trial / Subscription</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Created</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
                       </tr>
@@ -1147,29 +1159,30 @@ const saveAdd = async () => {
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.uniqueCode}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                                        <div className="flex flex-wrap gap-1">
-                           <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                             Wizary
-                           </span>
-                           {user.hasApproachAccess && (
-                             <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                               Approach
-                             </span>
-                           )}
-                           {user.hasQbankAccess && (
-                             <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                               Qbank
-                             </span>
-                           )}
-                           {user.hasCoursesAccess && (
-                             <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
-                               Courses
-                             </span>
-                           )}
-                           {!user.hasApproachAccess && !user.hasQbankAccess && !user.hasCoursesAccess && (
-                             <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                               Basic Access Only
-                             </span>
-                           )}
+                           {(() => {
+                             const now = new Date();
+                             const created = new Date(user.createdAt);
+                             const trialEnds = new Date(created);
+                             trialEnds.setDate(trialEnds.getDate() + 3);
+                             const trialActive = now < trialEnds;
+                             const sub = subscriptions[user.id];
+                             const subActive = sub ? now < new Date(sub.expiresAt) : false;
+                             const hasFullAccess = trialActive || subActive;
+                             
+                             if (hasFullAccess) {
+                               return (
+                                 <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                   Full Access
+                                 </span>
+                               );
+                             } else {
+                               return (
+                                 <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                   Basic Access
+                                 </span>
+                               );
+                             }
+                           })()}
                          </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -1194,6 +1207,99 @@ const saveAdd = async () => {
                               >
                                 Delete
                               </button>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                              {(() => {
+                                const now = new Date();
+                                const created = new Date(user.createdAt);
+                                const trialEnds = new Date(created);
+                                trialEnds.setDate(trialEnds.getDate() + 3);
+                                const trialActive = now < trialEnds;
+                                const sub = subscriptions[user.id];
+                                const subActive = sub ? now < new Date(sub.expiresAt) : false;
+                                if (trialActive && !subActive) {
+                                  return <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">Trial until {trialEnds.toLocaleDateString()}</span>;
+                                }
+                                if (subActive) {
+                                  return <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Subscribed until {new Date(sub.expiresAt).toLocaleDateString()}</span>;
+                                }
+                                return <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">No active plan</span>;
+                              })()}
+                              <div className="mt-2 flex items-center gap-2">
+                                <select
+                                  value={grantDuration[user.id] || ''}
+                                  onChange={(e) => setGrantDuration({ ...grantDuration, [user.id]: e.target.value })}
+                                  className="border border-gray-300 rounded px-2 py-1 text-xs text-black"
+                                >
+                                  <option value="">Grant duration…</option>
+                                  <option value="1:day">1 day</option>
+                                  <option value="1:week">1 week</option>
+                                  <option value="1:month">1 month</option>
+                                  <option value="6:month">6 months</option>
+                                  <option value="1:year">1 year</option>
+                                </select>
+                                <button
+                                  onClick={async () => {
+                                    const sel = grantDuration[user.id];
+                                    if (!sel) return;
+                                    const [amountStr, unit] = sel.split(':');
+                                    const amount = parseInt(amountStr, 10);
+                                    const res = await fetch('/api/admin/subscriptions', {
+                                      method: 'POST',
+                                      headers: { 'Content-Type': 'application/json' },
+                                      body: JSON.stringify({ userId: user.id, amount, unit })
+                                    });
+                                    if (res.ok) {
+                                      const data = await res.json();
+                                      setSubscriptions({ ...subscriptions, [user.id]: { expiresAt: data.expiresAt } });
+                                      // force refresh verify on next navigation by removing cached user in storage so effective flags update immediately
+                                      try {
+                                        const stored = localStorage.getItem('auth_user');
+                                        if (stored) {
+                                          const parsed = JSON.parse(stored);
+                                          if (parsed?.id === user.id) {
+                                            localStorage.removeItem('auth_user');
+                                          }
+                                        }
+                                      } catch {}
+                                    }
+                                  }}
+                                  className="text-xs px-2 py-1 rounded bg-blue-600 text-white hover:bg-blue-700"
+                                >Grant</button>
+                                {(() => {
+                                  const sub = subscriptions[user.id];
+                                  const subActive = sub ? new Date() < new Date(sub.expiresAt) : false;
+                                  if (subActive) {
+                                    return (
+                                      <button
+                                        onClick={async () => {
+                                          if (!confirm(`Remove subscription for ${user.firstName} ${user.lastName}?`)) return;
+                                          const res = await fetch(`/api/admin/subscriptions?userId=${user.id}`, {
+                                            method: 'DELETE'
+                                          });
+                                          if (res.ok) {
+                                            const newSubs = { ...subscriptions };
+                                            delete newSubs[user.id];
+                                            setSubscriptions(newSubs);
+                                            // force refresh verify on next navigation
+                                            try {
+                                              const stored = localStorage.getItem('auth_user');
+                                              if (stored) {
+                                                const parsed = JSON.parse(stored);
+                                                if (parsed?.id === user.id) {
+                                                  localStorage.removeItem('auth_user');
+                                                }
+                                              }
+                                            } catch {}
+                                          }
+                                        }}
+                                        className="text-xs px-2 py-1 rounded bg-red-600 text-white hover:bg-red-700 ml-1"
+                                      >Remove</button>
+                                    );
+                                  }
+                                  return null;
+                                })()}
+                              </div>
                             </td>
                           </tr>
                         ))}
@@ -1843,15 +1949,49 @@ const saveAdd = async () => {
                             <div>
                               <h6 className="font-medium text-gray-600 mb-2">Sources</h6>
                               <div className="space-y-1">
-                                {qbankStructure.find((s: any) => s.key === manageSubject || s.id === manageSubject)?.sources?.map((source: any) => (
+                                {qbankStructure.find((s: any) => s.key === manageSubject || s.id === manageSubject)?.sources?.map((source: any, idx: number) => (
                                   <div key={source.key || source.id} className="flex items-center justify-between p-2 bg-gray-50 rounded">
                                     <span className="text-gray-900">{source.label}</span>
-                                    <button
-                                      onClick={() => deleteSource(manageSubject, source.key || source.id)}
-                                      className="px-2 py-1 text-xs bg-red-100 text-red-800 rounded hover:bg-red-200"
-                                    >
-                                      Delete
-                                    </button>
+                                    <div className="flex gap-1">
+                                      <button
+                                        onClick={async () => {
+                                          const updated = qbankStructure.map((subject: any) => {
+                                            if (subject.key === manageSubject || subject.id === manageSubject) {
+                                              const arr = [...(subject.sources || [])];
+                                              if (idx > 0) {
+                                                const [item] = arr.splice(idx, 1);
+                                                arr.splice(idx - 1, 0, item);
+                                              }
+                                              return { ...subject, sources: arr };
+                                            }
+                                            return subject;
+                                          });
+                                          await updateQbankStructure(updated);
+                                        }}
+                                        className="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded hover:bg-blue-200"
+                                      >↑</button>
+                                      <button
+                                        onClick={async () => {
+                                          const updated = qbankStructure.map((subject: any) => {
+                                            if (subject.key === manageSubject || subject.id === manageSubject) {
+                                              const arr = [...(subject.sources || [])];
+                                              if (idx < arr.length - 1) {
+                                                const [item] = arr.splice(idx, 1);
+                                                arr.splice(idx + 1, 0, item);
+                                              }
+                                              return { ...subject, sources: arr };
+                                            }
+                                            return subject;
+                                          });
+                                          await updateQbankStructure(updated);
+                                        }}
+                                        className="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded hover:bg-blue-200"
+                                      >↓</button>
+                                      <button
+                                        onClick={() => deleteSource(manageSubject, source.key || source.id)}
+                                        className="px-2 py-1 text-xs bg-red-100 text-red-800 rounded hover:bg-red-200"
+                                      >Delete</button>
+                                    </div>
                                   </div>
                                 ))}
                               </div>
@@ -1859,11 +1999,45 @@ const saveAdd = async () => {
                             <div>
                               <h6 className="font-medium text-gray-600 mb-2">Lectures</h6>
                               <div className="space-y-1">
-                                {qbankStructure.find((s: any) => s.key === manageSubject || s.id === manageSubject)?.lectures?.map((lecture: any) => (
+                                {qbankStructure.find((s: any) => s.key === manageSubject || s.id === manageSubject)?.lectures?.map((lecture: any, lidx: number) => (
                                   <div key={lecture.id || lecture.title} className="space-y-2">
                                     <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
                                       <span className="text-gray-900">{lecture.title}</span>
                                       <div className="flex gap-1">
+                                        <button
+                                          onClick={async () => {
+                                            const updated = qbankStructure.map((subject: any) => {
+                                              if (subject.key === manageSubject || subject.id === manageSubject) {
+                                                const arr = [...(subject.lectures || [])];
+                                                if (lidx > 0) {
+                                                  const [item] = arr.splice(lidx, 1);
+                                                  arr.splice(lidx - 1, 0, item);
+                                                }
+                                                return { ...subject, lectures: arr };
+                                              }
+                                              return subject;
+                                            });
+                                            await updateQbankStructure(updated);
+                                          }}
+                                          className="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded hover:bg-blue-200"
+                                        >↑</button>
+                                        <button
+                                          onClick={async () => {
+                                            const updated = qbankStructure.map((subject: any) => {
+                                              if (subject.key === manageSubject || subject.id === manageSubject) {
+                                                const arr = [...(subject.lectures || [])];
+                                                if (lidx < arr.length - 1) {
+                                                  const [item] = arr.splice(lidx, 1);
+                                                  arr.splice(lidx + 1, 0, item);
+                                                }
+                                                return { ...subject, lectures: arr };
+                                              }
+                                              return subject;
+                                            });
+                                            await updateQbankStructure(updated);
+                                          }}
+                                          className="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded hover:bg-blue-200"
+                                        >↓</button>
                                         <button
                                           onClick={() => moveLectureToTop(manageSubject, lecture.id || lecture.title)}
                                           className="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded hover:bg-blue-200"
@@ -1881,15 +2055,67 @@ const saveAdd = async () => {
                                     {/* Topics for this lecture */}
                                     <div className="ml-4 space-y-1">
                                       <div className="text-xs font-medium text-gray-500">Topics:</div>
-                                      {(lecture.topics || []).map((topic: any) => (
+                                      {(lecture.topics || []).map((topic: any, tidx: number) => (
                                         <div key={topic.id || topic} className="flex items-center justify-between p-1 bg-gray-25 rounded text-sm">
                                           <span className="text-gray-700">{typeof topic === 'string' ? topic : topic.title}</span>
-                                          <button
-                                            onClick={() => deleteTopic(manageSubject, lecture.id || lecture.title, topic.id || topic)}
-                                            className="px-1 py-0.5 text-xs bg-red-100 text-red-800 rounded hover:bg-red-200"
-                                          >
-                                            Delete
-                                          </button>
+                                          <div className="flex gap-1">
+                                            <button
+                                              onClick={async () => {
+                                                const updated = qbankStructure.map((subject: any) => {
+                                                  if (subject.key === manageSubject || subject.id === manageSubject) {
+                                                    return {
+                                                      ...subject,
+                                                      lectures: (subject.lectures || []).map((lec: any) => {
+                                                        if (lec.title === (lecture.id || lecture.title)) {
+                                                          const arr = [...(lec.topics || [])];
+                                                          if (tidx > 0) {
+                                                            const [item] = arr.splice(tidx, 1);
+                                                            arr.splice(tidx - 1, 0, item);
+                                                          }
+                                                          return { ...lec, topics: arr };
+                                                        }
+                                                        return lec;
+                                                      })
+                                                    };
+                                                  }
+                                                  return subject;
+                                                });
+                                                await updateQbankStructure(updated);
+                                              }}
+                                              className="px-1 py-0.5 text-xs bg-blue-100 text-blue-800 rounded hover:bg-blue-200"
+                                            >↑</button>
+                                            <button
+                                              onClick={async () => {
+                                                const updated = qbankStructure.map((subject: any) => {
+                                                  if (subject.key === manageSubject || subject.id === manageSubject) {
+                                                    return {
+                                                      ...subject,
+                                                      lectures: (subject.lectures || []).map((lec: any) => {
+                                                        if (lec.title === (lecture.id || lecture.title)) {
+                                                          const arr = [...(lec.topics || [])];
+                                                          if (tidx < arr.length - 1) {
+                                                            const [item] = arr.splice(tidx, 1);
+                                                            arr.splice(tidx + 1, 0, item);
+                                                          }
+                                                          return { ...lec, topics: arr };
+                                                        }
+                                                        return lec;
+                                                      })
+                                                    };
+                                                  }
+                                                  return subject;
+                                                });
+                                                await updateQbankStructure(updated);
+                                              }}
+                                              className="px-1 py-0.5 text-xs bg-blue-100 text-blue-800 rounded hover:bg-blue-200"
+                                            >↓</button>
+                                            <button
+                                              onClick={() => deleteTopic(manageSubject, lecture.id || lecture.title, topic.id || topic)}
+                                              className="px-1 py-0.5 text-xs bg-red-100 text-red-800 rounded hover:bg-red-200"
+                                            >
+                                              Delete
+                                            </button>
+                                          </div>
                                         </div>
                                       ))}
                                     </div>

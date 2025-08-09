@@ -9,7 +9,7 @@
         "label": "source 1"
       },
       {
-        "key": "1754741088875",
+        "key": "1754755862373",
         "label": "source 2"
       }
     ],
@@ -21,5 +21,19 @@
         ]
       }
     ]
+  },
+  {
+    "key": "1754754736043",
+    "label": "sub 2",
+    "color": "#0072b7",
+    "sources": [],
+    "lectures": []
+  },
+  {
+    "key": "1754761354541",
+    "label": "s",
+    "color": "#0072b7",
+    "sources": [],
+    "lectures": []
   }
 ]

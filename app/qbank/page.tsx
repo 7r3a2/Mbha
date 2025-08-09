@@ -650,7 +650,7 @@ export default function Qbank() {
   // Check if user has qbank access
   useEffect(() => {
     if (!isLoading && (!isAuthenticated || !user?.hasQbankAccess)) {
-      router.push('/dashboard');
+      router.push('/wizary-exam');
     }
   }, [isLoading, isAuthenticated, user, router]);
 
@@ -904,9 +904,24 @@ export default function Qbank() {
 
   // Subject selection
   const toggleSubject = (key: string) => {
-    setSelectedSubjects((prev) =>
-      prev.includes(key) ? prev.filter((s) => s !== key) : [...prev, key]
-    );
+    setSelectedSubjects((prev) => {
+      // If clicking the already-selected subject, allow unselect (becomes none selected)
+      if (prev.includes(key)) {
+        // Clear dependent selections (sources, topics) when no subject selected
+        setSelectedSources([]);
+        setExpandedLectures({});
+        setExpandedSections({});
+        setTopicChecks({});
+        return [];
+      }
+      // Selecting a new subject: enforce single selection
+      // Clear dependent selections for previous subject
+      setSelectedSources([]);
+      setExpandedLectures({});
+      setExpandedSections({});
+      setTopicChecks({});
+      return [key];
+    });
   };
 
   // Source selection
@@ -957,11 +972,6 @@ export default function Qbank() {
     .flatMap((s) => s.sources)
     .filter((v, i, arr) => arr.findIndex((x) => x.key === v.key) === i);
 
-  // Bulk select for subjects
-  const allSubjectsSelected = selectedSubjects.length === subjects.length;
-  const toggleAllSubjects = () => {
-    setSelectedSubjects(allSubjectsSelected ? [] : subjects.map((s) => s.key));
-  };
   // Bulk select for sources
   const allSourcesSelected = selectedSources.length === availableSources.length && availableSources.length > 0;
   const toggleAllSources = () => {
@@ -996,9 +1006,9 @@ export default function Qbank() {
     
     const lecture = subject.lectures[lectureIdx];
     const checked = topicChecks[subjectKey]?.[lectureIdx] || [];
-    
-    if (topicCount === 0) {
-      // For lectures with no topics, toggle between selected and not selected
+      
+      if (topicCount === 0) {
+        // For lectures with no topics, toggle between selected and not selected
       const newChecked = checked.length > 0 ? [] : [0]; // Use [0] to mark as selected
       setTopicChecks((prev) => ({
         ...prev,
@@ -1007,7 +1017,7 @@ export default function Qbank() {
           [lectureIdx]: newChecked,
         },
       }));
-    } else {
+      } else {
       // For lectures with topics, check if we're trying to select all
       if (checked.length === topicCount) {
         // We're deselecting all, which is always allowed
@@ -1037,11 +1047,11 @@ export default function Qbank() {
         
         // All topics have questions, select all
         setTopicChecks((prev) => ({
-          ...prev,
-          [subjectKey]: {
-            ...prev[subjectKey],
+        ...prev,
+        [subjectKey]: {
+          ...prev[subjectKey],
             [lectureIdx]: Array.from({ length: topicCount }, (_, i) => i),
-          },
+        },
         }));
       }
     }
@@ -1267,12 +1277,6 @@ export default function Qbank() {
                 <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:border-[#0072b7] focus-within:border-[#0072b7] focus-within:ring-1 focus-within:ring-[#0072b7] transition-all duration-300">
                   <div className="relative">
                     <div className="flex items-center mb-2">
-                      <input
-                        type="checkbox"
-                        checked={allSubjectsSelected}
-                        onChange={toggleAllSubjects}
-                        className="h-4 w-4 border-2 border-[#0072b7] text-[#0072b7] focus:ring-[#0072b7] rounded mr-2"
-                      />
                       <span className="text-sm font-semibold text-gray-700">Subjects</span>
                     </div>
                     <button
@@ -1292,6 +1296,7 @@ export default function Qbank() {
                               type="checkbox"
                               checked={selectedSubjects.includes(subject.key)}
                               onChange={() => toggleSubject(subject.key)}
+                              disabled={selectedSubjects.length > 0 && !selectedSubjects.includes(subject.key)}
                               className="h-4 w-4 border-2 border-[#0072b7] text-[#0072b7] focus:ring-[#0072b7] rounded mr-2"
                             />
                             <label className="ml-2 text-sm text-gray-600">{subject.label}</label>
@@ -1437,18 +1442,18 @@ export default function Qbank() {
                                       const hasQuestions = topicsWithQuestions[topic] !== false; // Default to true if not checked yet
                                       return (
                                         <div key={topic} className={`flex items-center ${!hasQuestions ? 'opacity-50' : ''}`}>
-                                          <input
-                                            type="checkbox"
-                                            checked={topicChecks[subject.key]?.[idx]?.includes(topicIdx) || false}
-                                            onChange={() => toggleTopic(subject.key, idx, topicIdx, lecture.topics.length)}
+                                        <input
+                                          type="checkbox"
+                                          checked={topicChecks[subject.key]?.[idx]?.includes(topicIdx) || false}
+                                          onChange={() => toggleTopic(subject.key, idx, topicIdx, lecture.topics.length)}
                                             disabled={!hasQuestions}
                                             className={`h-4 w-4 border-2 border-[#0072b7] text-[#0072b7] focus:ring-[#0072b7] rounded mr-2 ${!hasQuestions ? 'cursor-not-allowed opacity-50' : ''}`}
-                                          />
+                                        />
                                           <label className={`ml-2 text-sm ${!hasQuestions ? 'text-gray-400 cursor-not-allowed' : 'text-gray-600'}`}>
                                             {topic}
                                             {!hasQuestions && <span className="ml-1 text-xs text-red-500">(No questions)</span>}
                                           </label>
-                                        </div>
+                                      </div>
                                       );
                                     })}
                                   </div>

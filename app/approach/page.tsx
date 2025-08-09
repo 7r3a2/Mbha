@@ -1672,7 +1672,7 @@ export default function ApproachPage() {
 
   // Check authentication and approach access
   if (!isLoading && (!user || !user.hasApproachAccess)) {
-    router.push('/dashboard');
+    router.push('/wizary-exam');
     return null;
   }
 

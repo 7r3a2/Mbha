@@ -1,0 +1,2 @@
+question,options,correct_option,explanation,"Why the other options are incorrect:","Educational objective"
+"Test question?","[""Option A"",""Option B"",""Option C"",""Option D""]",1,"This is the correct explanation.","{""B"": ""Wrong because B"",""C"": ""Wrong because C"",""D"": ""Wrong because D""}","Learn to test questions."

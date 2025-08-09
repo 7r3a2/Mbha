@@ -12,7 +12,7 @@ function CoursePageContent() {
   // Check if user has courses access
   useEffect(() => {
     if (!isLoading && (!isAuthenticated || !user?.hasCoursesAccess)) {
-      router.push('/dashboard');
+      router.push('/wizary-exam');
     }
   }, [isLoading, isAuthenticated, user, router]);
   const searchParams = useSearchParams();

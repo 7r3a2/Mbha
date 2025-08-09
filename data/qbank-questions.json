@@ -568,5 +568,32 @@
       ],
       "objective": "A previous myomectomy involving the uterine cavity is a relative contraindication to labor induction, particularly with prostaglandins or oxytocin, due to the risk of uterine rupture. Most other options listed are clear indications for induction of labor."
     }
+  },
+  {
+    "id": 23,
+    "subject": "subject 1",
+    "source": "source 2",
+    "sourceKey": "1754755862373",
+    "lecture": "lecture 1",
+    "topic": "topic 1",
+    "text": "For each description below, choose the SINGLE most appropriate answer from the above list of options. Each \r\noption may be used once, more than once, or not at all. Detrusor pressure rise of >15 cm of water during filling associated with urgency.",
+    "options": [
+      "Urodynamic stress incontinence",
+      "Bladder diverticulum",
+      "Normal bladder function",
+      "Poor detrusor contraction",
+      "Detrusor overactivity"
+    ],
+    "correct": 3,
+    "explanation": {
+      "correct": "not known",
+      "incorrect": [
+        "Urodynamic stress incontinence",
+        "Bladder diverticulum",
+        "Normal bladder function",
+        "Detrusor overactivity"
+      ],
+      "objective": "nothing"
+    }
   }
 ]
