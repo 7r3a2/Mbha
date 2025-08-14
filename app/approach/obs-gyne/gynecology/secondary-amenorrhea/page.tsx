@@ -613,23 +613,19 @@ const SecondaryAmenorrheaFlowchart = () => {
 
           <VerticalLine x={1000} startY={920} endY={970} />
           <ArrowHead x={1000} y={970} direction="down" />
-          <div style={{ 
-            position: 'absolute', 
-            left: '930px', 
-            top: '970px', 
-            width: '140px', 
-            height: '80px',
-            backgroundColor: '#f5f5f5', 
-            border: '2px dashed #999',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '12px',
-            fontStyle: 'italic',
-            color: '#666'
-          }}>
-            Placeholder for Image
-          </div>
+          <img 
+            src="/images/approaches images/obs & gyne/secondary amenorrhea.png"
+            alt="Secondary Amenorrhea"
+            style={{ 
+              position: 'absolute', 
+              left: '930px', 
+              top: '970px', 
+              width: '140px', 
+              height: '80px',
+              objectFit: 'cover',
+              borderRadius: '4px'
+            }}
+          />
 
           <VerticalLine x={1000} startY={1050} endY={1100} />
           <ArrowHead x={1000} y={1100} direction="down" />
@@ -655,31 +651,32 @@ const SecondaryAmenorrheaFlowchart = () => {
             backgroundColor: 'white',
             padding: '20px',
             borderRadius: '8px',
-            border: '1px solid #ccc'
+            border: '1px solid #ccc',
+            color: 'black'
           }}>
-            <h4 className="font-bold mb-2">Footnotes</h4>
-            <p className="mb-2">
+            <h4 className="font-bold mb-2" style={{ color: 'black' }}>Footnotes</h4>
+            <p className="mb-2" style={{ color: 'black' }}>
               ¹ Possible causes: Primary ovarian insufficiency, menopause.
             </p>
-            <p className="mb-2">
+            <p className="mb-2" style={{ color: 'black' }}>
               ² Hormone replacement therapy.
             </p>
-            <p className="mb-2">
+            <p className="mb-2" style={{ color: 'black' }}>
               ³ Oral contraceptives, antipsychotics, and chemotherapeutic drugs are some medications that may cause drug-induced hyperprolactinemia.
             </p>
-            <p className="mb-2">
+            <p className="mb-2" style={{ color: 'black' }}>
               ⁴ Features can include hirsutism, acne, male pattern balding, virilization.
             </p>
-            <p className="mb-2">
+            <p className="mb-2" style={{ color: 'black' }}>
               ⁵ Possible causes: Prolactinoma (most common), Sheehan syndrome, pituitary adenoma, craniopharyngioma.
             </p>
-            <p className="mb-2">
+            <p className="mb-2" style={{ color: 'black' }}>
               ⁶ Form of hypogonadotropic hypogonadism.
             </p>
-            <p className="mb-2">
+            <p className="mb-2" style={{ color: 'black' }}>
               ⁷ Possible causes: Congenital adrenal hyperplasia, androgen-secreting tumors, Cushing's syndrome.
             </p>
-            <p>
+            <p style={{ color: 'black' }}>
               ⁸ Polycystic ovarian syndrome.
             </p>
           </div>
@@ -695,10 +692,11 @@ const SecondaryAmenorrheaFlowchart = () => {
             backgroundColor: '#f0f8ff',
             padding: '20px',
             borderRadius: '8px',
-            border: '2px solid #4682b4'
+            border: '2px solid #4682b4',
+            color: 'black'
           }}>
-            <h4 className="font-bold mb-2">Definition</h4>
-            <p>
+            <h4 className="font-bold mb-2" style={{ color: 'black' }}>Definition</h4>
+            <p style={{ color: 'black' }}>
               Secondary amenorrhea is defined as the absence of menses for more than 3 months in women with previously regular cycles.
             </p>
           </div>
