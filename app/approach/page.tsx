@@ -12,6 +12,7 @@ import VulvarDystrophiesPage from './obs-gyne/gynecology/vulvar-dystrophies/page
 import GenitalUlcersPage from './obs-gyne/gynecology/genital-ulcers/page';
 import AbnormalVaginalDischargePage from './obs-gyne/gynecology/abnormal-vaginal-discharge/page';
 import IncontinencePage from './obs-gyne/gynecology/incontinence/page';
+import PrimaryAmenorrheaPage from './obs-gyne/gynecology/primary-amenorrhea/page';
 
 // Box component that matches the image exactly
 const FlowchartBox = ({ 
@@ -1855,7 +1856,7 @@ export default function ApproachPage() {
         {/* Main Content */}
         <main className="flex-1 p-2 sm:p-4 md:p-6 overflow-hidden min-w-0">
           {selectedContent && selectedContent.lecture ? (
-            <div className={`${(selectedContent.lecture.id === 'card-5' || selectedContent.lecture.id === 'acute-pelvic-pain' || selectedContent.lecture.id === 'dyspareunia' || selectedContent.lecture.id === 'vulvar-vaginal-cancers' || selectedContent.lecture.id === 'vulvar-vaginal-infections-and-inflammation' || selectedContent.lecture.id === 'vulvar-dystrophies' || selectedContent.lecture.id === 'genital-ulcers' || selectedContent.lecture.id === 'abnormal-vaginal-discharge' || selectedContent.lecture.id === 'incontinence') && isFrameFullscreen ? 'fixed inset-0 z-50' : 'h-full w-full'} bg-white/95 backdrop-blur-sm border-2 border-blue-300 rounded-xl overflow-hidden shadow-xl`}>
+            <div className={`${(selectedContent.lecture.id === 'card-5' || selectedContent.lecture.id === 'acute-pelvic-pain' || selectedContent.lecture.id === 'dyspareunia' || selectedContent.lecture.id === 'vulvar-vaginal-cancers' || selectedContent.lecture.id === 'vulvar-vaginal-infections-and-inflammation' || selectedContent.lecture.id === 'vulvar-dystrophies' || selectedContent.lecture.id === 'genital-ulcers' || selectedContent.lecture.id === 'abnormal-vaginal-discharge' || selectedContent.lecture.id === 'incontinence' || selectedContent.lecture.id === 'primary-amenorrhea') && isFrameFullscreen ? 'fixed inset-0 z-50' : 'h-full w-full'} bg-white/95 backdrop-blur-sm border-2 border-blue-300 rounded-xl overflow-hidden shadow-xl`}>
               {selectedContent.lecture.id === 'card-5' ? (
                 // Render Chest Pain flowchart directly as component
                 <ChestPainFlowchart 
@@ -1907,6 +1908,12 @@ export default function ApproachPage() {
               ) : selectedContent.lecture.id === 'incontinence' ? (
                 // Render Incontinence page directly as component
                 <IncontinencePage 
+                  frameFullScreen={isFrameFullscreen}
+                  onToggleFrameFullScreen={() => setIsFrameFullscreen(!isFrameFullscreen)}
+                />
+              ) : selectedContent.lecture.id === 'primary-amenorrhea' ? (
+                // Render Primary Amenorrhea page directly as component
+                <PrimaryAmenorrheaPage 
                   frameFullScreen={isFrameFullscreen}
                   onToggleFrameFullScreen={() => setIsFrameFullscreen(!isFrameFullscreen)}
                 />
