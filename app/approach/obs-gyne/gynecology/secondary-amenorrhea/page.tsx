@@ -1,12 +1,11 @@
 "use client";
 
-import React, { useRef, useState } from "react";
-import Head from "next/head";
+import React, { useRef, useState, useEffect } from "react";
 
 // Decision/Question box component (Gray)
 const DecisionBox = ({ title, style = {} }: { title: string; style?: React.CSSProperties }) => (
   <div 
-    className="bg-gray-200 border-2 border-gray-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
+    className="flowchart-box bg-gray-200 border-2 border-gray-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
     style={{
       minHeight: '50px',
       display: 'flex',
@@ -22,7 +21,7 @@ const DecisionBox = ({ title, style = {} }: { title: string; style?: React.CSSPr
 // Finding/Assessment box component (Light Green)
 const FindingBox = ({ title, style = {} }: { title: string; style?: React.CSSProperties }) => (
   <div 
-    className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
+    className="flowchart-box bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
     style={{
       minHeight: '50px',
       display: 'flex',
@@ -38,7 +37,7 @@ const FindingBox = ({ title, style = {} }: { title: string; style?: React.CSSPro
 // Diagnosis box component (Yellow)
 const DiagnosisBox = ({ title, style = {} }: { title: string; style?: React.CSSProperties }) => (
   <div 
-    className="bg-yellow-200 border-2 border-yellow-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
+    className="flowchart-box bg-yellow-200 border-2 border-yellow-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
     style={{
       minHeight: '50px',
       display: 'flex',
@@ -54,7 +53,7 @@ const DiagnosisBox = ({ title, style = {} }: { title: string; style?: React.CSSP
 // Treatment box component (Light Blue)
 const TreatmentBox = ({ title, style = {} }: { title: string; style?: React.CSSProperties }) => (
   <div 
-    className="bg-blue-100 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
+    className="flowchart-box bg-blue-100 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
     style={{
       minHeight: '50px',
       display: 'flex',
@@ -70,7 +69,7 @@ const TreatmentBox = ({ title, style = {} }: { title: string; style?: React.CSSP
 // Assessment/Test box component (Light Purple)
 const AssessmentBox = ({ title, style = {} }: { title: string; style?: React.CSSProperties }) => (
   <div 
-    className="bg-purple-100 border-2 border-purple-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
+    className="flowchart-box bg-purple-100 border-2 border-purple-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
     style={{
       minHeight: '50px',
       display: 'flex',
@@ -165,75 +164,221 @@ const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; directi
   );
 };
 
-const SecondaryAmenorrheaFlowchart = () => {
+export default function SecondaryAmenorrheaPage({ frameFullScreen, onToggleFrameFullScreen }: { frameFullScreen: boolean; onToggleFrameFullScreen: () => void }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [pan, setPan] = useState({ x: 0, y: 0 });
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [isPanning, setIsPanning] = useState(false);
+  const [isZooming, setIsZooming] = useState(false);
+  const [scale, setScale] = useState(1);
+  const [zoomScale, setZoomScale] = useState(1);
+  const [initialDistance, setInitialDistance] = useState(0);
+  const [panX, setPanX] = useState(0);
+  const [panY, setPanY] = useState(0);
+  const [lastTouchX, setLastTouchX] = useState(0);
+  const [lastTouchY, setLastTouchY] = useState(0);
+  const [mouseStartPos, setMouseStartPos] = useState({ x: 0, y: 0 });
+
+  // Check if mobile/tablet on mount and resize
+  useEffect(() => {
+    const checkDevice = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      
+      // Responsive flowchart that fits all devices
+      const flowchartWidth = 3000;
+      const flowchartHeight = 2500;
+      
+      // Calculate scale to fit the device properly
+      const scaleX = (width * 0.9) / flowchartWidth; // 90% of screen width
+      const scaleY = (height * 0.8) / flowchartHeight; // 80% of screen height
+      
+      // Use the smaller scale to ensure it fits completely
+      const autoScale = Math.min(scaleX, scaleY, 1); // Cap at 1.0
+      
+      setScale(autoScale);
+    };
+    
+    checkDevice();
+    window.addEventListener('resize', checkDevice);
+    return () => window.removeEventListener('resize', checkDevice);
+  }, []);
 
   const handleMouseDown = (e: React.MouseEvent) => {
-    setIsDragging(true);
-    setDragStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
+    const target = e.target as HTMLElement;
+    if (target.closest('.flowchart-box')) return;
+    e.preventDefault();
+    setIsPanning(true);
+    setMouseStartPos({ x: e.clientX - panX, y: e.clientY - panY });
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging) return;
-    setPan({ x: e.clientX - dragStart.x, y: e.clientY - dragStart.y });
+    if (!isPanning) return;
+    e.preventDefault();
+    
+    // Direct, responsive panning without borders
+    const newX = e.clientX - mouseStartPos.x;
+    const newY = e.clientY - mouseStartPos.y;
+    
+    setPanX(newX);
+    setPanY(newY);
   };
 
   const handleMouseUp = () => {
-    setIsDragging(false);
+    setIsPanning(false);
+  };
+
+  // Scroll to zoom functionality for desktop - zoom to mouse position
+  const handleWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+    
+    // Only zoom if not panning
+    if (!isPanning) {
+      const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1; // Zoom out on scroll down, zoom in on scroll up
+      const newZoomScale = Math.max(0.3, Math.min(5, zoomScale * zoomFactor));
+      
+      // Get mouse position relative to the flowchart container
+      const rect = e.currentTarget.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left - rect.width / 2;
+      const mouseY = e.clientY - rect.top - rect.height / 2;
+      
+      // Calculate new pan position to zoom towards mouse
+      const scaleChange = newZoomScale / zoomScale;
+      const newPanX = panX - (mouseX * (scaleChange - 1));
+      const newPanY = panY - (mouseY * (scaleChange - 1));
+      
+      setZoomScale(newZoomScale);
+      setPanX(newPanX);
+      setPanY(newPanY);
+    }
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    if (e.touches.length === 1) {
-      setIsDragging(true);
-      setDragStart({ 
-        x: e.touches[0].clientX - pan.x, 
-        y: e.touches[0].clientY - pan.y 
-      });
+    if (e.touches.length === 2) {
+      // Two finger touch - start zooming
+      e.preventDefault();
+      setIsZooming(true);
+      setIsPanning(false);
+      const distance = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      setInitialDistance(distance);
+    } else if (e.touches.length === 1) {
+      // Single finger touch - start panning
+      const target = e.target as HTMLElement;
+      if (target.closest('.flowchart-box')) {
+        return;
+      }
+      
+      e.preventDefault();
+      setIsPanning(true);
+      setIsZooming(false);
+      setLastTouchX(e.touches[0].clientX);
+      setLastTouchY(e.touches[0].clientY);
     }
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging || e.touches.length !== 1) return;
-    e.preventDefault();
-    setPan({ 
-      x: e.touches[0].clientX - dragStart.x, 
-      y: e.touches[0].clientY - dragStart.y 
-    });
+    if (e.touches.length === 2 && isZooming) {
+      // Two finger zoom
+      e.preventDefault();
+      const distance = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      
+      const scaleFactor = distance / initialDistance;
+      const newZoomScale = Math.max(0.3, Math.min(5, zoomScale * scaleFactor));
+      setZoomScale(newZoomScale);
+      setInitialDistance(distance);
+    } else if (e.touches.length === 1 && isPanning) {
+      // Single finger pan - direct and responsive
+      e.preventDefault();
+      const touch = e.touches[0];
+      const deltaX = touch.clientX - lastTouchX;
+      const deltaY = touch.clientY - lastTouchY;
+      
+      setPanX(prev => prev + deltaX);
+      setPanY(prev => prev + deltaY);
+      
+      setLastTouchX(touch.clientX);
+      setLastTouchY(touch.clientY);
+    }
   };
 
   const handleTouchEnd = () => {
-    setIsDragging(false);
+    setIsZooming(false);
+    setIsPanning(false);
   };
 
   return (
-    <>
-      <Head>
-        <title>Secondary Amenorrhea Flowchart</title>
-        <meta name="description" content="Interactive flowchart for diagnosing secondary amenorrhea" />
-      </Head>
-      <div className="min-h-screen bg-gray-50">
-        <h1 className="text-2xl font-bold text-blue-600 pt-8 pb-4 pl-8">Secondary Amenorrhea</h1>
-        <div 
+    <div className={`${frameFullScreen ? 'fixed inset-0 z-50 bg-gray-100' : 'h-screen bg-gray-100'} overflow-hidden flex flex-col`}>
+        {/* Header - Fixed at top */}
+        <div className="bg-white p-4 shadow-sm flex items-center justify-between flex-shrink-0 border-b border-gray-200 z-10 relative">
+          <div className="flex items-center space-x-4">
+            <h1 className="text-2xl font-bold text-blue-600">Secondary Amenorrhea</h1>
+          </div>
+          <button
+            onClick={onToggleFrameFullScreen}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+            title={frameFullScreen ? "Exit Full Screen" : "Full Screen"}
+          >
+            {frameFullScreen ? (
+              <>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                <span>Exit Full Screen</span>
+              </>
+            ) : (
+              <>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                </svg>
+                <span>Full Screen</span>
+              </>
+            )}
+          </button>
+        </div>
+
+        {/* Main flowchart container - Takes remaining space */}
+        <div
           ref={containerRef}
-          className="w-full h-screen overflow-hidden cursor-grab active:cursor-grabbing"
+          className="relative w-full flex-grow overflow-hidden flex items-center justify-center"
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
+          onWheel={handleWheel}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
+          style={{ 
+            cursor: isPanning ? 'grabbing' : 'grab',
+            touchAction: 'none', // Prevent page refresh on iPad
+            pointerEvents: 'auto',
+            WebkitTouchCallout: 'none', // Prevent iOS touch callouts
+            WebkitUserSelect: 'none' // Prevent text selection
+          }}
         >
-          <div 
+          <div
             className="relative"
             style={{
+              transform: `scale(${scale * zoomScale}) translate(${panX}px, ${panY}px)`,
               width: '3000px',
               height: '2500px',
-              transform: `translate(${pan.x}px, ${pan.y}px)`,
-              transition: 'transform 0.1s ease-out',
+              pointerEvents: 'auto', // Enable interaction with boxes
+              transformOrigin: 'center',
+              transition: isZooming ? 'none' : 'none', // Remove transition for instant panning
+              willChange: 'transform', // Optimize for animations
+              backfaceVisibility: 'hidden', // Reduce blur on touch
+              WebkitBackfaceVisibility: 'hidden', // Safari support
+              // Improve rendering quality for zoom
+              imageRendering: 'crisp-edges',
+              // Better text rendering
+              textRendering: 'optimizeLegibility',
+              // Prevent blur during zoom
+              transformStyle: 'preserve-3d',
+              perspective: '1000px'
             }}
           >
             {/* Start Point */}
@@ -703,8 +848,5 @@ const SecondaryAmenorrheaFlowchart = () => {
         </div>
       </div>
     </div>
-    </>
   );
 };
-
-export default SecondaryAmenorrheaFlowchart;
