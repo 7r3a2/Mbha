@@ -1,0 +1,22 @@
+{
+  "name": "MBHA Medical Qbank",
+  "short_name": "MBHA",
+  "description": "Medical Board Help Assistant - Qbank and Exam Preparation",
+  "start_url": "/",
+  "display": "fullscreen",
+  "background_color": "#ffffff",
+  "theme_color": "#3b82f6",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

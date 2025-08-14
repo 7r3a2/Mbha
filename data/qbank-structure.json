@@ -1,44 +1,131 @@
 {
   "subjects": [
     {
-      "key": "obgyn",
+      "key": "subject_1",
       "name": "Obstetrics & Gynecology",
       "lectures": [
         {
-          "title": "Physiology in Pregnancy",
+          "title": "Basic sign and normal pregnancy",
           "topics": [
-            { "title": "Physiological changes in pregnancy" },
-            { "title": "Anatomy and embryology" }
+            {
+              "title": "Physiological changes in pregnancy"
+            }
           ]
         },
         {
-          "title": "Medical Disorders in Pregnancy",
+          "title": "Maternal Medicine",
           "topics": [
-            { "title": "D.M. in pregnancy" },
-            { "title": "Hypertensive disorder in pregnancy" }
+            {
+              "title": "D.M. in pregnancy"
+            }
           ]
         }
       ],
       "sources": [
-        { "key": "source1", "name": "Lecture Notes" },
-        { "key": "source2", "name": "Textbook References" }
+        {
+          "key": "source_1",
+          "name": "APGO"
+        },
+        {
+          "key": "source_2",
+          "name": "ACOG"
+        },
+        {
+          "key": "source_3",
+          "name": "tesst"
+        },
+        {
+          "key": "source_4",
+          "name": "2"
+        },
+        {
+          "key": "source_5",
+          "name": "source 1"
+        },
+        {
+          "key": "source_6",
+          "name": "source 2"
+        }
       ]
     },
     {
-      "key": "internal-medicine",
-      "name": "Internal Medicine",
+      "key": "subject_2",
+      "name": "test",
       "lectures": [
         {
-          "title": "Cardiology",
+          "title": "sss",
           "topics": [
-            { "title": "Heart failure" },
-            { "title": "Arrhythmias" }
+            {
+              "title": "haha"
+            }
           ]
         }
       ],
       "sources": [
-        { "key": "source1", "name": "Clinical Guidelines" },
-        { "key": "source2", "name": "Research Papers" }
+        {
+          "key": "source_1",
+          "name": "APGO"
+        },
+        {
+          "key": "source_2",
+          "name": "ACOG"
+        },
+        {
+          "key": "source_3",
+          "name": "tesst"
+        },
+        {
+          "key": "source_4",
+          "name": "2"
+        },
+        {
+          "key": "source_5",
+          "name": "source 1"
+        },
+        {
+          "key": "source_6",
+          "name": "source 2"
+        }
+      ]
+    },
+    {
+      "key": "subject_3",
+      "name": "subject 1",
+      "lectures": [
+        {
+          "title": "lecture 1",
+          "topics": [
+            {
+              "title": "topic 1"
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "key": "source_1",
+          "name": "APGO"
+        },
+        {
+          "key": "source_2",
+          "name": "ACOG"
+        },
+        {
+          "key": "source_3",
+          "name": "tesst"
+        },
+        {
+          "key": "source_4",
+          "name": "2"
+        },
+        {
+          "key": "source_5",
+          "name": "source 1"
+        },
+        {
+          "key": "source_6",
+          "name": "source 2"
+        }
       ]
     }
   ]

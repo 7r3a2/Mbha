@@ -273,7 +273,7 @@ const SUBJECTS = [
           'Disease of cranial nerves',
           'Seizures, status Epilepticus',
           'Demyelinating diseases; multiple sclerosis',
-          'Cerebrovascular accident Ischemic & Haemorrhagic',
+          'Cerebrovascular accident, Ischemic & Haemorrhagic',
           'Spinal cord diseases, Transverse myelitis',
           'Migraine & Headache, Idiopathic intracranial hypertension',
           'Infections of nervous system (Meningitis & encephalitis)',
@@ -740,6 +740,25 @@ export default function Qbank() {
   const [searchTerms, setSearchTerms] = useState<Record<string, string>>({});
   const [topicsWithQuestions, setTopicsWithQuestions] = useState<{ [key: string]: boolean }>({});
 
+  // Only check topics once when subjects are loaded
+  useEffect(() => {
+    const selectedSubs = subjects.filter((s) => selectedSubjects.includes(s.key));
+    if (selectedSubs.length > 0 && Object.keys(topicsWithQuestions).length === 0) {
+      checkAllTopicsForQuestions(selectedSubs);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subjects]); // Only depend on subjects, not sources
+
+  // Helper: map selected source keys to their labels for current subject selection
+  const getSelectedSourceLabels = (): string[] => {
+    const allAvailSources = subjects
+      .filter((s) => selectedSubjects.includes(s.key))
+      .flatMap((s) => s.sources);
+    return allAvailSources
+      .filter((src: any) => selectedSources.includes(src.key))
+      .map((src: any) => src.label)
+      .filter(Boolean);
+  };
 
 
   const handleLogout = () => {
@@ -754,9 +773,15 @@ export default function Qbank() {
 
 
   // Check if a topic has questions
-  const checkTopicHasQuestions = async (topicName: string): Promise<boolean> => {
+  const checkTopicHasQuestions = async (topicName: string, sourceLabels?: string[]): Promise<boolean> => {
     try {
-      const response = await fetch(`/api/qbank/questions?topic=${encodeURIComponent(topicName)}&limit=1`);
+      const params = new URLSearchParams();
+      params.set('topic', topicName);
+      params.set('limit', '1');
+      if (sourceLabels && sourceLabels.length > 0) {
+        params.set('sources', sourceLabels.join(','));
+      }
+      const response = await fetch(`/api/qbank/questions?${params.toString()}`);
       if (response.ok) {
         const data = await response.json();
         const arr = Array.isArray(data) ? data : data?.questions;
@@ -770,12 +795,18 @@ export default function Qbank() {
 
   // Check all topics for questions when subjects are loaded
   const checkAllTopicsForQuestions = async (subjectsData: any[]) => {
+    // Only run this check once when subjects are first loaded, not on every source change
+    if (Object.keys(topicsWithQuestions).length > 0) {
+      return; // Already checked, don't re-check
+    }
+    
     const topicsMap: { [key: string]: boolean } = {};
+    const sourceLabels = getSelectedSourceLabels();
     
     for (const subject of subjectsData) {
       for (const lecture of subject.lectures) {
         for (const topic of lecture.topics) {
-          const hasQuestions = await checkTopicHasQuestions(topic);
+          const hasQuestions = await checkTopicHasQuestions(topic, sourceLabels);
           topicsMap[topic] = hasQuestions;
         }
       }
@@ -835,18 +866,16 @@ export default function Qbank() {
     }
 
     // Check if selected topics have questions
+    const sourceLabels = getSelectedSourceLabels();
     const topicsWithQuestions = await Promise.all(
       selectedTopicNames.map(async (topicName) => {
-        const hasQuestions = await checkTopicHasQuestions(topicName);
+        const hasQuestions = await checkTopicHasQuestions(topicName, sourceLabels);
         return { topicName, hasQuestions };
       })
     );
-
-    const topicsWithoutQuestions = topicsWithQuestions.filter(t => !t.hasQuestions);
-    if (topicsWithoutQuestions.length > 0) {
-      const topicList = topicsWithoutQuestions.map(t => t.topicName).join(', ');
-      alert(`The following topics have no questions and cannot be selected: ${topicList}`);
-      return;
+    {
+      // Keep only topics that actually have questions (no alerts)
+      selectedTopicNames = topicsWithQuestions.filter(c => c.hasQuestions).map(c => c.topicName);
     }
 
     // Collect all selected sources and topics
@@ -1018,9 +1047,8 @@ export default function Qbank() {
         },
       }));
       } else {
-      // For lectures with topics, check if we're trying to select all
+      // For lectures with topics, if already all selected then deselect all; otherwise select only those with questions
       if (checked.length === topicCount) {
-        // We're deselecting all, which is always allowed
         setTopicChecks((prev) => ({
           ...prev,
           [subjectKey]: {
@@ -1029,29 +1057,25 @@ export default function Qbank() {
           },
         }));
       } else {
-        // We're trying to select all, check if all topics have questions
         const topicNames = lecture.topics || [];
-        const topicsWithQuestions = await Promise.all(
+        const checks = await Promise.all(
           topicNames.map(async (topicName: string) => {
-            const hasQuestions = await checkTopicHasQuestions(topicName);
-            return { topicName, hasQuestions };
+            // Use precomputed map when available; otherwise check live
+            const preset = topicsWithQuestions[topicName];
+            if (preset === false) return false;
+            if (preset === true) return true;
+            return await checkTopicHasQuestions(topicName, getSelectedSourceLabels());
           })
         );
-        
-        const topicsWithoutQuestions = topicsWithQuestions.filter(t => !t.hasQuestions);
-        if (topicsWithoutQuestions.length > 0) {
-          const topicList = topicsWithoutQuestions.map(t => t.topicName).join(', ');
-          alert(`The following topics have no questions and cannot be selected: ${topicList}`);
-          return;
-        }
-        
-        // All topics have questions, select all
+        const allowedIdxs = checks
+          .map((ok, i) => (ok ? i : -1))
+          .filter((i) => i !== -1);
         setTopicChecks((prev) => ({
-        ...prev,
-        [subjectKey]: {
-          ...prev[subjectKey],
-            [lectureIdx]: Array.from({ length: topicCount }, (_, i) => i),
-        },
+          ...prev,
+          [subjectKey]: {
+            ...prev[subjectKey],
+            [lectureIdx]: allowedIdxs,
+          },
         }));
       }
     }
@@ -1076,9 +1100,8 @@ export default function Qbank() {
     
     if (!exists) {
       // We're trying to select this topic, check if it has questions
-      const hasQuestions = await checkTopicHasQuestions(topicName);
+      const hasQuestions = await checkTopicHasQuestions(topicName, getSelectedSourceLabels());
       if (!hasQuestions) {
-        alert(`Topic "${topicName}" has no questions and cannot be selected.`);
         return;
       }
     }
@@ -1451,7 +1474,9 @@ export default function Qbank() {
                                         />
                                           <label className={`ml-2 text-sm ${!hasQuestions ? 'text-gray-400 cursor-not-allowed' : 'text-gray-600'}`}>
                                             {topic}
-                                            {!hasQuestions && <span className="ml-1 text-xs text-red-500">(No questions)</span>}
+                                            {!hasQuestions && (
+                                              <span className="ml-1 text-xs text-red-500">(No questions)</span>
+                                            )}
                                           </label>
                                       </div>
                                       );

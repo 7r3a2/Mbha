@@ -171,10 +171,12 @@ const TextHighlighter = ({ text, className = '' }: TextHighlighterProps) => {
             backgroundColor: highlight.color,
             cursor: 'pointer',
             borderRadius: '2px',
-            padding: '1px 2px',
-            margin: '0 1px',
+            padding: '0',
+            margin: '0',
             position: 'relative',
-            display: 'inline-block'
+            display: 'inline',
+            boxDecorationBreak: 'clone',
+            WebkitBoxDecorationBreak: 'clone'
           }}
           onClick={(e) => handleHighlightClick(highlight, e)}
           title="Click to remove highlight"
