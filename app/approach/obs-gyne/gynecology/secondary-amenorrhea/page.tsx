@@ -1,27 +1,10 @@
-'use client';
-
-import React, { useRef, useState, useEffect } from 'react';
-
-// Main title box component (Gray)
-const TitleBox = ({ title, style = {} }: { title: string; style?: React.CSSProperties }) => (
-  <div 
-    className="flowchart-box bg-gray-200 border-2 border-gray-400 px-6 py-4 text-center rounded-lg shadow-md text-lg font-bold text-gray-800"
-    style={{
-      minHeight: '60px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      ...style
-    }}
-  >
-    {title}
-  </div>
-);
+import React, { useRef, useState } from "react";
+import Head from "next/head";
 
 // Decision/Question box component (Gray)
 const DecisionBox = ({ title, style = {} }: { title: string; style?: React.CSSProperties }) => (
   <div 
-    className="flowchart-box bg-gray-200 border-2 border-gray-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
+    className="bg-gray-200 border-2 border-gray-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
     style={{
       minHeight: '50px',
       display: 'flex',
@@ -34,10 +17,10 @@ const DecisionBox = ({ title, style = {} }: { title: string; style?: React.CSSPr
   </div>
 );
 
-// Symptom/Finding box component (Light Green)
+// Finding/Assessment box component (Light Green)
 const FindingBox = ({ title, style = {} }: { title: string; style?: React.CSSProperties }) => (
   <div 
-    className="flowchart-box bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
+    className="bg-green-100 border-2 border-green-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
     style={{
       minHeight: '50px',
       display: 'flex',
@@ -50,10 +33,10 @@ const FindingBox = ({ title, style = {} }: { title: string; style?: React.CSSPro
   </div>
 );
 
-// Diagnosis box component (Gold/Orange)
+// Diagnosis box component (Yellow)
 const DiagnosisBox = ({ title, style = {} }: { title: string; style?: React.CSSProperties }) => (
   <div 
-    className="flowchart-box bg-yellow-100 border-2 border-yellow-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-semibold text-gray-800"
+    className="bg-yellow-200 border-2 border-yellow-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
     style={{
       minHeight: '50px',
       display: 'flex',
@@ -69,7 +52,7 @@ const DiagnosisBox = ({ title, style = {} }: { title: string; style?: React.CSSP
 // Treatment box component (Light Blue)
 const TreatmentBox = ({ title, style = {} }: { title: string; style?: React.CSSProperties }) => (
   <div 
-    className="flowchart-box bg-blue-100 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
+    className="bg-blue-100 border-2 border-blue-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
     style={{
       minHeight: '50px',
       display: 'flex',
@@ -82,10 +65,10 @@ const TreatmentBox = ({ title, style = {} }: { title: string; style?: React.CSSP
   </div>
 );
 
-// Assessment box component (Purple)
+// Assessment/Test box component (Light Purple)
 const AssessmentBox = ({ title, style = {} }: { title: string; style?: React.CSSProperties }) => (
   <div 
-    className="flowchart-box bg-purple-100 border-2 border-purple-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
+    className="bg-purple-100 border-2 border-purple-400 px-4 py-3 text-center rounded-lg shadow-md text-sm font-medium text-gray-800"
     style={{
       minHeight: '50px',
       display: 'flex',
@@ -98,413 +81,630 @@ const AssessmentBox = ({ title, style = {} }: { title: string; style?: React.CSS
   </div>
 );
 
-// Vertical line component
-const VerticalLine = ({ x, y, height, style = {} }: { x: number; y: number; height: number; style?: React.CSSProperties }) => (
+// Connecting line components
+const VerticalLine = ({ x, startY, endY }: { x: number; startY: number; endY: number }) => (
   <div
-    className="absolute bg-gray-600"
+    className="absolute pointer-events-none"
     style={{
-      left: x,
-      top: y,
-      width: '2px',
-      height: height,
-      ...style
+      left: x - 0.5,
+      top: startY,
+      width: 1,
+      height: endY - startY,
+      backgroundColor: '#374151',
+      zIndex: 10,
     }}
   />
 );
 
-// Horizontal line component
-const HorizontalLine = ({ x, y, width, style = {} }: { x: number; y: number; width: number; style?: React.CSSProperties }) => (
+const HorizontalLine = ({ y, startX, endX }: { y: number; startX: number; endX: number }) => (
   <div
-    className="absolute bg-gray-600"
+    className="absolute pointer-events-none"
     style={{
-      left: x,
-      top: y,
-      height: '2px',
-      width: width,
-      ...style
+      left: startX,
+      top: y - 0.5,
+      width: endX - startX,
+      height: 1,
+      backgroundColor: '#374151',
+      zIndex: 10,
     }}
   />
 );
 
-// Arrow head component
-const ArrowHead = ({ x, y, direction = 'down', style = {} }: { x: number; y: number; direction?: 'down' | 'right' | 'left' | 'up'; style?: React.CSSProperties }) => {
-  const arrowSize = 8;
-  let points = '';
-  
-  switch (direction) {
-    case 'down':
-      points = `${x},${y} ${x - arrowSize},${y - arrowSize} ${x + arrowSize},${y - arrowSize}`;
-      break;
-    case 'right':
-      points = `${x},${y} ${x - arrowSize},${y - arrowSize} ${x - arrowSize},${y + arrowSize}`;
-      break;
-    case 'left':
-      points = `${x},${y} ${x + arrowSize},${y - arrowSize} ${x + arrowSize},${y + arrowSize}`;
-      break;
-    case 'up':
-      points = `${x},${y} ${x - arrowSize},${y + arrowSize} ${x + arrowSize},${y + arrowSize}`;
-      break;
-  }
+const ArrowHead = ({ x, y, direction = 'down' }: { x: number; y: number; direction?: 'down' | 'right' | 'left' | 'up' }) => {
+  const getArrowStyle = () => {
+    switch (direction) {
+      case 'down':
+        return {
+          left: x - 3,
+          top: y - 6,
+          borderLeft: '3px solid transparent',
+          borderRight: '3px solid transparent',
+          borderTop: '6px solid #374151',
+        };
+      case 'right':
+        return {
+          left: x - 6,
+          top: y - 3,
+          borderTop: '3px solid transparent',
+          borderBottom: '3px solid transparent',
+          borderLeft: '6px solid #374151',
+        };
+      case 'left':
+        return {
+          left: x,
+          top: y - 3,
+          borderTop: '3px solid transparent',
+          borderBottom: '3px solid transparent',
+          borderRight: '6px solid #374151',
+        };
+      case 'up':
+        return {
+          left: x - 3,
+          top: y,
+          borderLeft: '3px solid transparent',
+          borderRight: '3px solid transparent',
+          borderBottom: '6px solid #374151',
+        };
+      default:
+        return {};
+    }
+  };
 
   return (
-    <svg
-      className="absolute"
+    <div
+      className="absolute pointer-events-none"
       style={{
-        left: x - arrowSize,
-        top: y - arrowSize,
-        width: arrowSize * 2,
-        height: arrowSize * 2,
-        ...style
+        width: 0,
+        height: 0,
+        zIndex: 11,
+        ...getArrowStyle(),
       }}
-    >
-      <polygon points={points} fill="#4B5563" />
-    </svg>
+    />
   );
 };
 
-// Main Secondary Amenorrhea Flowchart Component
-const SecondaryAmenorrheaFlowchart = ({ 
-  frameFullScreen = false, 
-  onToggleFrameFullScreen 
-}: { 
-  frameFullScreen?: boolean; 
-  onToggleFrameFullScreen?: () => void;
-}) => {
+const SecondaryAmenorrheaFlowchart = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [scale, setScale] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
-  // Pan and zoom functionality
-  const handleWheel = (e: React.WheelEvent) => {
-    e.preventDefault();
-    const delta = e.deltaY > 0 ? 0.9 : 1.1;
-    const newScale = Math.max(0.5, Math.min(3, scale * delta));
-    setScale(newScale);
-  };
-
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (e.button === 0) { // Left click only
-      setIsDragging(true);
-      setDragStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
-    }
+    setIsDragging(true);
+    setDragStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (isDragging) {
-      setPan({
-        x: e.clientX - dragStart.x,
-        y: e.clientY - dragStart.y
-      });
-    }
+    if (!isDragging) return;
+    setPan({ x: e.clientX - dragStart.x, y: e.clientY - dragStart.y });
   };
 
   const handleMouseUp = () => {
     setIsDragging(false);
   };
 
-  const resetView = () => {
-    setScale(1);
-    setPan({ x: 0, y: 0 });
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 1) {
+      setIsDragging(true);
+      setDragStart({ 
+        x: e.touches[0].clientX - pan.x, 
+        y: e.touches[0].clientY - pan.y 
+      });
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging || e.touches.length !== 1) return;
+    e.preventDefault();
+    setPan({ 
+      x: e.touches[0].clientX - dragStart.x, 
+      y: e.touches[0].clientY - dragStart.y 
+    });
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
   };
 
   return (
-    <div className={`${frameFullScreen ? 'fixed inset-0 z-50' : 'h-full w-full'} bg-white flex flex-col`}>
-      {/* Header */}
-      <div className="bg-blue-600 text-white p-4 flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Secondary Amenorrhea Flowchart</h1>
-        <div className="flex gap-2">
-          <button
-            onClick={resetView}
-            className="px-4 py-2 bg-blue-700 hover:bg-blue-800 rounded-lg text-sm font-medium transition-colors"
-          >
-            Reset View
-          </button>
-          {onToggleFrameFullScreen && (
-            <button
-              onClick={onToggleFrameFullScreen}
-              className="px-4 py-2 bg-blue-700 hover:bg-blue-800 rounded-lg text-sm font-medium transition-colors"
-            >
-              {frameFullScreen ? 'Exit Fullscreen' : 'Fullscreen'}
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* Flowchart Container */}
-      <div 
-        ref={containerRef}
-        className="flex-1 overflow-hidden relative cursor-grab active:cursor-grabbing"
-        onWheel={handleWheel}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-      >
-        <div
-          className="absolute inset-0"
-          style={{
-            transform: `translate(${pan.x}px, ${pan.y}px) scale(${scale})`,
-            transformOrigin: '0 0',
-            transition: isDragging ? 'none' : 'transform 0.1s ease-out'
-          }}
+    <>
+      <Head>
+        <title>Secondary Amenorrhea Flowchart</title>
+        <meta name="description" content="Interactive flowchart for diagnosing secondary amenorrhea" />
+      </Head>
+      <div className="min-h-screen bg-gray-50">
+        <h1 className="text-2xl font-bold text-blue-600 pt-8 pb-4 pl-8">Secondary Amenorrhea</h1>
+        <div 
+          ref={containerRef}
+          className="w-full h-screen overflow-hidden cursor-grab active:cursor-grabbing"
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
         >
-          {/* Flowchart Content */}
-          <div className="relative w-[1200px] h-[800px] bg-white p-8">
-            
-            {/* Title */}
-            <TitleBox 
-              title="Secondary Amenorrhea" 
-              style={{ position: 'absolute', left: 450, top: 20, width: 300 }}
-            />
-
-            {/* Initial Assessment */}
-            <DecisionBox 
-              title="Secondary Amenorrhea: No menses for 3+ months in previously menstruating woman" 
-              style={{ position: 'absolute', left: 400, top: 100, width: 400 }}
-            />
-
-            {/* First Branch - Pregnancy */}
-            <DecisionBox 
-              title="Pregnancy Test" 
-              style={{ position: 'absolute', left: 200, top: 200, width: 150 }}
-            />
-            <VerticalLine x={275} y={250} height={50} />
-            <ArrowHead x={275} y={300} direction="down" />
-
+          <div 
+            className="relative"
+            style={{
+              width: '3000px',
+              height: '2500px',
+              transform: `translate(${pan.x}px, ${pan.y}px)`,
+              transition: 'transform 0.1s ease-out',
+            }}
+          >
+            {/* Start Point */}
             <FindingBox 
-              title="Positive" 
-              style={{ position: 'absolute', left: 150, top: 320, width: 100 }}
-            />
-            <FindingBox 
-              title="Negative" 
-              style={{ position: 'absolute', left: 300, top: 320, width: 100 }}
+              title="> 3 Months of No Menses With Prior Regular Cycle" 
+              style={{ position: 'absolute', left: '550px', top: '100px', width: '400px' }} 
             />
 
-            {/* Pregnancy Positive Path */}
-            <HorizontalLine x={200} y={370} width={50} />
-            <ArrowHead x={250} y={370} direction="right" />
-            <DiagnosisBox 
-              title="Pregnancy" 
-              style={{ position: 'absolute', left: 150, top: 390, width: 100 }}
-            />
+          {/* Main vertical line from start to hCG test */}
+          <VerticalLine x={750} startY={160} endY={210} />
+          <ArrowHead x={750} y={210} direction="down" />
 
-            {/* Pregnancy Negative Path - Continue Evaluation */}
-            <HorizontalLine x={400} y={370} width={50} />
-            <ArrowHead x={450} y={370} direction="right" />
+          {/* hCG Test */}
+          <AssessmentBox 
+            title="Qualitative hCG test" 
+            style={{ position: 'absolute', left: '650px', top: '210px', width: '200px' }} 
+          />
 
-            {/* Hormonal Evaluation */}
-            <DecisionBox 
-              title="FSH Level" 
-              style={{ position: 'absolute', left: 500, top: 320, width: 150 }}
-            />
-            <VerticalLine x={575} y={370} height={50} />
-            <ArrowHead x={575} y={420} direction="down" />
+          {/* hCG branches - separate left and right */}
+          <VerticalLine x={750} startY={270} endY={320} />
+          <HorizontalLine y={320} startX={300} endX={1200} />
 
-            {/* FSH High */}
-            <FindingBox 
-              title="FSH > 40 mIU/mL" 
-              style={{ position: 'absolute', left: 450, top: 440, width: 150 }}
-            />
-            <HorizontalLine x={525} y={490} width={50} />
-            <ArrowHead x={575} y={490} direction="right" />
-            <DiagnosisBox 
-              title="Premature Ovarian Failure" 
-              style={{ position: 'absolute', left: 450, top: 510, width: 150 }}
-            />
+          {/* RIGHT SIDE: Positive hCG - Pregnancy */}
+          <VerticalLine x={1200} startY={320} endY={370} />
+          <ArrowHead x={1200} y={370} direction="down" />
+          <div style={{ 
+            position: 'absolute', 
+            left: '1185px', 
+            top: '325px', 
+            width: '30px', 
+            height: '30px', 
+            borderRadius: '50%', 
+            backgroundColor: 'white', 
+            border: '2px solid #374151', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            fontSize: '16px', 
+            fontWeight: 'bold', 
+            color: 'black',
+            zIndex: 15
+          }}>+</div>
+          
+          <DiagnosisBox 
+            title="Pregnancy" 
+            style={{ position: 'absolute', left: '1150px', top: '370px', width: '100px' }} 
+          />
 
-            {/* FSH Normal/Low */}
-            <FindingBox 
-              title="FSH < 40 mIU/mL" 
-              style={{ position: 'absolute', left: 650, top: 440, width: 150 }}
-            />
-            <HorizontalLine x={725} y={490} width={50} />
-            <ArrowHead x={775} y={490} direction="right" />
+          <VerticalLine x={1200} startY={430} endY={480} />
+          <ArrowHead x={1200} y={480} direction="down" />
+          <TreatmentBox 
+            title="Discuss desired next steps with patient" 
+            style={{ position: 'absolute', left: '1100px', top: '480px', width: '200px' }} 
+          />
 
-            {/* Prolactin Level */}
-            <DecisionBox 
-              title="Prolactin Level" 
-              style={{ position: 'absolute', left: 800, top: 440, width: 150 }}
-            />
-            <VerticalLine x={875} y={490} height={50} />
-            <ArrowHead x={875} y={540} direction="down" />
+          {/* LEFT SIDE: Negative hCG - Continue workup */}
+          <VerticalLine x={300} startY={320} endY={370} />
+          <ArrowHead x={300} y={370} direction="down" />
+          <div style={{ 
+            position: 'absolute', 
+            left: '285px', 
+            top: '325px', 
+            width: '30px', 
+            height: '30px', 
+            borderRadius: '50%', 
+            backgroundColor: 'white', 
+            border: '2px solid #374151', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            fontSize: '16px', 
+            fontWeight: 'bold', 
+            color: 'black',
+            zIndex: 15
+          }}>-</div>
+          
+          <AssessmentBox 
+            title="FSH, TSH, prolactin testing" 
+            style={{ position: 'absolute', left: '200px', top: '370px', width: '200px' }} 
+          />
 
-            {/* Prolactin High */}
-            <FindingBox 
-              title="Prolactin > 25 ng/mL" 
-              style={{ position: 'absolute', left: 750, top: 560, width: 150 }}
-            />
-            <HorizontalLine x={825} y={610} width={50} />
-            <ArrowHead x={875} y={610} direction="right" />
-            <DiagnosisBox 
-              title="Hyperprolactinemia" 
-              style={{ position: 'absolute', left: 750, top: 630, width: 150 }}
-            />
+          {/* Hormone testing branches from left side - 4 parts with large spacing */}
+          <VerticalLine x={300} startY={430} endY={480} />
+          <HorizontalLine y={480} startX={100} endX={1000} />
 
-            {/* Prolactin Normal */}
-            <FindingBox 
-              title="Prolactin < 25 ng/mL" 
-              style={{ position: 'absolute', left: 950, top: 560, width: 150 }}
-            />
-            <HorizontalLine x={1025} y={610} width={50} />
-            <ArrowHead x={1075} y={610} direction="right" />
+          {/* LEFT PART: Normal FSH, TSH, prolactin */}
+          <VerticalLine x={100} startY={480} endY={530} />
+          <ArrowHead x={100} y={530} direction="down" />
+          <FindingBox 
+            title="Normal FSH, TSH, prolactin" 
+            style={{ position: 'absolute', left: '20px', top: '530px', width: '160px' }} 
+          />
 
-            {/* TSH Level */}
-            <DecisionBox 
-              title="TSH Level" 
-              style={{ position: 'absolute', left: 1100, top: 560, width: 150 }}
-            />
-            <VerticalLine x={1175} y={610} height={50} />
-            <ArrowHead x={1175} y={660} direction="down" />
+          {/* CENTER-LEFT: High FSH */}
+          <VerticalLine x={350} startY={480} endY={530} />
+          <ArrowHead x={350} y={530} direction="down" />
+          <FindingBox 
+            title="↑ FSH" 
+            style={{ position: 'absolute', left: '310px', top: '530px', width: '80px' }} 
+          />
 
-            {/* TSH High */}
-            <FindingBox 
-              title="TSH > 4.5 mIU/L" 
-              style={{ position: 'absolute', left: 1050, top: 680, width: 150 }}
-            />
-            <HorizontalLine x={1125} y={730} width={50} />
-            <ArrowHead x={1175} y={730} direction="right" />
-            <DiagnosisBox 
-              title="Hypothyroidism" 
-              style={{ position: 'absolute', left: 1050, top: 750, width: 150 }}
-            />
+          {/* CENTER-RIGHT: High TSH */}
+          <VerticalLine x={600} startY={480} endY={530} />
+          <ArrowHead x={600} y={530} direction="down" />
+          <FindingBox 
+            title="↑ TSH" 
+            style={{ position: 'absolute', left: '560px', top: '530px', width: '80px' }} 
+          />
 
-            {/* TSH Normal */}
-            <FindingBox 
-              title="TSH < 4.5 mIU/L" 
-              style={{ position: 'absolute', left: 1250, top: 680, width: 150 }}
-            />
-            <HorizontalLine x={1325} y={730} width={50} />
-            <ArrowHead x={1375} y={730} direction="right" />
+          {/* RIGHT PART: High Prolactin */}
+          <VerticalLine x={1000} startY={480} endY={530} />
+          <ArrowHead x={1000} y={530} direction="down" />
+          <FindingBox 
+            title="↑ Prolactin" 
+            style={{ position: 'absolute', left: '950px', top: '530px', width: '100px' }} 
+          />
 
-            {/* Androgen Evaluation */}
-            <DecisionBox 
-              title="Testosterone & DHEAS" 
-              style={{ position: 'absolute', left: 1400, top: 680, width: 150 }}
-            />
-            <VerticalLine x={1475} y={730} height={50} />
-            <ArrowHead x={1475} y={780} direction="down" />
+          {/* LEFT PART: Normal FSH, TSH, prolactin pathway */}
+          <VerticalLine x={100} startY={590} endY={640} />
+          <ArrowHead x={100} y={640} direction="down" />
+          <AssessmentBox 
+            title="Progestin challenge" 
+            style={{ position: 'absolute', left: '20px', top: '640px', width: '160px' }} 
+          />
 
-            {/* Androgens High */}
-            <FindingBox 
-              title="Testosterone > 80 ng/dL or DHEAS > 350 μg/dL" 
-              style={{ position: 'absolute', left: 1350, top: 800, width: 200 }}
-            />
-            <HorizontalLine x={1450} y={850} width={50} />
-            <ArrowHead x={1500} y={850} direction="right" />
-            <DiagnosisBox 
-              title="PCOS or Androgen-secreting tumor" 
-              style={{ position: 'absolute', left: 1350, top: 870, width: 200 }}
-            />
+          {/* Progestin challenge down to Withdrawal bleed */}
+          <VerticalLine x={100} startY={700} endY={750} />
+          <ArrowHead x={100} y={750} direction="down" />
+          <FindingBox 
+            title="Withdrawal bleed" 
+            style={{ position: 'absolute', left: '40px', top: '750px', width: '120px' }} 
+          />
 
-            {/* Androgens Normal */}
-            <FindingBox 
-              title="Testosterone < 80 ng/dL & DHEAS < 350 μg/dL" 
-              style={{ position: 'absolute', left: 1550, top: 800, width: 200 }}
-            />
-            <HorizontalLine x={1650} y={850} width={50} />
-            <ArrowHead x={1700} y={850} direction="right" />
+          {/* Withdrawal bleed branches */}
+          <VerticalLine x={100} startY={810} endY={860} />
+          <HorizontalLine y={860} startX={50} endX={200} />
 
-            {/* Estrogen Status */}
-            <DecisionBox 
-              title="Estrogen Status (Progesterone Challenge)" 
-              style={{ position: 'absolute', left: 1725, top: 800, width: 200 }}
-            />
-            <VerticalLine x={1825} y={850} height={50} />
-            <ArrowHead x={1825} y={900} direction="down" />
+          {/* Withdrawal bleed branches */}
+          <VerticalLine x={100} startY={810} endY={860} />
+          <HorizontalLine y={860} startX={-67} endX={300} />
 
-            {/* Estrogen Present */}
-            <FindingBox 
-              title="Withdrawal Bleeding" 
-              style={{ position: 'absolute', left: 1675, top: 920, width: 150 }}
-            />
-            <HorizontalLine x={1750} y={970} width={50} />
-            <ArrowHead x={1800} y={970} direction="right" />
-            <DiagnosisBox 
-              title="Hypothalamic Amenorrhea" 
-              style={{ position: 'absolute', left: 1675, top: 990, width: 150 }}
-            />
+          {/* LEFT SIDE: Withdrawal bleed + */}
+          <VerticalLine x={-67} startY={860} endY={920} />
+          <ArrowHead x={-67} y={920} direction="down" />
+          <div style={{ 
+            position: 'absolute', 
+            left: '-82px', 
+            top: '865px', 
+            width: '30px', 
+            height: '30px', 
+            borderRadius: '50%', 
+            backgroundColor: 'white', 
+            border: '2px solid #374151', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            fontSize: '16px', 
+            fontWeight: 'bold', 
+            color: 'black',
+            zIndex: 15
+          }}>+</div>
+          <FindingBox 
+            title="Obese or clinical hyperandrogenism⁴" 
+            style={{ position: 'absolute', left: '-142px', top: '920px', width: '150px' }} 
+          />
 
-            {/* Estrogen Absent */}
-            <FindingBox 
-              title="No Withdrawal Bleeding" 
-              style={{ position: 'absolute', left: 1875, top: 920, width: 150 }}
-            />
-            <HorizontalLine x={1950} y={970} width={50} />
-            <ArrowHead x={2000} y={970} direction="right" />
-            <DiagnosisBox 
-              title="Asherman Syndrome or Uterine Outflow Obstruction" 
-              style={{ position: 'absolute', left: 1875, top: 990, width: 200 }}
-            />
+          {/* Obesity/hyperandrogenism pathway */}
+          <VerticalLine x={-67} startY={980} endY={1080} />
+          <ArrowHead x={-67} y={1080} direction="down" />
+          <AssessmentBox 
+            title="17-OHP, 24-hour urine cortisol, testosterone, DHEA-S" 
+            style={{ position: 'absolute', left: '-142px', top: '1080px', width: '150px' }} 
+          />
 
-            {/* Treatment Options */}
-            <TitleBox 
-              title="Treatment Options" 
-              style={{ position: 'absolute', left: 450, top: 1100, width: 300 }}
-            />
+          {/* Direct connection to hormone test result branches */}
+          <VerticalLine x={-67} startY={1180} endY={1320} />
+          <HorizontalLine y={1320} startX={-180} endX={45} />
 
-            {/* Treatment Boxes */}
-            <TreatmentBox 
-              title="Pregnancy: Prenatal care" 
-              style={{ position: 'absolute', left: 150, top: 1170, width: 150 }}
-            />
-            <TreatmentBox 
-              title="POF: HRT, fertility options" 
-              style={{ position: 'absolute', left: 350, top: 1170, width: 150 }}
-            />
-            <TreatmentBox 
-              title="Hyperprolactinemia: Bromocriptine" 
-              style={{ position: 'absolute', left: 550, top: 1170, width: 150 }}
-            />
-            <TreatmentBox 
-              title="Hypothyroidism: Levothyroxine" 
-              style={{ position: 'absolute', left: 750, top: 1170, width: 150 }}
-            />
-            <TreatmentBox 
-              title="PCOS: OCPs, metformin" 
-              style={{ position: 'absolute', left: 950, top: 1170, width: 150 }}
-            />
-            <TreatmentBox 
-              title="Hypothalamic: Address underlying cause" 
-              style={{ position: 'absolute', left: 1150, top: 1170, width: 150 }}
-            />
-            <TreatmentBox 
-              title="Asherman: Hysteroscopic adhesiolysis" 
-              style={{ position: 'absolute', left: 1350, top: 1170, width: 150 }}
-            />
+          {/* PCOS pathway (left) */}
+          <VerticalLine x={-180} startY={1320} endY={1430} />
+          <ArrowHead x={-180} y={1430} direction="down" />
+          <FindingBox 
+            title="↑ Testosterone and DHEA-S, normal 17-OHP and 24-hour urine cortisol" 
+            style={{ position: 'absolute', left: '-255px', top: '1430px', width: '180px' }} 
+          />
 
-            {/* Assessment Boxes */}
-            <AssessmentBox 
-              title="Monitor response to treatment" 
-              style={{ position: 'absolute', left: 450, top: 1250, width: 300 }}
-            />
-            <AssessmentBox 
-              title="Regular follow-up every 3-6 months" 
-              style={{ position: 'absolute', left: 800, top: 1250, width: 300 }}
-            />
+          <VerticalLine x={-180} startY={1520} endY={1600} />
+          <ArrowHead x={-180} y={1600} direction="down" />
+          <DiagnosisBox 
+            title="PCOS⁸" 
+            style={{ position: 'absolute', left: '-205px', top: '1600px', width: '80px' }} 
+          />
 
+          <VerticalLine x={-180} startY={1660} endY={1780} />
+          <ArrowHead x={-180} y={1780} direction="down" />
+          <TreatmentBox 
+            title="OCP, ovulation induction for fertility" 
+            style={{ position: 'absolute', left: '-240px', top: '1780px', width: '150px' }} 
+          />
+
+          {/* Adrenal Disease pathway (right) */}
+          <VerticalLine x={45} startY={1320} endY={1380} />
+          <ArrowHead x={45} y={1380} direction="down" />
+          <FindingBox 
+            title="↑ Testosterone DHEA-S, 17-OHP, and 24-hour urine cortisol" 
+            style={{ position: 'absolute', left: '-25px', top: '1380px', width: '170px' }} 
+          />
+
+          <VerticalLine x={45} startY={1470} endY={1600} />
+          <ArrowHead x={45} y={1600} direction="down" />
+          <DiagnosisBox 
+            title="Adrenal Disease⁷" 
+            style={{ position: 'absolute', left: '5px', top: '1600px', width: '80px' }} 
+          />
+
+          <VerticalLine x={45} startY={1660} endY={1780} />
+          <ArrowHead x={45} y={1780} direction="down" />
+          <TreatmentBox 
+            title="Identify and treat cause" 
+            style={{ position: 'absolute', left: '-15px', top: '1780px', width: '120px' }} 
+          />
+
+          {/* RIGHT SIDE: Withdrawal bleed - */}
+          <VerticalLine x={300} startY={860} endY={920} />
+          <ArrowHead x={300} y={920} direction="down" />
+          <div style={{ 
+            position: 'absolute', 
+            left: '285px', 
+            top: '865px', 
+            width: '30px', 
+            height: '30px', 
+            borderRadius: '50%', 
+            backgroundColor: 'white', 
+            border: '2px solid #374151', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            fontSize: '16px', 
+            fontWeight: 'bold', 
+            color: 'black',
+            zIndex: 15
+          }}>-</div>
+          <AssessmentBox 
+            title="Estrogen/progestin challenge" 
+            style={{ position: 'absolute', left: '230px', top: '920px', width: '140px' }} 
+          />
+
+          <VerticalLine x={300} startY={980} endY={1040} />
+          <ArrowHead x={300} y={1040} direction="down" />
+          <AssessmentBox 
+            title="Withdrawal bleed" 
+            style={{ position: 'absolute', left: '250px', top: '1040px', width: '100px' }} 
+          />
+
+          {/* Withdrawal bleed branches */}
+          <VerticalLine x={300} startY={1100} endY={1160} />
+          <HorizontalLine y={1160} startX={260} endX={400} />
+
+          {/* Withdrawal bleed + (Functional Hypothalamic Amenorrhea) */}
+          <VerticalLine x={260} startY={1160} endY={1220} />
+          <ArrowHead x={260} y={1220} direction="down" />
+          <div style={{ 
+            position: 'absolute', 
+            left: '245px', 
+            top: '1165px', 
+            width: '30px', 
+            height: '30px', 
+            borderRadius: '50%', 
+            backgroundColor: 'white', 
+            border: '2px solid #374151', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            fontSize: '16px', 
+            fontWeight: 'bold', 
+            color: 'black',
+            zIndex: 15
+          }}>+</div>
+          <DiagnosisBox 
+            title="Functional Hypothalamic Amenorrhea⁶" 
+            style={{ position: 'absolute', left: '180px', top: '1220px', width: '160px' }} 
+          />
+
+          <VerticalLine x={260} startY={1300} endY={1340} />
+          <ArrowHead x={260} y={1340} direction="down" />
+          <TreatmentBox 
+            title="Lifestyle changes, GnRH agonists" 
+            style={{ position: 'absolute', left: '180px', top: '1340px', width: '160px' }} 
+          />
+
+          {/* Withdrawal bleed - (Asherman Syndrome) */}
+          <VerticalLine x={400} startY={1160} endY={1220} />
+          <ArrowHead x={400} y={1220} direction="down" />
+          <div style={{ 
+            position: 'absolute', 
+            left: '385px', 
+            top: '1165px', 
+            width: '30px', 
+            height: '30px', 
+            borderRadius: '50%', 
+            backgroundColor: 'white', 
+            border: '2px solid #6b7280', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            fontSize: '16px', 
+            fontWeight: 'bold', 
+            color: 'black',
+            zIndex: 15
+          }}>-</div>
+          <DiagnosisBox 
+            title="Asherman Syndrome" 
+            style={{ position: 'absolute', left: '360px', top: '1220px', width: '80px' }} 
+          />
+
+          <VerticalLine x={400} startY={1280} endY={1340} />
+          <ArrowHead x={400} y={1340} direction="down" />
+          <TreatmentBox 
+            title="Surgery" 
+            style={{ position: 'absolute', left: '360px', top: '1340px', width: '80px' }} 
+          />
+
+          {/* CENTER-LEFT: High FSH pathway */}
+          <VerticalLine x={350} startY={590} endY={640} />
+          <ArrowHead x={350} y={640} direction="down" />
+          <DiagnosisBox 
+            title="Hypergonadotrophic Hypogonadism¹" 
+            style={{ position: 'absolute', left: '250px', top: '640px', width: '200px' }} 
+          />
+
+          <VerticalLine x={350} startY={700} endY={750} />
+          <ArrowHead x={350} y={750} direction="down" />
+          <TreatmentBox 
+            title="OCP, HRT² (primary ovarian insufficiency)" 
+            style={{ position: 'absolute', left: '250px', top: '750px', width: '200px' }} 
+          />
+
+          {/* CENTER-RIGHT: High TSH pathway */}
+          <VerticalLine x={600} startY={590} endY={640} />
+          <ArrowHead x={600} y={640} direction="down" />
+          <DiagnosisBox 
+            title="Hypothyroidism" 
+            style={{ position: 'absolute', left: '540px', top: '640px', width: '120px' }} 
+          />
+
+          <VerticalLine x={600} startY={700} endY={750} />
+          <ArrowHead x={600} y={750} direction="down" />
+          <TreatmentBox 
+            title="Levothyroxine" 
+            style={{ position: 'absolute', left: '550px', top: '750px', width: '100px' }} 
+          />
+
+          {/* RIGHT PART: High Prolactin pathway */}
+          <VerticalLine x={1000} startY={590} endY={640} />
+          <ArrowHead x={1000} y={640} direction="down" />
+          <AssessmentBox 
+            title="Medication history" 
+            style={{ position: 'absolute', left: '930px', top: '640px', width: '140px' }} 
+          />
+
+          {/* Medication history - direct to No known medication exposure */}
+          <VerticalLine x={1000} startY={700} endY={750} />
+          <ArrowHead x={1000} y={750} direction="down" />
+
+          {/* No known medication exposure */}
+          <FindingBox 
+            title="No known medication exposure³" 
+            style={{ position: 'absolute', left: '900px', top: '750px', width: '200px' }} 
+          />
+
+          <VerticalLine x={1000} startY={810} endY={860} />
+          <ArrowHead x={1000} y={860} direction="down" />
+          <AssessmentBox 
+            title="MRI" 
+            style={{ position: 'absolute', left: '970px', top: '860px', width: '60px' }} 
+          />
+
+          <VerticalLine x={1000} startY={920} endY={970} />
+          <ArrowHead x={1000} y={970} direction="down" />
+          <div style={{ 
+            position: 'absolute', 
+            left: '930px', 
+            top: '970px', 
+            width: '140px', 
+            height: '80px',
+            backgroundColor: '#f5f5f5', 
+            border: '2px dashed #999',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '12px',
+            fontStyle: 'italic',
+            color: '#666'
+          }}>
+            Placeholder for Image
+          </div>
+
+          <VerticalLine x={1000} startY={1050} endY={1100} />
+          <ArrowHead x={1000} y={1100} direction="down" />
+          <DiagnosisBox 
+            title="Hypothalamic Pituitary Lesion⁵" 
+            style={{ position: 'absolute', left: '900px', top: '1100px', width: '200px' }} 
+          />
+
+          <VerticalLine x={1000} startY={1160} endY={1210} />
+          <ArrowHead x={1000} y={1210} direction="down" />
+          <TreatmentBox 
+            title="Dopamine agonists (prolactinoma), possible surgical resection" 
+            style={{ position: 'absolute', left: '880px', top: '1210px', width: '240px' }} 
+          />
+          {/* Footnotes */}
+          <div style={{ 
+            position: 'absolute', 
+            left: '200px', 
+            top: '1500px', 
+            fontSize: '14px', 
+            lineHeight: '1.6',
+            maxWidth: '800px',
+            backgroundColor: 'white',
+            padding: '20px',
+            borderRadius: '8px',
+            border: '1px solid #ccc'
+          }}>
+            <h4 className="font-bold mb-2">Footnotes</h4>
+            <p className="mb-2">
+              ¹ Possible causes: Primary ovarian insufficiency, menopause.
+            </p>
+            <p className="mb-2">
+              ² Hormone replacement therapy.
+            </p>
+            <p className="mb-2">
+              ³ Oral contraceptives, antipsychotics, and chemotherapeutic drugs are some medications that may cause drug-induced hyperprolactinemia.
+            </p>
+            <p className="mb-2">
+              ⁴ Features can include hirsutism, acne, male pattern balding, virilization.
+            </p>
+            <p className="mb-2">
+              ⁵ Possible causes: Prolactinoma (most common), Sheehan syndrome, pituitary adenoma, craniopharyngioma.
+            </p>
+            <p className="mb-2">
+              ⁶ Form of hypogonadotropic hypogonadism.
+            </p>
+            <p className="mb-2">
+              ⁷ Possible causes: Congenital adrenal hyperplasia, androgen-secreting tumors, Cushing's syndrome.
+            </p>
+            <p>
+              ⁸ Polycystic ovarian syndrome.
+            </p>
+          </div>
+
+          {/* Definition */}
+          <div style={{ 
+            position: 'absolute', 
+            left: '1050px', 
+            top: '1500px', 
+            fontSize: '14px', 
+            lineHeight: '1.6',
+            maxWidth: '400px',
+            backgroundColor: '#f0f8ff',
+            padding: '20px',
+            borderRadius: '8px',
+            border: '2px solid #4682b4'
+          }}>
+            <h4 className="font-bold mb-2">Definition</h4>
+            <p>
+              Secondary amenorrhea is defined as the absence of menses for more than 3 months in women with previously regular cycles.
+            </p>
           </div>
         </div>
       </div>
     </div>
+    </>
   );
 };
 
-// Main Page Component
-const SecondaryAmenorrheaPage = ({ 
-  frameFullScreen = false, 
-  onToggleFrameFullScreen 
-}: { 
-  frameFullScreen?: boolean; 
-  onToggleFrameFullScreen?: () => void;
-}) => {
-  return (
-    <SecondaryAmenorrheaFlowchart 
-      frameFullScreen={frameFullScreen}
-      onToggleFrameFullScreen={onToggleFrameFullScreen}
-    />
-  );
-};
-
-export default SecondaryAmenorrheaPage;
+export default SecondaryAmenorrheaFlowchart;
