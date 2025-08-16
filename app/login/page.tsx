@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 
@@ -101,8 +102,14 @@ export default function Login() {
         {/* Header */}
         <div className="text-center">
           <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 bg-gradient-to-br from-[#3A8431] to-[#2d6a27] rounded-2xl flex items-center justify-center shadow-lg">
-              <span className="text-white font-bold text-2xl">M</span>
+            <div className="w-16 h-16 flex items-center justify-center shadow-lg">
+              <Image 
+                src="/images/logo lander.png" 
+                alt="MBHA Logo" 
+                width={64} 
+                height={64} 
+                className="w-16 h-16 object-contain"
+              />
             </div>
           </div>
           <h2 className="text-3xl font-bold text-white mb-2">Welcome Back</h2>
