@@ -47,7 +47,7 @@ export default function Home() {
           <div className="flex items-center space-x-3 group cursor-pointer">
             <div className="w-12 h-12 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
               <Image 
-                src="/images/logo.png" 
+                src="/images/logo lander.png" 
                 alt="MBHA Logo" 
                 width={48} 
                 height={48} 
