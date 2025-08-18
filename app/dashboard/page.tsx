@@ -109,7 +109,7 @@ export default function Dashboard() {
           <div className={`flex items-center ${isOpen ? 'px-4' : 'justify-center w-full'}`}>
             <div className="w-8 h-8 flex items-center justify-center">
               <Image 
-                src="/images/logo.png" 
+                src="/images/logo lander.png" 
                 alt="MBHA Logo" 
                 width={32} 
                 height={32} 
