@@ -100,7 +100,7 @@ export default function CervicalPathologyPage() {
           <div className="max-w-4xl w-full h-full flex items-center justify-center p-8">
             {!imageError ? (
               <img
-                src="/images/test flowchart.svg"
+                src="/images/test%20flowchart.svg"
                 alt="Cervical Pathology Flowchart"
                 className="w-full h-auto max-h-full object-contain"
                 onError={handleImageError}
@@ -118,7 +118,7 @@ export default function CervicalPathologyPage() {
                   Failed to load the flowchart SVG. Please check the file path.
                 </p>
                 <p className="text-sm text-gray-500 mb-4">
-                  Expected path: /images/test flowchart.svg
+                  Expected path: /images/test%20flowchart.svg
                 </p>
                 <button
                   onClick={() => setImageError(false)}
