@@ -12,6 +12,7 @@ export default function CervicalPathologyPage() {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [imageError, setImageError] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Check authentication
@@ -60,6 +61,11 @@ export default function CervicalPathologyPage() {
     setPosition({ x: 0, y: 0 });
   };
 
+  const handleImageError = () => {
+    console.error('Failed to load SVG image');
+    setImageError(true);
+  };
+
   return (
     <div className="h-full bg-gradient-to-br from-pink-50 to-purple-100 overflow-hidden">
       {/* Header */}
@@ -92,14 +98,36 @@ export default function CervicalPathologyPage() {
           }}
         >
           <div className="max-w-4xl w-full h-full flex items-center justify-center p-8">
-            <Image
-              src="/images/test flowchart.svg"
-              alt="Cervical Pathology Flowchart"
-              width={800}
-              height={600}
-              className="w-full h-auto max-h-full object-contain"
-              priority
-            />
+            {!imageError ? (
+              <img
+                src="/images/test flowchart.svg"
+                alt="Cervical Pathology Flowchart"
+                className="w-full h-auto max-h-full object-contain"
+                onError={handleImageError}
+                style={{ maxWidth: '100%', maxHeight: '100%' }}
+              />
+            ) : (
+              <div className="text-center">
+                <div className="w-40 h-40 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-8">
+                  <svg className="w-20 h-20 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  </svg>
+                </div>
+                <h1 className="text-2xl font-bold text-gray-900 mb-4">SVG Loading Error</h1>
+                <p className="text-gray-600 mb-4">
+                  Failed to load the flowchart SVG. Please check the file path.
+                </p>
+                <p className="text-sm text-gray-500 mb-4">
+                  Expected path: /images/test flowchart.svg
+                </p>
+                <button
+                  onClick={() => setImageError(false)}
+                  className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                >
+                  Retry Loading
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
