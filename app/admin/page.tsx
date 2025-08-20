@@ -61,6 +61,7 @@ const [importTopic, setImportTopic] = useState('');
 const [importFile, setImportFile] = useState<File | null>(null);
 const [manageSubject, setManageSubject] = useState('');
 const [questionFilterSubject, setQuestionFilterSubject] = useState('');
+const [questionFilterLecture, setQuestionFilterLecture] = useState('');
 const [questionFilterTopic, setQuestionFilterTopic] = useState('');
 const [questionFilterSource, setQuestionFilterSource] = useState('');
 const [filteredQuestions, setFilteredQuestions] = useState<any[]>([]);
@@ -815,10 +816,11 @@ const saveAdd = async () => {
   };
 
   const loadFilteredQuestions = async () => {
-    if (!questionFilterSubject || !questionFilterTopic) return;
+    if (!questionFilterSubject || !questionFilterLecture || !questionFilterTopic) return;
     try {
       const params = new URLSearchParams({
         subject: questionFilterSubject,
+        lecture: questionFilterLecture,
         topic: questionFilterTopic,
         ...(questionFilterSource ? { sourceKey: questionFilterSource } : {})
       });
@@ -829,6 +831,30 @@ const saveAdd = async () => {
       }
     } catch (error) {
       console.error('Error loading filtered questions:', error);
+    }
+  };
+
+  const deleteAllQuestions = async () => {
+    if (!questionFilterSubject || !questionFilterLecture || !questionFilterTopic) return;
+    if (!confirm(`Are you sure you want to delete ALL questions for ${questionFilterTopic}? This action cannot be undone.`)) return;
+    
+    try {
+      const params = new URLSearchParams({
+        subject: questionFilterSubject,
+        lecture: questionFilterLecture,
+        topic: questionFilterTopic,
+        ...(questionFilterSource ? { sourceKey: questionFilterSource } : {})
+      });
+      const response = await fetch(`/api/admin/qbank/questions/delete-all?${params}`, { method: 'DELETE' });
+      if (response.ok) {
+        setFilteredQuestions([]);
+        alert(`Successfully deleted all questions for ${questionFilterTopic}`);
+      } else {
+        alert('Failed to delete questions');
+      }
+    } catch (error) {
+      console.error('Error deleting questions:', error);
+      alert('Error deleting questions');
     }
   };
 
@@ -2133,7 +2159,11 @@ const saveAdd = async () => {
                         <div className="space-y-3">
                           <select
                             value={questionFilterSubject || ''}
-                            onChange={(e) => setQuestionFilterSubject(e.target.value)}
+                            onChange={(e) => {
+                              setQuestionFilterSubject(e.target.value);
+                              setQuestionFilterLecture('');
+                              setQuestionFilterTopic('');
+                            }}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white"
                           >
                             <option value="">Select Subject</option>
@@ -2142,16 +2172,29 @@ const saveAdd = async () => {
                             ))}
                           </select>
                           <select
+                            value={questionFilterLecture || ''}
+                            onChange={(e) => {
+                              setQuestionFilterLecture(e.target.value);
+                              setQuestionFilterTopic('');
+                            }}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white"
+                            disabled={!questionFilterSubject}
+                          >
+                            <option value="">Select Lecture</option>
+                            {qbankStructure.find((s: any) => s.label === questionFilterSubject)?.lectures?.map((lecture: any) => (
+                              <option key={lecture.key || lecture.id} value={lecture.label || lecture.title}>{lecture.label || lecture.title}</option>
+                            )) || []}
+                          </select>
+                          <select
                             value={questionFilterTopic || ''}
                             onChange={(e) => setQuestionFilterTopic(e.target.value)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white"
+                            disabled={!questionFilterLecture}
                           >
                             <option value="">Select Topic</option>
-                            {qbankStructure.find((s: any) => s.label === questionFilterSubject)?.lectures?.map((lecture: any) => 
-                              (lecture.topics || []).map((topic: any) => (
-                                <option key={topic.id || topic} value={typeof topic === 'string' ? topic : topic.title}>{typeof topic === 'string' ? topic : topic.title}</option>
-                              ))
-                            ).flat() || []}
+                            {qbankStructure.find((s: any) => s.label === questionFilterSubject)?.lectures?.find((l: any) => (l.label || l.title) === questionFilterLecture)?.topics?.map((topic: any) => (
+                              <option key={topic.id || topic} value={typeof topic === 'string' ? topic : topic.title}>{typeof topic === 'string' ? topic : topic.title}</option>
+                            )) || []}
                           </select>
                           <select
                             value={questionFilterSource || ''}
@@ -2165,7 +2208,7 @@ const saveAdd = async () => {
                           </select>
                           <button
                             onClick={loadFilteredQuestions}
-                            disabled={!questionFilterSubject || !questionFilterTopic || !questionFilterSource}
+                            disabled={!questionFilterSubject || !questionFilterLecture || !questionFilterTopic || !questionFilterSource}
                             className="w-full px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50"
                           >
                             Load Questions
@@ -2173,7 +2216,15 @@ const saveAdd = async () => {
                         </div>
                         {filteredQuestions.length > 0 && (
                           <div className="mt-4">
-                            <h6 className="font-medium text-gray-600 mb-2">Questions ({filteredQuestions.length})</h6>
+                            <div className="flex items-center justify-between mb-2">
+                              <h6 className="font-medium text-gray-600">Questions ({filteredQuestions.length})</h6>
+                              <button
+                                onClick={deleteAllQuestions}
+                                className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
+                              >
+                                Delete All
+                              </button>
+                            </div>
                             <div className="max-h-60 overflow-y-auto space-y-2">
                               {filteredQuestions.map((q: any) => (
                                 <div key={q.id} className="p-2 bg-gray-50 rounded text-sm flex items-start justify-between gap-2">

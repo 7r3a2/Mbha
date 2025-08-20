@@ -36,6 +36,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const subject = searchParams.get('subject') || '';
+    const lecture = searchParams.get('lecture') || '';
     const source = searchParams.get('source') || '';
     const sourceKey = searchParams.get('sourceKey') || '';
     const topic = searchParams.get('topic') || '';
@@ -43,6 +44,7 @@ export async function GET(request: NextRequest) {
     const all = await readAll();
     let filtered = all as any[];
     if (subject) filtered = filtered.filter(q => (q.subject || '').toLowerCase() === subject.toLowerCase());
+    if (lecture) filtered = filtered.filter(q => (q.lecture || '').toLowerCase() === lecture.toLowerCase());
     if (sourceKey) filtered = filtered.filter(q => (q.sourceKey || '') === sourceKey);
     else if (source) filtered = filtered.filter(q => (q.source || '').toLowerCase() === source.toLowerCase());
     if (topic) filtered = filtered.filter(q => (q.topic || '').toLowerCase() === topic.toLowerCase());
