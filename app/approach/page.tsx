@@ -14,7 +14,6 @@ import AbnormalVaginalDischargePage from './obs-gyne/gynecology/abnormal-vaginal
 import IncontinencePage from './obs-gyne/gynecology/incontinence/page';
 import PrimaryAmenorrheaPage from './obs-gyne/gynecology/primary-amenorrhea/page';
 import SecondaryAmenorrheaPage from './obs-gyne/gynecology/secondary-amenorrhea/page';
-import OvarianCancerPage from './obs-gyne/gynecology/ovarian-cancer/page';
 
 // Box component that matches the image exactly
 const FlowchartBox = ({ 
@@ -1922,12 +1921,6 @@ export default function ApproachPage() {
               ) : selectedContent.lecture.id === 'secondary-amenorrhea' ? (
                 // Render Secondary Amenorrhea page directly as component
                 <SecondaryAmenorrheaPage 
-                  frameFullScreen={isFrameFullscreen}
-                  onToggleFrameFullScreen={() => setIsFrameFullscreen(!isFrameFullscreen)}
-                />
-              ) : selectedContent.lecture.id === 'ovarian-cancer' ? (
-                // Render Ovarian Cancer page directly as component
-                <OvarianCancerPage 
                   frameFullScreen={isFrameFullscreen}
                   onToggleFrameFullScreen={() => setIsFrameFullscreen(!isFrameFullscreen)}
                 />
