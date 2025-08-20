@@ -14,6 +14,7 @@ import AbnormalVaginalDischargePage from './obs-gyne/gynecology/abnormal-vaginal
 import IncontinencePage from './obs-gyne/gynecology/incontinence/page';
 import PrimaryAmenorrheaPage from './obs-gyne/gynecology/primary-amenorrhea/page';
 import SecondaryAmenorrheaPage from './obs-gyne/gynecology/secondary-amenorrhea/page';
+import ChestPainPage from './cardiology/chest-pain/page';
 
 // Box component that matches the image exactly
 const FlowchartBox = ({ 
@@ -1629,6 +1630,56 @@ export default function ApproachPage() {
     })) || []
   }));
 
+  // Function to get the appropriate component based on the selected content
+  const getContentComponent = (selectedContent: any) => {
+    if (!selectedContent) return null;
+
+    const { lecture } = selectedContent;
+    
+    // Map lecture IDs to their corresponding components
+    const componentMap: { [key: string]: React.ComponentType<any> } = {
+      'chest-pain': ChestPainPage,
+      'acute-pelvic-pain': AcutePelvicPainPage,
+      'dyspareunia': DyspareuniaPage,
+      'vulvar-vaginal-cancers': VulvarVaginalCancersPage,
+      'vulvar-vaginal-infections-and-inflammation': VulvarVaginalInfectionsAndInflammationPage,
+      'vulvar-dystrophies': VulvarDystrophiesPage,
+      'genital-ulcers': GenitalUlcersPage,
+      'abnormal-vaginal-discharge': AbnormalVaginalDischargePage,
+      'incontinence': IncontinencePage,
+      'primary-amenorrhea': PrimaryAmenorrheaPage,
+      'secondary-amenorrhea': SecondaryAmenorrheaPage,
+    };
+
+    const Component = componentMap[lecture.id];
+    
+    if (Component) {
+      return (
+        <Component 
+          frameFullScreen={isFrameFullscreen}
+          onToggleFrameFullScreen={() => setIsFrameFullscreen(!isFrameFullscreen)}
+        />
+      );
+    }
+
+    // Default content for lectures without specific components
+    return (
+      <div className="h-full flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-40 h-40 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-8">
+            <svg className="w-20 h-20 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+          </div>
+          <h1 className="text-5xl font-bold text-gray-900 mb-6">Coming Soon</h1>
+          <p className="text-2xl text-gray-600 max-w-lg mx-auto">
+            {lecture.name} content will be available soon.
+          </p>
+        </div>
+      </div>
+    );
+  };
+
   // Check authentication and approach access
   if (!isLoading && (!user || !user.hasApproachAccess)) {
     router.push('/wizary-exam');
@@ -1849,81 +1900,9 @@ export default function ApproachPage() {
                   frameFullScreen={isFrameFullscreen}
                   onToggleFrameFullScreen={() => setIsFrameFullscreen(!isFrameFullscreen)}
                 />
-              ) : selectedContent.lecture.id === 'acute-pelvic-pain' ? (
-                // Render Acute Pelvic Pain flowchart directly as component
-                <AcutePelvicPainFlowchart 
-                  frameFullScreen={isFrameFullscreen}
-                  onToggleFrameFullScreen={() => setIsFrameFullscreen(!isFrameFullscreen)}
-                />
-              ) : selectedContent.lecture.id === 'dyspareunia' ? (
-                // Render Dyspareunia page directly as component
-                <DyspareuniaPage 
-                  frameFullScreen={isFrameFullscreen}
-                  onToggleFrameFullScreen={() => setIsFrameFullscreen(!isFrameFullscreen)}
-                />
-              ) : selectedContent.lecture.id === 'vulvar-vaginal-cancers' ? (
-                // Render Vulvar/Vaginal Cancers page directly as component
-                <VulvarVaginalCancersPage 
-                  frameFullScreen={isFrameFullscreen}
-                  onToggleFrameFullScreen={() => setIsFrameFullscreen(!isFrameFullscreen)}
-                />
-              ) : selectedContent.lecture.id === 'vulvar-vaginal-infections-and-inflammation' ? (
-                // Render Vulvar/Vaginal Infections and Inflammation page directly as component
-                <VulvarVaginalInfectionsAndInflammationPage 
-                  frameFullScreen={isFrameFullscreen}
-                  onToggleFrameFullScreen={() => setIsFrameFullscreen(!isFrameFullscreen)}
-                />
-              ) : selectedContent.lecture.id === 'vulvar-dystrophies' ? (
-                // Render Vulvar Dystrophies page directly as component
-                <VulvarDystrophiesPage 
-                  frameFullScreen={isFrameFullscreen}
-                  onToggleFrameFullScreen={() => setIsFrameFullscreen(!isFrameFullscreen)}
-                />
-              ) : selectedContent.lecture.id === 'genital-ulcers' ? (
-                // Render Genital Ulcers page directly as component
-                <GenitalUlcersPage 
-                  frameFullScreen={isFrameFullscreen}
-                  onToggleFrameFullScreen={() => setIsFrameFullscreen(!isFrameFullscreen)}
-                />
-              ) : selectedContent.lecture.id === 'abnormal-vaginal-discharge' ? (
-                // Render Abnormal Vaginal Discharge page directly as component
-                <AbnormalVaginalDischargePage 
-                  frameFullScreen={isFrameFullscreen}
-                  onToggleFrameFullScreen={() => setIsFrameFullscreen(!isFrameFullscreen)}
-                />
-              ) : selectedContent.lecture.id === 'incontinence' ? (
-                // Render Incontinence page directly as component
-                <IncontinencePage 
-                  frameFullScreen={isFrameFullscreen}
-                  onToggleFrameFullScreen={() => setIsFrameFullscreen(!isFrameFullscreen)}
-                />
-              ) : selectedContent.lecture.id === 'primary-amenorrhea' ? (
-                // Render Primary Amenorrhea page directly as component
-                <PrimaryAmenorrheaPage 
-                  frameFullScreen={isFrameFullscreen}
-                  onToggleFrameFullScreen={() => setIsFrameFullscreen(!isFrameFullscreen)}
-                />
-              ) : selectedContent.lecture.id === 'secondary-amenorrhea' ? (
-                // Render Secondary Amenorrhea page directly as component
-                <SecondaryAmenorrheaPage 
-                  frameFullScreen={isFrameFullscreen}
-                  onToggleFrameFullScreen={() => setIsFrameFullscreen(!isFrameFullscreen)}
-                />
               ) : (
-                // Default content for other lectures
-                <div className="h-full flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="w-40 h-40 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-8">
-                      <svg className="w-20 h-20 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                      </svg>
-                    </div>
-                    <h1 className="text-5xl font-bold text-gray-900 mb-6">Coming Soon</h1>
-                    <p className="text-2xl text-gray-600 max-w-lg mx-auto">
-                      {selectedContent.lecture.name} content will be available soon.
-                    </p>
-                  </div>
-                </div>
+                // Use the dynamic component function
+                getContentComponent(selectedContent)
               )}
             </div>
           ) : (
