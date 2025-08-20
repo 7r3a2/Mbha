@@ -1,0 +1,152 @@
+[
+  {
+    "id": "obs-gyne",
+    "title": "Obstetrics & Gynecology",
+    "type": "folder",
+    "path": "obs-gyne",
+    "children": [
+      {
+        "id": "gynecology",
+        "title": "Gynecology",
+        "type": "folder",
+        "path": "obs-gyne/gynecology",
+        "children": [
+          {
+            "id": "abnormal-uterine-bleeding",
+            "title": "Abnormal Uterine Bleeding",
+            "type": "file",
+            "path": "obs-gyne/gynecology/abnormal-uterine-bleeding",
+            "description": "Management of abnormal uterine bleeding"
+          },
+          {
+            "id": "abnormal-vaginal-discharge",
+            "title": "Abnormal Vaginal Discharge",
+            "type": "file",
+            "path": "obs-gyne/gynecology/abnormal-vaginal-discharge",
+            "description": "Evaluation and treatment of abnormal vaginal discharge"
+          },
+          {
+            "id": "acute-pelvic-pain",
+            "title": "Acute Pelvic Pain",
+            "type": "file",
+            "path": "obs-gyne/gynecology/acute-pelvic-pain",
+            "description": "Assessment and management of acute pelvic pain"
+          },
+          {
+            "id": "adnexal-mass",
+            "title": "Adnexal Mass",
+            "type": "file",
+            "path": "obs-gyne/gynecology/adnexal-mass",
+            "description": "Evaluation and management of adnexal masses"
+          },
+          {
+            "id": "cervical-pathology",
+            "title": "Cervical Pathology",
+            "type": "file",
+            "path": "obs-gyne/gynecology/cervical-pathology",
+            "description": "Cervical pathology and screening"
+          },
+          {
+            "id": "dysmenorrhea",
+            "title": "Dysmenorrhea",
+            "type": "file",
+            "path": "obs-gyne/gynecology/dysmenorrhea",
+            "description": "Management of dysmenorrhea"
+          },
+          {
+            "id": "dyspareunia",
+            "title": "Dyspareunia",
+            "type": "file",
+            "path": "obs-gyne/gynecology/dyspareunia",
+            "description": "Evaluation and treatment of dyspareunia"
+          },
+          {
+            "id": "genital-ulcers",
+            "title": "Genital Ulcers",
+            "type": "file",
+            "path": "obs-gyne/gynecology/genital-ulcers",
+            "description": "Diagnosis and management of genital ulcers"
+          },
+          {
+            "id": "incontinence",
+            "title": "Incontinence",
+            "type": "file",
+            "path": "obs-gyne/gynecology/incontinence",
+            "description": "Urinary incontinence evaluation and treatment"
+          },
+          {
+            "id": "ovarian-cancer",
+            "title": "Ovarian Cancer",
+            "type": "file",
+            "path": "obs-gyne/gynecology/ovarian-cancer",
+            "description": "Ovarian cancer screening and management"
+          },
+          {
+            "id": "primary-amenorrhea",
+            "title": "Primary Amenorrhea",
+            "type": "file",
+            "path": "obs-gyne/gynecology/primary-amenorrhea",
+            "description": "Evaluation of primary amenorrhea"
+          },
+          {
+            "id": "secondary-amenorrhea",
+            "title": "Secondary Amenorrhea",
+            "type": "file",
+            "path": "obs-gyne/gynecology/secondary-amenorrhea",
+            "description": "Evaluation of secondary amenorrhea"
+          },
+          {
+            "id": "vulvar-dystrophies",
+            "title": "Vulvar Dystrophies",
+            "type": "file",
+            "path": "obs-gyne/gynecology/vulvar-dystrophies",
+            "description": "Vulvar dystrophies and lesions"
+          },
+          {
+            "id": "vulvar-vaginal-cancers",
+            "title": "Vulvar & Vaginal Cancers",
+            "type": "file",
+            "path": "obs-gyne/gynecology/vulvar-vaginal-cancers",
+            "description": "Vulvar and vaginal cancer management"
+          },
+          {
+            "id": "vulvar-vaginal-infections",
+            "title": "Vulvar & Vaginal Infections",
+            "type": "file",
+            "path": "obs-gyne/gynecology/vulvar-vaginal-infections",
+            "description": "Vulvar and vaginal infections"
+          },
+          {
+            "id": "vulvar-vaginal-infections-and-inflammation",
+            "title": "Vulvar & Vaginal Infections & Inflammation",
+            "type": "file",
+            "path": "obs-gyne/gynecology/vulvar-vaginal-infections-and-inflammation",
+            "description": "Infections and inflammatory conditions"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "cardiology",
+    "title": "Cardiology",
+    "type": "folder",
+    "path": "cardiology",
+    "children": [
+      {
+        "id": "chest-pain",
+        "title": "Chest Pain",
+        "type": "file",
+        "path": "cardiology/chest-pain",
+        "description": "Evaluation and management of chest pain"
+      }
+    ]
+  },
+  {
+    "id": "heart-failure",
+    "title": "Heart Failure",
+    "type": "folder",
+    "path": "heart-failure",
+    "children": []
+  }
+]

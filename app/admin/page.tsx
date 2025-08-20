@@ -69,12 +69,30 @@ const [csvPreview, setCsvPreview] = useState<any[]>([]);
 const [csvPreviewCount, setCsvPreviewCount] = useState(0);
 const [csvPreviewQuestion, setCsvPreviewQuestion] = useState<any | null>(null);
 
+// Approach Management State
+const [approachStructure, setApproachStructure] = useState<any[]>([]);
+const [newApproachFolder, setNewApproachFolder] = useState('');
+const [newApproachFile, setNewApproachFile] = useState('');
+const [newApproachDescription, setNewApproachDescription] = useState('');
+const [selectedApproachParent, setSelectedApproachParent] = useState('');
+const [editingApproachItem, setEditingApproachItem] = useState<any | null>(null);
+
 const loadQbankStructure = async () => {
     try {
       const res = await fetch('/api/qbank/structure');
       if (res.ok) {
         const data = await res.json();
         setQbankStructure(data);
+      }
+    } catch {}
+  };
+
+  const loadApproachStructure = async () => {
+    try {
+      const res = await fetch('/api/approach/structure');
+      if (res.ok) {
+        const data = await res.json();
+        setApproachStructure(data);
       }
     } catch {}
   };
@@ -94,6 +112,9 @@ const loadQbankStructure = async () => {
   useEffect(() => {
     if (activeTab === 'qbank') {
       loadQbankStructure();
+    }
+    if (activeTab === 'approach') {
+      loadApproachStructure();
     }
   }, [activeTab]);
 
@@ -873,6 +894,123 @@ const saveAdd = async () => {
     }
   };
 
+  // Approach Management Functions
+  const updateApproachStructure = async (newStructure: any[]) => {
+    try {
+      const response = await fetch('/api/approach/structure', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newStructure)
+      });
+      if (response.ok) {
+        setApproachStructure(newStructure);
+      }
+    } catch (error) {
+      console.error('Error updating approach structure:', error);
+    }
+  };
+
+  const addApproachFolder = async () => {
+    if (!newApproachFolder.trim()) return;
+    
+    const newItem = {
+      id: generateId(),
+      title: newApproachFolder.trim(),
+      type: 'folder',
+      path: newApproachFolder.trim().toLowerCase().replace(/\s+/g, '-'),
+      children: []
+    };
+
+    const updatedStructure = [...approachStructure, newItem];
+    await updateApproachStructure(updatedStructure);
+    setNewApproachFolder('');
+  };
+
+  const addApproachFile = async () => {
+    if (!newApproachFile.trim() || !selectedApproachParent) return;
+    
+    const newItem = {
+      id: generateId(),
+      title: newApproachFile.trim(),
+      type: 'file',
+      path: `${selectedApproachParent}/${newApproachFile.trim().toLowerCase().replace(/\s+/g, '-')}`,
+      description: newApproachDescription.trim()
+    };
+
+    const updatedStructure = approachStructure.map(item => {
+      if (item.id === selectedApproachParent) {
+        return {
+          ...item,
+          children: [...(item.children || []), newItem]
+        };
+      }
+      return item;
+    });
+
+    await updateApproachStructure(updatedStructure);
+    setNewApproachFile('');
+    setNewApproachDescription('');
+    setSelectedApproachParent('');
+  };
+
+  const deleteApproachItem = async (itemId: string, parentId?: string) => {
+    if (!confirm('Are you sure you want to delete this item?')) return;
+
+    let updatedStructure;
+    if (parentId) {
+      // Delete from parent's children
+      updatedStructure = approachStructure.map(item => {
+        if (item.id === parentId) {
+          return {
+            ...item,
+            children: (item.children || []).filter((child: any) => child.id !== itemId)
+          };
+        }
+        return item;
+      });
+    } else {
+      // Delete from root level
+      updatedStructure = approachStructure.filter(item => item.id !== itemId);
+    }
+
+    await updateApproachStructure(updatedStructure);
+  };
+
+  const moveApproachItem = async (itemId: string, direction: 'up' | 'down', parentId?: string) => {
+    let updatedStructure = [...approachStructure];
+    
+    if (parentId) {
+      // Move within parent's children
+      updatedStructure = updatedStructure.map(item => {
+        if (item.id === parentId) {
+          const children = [...(item.children || [])];
+          const index = children.findIndex((child: any) => child.id === itemId);
+          if (index > -1) {
+            if (direction === 'up' && index > 0) {
+              [children[index], children[index - 1]] = [children[index - 1], children[index]];
+            } else if (direction === 'down' && index < children.length - 1) {
+              [children[index], children[index + 1]] = [children[index + 1], children[index]];
+            }
+          }
+          return { ...item, children };
+        }
+        return item;
+      });
+    } else {
+      // Move at root level
+      const index = updatedStructure.findIndex(item => item.id === itemId);
+      if (index > -1) {
+        if (direction === 'up' && index > 0) {
+          [updatedStructure[index], updatedStructure[index - 1]] = [updatedStructure[index - 1], updatedStructure[index]];
+        } else if (direction === 'down' && index < updatedStructure.length - 1) {
+          [updatedStructure[index], updatedStructure[index + 1]] = [updatedStructure[index + 1], updatedStructure[index]];
+        }
+      }
+    }
+
+    await updateApproachStructure(updatedStructure);
+  };
+
   // Robust CSV utilities for preview parsing
   function parseCSV(text: string): string[][] {
     const rows: string[][] = [];
@@ -1096,7 +1234,7 @@ const saveAdd = async () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
         <div className="border-b border-gray-200">
           <nav className="-mb-px flex">
-            {['users', 'exams', 'codes', 'qbank'].map((tab) => (
+            {['users', 'exams', 'codes', 'qbank', 'approach'].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
@@ -2252,6 +2390,160 @@ const saveAdd = async () => {
                           </div>
                         )}
                       </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Approach Management */}
+            {activeTab === 'approach' && (
+              <div className="space-y-6">
+                <div className="bg-white rounded-lg shadow p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Approach Management</h3>
+                  
+                  {/* Section 1: Add Structure */}
+                  <div className="mb-8">
+                    <h4 className="text-md font-medium text-gray-800 mb-3 border-b pb-2">1. Add Structure</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Add Main Folder */}
+                      <div className="border rounded-lg p-4">
+                        <h5 className="font-medium text-gray-700 mb-2">Add Main Folder</h5>
+                        <div className="space-y-2">
+                          <input
+                            type="text"
+                            placeholder="Folder name (e.g., Cardiology)"
+                            value={newApproachFolder}
+                            onChange={(e) => setNewApproachFolder(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white"
+                          />
+                          <button
+                            onClick={addApproachFolder}
+                            disabled={!newApproachFolder.trim()}
+                            className="w-full px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+                          >
+                            Add Folder
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Add File */}
+                      <div className="border rounded-lg p-4">
+                        <h5 className="font-medium text-gray-700 mb-2">Add File to Folder</h5>
+                        <div className="space-y-2">
+                          <select
+                            value={selectedApproachParent || ''}
+                            onChange={(e) => setSelectedApproachParent(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white"
+                          >
+                            <option value="">Select Parent Folder</option>
+                            {approachStructure.map((folder: any) => (
+                              <option key={folder.id} value={folder.id}>{folder.title}</option>
+                            ))}
+                          </select>
+                          <input
+                            type="text"
+                            placeholder="File name (e.g., Chest Pain)"
+                            value={newApproachFile}
+                            onChange={(e) => setNewApproachFile(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white"
+                          />
+                          <textarea
+                            placeholder="Description (optional)"
+                            value={newApproachDescription}
+                            onChange={(e) => setNewApproachDescription(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white"
+                            rows={2}
+                          />
+                          <button
+                            onClick={addApproachFile}
+                            disabled={!selectedApproachParent || !newApproachFile.trim()}
+                            className="w-full px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50"
+                          >
+                            Add File
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Section 2: Manage Structure */}
+                  <div>
+                    <h4 className="text-md font-medium text-gray-800 mb-3 border-b pb-2">2. Manage Structure</h4>
+                    <div className="space-y-4">
+                      {approachStructure.map((folder: any, folderIndex: number) => (
+                        <div key={folder.id} className="border rounded-lg p-4">
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-2">
+                              <span className="text-lg">📁</span>
+                              <h5 className="font-medium text-gray-800">{folder.title}</h5>
+                              <span className="text-sm text-gray-500">({folder.children?.length || 0} files)</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => moveApproachItem(folder.id, 'up')}
+                                disabled={folderIndex === 0}
+                                className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 disabled:opacity-50"
+                              >
+                                ↑
+                              </button>
+                              <button
+                                onClick={() => moveApproachItem(folder.id, 'down')}
+                                disabled={folderIndex === approachStructure.length - 1}
+                                className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 disabled:opacity-50"
+                              >
+                                ↓
+                              </button>
+                              <button
+                                onClick={() => deleteApproachItem(folder.id)}
+                                className="px-2 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200"
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          </div>
+                          
+                          {folder.children && folder.children.length > 0 && (
+                            <div className="ml-6 space-y-2">
+                              {folder.children.map((file: any, fileIndex: number) => (
+                                <div key={file.id} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-sm">📄</span>
+                                    <div>
+                                      <div className="font-medium text-gray-700">{file.title}</div>
+                                      {file.description && (
+                                        <div className="text-xs text-gray-500">{file.description}</div>
+                                      )}
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    <button
+                                      onClick={() => moveApproachItem(file.id, 'up', folder.id)}
+                                      disabled={fileIndex === 0}
+                                      className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 disabled:opacity-50"
+                                    >
+                                      ↑
+                                    </button>
+                                    <button
+                                      onClick={() => moveApproachItem(file.id, 'down', folder.id)}
+                                      disabled={fileIndex === folder.children.length - 1}
+                                      className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 disabled:opacity-50"
+                                    >
+                                      ↓
+                                    </button>
+                                    <button
+                                      onClick={() => deleteApproachItem(file.id, folder.id)}
+                                      className="px-2 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200"
+                                    >
+                                      Delete
+                                    </button>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
