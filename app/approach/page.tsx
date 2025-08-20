@@ -1591,91 +1591,57 @@ export default function ApproachPage() {
   const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
   const [selectedLecture, setSelectedLecture] = useState<string | null>(null);
   const [isFrameFullscreen, setIsFrameFullscreen] = useState(false);
+  const [approachStructure, setApproachStructure] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const subjects = [
-    {
-      id: 'internal-medicine',
-      name: 'Internal Medicine',
-      folders: [
-        {
-          id: 'cardiology',
-          name: 'Cardiology',
-          lectures: [
-            { id: 'card-5', name: 'Chest Pain', content: 'Chest pain evaluation flowchart and approach...' },
-          ]
+  // Load approach structure from API
+  useEffect(() => {
+    const loadApproachStructure = async () => {
+      try {
+        const response = await fetch('/api/approach/structure');
+        if (response.ok) {
+          const data = await response.json();
+          setApproachStructure(data);
         }
-      ]
-    },
-    {
-      id: 'surgery',
-      name: 'Surgery',
-      folders: [
-        {
-          id: 'general-surgery',
-          name: 'General Surgery',
-          lectures: []
-        },
-        {
-          id: 'specialized-surgery',
-          name: 'Specialized Surgery',
-          lectures: []
-        }
-      ]
-    },
-    {
-      id: 'pediatrics',
-      name: 'Pediatrics',
-      folders: [
-        {
-          id: 'general-pediatrics',
-          name: 'General Pediatrics',
-          lectures: []
-        },
-        {
-          id: 'pediatric-specialties',
-          name: 'Pediatric Specialties',
-          lectures: []
-        }
-      ]
-    },
-    {
-      id: 'obs-gyne',
-      name: 'Obs & Gyne',
-      folders: [
-        {
-          id: 'obstetrics',
-          name: 'Obstetrics',
-          lectures: []
-        },
-        {
-          id: 'gynecology',
-          name: 'Gynecology',
-          lectures: [
-            { id: 'acute-pelvic-pain', name: 'Acute Pelvic Pain', content: 'Acute pelvic pain evaluation and management...' },
-            { id: 'dyspareunia', name: 'Dyspareunia', content: 'Painful intercourse evaluation and treatment...' },
-            { id: 'vulvar-vaginal-cancers', name: 'Vulvar/Vaginal Cancers', content: 'Vulvar and vaginal cancer diagnosis and management...' },
-            { id: 'vulvar-vaginal-infections-and-inflammation', name: 'Vulvar/Vaginal Infections and Inflammation', content: 'Infections and inflammatory conditions...' },
-            { id: 'vulvar-dystrophies', name: 'Vulvar Dystrophies', content: 'Vulvar dystrophic conditions...' },
-            { id: 'genital-ulcers', name: 'Genital Ulcers', content: 'Genital ulcer evaluation and differential diagnosis...' },
-            { id: 'abnormal-vaginal-discharge', name: 'Abnormal Vaginal Discharge', content: 'Evaluation of abnormal vaginal discharge...' },
-            { id: 'incontinence', name: 'Incontinence', content: 'Urinary and fecal incontinence management...' },
-            { id: 'primary-amenorrhea', name: 'Primary Amenorrhea', content: 'Primary amenorrhea evaluation and causes...' },
-            { id: 'secondary-amenorrhea', name: 'Secondary Amenorrhea', content: 'Secondary amenorrhea evaluation and management...' },
-            { id: 'dysmenorrhea', name: 'Dysmenorrhea', content: 'Painful menstruation evaluation and treatment...' },
-            { id: 'abnormal-uterine-bleeding', name: 'Abnormal Uterine Bleeding', content: 'Abnormal uterine bleeding evaluation...' },
-            { id: 'adnexal-mass', name: 'Adnexal Mass', content: 'Adnexal mass evaluation and management...' },
-            { id: 'ovarian-cancer', name: 'Ovarian Cancer', content: 'Ovarian cancer diagnosis and treatment...' },
-            { id: 'cervical-pathology', name: 'Cervical Pathology', content: 'Cervical pathology evaluation and management...' }
-          ]
-        }
-      ]
-    }
-  ];
+      } catch (error) {
+        console.error('Error loading approach structure:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadApproachStructure();
+  }, []);
+
+  // Transform API structure to match the expected format
+  const subjects = approachStructure.map((mainFolder: any) => ({
+    id: mainFolder.id,
+    name: mainFolder.title,
+    folders: mainFolder.children?.map((subFolder: any) => ({
+      id: subFolder.id,
+      name: subFolder.title,
+      lectures: subFolder.children?.map((file: any) => ({
+        id: file.id,
+        name: file.title,
+        path: file.path,
+        content: `${file.title} evaluation and management approach...`
+      })) || []
+    })) || []
+  }));
 
   // Check authentication and approach access
   if (!isLoading && (!user || !user.hasApproachAccess)) {
     router.push('/wizary-exam');
     return null;
+  }
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="flex h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#3A8431]"></div>
+      </div>
+    );
   }
 
   if (isLoading) {
@@ -1693,13 +1659,13 @@ export default function ApproachPage() {
   const getSelectedContent = () => {
     if (!selectedSubject || !selectedFolder || !selectedLecture) return null;
     
-    const subject = subjects.find(s => s.id === selectedSubject);
+    const subject = subjects.find((s: any) => s.id === selectedSubject);
     if (!subject) return null;
     
-    const folder = subject.folders.find(f => f.id === selectedFolder);
+    const folder = subject.folders.find((f: any) => f.id === selectedFolder);
     if (!folder) return null;
     
-    const lecture = folder.lectures.find(l => l.id === selectedLecture);
+    const lecture = folder.lectures.find((l: any) => l.id === selectedLecture);
     return { subject, folder, lecture };
   };
 
@@ -1752,7 +1718,7 @@ export default function ApproachPage() {
                 {/* Folders - Only show if subject is selected and sidebar is open */}
                 {selectedSubject === subject.id && isOpen && (
                   <div className="ml-6 mt-2 space-y-1">
-                    {subject.folders.map((folder) => (
+                    {subject.folders.map((folder: any) => (
                       <div key={folder.id}>
                         <button 
                           onClick={() => setSelectedFolder(selectedFolder === folder.id ? null : folder.id)}
@@ -1769,7 +1735,7 @@ export default function ApproachPage() {
                         {/* Lectures - Only show if folder is selected */}
                         {selectedFolder === folder.id && (
                           <div className="ml-6 mt-1 space-y-1">
-                            {folder.lectures.map((lecture) => (
+                            {folder.lectures.map((lecture: any) => (
                               <button 
                                 key={lecture.id}
                                 onClick={() => setSelectedLecture(lecture.id)}
