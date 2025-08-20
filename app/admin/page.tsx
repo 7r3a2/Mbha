@@ -984,12 +984,32 @@ const saveAdd = async () => {
     setSelectedSubFolder('');
   };
 
-  const deleteApproachItem = async (itemId: string, parentId?: string) => {
+  const deleteApproachItem = async (itemId: string, parentId?: string, grandParentId?: string) => {
     if (!confirm('Are you sure you want to delete this item?')) return;
 
     let updatedStructure;
-    if (parentId) {
-      // Delete from parent's children
+    
+    if (grandParentId) {
+      // Delete file from sub-folder (third level)
+      updatedStructure = approachStructure.map(mainFolder => {
+        if (mainFolder.id === grandParentId) {
+          return {
+            ...mainFolder,
+            children: mainFolder.children?.map((subFolder: any) => {
+              if (subFolder.id === parentId) {
+                return {
+                  ...subFolder,
+                  children: (subFolder.children || []).filter((file: any) => file.id !== itemId)
+                };
+              }
+              return subFolder;
+            })
+          };
+        }
+        return mainFolder;
+      });
+    } else if (parentId) {
+      // Delete sub-folder from main folder (second level)
       updatedStructure = approachStructure.map(item => {
         if (item.id === parentId) {
           return {
@@ -1000,7 +1020,7 @@ const saveAdd = async () => {
         return item;
       });
     } else {
-      // Delete from root level
+      // Delete main folder (first level)
       updatedStructure = approachStructure.filter(item => item.id !== itemId);
     }
 
@@ -2618,7 +2638,7 @@ const saveAdd = async () => {
                                               ↓
                                             </button>
                                             <button
-                                              onClick={() => deleteApproachItem(file.id, subFolder.id)}
+                                              onClick={() => deleteApproachItem(file.id, subFolder.id, mainFolder.id)}
                                               className="px-2 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200"
                                             >
                                               Delete

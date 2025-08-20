@@ -1638,8 +1638,27 @@ export default function ApproachPage() {
   // Show loading state
   if (loading) {
     return (
-      <div className="flex h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#3A8431]"></div>
+      <div className="flex h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+        {/* Sidebar skeleton */}
+        <div className="bg-[#1E2A38] w-64 flex flex-col">
+          <div className="h-16 flex items-center border-b border-gray-700 px-4">
+            <div className="w-8 h-8 bg-gray-600 rounded animate-pulse"></div>
+            <div className="ml-3 w-16 h-6 bg-gray-600 rounded animate-pulse"></div>
+          </div>
+          <div className="flex-1 p-4 space-y-3">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="w-full h-10 bg-gray-700 rounded animate-pulse"></div>
+            ))}
+          </div>
+        </div>
+        
+        {/* Main content skeleton */}
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-16 h-16 border-4 border-[#3A8431] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600 font-medium">Loading approach structure...</p>
+          </div>
+        </div>
       </div>
     );
   }
