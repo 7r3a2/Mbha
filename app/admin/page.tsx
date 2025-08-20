@@ -71,10 +71,11 @@ const [csvPreviewQuestion, setCsvPreviewQuestion] = useState<any | null>(null);
 
 // Approach Management State
 const [approachStructure, setApproachStructure] = useState<any[]>([]);
-const [newApproachFolder, setNewApproachFolder] = useState('');
+const [newMainFolder, setNewMainFolder] = useState('');
+const [newSubFolder, setNewSubFolder] = useState('');
 const [newApproachFile, setNewApproachFile] = useState('');
-const [newApproachDescription, setNewApproachDescription] = useState('');
-const [selectedApproachParent, setSelectedApproachParent] = useState('');
+const [selectedMainFolder, setSelectedMainFolder] = useState('');
+const [selectedSubFolder, setSelectedSubFolder] = useState('');
 const [editingApproachItem, setEditingApproachItem] = useState<any | null>(null);
 
 const loadQbankStructure = async () => {
@@ -910,35 +911,35 @@ const saveAdd = async () => {
     }
   };
 
-  const addApproachFolder = async () => {
-    if (!newApproachFolder.trim()) return;
+  const addMainFolder = async () => {
+    if (!newMainFolder.trim()) return;
     
     const newItem = {
       id: generateId(),
-      title: newApproachFolder.trim(),
+      title: newMainFolder.trim(),
       type: 'folder',
-      path: newApproachFolder.trim().toLowerCase().replace(/\s+/g, '-'),
+      path: newMainFolder.trim().toLowerCase().replace(/\s+/g, '-'),
       children: []
     };
 
     const updatedStructure = [...approachStructure, newItem];
     await updateApproachStructure(updatedStructure);
-    setNewApproachFolder('');
+    setNewMainFolder('');
   };
 
-  const addApproachFile = async () => {
-    if (!newApproachFile.trim() || !selectedApproachParent) return;
+  const addSubFolder = async () => {
+    if (!newSubFolder.trim() || !selectedMainFolder) return;
     
     const newItem = {
       id: generateId(),
-      title: newApproachFile.trim(),
-      type: 'file',
-      path: `${selectedApproachParent}/${newApproachFile.trim().toLowerCase().replace(/\s+/g, '-')}`,
-      description: newApproachDescription.trim()
+      title: newSubFolder.trim(),
+      type: 'folder',
+      path: `${selectedMainFolder}/${newSubFolder.trim().toLowerCase().replace(/\s+/g, '-')}`,
+      children: []
     };
 
     const updatedStructure = approachStructure.map(item => {
-      if (item.id === selectedApproachParent) {
+      if (item.id === selectedMainFolder) {
         return {
           ...item,
           children: [...(item.children || []), newItem]
@@ -948,9 +949,39 @@ const saveAdd = async () => {
     });
 
     await updateApproachStructure(updatedStructure);
+    setNewSubFolder('');
+    setSelectedMainFolder('');
+  };
+
+  const addApproachFile = async () => {
+    if (!newApproachFile.trim() || !selectedSubFolder) return;
+    
+    const newItem = {
+      id: generateId(),
+      title: newApproachFile.trim(),
+      type: 'file',
+      path: `${selectedSubFolder}/${newApproachFile.trim().toLowerCase().replace(/\s+/g, '-')}`
+    };
+
+    const updatedStructure = approachStructure.map(mainFolder => {
+      if (mainFolder.children) {
+        const updatedChildren = mainFolder.children.map((subFolder: any) => {
+          if (subFolder.id === selectedSubFolder) {
+            return {
+              ...subFolder,
+              children: [...(subFolder.children || []), newItem]
+            };
+          }
+          return subFolder;
+        });
+        return { ...mainFolder, children: updatedChildren };
+      }
+      return mainFolder;
+    });
+
+    await updateApproachStructure(updatedStructure);
     setNewApproachFile('');
-    setNewApproachDescription('');
-    setSelectedApproachParent('');
+    setSelectedSubFolder('');
   };
 
   const deleteApproachItem = async (itemId: string, parentId?: string) => {
@@ -2405,60 +2436,86 @@ const saveAdd = async () => {
                   {/* Section 1: Add Structure */}
                   <div className="mb-8">
                     <h4 className="text-md font-medium text-gray-800 mb-3 border-b pb-2">1. Add Structure</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       {/* Add Main Folder */}
                       <div className="border rounded-lg p-4">
                         <h5 className="font-medium text-gray-700 mb-2">Add Main Folder</h5>
                         <div className="space-y-2">
                           <input
                             type="text"
-                            placeholder="Folder name (e.g., Cardiology)"
-                            value={newApproachFolder}
-                            onChange={(e) => setNewApproachFolder(e.target.value)}
+                            placeholder="e.g., Internal Medicine"
+                            value={newMainFolder}
+                            onChange={(e) => setNewMainFolder(e.target.value)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white"
                           />
                           <button
-                            onClick={addApproachFolder}
-                            disabled={!newApproachFolder.trim()}
+                            onClick={addMainFolder}
+                            disabled={!newMainFolder.trim()}
                             className="w-full px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
                           >
-                            Add Folder
+                            Add Main Folder
                           </button>
                         </div>
                       </div>
 
-                      {/* Add File */}
+                      {/* Add Sub Folder */}
                       <div className="border rounded-lg p-4">
-                        <h5 className="font-medium text-gray-700 mb-2">Add File to Folder</h5>
+                        <h5 className="font-medium text-gray-700 mb-2">Add Sub Folder</h5>
                         <div className="space-y-2">
                           <select
-                            value={selectedApproachParent || ''}
-                            onChange={(e) => setSelectedApproachParent(e.target.value)}
+                            value={selectedMainFolder || ''}
+                            onChange={(e) => setSelectedMainFolder(e.target.value)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white"
                           >
-                            <option value="">Select Parent Folder</option>
+                            <option value="">Select Main Folder</option>
                             {approachStructure.map((folder: any) => (
                               <option key={folder.id} value={folder.id}>{folder.title}</option>
                             ))}
                           </select>
                           <input
                             type="text"
-                            placeholder="File name (e.g., Chest Pain)"
+                            placeholder="e.g., Cardiology"
+                            value={newSubFolder}
+                            onChange={(e) => setNewSubFolder(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white"
+                          />
+                          <button
+                            onClick={addSubFolder}
+                            disabled={!selectedMainFolder || !newSubFolder.trim()}
+                            className="w-full px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50"
+                          >
+                            Add Sub Folder
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Add File */}
+                      <div className="border rounded-lg p-4">
+                        <h5 className="font-medium text-gray-700 mb-2">Add File</h5>
+                        <div className="space-y-2">
+                          <select
+                            value={selectedSubFolder || ''}
+                            onChange={(e) => setSelectedSubFolder(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white"
+                          >
+                            <option value="">Select Sub Folder</option>
+                            {approachStructure.map((mainFolder: any) => 
+                              mainFolder.children?.map((subFolder: any) => (
+                                <option key={subFolder.id} value={subFolder.id}>{mainFolder.title} → {subFolder.title}</option>
+                              ))
+                            ).flat() || []}
+                          </select>
+                          <input
+                            type="text"
+                            placeholder="e.g., Chest Pain"
                             value={newApproachFile}
                             onChange={(e) => setNewApproachFile(e.target.value)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white"
                           />
-                          <textarea
-                            placeholder="Description (optional)"
-                            value={newApproachDescription}
-                            onChange={(e) => setNewApproachDescription(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white"
-                            rows={2}
-                          />
                           <button
                             onClick={addApproachFile}
-                            disabled={!selectedApproachParent || !newApproachFile.trim()}
-                            className="w-full px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50"
+                            disabled={!selectedSubFolder || !newApproachFile.trim()}
+                            className="w-full px-3 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50"
                           >
                             Add File
                           </button>
@@ -2471,31 +2528,31 @@ const saveAdd = async () => {
                   <div>
                     <h4 className="text-md font-medium text-gray-800 mb-3 border-b pb-2">2. Manage Structure</h4>
                     <div className="space-y-4">
-                      {approachStructure.map((folder: any, folderIndex: number) => (
-                        <div key={folder.id} className="border rounded-lg p-4">
+                      {approachStructure.map((mainFolder: any, mainIndex: number) => (
+                        <div key={mainFolder.id} className="border rounded-lg p-4">
                           <div className="flex items-center justify-between mb-3">
                             <div className="flex items-center gap-2">
                               <span className="text-lg">📁</span>
-                              <h5 className="font-medium text-gray-800">{folder.title}</h5>
-                              <span className="text-sm text-gray-500">({folder.children?.length || 0} files)</span>
+                              <h5 className="font-medium text-gray-800">{mainFolder.title}</h5>
+                              <span className="text-sm text-gray-500">({mainFolder.children?.length || 0} sub-folders)</span>
                             </div>
                             <div className="flex items-center gap-2">
                               <button
-                                onClick={() => moveApproachItem(folder.id, 'up')}
-                                disabled={folderIndex === 0}
+                                onClick={() => moveApproachItem(mainFolder.id, 'up')}
+                                disabled={mainIndex === 0}
                                 className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 disabled:opacity-50"
                               >
                                 ↑
                               </button>
                               <button
-                                onClick={() => moveApproachItem(folder.id, 'down')}
-                                disabled={folderIndex === approachStructure.length - 1}
+                                onClick={() => moveApproachItem(mainFolder.id, 'down')}
+                                disabled={mainIndex === approachStructure.length - 1}
                                 className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 disabled:opacity-50"
                               >
                                 ↓
                               </button>
                               <button
-                                onClick={() => deleteApproachItem(folder.id)}
+                                onClick={() => deleteApproachItem(mainFolder.id)}
                                 className="px-2 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200"
                               >
                                 Delete
@@ -2503,41 +2560,74 @@ const saveAdd = async () => {
                             </div>
                           </div>
                           
-                          {folder.children && folder.children.length > 0 && (
-                            <div className="ml-6 space-y-2">
-                              {folder.children.map((file: any, fileIndex: number) => (
-                                <div key={file.id} className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                                  <div className="flex items-center gap-2">
-                                    <span className="text-sm">📄</span>
-                                    <div>
-                                      <div className="font-medium text-gray-700">{file.title}</div>
-                                      {file.description && (
-                                        <div className="text-xs text-gray-500">{file.description}</div>
-                                      )}
+                          {mainFolder.children && mainFolder.children.length > 0 && (
+                            <div className="ml-6 space-y-3">
+                              {mainFolder.children.map((subFolder: any, subIndex: number) => (
+                                <div key={subFolder.id} className="border-l-2 border-gray-200 pl-4">
+                                  <div className="flex items-center justify-between mb-2">
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-md">📂</span>
+                                      <h6 className="font-medium text-gray-700">{subFolder.title}</h6>
+                                      <span className="text-xs text-gray-500">({subFolder.children?.length || 0} files)</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                      <button
+                                        onClick={() => moveApproachItem(subFolder.id, 'up', mainFolder.id)}
+                                        disabled={subIndex === 0}
+                                        className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 disabled:opacity-50"
+                                      >
+                                        ↑
+                                      </button>
+                                      <button
+                                        onClick={() => moveApproachItem(subFolder.id, 'down', mainFolder.id)}
+                                        disabled={subIndex === mainFolder.children.length - 1}
+                                        className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 disabled:opacity-50"
+                                      >
+                                        ↓
+                                      </button>
+                                      <button
+                                        onClick={() => deleteApproachItem(subFolder.id, mainFolder.id)}
+                                        className="px-2 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200"
+                                      >
+                                        Delete
+                                      </button>
                                     </div>
                                   </div>
-                                  <div className="flex items-center gap-2">
-                                    <button
-                                      onClick={() => moveApproachItem(file.id, 'up', folder.id)}
-                                      disabled={fileIndex === 0}
-                                      className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 disabled:opacity-50"
-                                    >
-                                      ↑
-                                    </button>
-                                    <button
-                                      onClick={() => moveApproachItem(file.id, 'down', folder.id)}
-                                      disabled={fileIndex === folder.children.length - 1}
-                                      className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 disabled:opacity-50"
-                                    >
-                                      ↓
-                                    </button>
-                                    <button
-                                      onClick={() => deleteApproachItem(file.id, folder.id)}
-                                      className="px-2 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200"
-                                    >
-                                      Delete
-                                    </button>
-                                  </div>
+                                  
+                                  {subFolder.children && subFolder.children.length > 0 && (
+                                    <div className="ml-6 space-y-1">
+                                      {subFolder.children.map((file: any, fileIndex: number) => (
+                                        <div key={file.id} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                                          <div className="flex items-center gap-2">
+                                            <span className="text-sm">📄</span>
+                                            <div className="font-medium text-gray-700">{file.title}</div>
+                                          </div>
+                                          <div className="flex items-center gap-2">
+                                            <button
+                                              onClick={() => moveApproachItem(file.id, 'up', subFolder.id)}
+                                              disabled={fileIndex === 0}
+                                              className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 disabled:opacity-50"
+                                            >
+                                              ↑
+                                            </button>
+                                            <button
+                                              onClick={() => moveApproachItem(file.id, 'down', subFolder.id)}
+                                              disabled={fileIndex === subFolder.children.length - 1}
+                                              className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 disabled:opacity-50"
+                                            >
+                                              ↓
+                                            </button>
+                                            <button
+                                              onClick={() => deleteApproachItem(file.id, subFolder.id)}
+                                              className="px-2 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200"
+                                            >
+                                              Delete
+                                            </button>
+                                          </div>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  )}
                                 </div>
                               ))}
                             </div>

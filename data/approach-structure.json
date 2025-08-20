@@ -1,5 +1,91 @@
 [
   {
+    "id": "internal-medicine",
+    "title": "Internal Medicine",
+    "type": "folder",
+    "path": "internal-medicine",
+    "children": [
+      {
+        "id": "cardiology",
+        "title": "Cardiology",
+        "type": "folder",
+        "path": "internal-medicine/cardiology",
+        "children": [
+          {
+            "id": "chest-pain",
+            "title": "Chest Pain",
+            "type": "file",
+            "path": "internal-medicine/cardiology/chest-pain"
+          },
+          {
+            "id": "heart-failure",
+            "title": "Heart Failure",
+            "type": "file",
+            "path": "internal-medicine/cardiology/heart-failure"
+          }
+        ]
+      },
+      {
+        "id": "endocrinology",
+        "title": "Endocrinology",
+        "type": "folder",
+        "path": "internal-medicine/endocrinology",
+        "children": [
+          {
+            "id": "diabetes",
+            "title": "Diabetes",
+            "type": "file",
+            "path": "internal-medicine/endocrinology/diabetes"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "surgery",
+    "title": "Surgery",
+    "type": "folder",
+    "path": "surgery",
+    "children": [
+      {
+        "id": "general-surgery",
+        "title": "General Surgery",
+        "type": "folder",
+        "path": "surgery/general-surgery",
+        "children": [
+          {
+            "id": "acute-abdomen",
+            "title": "Acute Abdomen",
+            "type": "file",
+            "path": "surgery/general-surgery/acute-abdomen"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "pediatrics",
+    "title": "Pediatrics",
+    "type": "folder",
+    "path": "pediatrics",
+    "children": [
+      {
+        "id": "neonatology",
+        "title": "Neonatology",
+        "type": "folder",
+        "path": "pediatrics/neonatology",
+        "children": [
+          {
+            "id": "neonatal-jaundice",
+            "title": "Neonatal Jaundice",
+            "type": "file",
+            "path": "pediatrics/neonatology/neonatal-jaundice"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "obs-gyne",
     "title": "Obstetrics & Gynecology",
     "type": "folder",
@@ -15,138 +101,100 @@
             "id": "abnormal-uterine-bleeding",
             "title": "Abnormal Uterine Bleeding",
             "type": "file",
-            "path": "obs-gyne/gynecology/abnormal-uterine-bleeding",
-            "description": "Management of abnormal uterine bleeding"
+            "path": "obs-gyne/gynecology/abnormal-uterine-bleeding"
           },
           {
             "id": "abnormal-vaginal-discharge",
             "title": "Abnormal Vaginal Discharge",
             "type": "file",
-            "path": "obs-gyne/gynecology/abnormal-vaginal-discharge",
-            "description": "Evaluation and treatment of abnormal vaginal discharge"
+            "path": "obs-gyne/gynecology/abnormal-vaginal-discharge"
           },
           {
             "id": "acute-pelvic-pain",
             "title": "Acute Pelvic Pain",
             "type": "file",
-            "path": "obs-gyne/gynecology/acute-pelvic-pain",
-            "description": "Assessment and management of acute pelvic pain"
+            "path": "obs-gyne/gynecology/acute-pelvic-pain"
           },
           {
             "id": "adnexal-mass",
             "title": "Adnexal Mass",
             "type": "file",
-            "path": "obs-gyne/gynecology/adnexal-mass",
-            "description": "Evaluation and management of adnexal masses"
+            "path": "obs-gyne/gynecology/adnexal-mass"
           },
           {
             "id": "cervical-pathology",
             "title": "Cervical Pathology",
             "type": "file",
-            "path": "obs-gyne/gynecology/cervical-pathology",
-            "description": "Cervical pathology and screening"
+            "path": "obs-gyne/gynecology/cervical-pathology"
           },
           {
             "id": "dysmenorrhea",
             "title": "Dysmenorrhea",
             "type": "file",
-            "path": "obs-gyne/gynecology/dysmenorrhea",
-            "description": "Management of dysmenorrhea"
+            "path": "obs-gyne/gynecology/dysmenorrhea"
           },
           {
             "id": "dyspareunia",
             "title": "Dyspareunia",
             "type": "file",
-            "path": "obs-gyne/gynecology/dyspareunia",
-            "description": "Evaluation and treatment of dyspareunia"
+            "path": "obs-gyne/gynecology/dyspareunia"
           },
           {
             "id": "genital-ulcers",
             "title": "Genital Ulcers",
             "type": "file",
-            "path": "obs-gyne/gynecology/genital-ulcers",
-            "description": "Diagnosis and management of genital ulcers"
+            "path": "obs-gyne/gynecology/genital-ulcers"
           },
           {
             "id": "incontinence",
             "title": "Incontinence",
             "type": "file",
-            "path": "obs-gyne/gynecology/incontinence",
-            "description": "Urinary incontinence evaluation and treatment"
+            "path": "obs-gyne/gynecology/incontinence"
           },
           {
             "id": "ovarian-cancer",
             "title": "Ovarian Cancer",
             "type": "file",
-            "path": "obs-gyne/gynecology/ovarian-cancer",
-            "description": "Ovarian cancer screening and management"
+            "path": "obs-gyne/gynecology/ovarian-cancer"
           },
           {
             "id": "primary-amenorrhea",
             "title": "Primary Amenorrhea",
             "type": "file",
-            "path": "obs-gyne/gynecology/primary-amenorrhea",
-            "description": "Evaluation of primary amenorrhea"
+            "path": "obs-gyne/gynecology/primary-amenorrhea"
           },
           {
             "id": "secondary-amenorrhea",
             "title": "Secondary Amenorrhea",
             "type": "file",
-            "path": "obs-gyne/gynecology/secondary-amenorrhea",
-            "description": "Evaluation of secondary amenorrhea"
+            "path": "obs-gyne/gynecology/secondary-amenorrhea"
           },
           {
             "id": "vulvar-dystrophies",
             "title": "Vulvar Dystrophies",
             "type": "file",
-            "path": "obs-gyne/gynecology/vulvar-dystrophies",
-            "description": "Vulvar dystrophies and lesions"
+            "path": "obs-gyne/gynecology/vulvar-dystrophies"
           },
           {
             "id": "vulvar-vaginal-cancers",
             "title": "Vulvar & Vaginal Cancers",
             "type": "file",
-            "path": "obs-gyne/gynecology/vulvar-vaginal-cancers",
-            "description": "Vulvar and vaginal cancer management"
+            "path": "obs-gyne/gynecology/vulvar-vaginal-cancers"
           },
           {
             "id": "vulvar-vaginal-infections",
             "title": "Vulvar & Vaginal Infections",
             "type": "file",
-            "path": "obs-gyne/gynecology/vulvar-vaginal-infections",
-            "description": "Vulvar and vaginal infections"
+            "path": "obs-gyne/gynecology/vulvar-vaginal-infections"
           },
           {
             "id": "vulvar-vaginal-infections-and-inflammation",
             "title": "Vulvar & Vaginal Infections & Inflammation",
             "type": "file",
-            "path": "obs-gyne/gynecology/vulvar-vaginal-infections-and-inflammation",
-            "description": "Infections and inflammatory conditions"
+            "path": "obs-gyne/gynecology/vulvar-vaginal-infections-and-inflammation"
           }
         ]
       }
     ]
-  },
-  {
-    "id": "cardiology",
-    "title": "Cardiology",
-    "type": "folder",
-    "path": "cardiology",
-    "children": [
-      {
-        "id": "chest-pain",
-        "title": "Chest Pain",
-        "type": "file",
-        "path": "cardiology/chest-pain",
-        "description": "Evaluation and management of chest pain"
-      }
-    ]
-  },
-  {
-    "id": "heart-failure",
-    "title": "Heart Failure",
-    "type": "folder",
-    "path": "heart-failure",
-    "children": []
   }
 ]
