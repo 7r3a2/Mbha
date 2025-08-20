@@ -5,10 +5,15 @@ import Image from 'next/image';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 
-export default function OvarianCancerPage() {
+export default function OvarianCancerPage({ 
+  frameFullScreen = false, 
+  onToggleFrameFullScreen = () => {} 
+}: { 
+  frameFullScreen?: boolean; 
+  onToggleFrameFullScreen?: () => void; 
+}) {
   const { user, isLoading } = useAuth();
   const router = useRouter();
-  const [frameFullScreen, setFrameFullScreen] = useState(false);
 
   // Check authentication
   if (!isLoading && !user) {
@@ -23,10 +28,6 @@ export default function OvarianCancerPage() {
       </div>
     );
   }
-
-  const onToggleFrameFullScreen = () => {
-    setFrameFullScreen(!frameFullScreen);
-  };
 
   return (
     <OvarianCancerFlowchart 
@@ -274,6 +275,23 @@ const OvarianCancerFlowchart = ({ frameFullScreen = false, onToggleFrameFullScre
                 maxWidth: '100%',
                 maxHeight: '100%',
                 pointerEvents: 'none' // Prevent SVG from interfering with pan/zoom
+              }}
+              onError={(e) => {
+                console.error('Failed to load SVG:', e);
+                // Fallback to a placeholder if SVG fails to load
+                const target = e.target as HTMLImageElement;
+                target.style.display = 'none';
+                const container = target.parentElement;
+                if (container) {
+                  container.innerHTML = `
+                    <div class="w-full h-full flex items-center justify-center bg-gray-100 rounded-lg">
+                      <div class="text-center">
+                        <div class="text-2xl font-bold text-gray-600 mb-4">SVG Flowchart</div>
+                        <div class="text-gray-500">Ovarian Cancer Diagnostic Flowchart</div>
+                      </div>
+                    </div>
+                  `;
+                }
               }}
             />
           </div>
