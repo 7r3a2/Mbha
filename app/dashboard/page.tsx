@@ -125,8 +125,8 @@ export default function Dashboard() {
         {/* Navigation */}
         <nav className="flex-1 py-4 overflow-hidden">
           <ul className="space-y-2 px-2">
-            {/* Courses */}
-            {user?.hasCoursesAccess && (
+            {/* Courses - Admin Only */}
+            {user?.hasCoursesAccess && (user?.uniqueCode === 'ADMIN' || user?.email?.includes('admin')) && (
               <li>
                 <button className={`flex items-center w-full transition-all duration-300 rounded-lg ${
                   isOpen ? 'px-4 py-3' : 'justify-center p-3'
@@ -308,7 +308,7 @@ export default function Dashboard() {
          </div>
        )}
           
-          {user?.hasCoursesAccess && (
+          {user?.hasCoursesAccess && (user?.uniqueCode === 'ADMIN' || user?.email?.includes('admin')) && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {courses.map((course) => (
               <div key={course.id} className="bg-white rounded-xl shadow-lg border-2 border-green-500 overflow-hidden transform hover:scale-105 transition-all duration-300">
