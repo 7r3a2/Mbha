@@ -925,7 +925,7 @@ function QuizPageContent() {
                      ? (isMobile && window.innerHeight > window.innerWidth) ? "hidden" : "w-auto max-w-[50%]" 
                      : "w-auto max-w-4xl"
                  }`}>
-                   <div className="border-2 border-blue-500 rounded-lg p-2 sm:p-4 md:p-6 flex flex-col min-h-0">
+                   <div className="border-2 border-blue-500 rounded-lg p-2 sm:p-4 md:p-6 flex flex-col min-h-0 w-fit">
                 <div className="flex justify-between items-start mb-4 sm:mb-6">
                   <div>
                     <span className="text-lg sm:text-2xl font-bold text-black">Q#{currentQuestionIndex + 1}</span>
