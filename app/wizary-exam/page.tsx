@@ -7,38 +7,35 @@ import { useAuth } from '@/lib/hooks/useAuth';
 
 // WizaryExam-specific CSS overrides to ensure unique design
 const wizaryExamStyles = `
-  /* Safe area insets support for mobile and iPad with dark background */
+  /* Safe area insets support for mobile and iPad */
   .wizary-exam-page {
-    background-color: #1f2937 !important; /* Dark gray background for safe areas */
-  }
-  
-  .wizary-exam-page::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #1f2937;
-    z-index: -1;
     padding-top: env(safe-area-inset-top);
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
     padding-bottom: env(safe-area-inset-bottom);
   }
   
-  .wizary-exam-page > * {
-    margin-top: env(safe-area-inset-top);
-    margin-left: env(safe-area-inset-left);
-    margin-right: env(safe-area-inset-right);
-    margin-bottom: env(safe-area-inset-bottom);
+  /* Dark background only for safe area insets */
+  .wizary-exam-page::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: env(safe-area-inset-top);
+    background-color: #1f2937;
+    z-index: -1;
   }
   
-  /* Ensure all content stays within white containers */
-  .wizary-exam-page .bg-white {
-    margin-left: max(1rem, env(safe-area-inset-left));
-    margin-right: max(1rem, env(safe-area-inset-right));
-    overflow: hidden;
+  .wizary-exam-page::after {
+    content: '';
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: env(safe-area-inset-bottom);
+    background-color: #1f2937;
+    z-index: -1;
   }
   
   /* Prevent colored elements from extending beyond containers */
