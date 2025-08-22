@@ -1444,11 +1444,11 @@ export default function WizaryExam() {
           </header>
 
           {/* Exam Content */}
-          <div className={`flex-1 p-1 xs:p-2 sm:p-3 md:p-4 lg:p-6 xl:p-8 flex items-start justify-center bg-gray-100 min-h-screen sm:min-h-full overflow-hidden transition-all duration-300 ${dashboardSidebarCollapsed ? 'w-full' : ''}`}>
-            <div className={`grid grid-cols-1 lg:grid-cols-2 gap-1 xs:gap-2 sm:gap-3 md:gap-4 lg:gap-6 xl:gap-10 w-full h-full transition-all duration-300 ${dashboardSidebarCollapsed ? 'max-w-full' : 'max-w-xs xs:max-w-sm sm:max-w-md md:max-w-3xl lg:max-w-4xl xl:max-w-7xl'}`}>
+          <div className="flex-1 p-2 sm:p-4 md:p-6 lg:p-8 flex items-start justify-center bg-gray-100 min-h-screen overflow-hidden">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-4 md:gap-6 lg:gap-8 w-full max-w-2xl sm:max-w-3xl md:max-w-4xl lg:max-w-5xl xl:max-w-6xl h-full">
               {/* Left Panel - Exam Start and Timer */}
-              <div className="bg-white p-2 xs:p-3 sm:p-4 md:p-6 lg:p-6 xl:p-8 rounded-lg shadow-sm border-2 border-blue-600 flex flex-col items-center justify-center h-full max-h-[75vh] xs:max-h-[80vh] sm:max-h-[85vh] md:max-h-[95vh] lg:max-h-full overflow-hidden">
-                <div className="space-y-2 xs:space-y-3 sm:space-y-4 md:space-y-6 lg:space-y-6 w-full overflow-y-auto">
+              <div className="bg-white p-4 sm:p-6 md:p-8 lg:p-10 rounded-lg shadow-sm border-2 border-blue-600 flex flex-col items-center justify-center h-full max-h-[85vh] sm:max-h-[90vh] md:max-h-[95vh] lg:max-h-full overflow-hidden">
+                <div className="space-y-4 sm:space-y-6 md:space-y-8 w-full overflow-y-auto">
                   <div className="bg-blue-600 text-white p-1 xs:p-2 sm:p-3 md:p-4 lg:p-5 rounded-lg text-center">
                     <p className="text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl">سوف يتم احتساب الوقت منذ لحظة الضغط على زر "أبدء الامتحان"</p>
                   </div>
@@ -1468,29 +1468,29 @@ export default function WizaryExam() {
               </div>
 
               {/* Right Panel - Exam Details Table with Blue Stroke */}
-              <div className="bg-white p-2 xs:p-3 sm:p-4 md:p-6 lg:p-6 xl:p-8 rounded-lg shadow-sm border-2 border-blue-600 h-full max-h-[75vh] xs:max-h-[80vh] sm:max-h-[85vh] md:max-h-[95vh] lg:max-h-full flex flex-col overflow-hidden">
+              <div className="bg-white p-4 sm:p-6 md:p-8 lg:p-10 rounded-lg shadow-sm border-2 border-blue-600 h-full max-h-[85vh] sm:max-h-[90vh] md:max-h-[95vh] lg:max-h-full flex flex-col overflow-hidden">
 
                 
-                <div className="space-y-1 xs:space-y-2 sm:space-y-3 md:space-y-5 lg:space-y-5 flex-1 overflow-y-auto">
+                <div className="space-y-3 sm:space-y-4 md:space-y-6 flex-1 overflow-y-auto">
                   <div className="flex justify-between border-b border-gray-200 pb-1 sm:pb-2 md:pb-3 lg:pb-4">
-                    <span className="text-gray-800 text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl">{user ? `${user.firstName} ${user.lastName}` : 'فلان فلان'}</span>
-                    <span className="text-gray-600 font-medium text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl">اسم الطالب</span>
+                    <span className="text-gray-800 text-sm sm:text-base md:text-lg lg:text-xl">{user ? `${user.firstName} ${user.lastName}` : 'فلان فلان'}</span>
+                    <span className="text-gray-600 font-medium text-sm sm:text-base md:text-lg lg:text-xl">اسم الطالب</span>
                   </div>
                   <div className="flex justify-between border-b border-gray-200 pb-1 sm:pb-2 md:pb-3 lg:pb-4">
-                    <span className="text-gray-800 text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl">{user?.university || 'كلية الطب'} - المرحلة السادسة</span>
-                    <span className="text-gray-600 font-medium text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl">القسم/الصف</span>
+                    <span className="text-gray-800 text-sm sm:text-base md:text-lg lg:text-xl">{user?.university || 'كلية الطب'} - المرحلة السادسة</span>
+                    <span className="text-gray-600 font-medium text-sm sm:text-base md:text-lg lg:text-xl">القسم/الصف</span>
                   </div>
                   <div className="flex justify-between border-b border-gray-200 pb-1 sm:pb-2 md:pb-3 lg:pb-4">
-                    <span className="text-gray-800 text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl">{selectedExam?.name || 'الامتحان التقويمي'}</span>
-                    <span className="text-gray-600 font-medium text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl">اسم الامتحان</span>
+                    <span className="text-gray-800 text-sm sm:text-base md:text-lg lg:text-xl">{selectedExam?.name || 'الامتحان التقويمي'}</span>
+                    <span className="text-gray-600 font-medium text-sm sm:text-base md:text-lg lg:text-xl">اسم الامتحان</span>
                   </div>
                   <div className="flex justify-between border-b border-gray-200 pb-1 sm:pb-2 md:pb-3 lg:pb-4">
-                    <span className="text-gray-800 text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl">{selectedExam?.questions || 100}</span>
-                    <span className="text-gray-600 font-medium text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl">عدد الاسئلة</span>
+                    <span className="text-gray-800 text-sm sm:text-base md:text-lg lg:text-xl">{selectedExam?.questions || 100}</span>
+                    <span className="text-gray-600 font-medium text-sm sm:text-base md:text-lg lg:text-xl">عدد الاسئلة</span>
                   </div>
                   <div className="flex justify-between border-b border-gray-200 pb-1 sm:pb-2 md:pb-3 lg:pb-4">
-                    <span className="text-gray-800 text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl">{selectedExam?.time || 180} دقيقة</span>
-                    <span className="text-gray-600 font-medium text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl">الوقت</span>
+                    <span className="text-gray-800 text-sm sm:text-base md:text-lg lg:text-xl">{selectedExam?.time || 180} دقيقة</span>
+                    <span className="text-gray-600 font-medium text-sm sm:text-base md:text-lg lg:text-xl">الوقت</span>
                   </div>
                   <div className="flex justify-between border-b border-gray-200 pb-1 sm:pb-2 md:pb-3 lg:pb-4">
                     <input 
@@ -1503,9 +1503,9 @@ export default function WizaryExam() {
                           verifySecretCode();
                         }
                       }}
-                      className="text-gray-800 bg-transparent border-none outline-none text-right text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl w-full"
+                      className="text-gray-800 bg-transparent border-none outline-none text-right text-sm sm:text-base md:text-lg lg:text-xl w-full"
                     />
-                    <span className="text-gray-600 font-medium text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl whitespace-nowrap">رمز الامتحان السري</span>
+                    <span className="text-gray-600 font-medium text-sm sm:text-base md:text-lg lg:text-xl whitespace-nowrap">رمز الامتحان السري</span>
                   </div>
                   <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-4 pt-2 mt-auto">
                     <button
