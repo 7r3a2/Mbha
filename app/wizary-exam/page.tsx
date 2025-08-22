@@ -996,151 +996,171 @@ export default function WizaryExam() {
               </div>
             </div>
 
-            {/* Exam List */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 w-full h-full">
+                        {/* Exam List */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 w-full flex flex-col">
               <div className="p-2 border-b border-gray-200">
-                                                                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 relative gap-2">
+                                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 relative gap-2">
                                         <h3 className="text-sm sm:text-base font-bold text-gray-800">List Exam</h3>
-                                                                                                                                                           <button
-                        onClick={() => setExamMenuOpen(!examMenuOpen)}
-                        className="flex items-center gap-1 px-2 py-1 bg-orange-500 text-white rounded text-xs"
-                      >
-                        <span className="text-xs font-medium">Choose Exam</span>
-                                                                                                                                                                              <svg 
-                            className={`w-3 h-3 transition-transform duration-200 ${examMenuOpen ? 'rotate-180' : ''}`} 
-                            fill="none" 
-                            stroke="currentColor" 
-                            viewBox="0 0 24 24"
-                          >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                          </svg>
-                  </button>
-                  {/* Overlay Menu */}
-                  {examMenuOpen && (
-                    <div className="absolute top-full right-0 bg-white border border-gray-200 rounded shadow-lg z-10 mt-1 min-w-32 w-full sm:w-auto">
-                      <div className="p-2">
-                        <div className="space-y-1">
-                          {subjects.map((subject) => (
-                            <button
-                              key={subject.id}
-                              onClick={() => {
-                                setSelectedSubject(subject.name);
-                                setExamMenuOpen(false);
-                              }}
-                              className={`w-full px-2 py-1 rounded text-xs font-medium transition-all duration-200 text-left ${
-                                selectedSubject === subject.name
-                                  ? 'bg-orange-500 text-white'
-                                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                              }`}
-                            >
-                              {subject.name}
-                            </button>
-                          ))}
+                                                                                            <button
+                         onClick={() => setExamMenuOpen(!examMenuOpen)}
+                         className="flex items-center gap-1 px-2 py-1 bg-orange-500 text-white rounded text-xs"
+                       >
+                         <span className="text-xs font-medium">Choose Exam</span>
+                                                                                                               <svg 
+                             className={`w-3 h-3 transition-transform duration-200 ${examMenuOpen ? 'rotate-180' : ''}`} 
+                             fill="none" 
+                             stroke="currentColor" 
+                             viewBox="0 0 24 24"
+                           >
+                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                           </svg>
+                    </button>
+                    {/* Overlay Menu */}
+                    {examMenuOpen && (
+                      <div className="absolute top-full right-0 bg-white border border-gray-200 rounded shadow-lg z-10 mt-1 min-w-32 w-full sm:w-auto">
+                        <div className="p-2">
+                          <div className="space-y-1">
+                            {subjects.map((subject) => (
+                              <button
+                                key={subject.id}
+                                onClick={() => {
+                                  setSelectedSubject(subject.name);
+                                  setExamMenuOpen(false);
+                                }}
+                                className={`w-full px-2 py-1 rounded text-xs font-medium transition-all duration-200 text-left ${
+                                  selectedSubject === subject.name
+                                    ? 'bg-orange-500 text-white'
+                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                }`}
+                              >
+                                {subject.name}
+                              </button>
+                            ))}
+                          </div>
                         </div>
                       </div>
+                    )}
+                  </div>
+                </div>
+                
+                {/* Mobile Card View */}
+                <div className="block sm:hidden p-2">
+                  {loadingExams ? (
+                    <div className="p-6 text-center">
+                      <div className="flex items-center justify-center">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                        <span className="ml-2 text-gray-600">Loading exams...</span>
+                      </div>
+                    </div>
+                  ) : currentExams.length === 0 ? (
+                    <div className="p-6 text-center text-gray-500">
+                      No exams available
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      {currentExams.map((exam, index) => (
+                                                <div key={exam.id} className={`bg-white border border-gray-200 rounded p-2 ${exam.importedData ? 'bg-green-50 border-green-200' : ''}`}>
+                          <div className="flex justify-between items-start mb-2">
+                            <div className="flex-1">
+                                                           <h4 className="font-semibold text-gray-900 text-xs mb-1">{exam.name}</h4>
+                              <p className="text-gray-600 text-xs mb-1">Subject: {exam.subject}</p>
+                              <p className="text-gray-600 text-xs mb-1">Department: {exam.department}</p>
+                              <div className="flex space-x-4 text-xs text-gray-500">
+                                <span>Questions: {exam.questions}</span>
+                                <span>Time: {exam.time} min</span>
+                              </div>
+                            </div>
+                            <div className="ml-4">
+                              <button
+                                onClick={() => startExam(exam)}
+                                className="bg-blue-600 text-white px-2 py-1 rounded text-xs font-medium"
+                              >
+                                Take Exam
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   )}
                 </div>
-              </div>
-              
-              {/* Mobile Card View */}
-              <div className="block sm:hidden p-2">
-                {loadingExams ? (
-                  <div className="p-6 text-center">
-                    <div className="flex items-center justify-center">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                      <span className="ml-2 text-gray-600">Loading exams...</span>
-                    </div>
-                  </div>
-                ) : currentExams.length === 0 ? (
-                  <div className="p-6 text-center text-gray-500">
-                    No exams available
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    {currentExams.map((exam, index) => (
-                                              <div key={exam.id} className={`bg-white border border-gray-200 rounded p-2 ${exam.importedData ? 'bg-green-50 border-green-200' : ''}`}>
-                                                  <div className="flex justify-between items-start mb-2">
-                          <div className="flex-1">
-                                                          <h4 className="font-semibold text-gray-900 text-xs mb-1">{exam.name}</h4>
-                            <p className="text-gray-600 text-xs mb-1">Subject: {exam.subject}</p>
-                            <p className="text-gray-600 text-xs mb-1">Department: {exam.department}</p>
-                            <div className="flex space-x-4 text-xs text-gray-500">
-                              <span>Questions: {exam.questions}</span>
-                              <span>Time: {exam.time} min</span>
+                
+                {/* Desktop Table View */}
+                <div className="hidden sm:block overflow-y-auto flex-1 w-full">
+                  <table className="w-full">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-2 py-2 text-left text-xs font-medium text-gray-500">#</th>
+                        <th className="px-2 py-2 text-left text-xs font-medium text-gray-500">اسم الامتحان</th>
+                        <th className="px-2 py-2 text-left text-xs font-medium text-gray-500">المادة</th>
+                        <th className="px-2 py-2 text-left text-xs font-medium text-gray-500">الكلية/القسم</th>
+                        <th className="px-2 py-2 text-left text-xs font-medium text-gray-500">عدد الاسئلة</th>
+                        <th className="px-2 py-2 text-left text-xs font-medium text-gray-500">الوقت بالدقائق</th>
+                        <th className="px-2 py-2 text-left text-xs font-medium text-gray-500">ادوات</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {loadingExams ? (
+                        <tr>
+                          <td colSpan={7} className="px-2 py-4 text-center">
+                            <div className="flex items-center justify-center">
+                              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                              <span className="ml-2 text-gray-600 text-xs">Loading exams...</span>
                             </div>
-                          </div>
-                          <div className="ml-4">
-                            <button
-                              onClick={() => startExam(exam)}
-                              className="bg-blue-600 text-white px-2 py-1 rounded text-xs font-medium"
-                            >
-                              Take Exam
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-              
-              {/* Desktop Table View */}
-              <div className="hidden sm:block overflow-y-auto h-full w-full">
-                <table className="w-full">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-2 py-2 text-left text-xs font-medium text-gray-500">#</th>
-                      <th className="px-2 py-2 text-left text-xs font-medium text-gray-500">اسم الامتحان</th>
-                      <th className="px-2 py-2 text-left text-xs font-medium text-gray-500">المادة</th>
-                      <th className="px-2 py-2 text-left text-xs font-medium text-gray-500">الكلية/القسم</th>
-                      <th className="px-2 py-2 text-left text-xs font-medium text-gray-500">عدد الاسئلة</th>
-                      <th className="px-2 py-2 text-left text-xs font-medium text-gray-500">الوقت بالدقائق</th>
-                      <th className="px-2 py-2 text-left text-xs font-medium text-gray-500">ادوات</th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {loadingExams ? (
-                      <tr>
-                        <td colSpan={7} className="px-2 py-4 text-center">
-                          <div className="flex items-center justify-center">
-                            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-                            <span className="ml-2 text-gray-600 text-xs">Loading exams...</span>
-                          </div>
-                        </td>
-                      </tr>
-                    ) : currentExams.length === 0 ? (
-                      <tr>
-                        <td colSpan={7} className="px-2 py-4 text-center text-gray-500 text-xs">
-                          No exams available
-                        </td>
-                      </tr>
-                    ) : (
-                      currentExams.map((exam, index) => (
-                        <tr key={exam.id} className={`hover:bg-gray-50 ${exam.importedData ? 'bg-green-50' : ''}`}>
-                          <td className="px-2 py-2 text-xs font-medium text-gray-900">{startIndex + index + 1}</td>
-                          <td className="px-2 py-2 text-xs text-gray-900">
-                            {exam.name}
-                          </td>
-                          <td className="px-2 py-2 text-xs text-gray-900">{exam.subject}</td>
-                          <td className="px-2 py-2 text-xs text-gray-900">{exam.department}</td>
-                          <td className="px-2 py-2 text-xs text-gray-900">{exam.questions}</td>
-                          <td className="px-2 py-2 text-xs text-gray-900">{exam.time} Minute</td>
-                          <td className="px-2 py-2 text-xs text-gray-900">
-                            <button
-                              onClick={() => startExam(exam)}
-                              className="bg-blue-600 text-white px-2 py-1 rounded text-xs"
-                            >
-                              Take Exam
-                            </button>
                           </td>
                         </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
+                      ) : currentExams.length === 0 ? (
+                        <tr>
+                          <td colSpan={7} className="px-2 py-4 text-center text-gray-500 text-xs">
+                            No exams available
+                          </td>
+                        </tr>
+                      ) : (
+                        currentExams.map((exam, index) => (
+                          <tr key={exam.id} className={`hover:bg-gray-50 ${exam.importedData ? 'bg-green-50' : ''}`}>
+                            <td className="px-2 py-2 text-xs font-medium text-gray-900">{startIndex + index + 1}</td>
+                            <td className="px-2 py-2 text-xs text-gray-900">
+                              {exam.name}
+                            </td>
+                            <td className="px-2 py-2 text-xs text-gray-900">{exam.subject}</td>
+                            <td className="px-2 py-2 text-xs text-gray-900">{exam.department}</td>
+                            <td className="px-2 py-2 text-xs text-gray-900">{exam.questions}</td>
+                            <td className="px-2 py-2 text-xs text-gray-900">{exam.time} Minute</td>
+                            <td className="px-2 py-2 text-xs text-gray-900">
+                              <button
+                                onClick={() => startExam(exam)}
+                                className="bg-blue-600 text-white px-2 py-1 rounded text-xs"
+                              >
+                                Take Exam
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Pagination */}
+                <div className="flex justify-center items-center space-x-2 mt-4 p-2 bg-gray-50 rounded w-full">
+                  <button 
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="px-3 py-2 text-gray-600 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium bg-white border border-gray-300 rounded hover:bg-gray-50"
+                  >
+                    Previous
+                  </button>
+                  <span className="px-4 py-2 bg-blue-600 text-white rounded text-sm font-medium">{currentPage}</span>
+                  <span className="px-3 py-2 text-gray-600 text-sm font-medium">of {totalPages}</span>
+                  <button 
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="px-3 py-2 text-gray-600 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium bg-white border border-gray-300 rounded hover:bg-gray-50"
+                  >
+                    Next
+                  </button>
+                </div>
               </div>
-            </div>
 
             {/* Pagination */}
             <div className="flex justify-center items-center space-x-2 mt-4 p-2 bg-gray-50 rounded w-full">
