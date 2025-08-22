@@ -61,12 +61,14 @@ function QuizPageContent() {
      // Mobile detection and sidebar management
    useEffect(() => {
      const checkIsMobile = () => {
-       // Only collapse on mobile portrait mode (width <= 768px and height > width)
+       // Collapse on mobile portrait mode (width <= 768px and height > width) OR iPad portrait mode (width <= 1024px and height > width)
        const isPortrait = window.innerHeight > window.innerWidth;
        const isMobilePortrait = window.innerWidth <= 768 && isPortrait;
-       setIsMobile(isMobilePortrait);
-       if (isMobilePortrait) {
-         setSidebarCollapsed(true); // Force collapse only on mobile portrait
+       const isIpadPortrait = window.innerWidth <= 1024 && isPortrait;
+       const shouldCollapse = isMobilePortrait || isIpadPortrait;
+       setIsMobile(shouldCollapse);
+       if (shouldCollapse) {
+         setSidebarCollapsed(true); // Force collapse on mobile/iPad portrait
        } else {
          setSidebarCollapsed(false); // Keep expanded on other screen sizes
        }
@@ -918,7 +920,7 @@ function QuizPageContent() {
                       <div className="text-sm text-gray-600 mt-1">Source: <span className="font-medium text-gray-800">{currentQuestion.source}</span></div>
                     )}
                   </div>
-                  <div className="flex items-center space-x-2 sm:space-x-4">
+                                     <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-4 flex-wrap gap-1 sm:gap-2">
                     {/* Calculator */}
                     <div className="relative">
                       <button
@@ -1016,28 +1018,28 @@ function QuizPageContent() {
                       </svg>
                     </button>
 
-                    {/* Font Size */}
-                    <div className="flex items-center bg-blue-50 rounded-full">
-                      <button
-                        onClick={decreaseFontSize}
-                        className="p-2 text-blue-600 hover:bg-blue-100 rounded-full transition-colors duration-200"
-                        title="Decrease Font Size"
-                      >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                        </svg>
-                      </button>
-                      <span className="px-2 text-base font-medium text-blue-600">Tt</span>
-                      <button
-                        onClick={increaseFontSize}
-                        className="p-2 text-blue-600 hover:bg-blue-100 rounded-full transition-colors duration-200"
-                        title="Increase Font Size"
-                      >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                        </svg>
-                      </button>
-                    </div>
+                                         {/* Font Size */}
+                     <div className="flex items-center bg-blue-50 rounded-full min-w-0 flex-shrink-0">
+                       <button
+                         onClick={decreaseFontSize}
+                         className="p-1 sm:p-2 text-blue-600 hover:bg-blue-100 rounded-full transition-colors duration-200 flex-shrink-0"
+                         title="Decrease Font Size"
+                       >
+                         <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                         </svg>
+                       </button>
+                       <span className="px-1 sm:px-2 text-sm sm:text-base font-medium text-blue-600 flex-shrink-0">Tt</span>
+                       <button
+                         onClick={increaseFontSize}
+                         className="p-1 sm:p-2 text-blue-600 hover:bg-blue-100 rounded-full transition-colors duration-200 flex-shrink-0"
+                         title="Increase Font Size"
+                       >
+                         <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                         </svg>
+                       </button>
+                     </div>
                   </div>
                 </div>
 
