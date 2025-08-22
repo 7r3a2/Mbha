@@ -1086,7 +1086,7 @@ export default function WizaryExam() {
               </div>
               
               {/* Desktop Table View */}
-              <div className="hidden sm:block h-full w-full">
+              <div className="hidden sm:block overflow-y-auto h-full w-full">
                 <table className="w-full">
                   <thead className="bg-gray-50">
                     <tr>
@@ -1102,16 +1102,16 @@ export default function WizaryExam() {
                   <tbody className="bg-white divide-y divide-gray-200">
                     {loadingExams ? (
                       <tr>
-                        <td colSpan={7} className="px-6 py-8 text-center">
+                        <td colSpan={7} className="px-2 py-4 text-center">
                           <div className="flex items-center justify-center">
-                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                            <span className="ml-2 text-gray-600">Loading exams...</span>
+                            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                            <span className="ml-2 text-gray-600 text-xs">Loading exams...</span>
                           </div>
                         </td>
                       </tr>
                     ) : currentExams.length === 0 ? (
                       <tr>
-                        <td colSpan={7} className="px-6 py-8 text-center text-gray-500">
+                        <td colSpan={7} className="px-2 py-4 text-center text-gray-500 text-xs">
                           No exams available
                         </td>
                       </tr>
@@ -1143,20 +1143,20 @@ export default function WizaryExam() {
             </div>
 
             {/* Pagination */}
-            <div className="flex justify-center items-center space-x-1 mt-2 w-full">
+            <div className="flex justify-center items-center space-x-2 mt-4 p-2 bg-gray-50 rounded w-full">
               <button 
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="px-2 sm:px-4 py-2 text-gray-600 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                className="px-3 py-2 text-gray-600 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium bg-white border border-gray-300 rounded hover:bg-gray-50"
               >
                 Previous
               </button>
-              <span className="px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg text-sm">{currentPage}</span>
-              <span className="px-2 sm:px-4 py-2 text-gray-600 text-sm">of {totalPages}</span>
+              <span className="px-4 py-2 bg-blue-600 text-white rounded text-sm font-medium">{currentPage}</span>
+              <span className="px-3 py-2 text-gray-600 text-sm font-medium">of {totalPages}</span>
               <button 
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className="px-2 sm:px-4 py-2 text-gray-600 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                className="px-3 py-2 text-gray-600 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium bg-white border border-gray-300 rounded hover:bg-gray-50"
               >
                 Next
               </button>
