@@ -45,7 +45,7 @@ function QuizPageContent() {
   const [timeLeft, setTimeLeft] = useState(testMode === 'exam' ? customTimeMinutes * 60 : 0); // Custom time for exam mode, no timer for study mode
   const [startTime, setStartTime] = useState(Date.now()); // Track when exam started
   const [endTime, setEndTime] = useState<number | null>(null); // Track when exam ended
-  const [showSidebar, setShowSidebar] = useState(true);
+  
   const [showExplanation, setShowExplanation] = useState(false);
   const [calculatorVisible, setCalculatorVisible] = useState(false);
   const [showScoreOverlay, setShowScoreOverlay] = useState(false);
@@ -58,26 +58,25 @@ function QuizPageContent() {
   const [isMobile, setIsMobile] = useState(false);
   const explanationRef = useRef<HTMLDivElement>(null);
 
-  // Mobile detection and sidebar management
-  useEffect(() => {
-    const checkIsMobile = () => {
-      const mobile = window.innerWidth <= 1024 || window.innerHeight <= 768;
-      setIsMobile(mobile);
-      if (mobile) {
-        setSidebarCollapsed(true); // Force collapse on mobile
-        setShowSidebar(false); // Also hide the sidebar on mobile
-      }
-    };
+     // Mobile detection and sidebar management
+   useEffect(() => {
+     const checkIsMobile = () => {
+       const mobile = window.innerWidth <= 1024 || window.innerHeight <= 768;
+       setIsMobile(mobile);
+       if (mobile) {
+         setSidebarCollapsed(true); // Force collapse on mobile
+       }
+     };
 
-    checkIsMobile();
-    window.addEventListener('resize', checkIsMobile);
-    window.addEventListener('orientationchange', checkIsMobile);
+     checkIsMobile();
+     window.addEventListener('resize', checkIsMobile);
+     window.addEventListener('orientationchange', checkIsMobile);
 
-    return () => {
-      window.removeEventListener('resize', checkIsMobile);
-      window.removeEventListener('orientationchange', checkIsMobile);
-    };
-  }, []);
+     return () => {
+       window.removeEventListener('resize', checkIsMobile);
+       window.removeEventListener('orientationchange', checkIsMobile);
+     };
+   }, []);
 
   // Fetch questions from database
   useEffect(() => {
@@ -330,11 +329,10 @@ function QuizPageContent() {
     return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
-  const goToQuestion = (index: number) => {
-    setCurrentQuestionIndex(index);
-    setShowExplanation(false);
-    if (!showSidebar && window.innerWidth < 768) setShowSidebar(false);
-  };
+     const goToQuestion = (index: number) => {
+     setCurrentQuestionIndex(index);
+     setShowExplanation(false);
+   };
   const goToNext = () => {
     if (currentQuestionIndex < questions.length - 1) goToQuestion(currentQuestionIndex + 1);
   };
@@ -778,14 +776,13 @@ function QuizPageContent() {
         }
       `}</style>
       
-      {/* Sidebar */}
-      <aside
-        className={`fixed md:static z-30 h-full border-r border-gray-200 flex flex-col bg-white shadow-lg transition-all duration-300
-          ${sidebarCollapsed ? 'w-16' : 'w-72'}
-          ${showSidebar ? 'translate-x-0' : '-translate-x-full'}
-        `}
-        style={{ minWidth: sidebarCollapsed ? 64 : 240 }}
-      >
+             {/* Sidebar */}
+       <aside
+         className={`fixed md:static z-30 h-full border-r border-gray-200 flex flex-col bg-white shadow-lg transition-all duration-300
+           ${sidebarCollapsed ? 'w-16' : 'w-72'}
+         `}
+         style={{ minWidth: sidebarCollapsed ? 64 : 240 }}
+       >
         {/* Collapsed: Hamburger at top, end quiz icon at bottom */}
         {sidebarCollapsed ? (
           <>
@@ -870,19 +867,11 @@ function QuizPageContent() {
 
       {/* Main Content */}
       <main className={`flex-1 flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'ml-16' : 'ml-72'} md:ml-0 overflow-hidden`}> 
-        {/* Header */}
-        <header className="bg-blue-600 shadow-md p-2 sm:p-3 flex justify-between items-center text-white">
-          <div className="flex items-center">
-            <button
-              onClick={() => setShowSidebar(!showSidebar)}
-              className="hidden sm:flex p-1 sm:p-2 mr-2 text-white hover:bg-blue-700 rounded-full transition-colors duration-200 md:hidden"
-            >
-              <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">MBHA</h1>
-          </div>
+                 {/* Header */}
+         <header className="bg-blue-600 shadow-md p-2 sm:p-3 flex justify-between items-center text-white">
+           <div className="flex items-center">
+             <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">MBHA</h1>
+           </div>
           <div className="flex-1 flex justify-center items-center space-x-2 sm:space-x-3">
             <button
               onClick={goToPrevious}
