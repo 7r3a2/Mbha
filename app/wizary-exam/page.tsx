@@ -7,6 +7,29 @@ import { useAuth } from '@/lib/hooks/useAuth';
 
 // WizaryExam-specific CSS overrides to ensure unique design
 const wizaryExamStyles = `
+  /* Safe area support for mobile devices */
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .pl-safe {
+    padding-left: env(safe-area-inset-left);
+  }
+  
+  .pr-safe {
+    padding-right: env(safe-area-inset-right);
+  }
+  
+  /* Container width constraints */
+  .max-w-container {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  
   /* WizaryExam-specific overrides */
   .wizary-exam-page * {
     --wizary-primary: #ff6b35;
@@ -752,7 +775,7 @@ export default function WizaryExam() {
         {/* Main Content */}
         <div className="flex-1 flex flex-col">
           {/* Header */}
-          <header className="bg-orange-500 shadow-md p-2 sm:p-3 flex justify-between items-center text-white">
+          <header className="bg-orange-500 shadow-md p-2 sm:p-3 flex justify-between items-center text-white pt-safe">
             <div className="flex items-center">
               <button
                 onClick={handleDashboardSidebarToggle}
@@ -769,7 +792,7 @@ export default function WizaryExam() {
           </header>
 
           {/* Dashboard Content */}
-          <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+          <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto max-w-container">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
               {/* Account Information */}
               <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
@@ -897,7 +920,7 @@ export default function WizaryExam() {
         {/* Main Content */}
         <div className="flex-1 flex flex-col">
           {/* Header */}
-          <header className="bg-orange-500 shadow-md p-2 sm:p-3 flex justify-between items-center text-white">
+          <header className="bg-orange-500 shadow-md p-2 sm:p-3 flex justify-between items-center text-white pt-safe">
             <div className="flex items-center">
               <button
                 onClick={handleDashboardSidebarToggle}
@@ -914,26 +937,26 @@ export default function WizaryExam() {
           </header>
 
           {/* Exam List Content */}
-          <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+          <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto max-w-container">
 
             
             {/* Exam Info Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
-              <div className="bg-green-700 text-white p-3 sm:p-4 rounded-lg text-center">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8 w-full overflow-hidden">
+              <div className="bg-green-700 text-white p-3 sm:p-4 rounded-lg text-center min-w-0 overflow-hidden">
                 <div className="text-xs sm:text-sm font-medium">الكلية/القسم</div>
-                <div className="text-sm sm:text-lg font-bold">كلية الطب</div>
+                <div className="text-sm sm:text-lg font-bold truncate">كلية الطب</div>
               </div>
-              <div className="bg-blue-700 text-white p-3 sm:p-4 rounded-lg text-center">
+              <div className="bg-blue-700 text-white p-3 sm:p-4 rounded-lg text-center min-w-0 overflow-hidden">
                 <div className="text-xs sm:text-sm font-medium">الجامعة</div>
-                <div className="text-sm sm:text-lg font-bold">{user?.university || 'جامعة فلان'}</div>
+                <div className="text-sm sm:text-lg font-bold truncate">{user?.university || 'جامعة فلان'}</div>
               </div>
-              <div className="bg-orange-500 text-white p-3 sm:p-4 rounded-lg text-center">
+              <div className="bg-orange-500 text-white p-3 sm:p-4 rounded-lg text-center min-w-0 overflow-hidden">
                 <div className="text-xs sm:text-sm font-medium">التاريخ</div>
-                <div className="text-sm sm:text-lg font-bold">{getBaghdadTime().day}, {getBaghdadTime().month}, {getBaghdadTime().year}</div>
+                <div className="text-sm sm:text-lg font-bold truncate">{getBaghdadTime().day}, {getBaghdadTime().month}, {getBaghdadTime().year}</div>
               </div>
-              <div className="bg-red-500 text-white p-3 sm:p-4 rounded-lg text-center">
+              <div className="bg-red-500 text-white p-3 sm:p-4 rounded-lg text-center min-w-0 overflow-hidden">
                 <div className="text-xs sm:text-sm font-medium">الساعة</div>
-                <div className="text-sm sm:text-lg font-bold">{getBaghdadTime().time}</div>
+                <div className="text-sm sm:text-lg font-bold truncate">{getBaghdadTime().time}</div>
               </div>
             </div>
 
