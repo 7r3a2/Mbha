@@ -7,46 +7,35 @@ import { useAuth } from '@/lib/hooks/useAuth';
 
 // WizaryExam-specific CSS overrides to ensure unique design
 const wizaryExamStyles = `
-  /* Safe area insets support for mobile and iPad */
+  /* Safe area insets support like approach page */
   .wizary-exam-page {
-    padding-top: env(safe-area-inset-top);
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
-    padding-bottom: env(safe-area-inset-bottom);
+    background: #1f2937 !important; /* Dark background for safe areas */
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   }
   
-  /* Dark background only for safe area insets */
-  .wizary-exam-page::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: env(safe-area-inset-top);
-    background-color: #1f2937;
-    z-index: -1;
+  /* Main content containers with white backgrounds */
+  .wizary-exam-page .main-container {
+    background: white;
+    min-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    min-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
   }
   
-  .wizary-exam-page::after {
-    content: '';
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: env(safe-area-inset-bottom);
-    background-color: #1f2937;
-    z-index: -1;
+  /* Ensure content doesn't overflow containers */
+  .wizary-exam-page .content-container {
+    overflow: hidden;
+    max-width: 100%;
   }
   
-  /* Prevent colored elements from extending beyond containers */
+  .wizary-exam-page .grid,
+  .wizary-exam-page table,
   .wizary-exam-page .bg-green-700,
   .wizary-exam-page .bg-blue-700,
   .wizary-exam-page .bg-orange-500,
-  .wizary-exam-page .bg-red-500,
-  .wizary-exam-page table,
-  .wizary-exam-page .grid {
-    max-width: 100%;
-    overflow: hidden;
+  .wizary-exam-page .bg-red-500 {
+    max-width: 100% !important;
+    overflow: hidden !important;
   }
   
   /* WizaryExam-specific overrides */
@@ -727,7 +716,8 @@ export default function WizaryExam() {
 
   if (currentView === 'dashboard') {
     return (
-      <div className="flex h-screen bg-gray-100 wizary-exam-page">
+      <div className="wizary-exam-page">
+        <div className="flex h-screen bg-gray-100 main-container">
         <style dangerouslySetInnerHTML={{ __html: wizaryExamStyles }} />
         
         {/* Sidebar */}
@@ -866,13 +856,15 @@ export default function WizaryExam() {
             </div>
           </main>
         </div>
+        </div>
       </div>
     );
   }
 
   if (currentView === 'exam-list') {
     return (
-      <div className="flex h-screen bg-gray-100 wizary-exam-page">
+      <div className="wizary-exam-page">
+        <div className="flex h-screen bg-gray-100 main-container">
         <style dangerouslySetInnerHTML={{ __html: wizaryExamStyles }} />
         
         {/* Sidebar */}
@@ -960,7 +952,7 @@ export default function WizaryExam() {
 
             
             {/* Exam Info Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8 content-container">
               <div className="bg-green-700 text-white p-3 sm:p-4 rounded-lg text-center">
                 <div className="text-xs sm:text-sm font-medium">الكلية/القسم</div>
                 <div className="text-sm sm:text-lg font-bold">كلية الطب</div>
@@ -980,7 +972,7 @@ export default function WizaryExam() {
             </div>
 
             {/* Exam List */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 content-container">
               <div className="p-4 sm:p-6 border-b border-gray-200">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 relative gap-4">
                   <h3 className="text-lg sm:text-xl font-bold text-gray-800">List Exam</h3>
@@ -1146,13 +1138,15 @@ export default function WizaryExam() {
             </div>
           </main>
         </div>
+        </div>
       </div>
     );
   }
 
   if (currentView === 'quiz') {
     return (
-      <div className="flex min-h-screen bg-gray-100 wizary-exam-page">
+      <div className="wizary-exam-page">
+        <div className="flex min-h-screen bg-gray-100 main-container">
         <style dangerouslySetInnerHTML={{ __html: wizaryExamStyles }} />
         
         {/* Warning Overlay */}
@@ -1345,13 +1339,15 @@ export default function WizaryExam() {
             </div>
           </div>
         </div>
+        </div>
       </div>
     );
   }
 
   if (currentView === 'exam-taking') {
     return (
-      <div className="flex h-screen bg-gray-100 wizary-exam-page">
+      <div className="wizary-exam-page">
+        <div className="flex h-screen bg-gray-100 main-container">
         <style dangerouslySetInnerHTML={{ __html: wizaryExamStyles }} />
         
         {/* Warning Overlay */}
@@ -1501,6 +1497,7 @@ export default function WizaryExam() {
             </div>
           </div>
         </div>
+        </div>
       </div>
     );
   }
@@ -1510,7 +1507,8 @@ export default function WizaryExam() {
     const totalQuestions = questions.length;
     
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 wizary-exam-page">
+      <div className="wizary-exam-page">
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 main-container">
         <style dangerouslySetInnerHTML={{ __html: wizaryExamStyles }} />
         
         {/* Results Content */}
@@ -1732,6 +1730,7 @@ export default function WizaryExam() {
               </button>
             </div>
           </div>
+        </div>
         </div>
       </div>
     );
