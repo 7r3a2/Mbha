@@ -772,6 +772,26 @@ export default function Qbank() {
 
 
 
+  // Mobile detection and sidebar management
+  useEffect(() => {
+    const checkIsMobile = () => {
+      const mobile = window.innerWidth <= 1024;
+      setIsMobile(mobile);
+      if (mobile) {
+        setIsOpen(false); // Force collapse on mobile
+      }
+    };
+
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
+    window.addEventListener('orientationchange', checkIsMobile);
+
+    return () => {
+      window.removeEventListener('resize', checkIsMobile);
+      window.removeEventListener('orientationchange', checkIsMobile);
+    };
+  }, []);
+
   // Check if a topic has questions
   const checkTopicHasQuestions = async (topicName: string, sourceLabels?: string[]): Promise<boolean> => {
     try {
@@ -1082,6 +1102,7 @@ export default function Qbank() {
   };
   // Track checked topics
   const [topicChecks, setTopicChecks] = useState<Record<string, Record<number, number[]>>>({});
+const [isMobile, setIsMobile] = useState(false);
   const toggleTopic = async (subjectKey: string, lectureIdx: number, topicIdx: number, topicCount: number) => {
     // Get the topic name
     const subject = subjects.find(s => s.key === subjectKey);
@@ -1159,11 +1180,19 @@ export default function Qbank() {
       >
         {/* Hamburger menu icon */}
         <div className="h-16 flex items-center border-b border-blue-600 px-2">
-          <button
-            onClick={() => setIsOpen((prev) => !prev)}
-            className="focus:outline-none flex items-center justify-center w-10 h-10"
-            aria-label="Toggle sidebar"
-          >
+                  <button
+          onClick={() => {
+            // Prevent expanding sidebar on mobile/iPad portrait
+            if (isMobile && !isOpen) {
+              return;
+            }
+            setIsOpen((prev) => !prev);
+          }}
+          className={`focus:outline-none flex items-center justify-center w-10 h-10 ${
+            isMobile && !isOpen ? 'opacity-50 cursor-not-allowed' : ''
+          }`}
+          aria-label="Toggle sidebar"
+        >
             <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
