@@ -920,10 +920,10 @@ function QuizPageContent() {
            <div className="w-full flex flex-col h-full items-center">
              <div className="flex-grow flex w-full">
                                                            {/* Question Panel */}
-                 <div className={`bg-white p-2 sm:p-4 md:p-6 rounded-lg shadow-xl flex flex-col min-h-0 transition-all duration-300 ${
+                 <div className={`bg-white p-2 sm:p-4 md:p-6 rounded-lg shadow-xl flex flex-col min-h-0 transition-all duration-300 w-fit ${
                    showExplanation && testMode === 'study' 
-                     ? (isMobile && window.innerHeight > window.innerWidth) ? "hidden" : "w-auto max-w-[50%]" 
-                     : "w-auto max-w-4xl"
+                     ? (isMobile && window.innerHeight > window.innerWidth) ? "hidden" : "w-fit" 
+                     : "w-fit"
                  }`}>
                    <div className="border-2 border-blue-500 rounded-lg p-2 sm:p-4 md:p-6 flex flex-col min-h-0 w-fit">
                 <div className="flex justify-between items-start mb-4 sm:mb-6">
