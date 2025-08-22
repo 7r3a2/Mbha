@@ -1449,9 +1449,9 @@ export default function WizaryExam() {
 
           {/* Exam Content */}
           <div className="flex-1 p-4 sm:p-6 lg:p-8 flex items-center justify-center bg-gray-100 min-h-screen">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 w-full h-full">
+            <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8 items-start">
               {/* Left Panel - Exam Start and Timer */}
-              <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border-2 border-blue-600 flex flex-col items-center justify-center h-full">
+              <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border-2 border-blue-600 flex flex-col items-center justify-center">
                 <div className="space-y-4 w-full">
                   <div className="bg-blue-600 text-white p-3 sm:p-4 rounded text-center">
                     <p className="text-sm sm:text-base">سوف يتم احتساب الوقت منذ لحظة الضغط على زر "أبدء الامتحان"</p>
@@ -1472,7 +1472,7 @@ export default function WizaryExam() {
               </div>
 
               {/* Right Panel - Exam Details Table with Blue Stroke */}
-              <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border-2 border-blue-600 h-full flex flex-col">
+              <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border-2 border-blue-600 flex flex-col">
 
                 
                 <div className="space-y-4 flex-1">
