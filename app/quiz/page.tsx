@@ -1260,7 +1260,7 @@ function QuizPageContent() {
              {/* Score Overlay */}
        {showScoreOverlay && (
          <div className="fixed inset-0 bg-white flex items-center justify-center z-50 p-2 sm:p-4 md:p-8 overflow-y-auto">
-           <div className="bg-white rounded-2xl sm:rounded-3xl max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl w-full shadow-2xl overflow-hidden border-2 border-blue-500 my-4">
+           <div className="bg-white rounded-2xl sm:rounded-3xl max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl w-full shadow-2xl overflow-y-auto border-2 border-blue-500 my-4 max-h-[95vh]">
             {/* Header with gradient */}
             <div className={`${getScoreColor(finalScore).bg} p-3 sm:p-4 md:p-4 lg:p-6 xl:p-8 text-center relative overflow-hidden`}>
               {/* Background pattern */}
