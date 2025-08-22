@@ -823,8 +823,8 @@ export default function WizaryExam() {
             </div>
           </header>
 
-          {/* Dashboard Content */}
-          <main className="flex-1 p-2 overflow-hidden">
+                  {/* Dashboard Content */}
+        <main className="flex-1 p-0 overflow-hidden h-screen">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
               {/* Account Information */}
               <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
@@ -973,7 +973,7 @@ export default function WizaryExam() {
           </header>
 
                   {/* Exam List Content */}
-        <main className="flex-1 p-2 overflow-hidden">
+        <main className="flex-1 p-0 overflow-hidden h-screen">
 
             
             {/* Exam Info Cards */}
@@ -997,7 +997,7 @@ export default function WizaryExam() {
             </div>
 
             {/* Exam List */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 h-full overflow-hidden">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 h-screen overflow-hidden">
               <div className="p-4 sm:p-6 border-b border-gray-200">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 relative gap-4">
                   <h3 className="text-lg sm:text-xl font-bold text-gray-800">List Exam</h3>
@@ -1057,7 +1057,7 @@ export default function WizaryExam() {
                     No exams available
                   </div>
                 ) : (
-                  <div className="space-y-4 p-4 overflow-y-auto max-h-full">
+                  <div className="space-y-2 p-2 overflow-y-auto h-screen">
                     {currentExams.map((exam, index) => (
                       <div key={exam.id} className={`bg-white border border-gray-200 rounded-lg p-4 ${exam.importedData ? 'bg-green-50 border-green-200' : ''}`}>
                         <div className="flex justify-between items-start mb-3">
@@ -1086,7 +1086,7 @@ export default function WizaryExam() {
               </div>
               
               {/* Desktop Table View */}
-              <div className="hidden sm:block overflow-x-auto overflow-y-auto max-h-full">
+              <div className="hidden sm:block overflow-x-auto overflow-y-auto h-screen">
                 <table className="w-full">
                   <thead className="bg-gray-50">
                     <tr>
@@ -1444,11 +1444,11 @@ export default function WizaryExam() {
           </header>
 
           {/* Exam Content */}
-          <div className="flex-1 p-0 flex items-center justify-center bg-gray-100 min-h-screen overflow-hidden">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 w-full h-full max-w-full overflow-hidden">
+          <div className="flex-1 p-0 flex items-center justify-center bg-gray-100 h-screen overflow-hidden">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-1 w-full h-screen overflow-hidden">
               {/* Left Panel - Exam Start and Timer */}
-              <div className="bg-white p-2 rounded-lg shadow-sm border-2 border-blue-600 flex flex-col items-center justify-center h-full overflow-hidden">
-                <div className="space-y-1 w-full overflow-y-auto max-h-full">
+              <div className="bg-white p-1 rounded-lg shadow-sm border-2 border-blue-600 flex flex-col items-center justify-center h-screen overflow-hidden">
+                <div className="space-y-0 w-full overflow-y-auto h-screen">
                   <div className="bg-blue-600 text-white p-1 rounded text-center">
                     <p className="text-xs">سوف يتم احتساب الوقت منذ لحظة الضغط على زر "أبدء الامتحان"</p>
                   </div>
@@ -1468,10 +1468,10 @@ export default function WizaryExam() {
               </div>
 
               {/* Right Panel - Exam Details Table with Blue Stroke */}
-              <div className="bg-white p-2 rounded-lg shadow-sm border-2 border-blue-600 h-full flex flex-col overflow-hidden">
+              <div className="bg-white p-1 rounded-lg shadow-sm border-2 border-blue-600 h-screen flex flex-col overflow-hidden">
 
                 
-                <div className="space-y-1 flex-1 overflow-y-auto max-h-full">
+                <div className="space-y-0 flex-1 overflow-y-auto h-screen">
                   <div className="flex justify-between border-b border-gray-200 pb-1">
                     <span className="text-gray-800 text-xs">{user ? `${user.firstName} ${user.lastName}` : 'فلان فلان'}</span>
                     <span className="text-gray-600 font-medium text-xs">اسم الطالب</span>
