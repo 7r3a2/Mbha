@@ -1277,10 +1277,10 @@ function QuizPageContent() {
               
               {/* Score display */}
               <div className="relative z-10">
-                                 <div className="flex items-center justify-center mb-4 sm:mb-6">
-                   {/* Large score circle */}
-                   <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 xl:w-40 xl:h-40">
-                     <svg className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 xl:w-40 xl:h-40 transform -rotate-90" viewBox="0 0 36 36">
+                <div className="flex items-center justify-center mb-6">
+                  {/* Large score circle */}
+                  <div className="relative w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 xl:w-40 xl:h-40">
+                    <svg className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 xl:w-40 xl:h-40 transform -rotate-90" viewBox="0 0 36 36">
                       <path
                         className="text-white opacity-30"
                         stroke="currentColor"
@@ -1299,55 +1299,55 @@ function QuizPageContent() {
                       />
                     </svg>
                     <div className="absolute inset-0 flex items-center justify-center">
-                                             <div className="text-center">
-                         <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-1">
-                           {finalScore}%
-                         </div>
-                         <div className="text-white opacity-80 text-sm sm:text-base">Final Score</div>
-                       </div>
+                      <div className="text-center">
+                        <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-5xl font-bold text-white mb-1">
+                          {finalScore}%
+                        </div>
+                        <div className="text-white opacity-80 text-xs sm:text-sm">Final Score</div>
+                      </div>
                     </div>
                   </div>
                 </div>
                 
-                                 {/* Score message */}
-                 <div className="text-white">
-                   <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold mb-2">{getScoreMessage(finalScore).title}</h1>
-                   <p className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl opacity-90">{getScoreMessage(finalScore).subtitle}</p>
-                 </div>
+                {/* Score message */}
+                <div className="text-white">
+                  <h1 className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-3xl font-bold mb-2">{getScoreMessage(finalScore).title}</h1>
+                  <p className="text-xs sm:text-sm md:text-sm lg:text-base xl:text-lg opacity-90">{getScoreMessage(finalScore).subtitle}</p>
+                </div>
               </div>
             </div>
 
                          {/* Content */}
              <div className="p-2 sm:p-3 md:p-4 lg:p-6 xl:p-8">
-               {/* Statistics Grid */}
+                             {/* Statistics Grid */}
                <div className="grid grid-cols-2 md:grid-cols-4 gap-1 sm:gap-2 md:gap-3 lg:gap-4 xl:gap-6 mb-3 sm:mb-4 md:mb-6 lg:mb-8">
-                                 <div className="text-center">
-                   <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-800 mb-1">{questions.length}</div>
-                   <div className="text-sm sm:text-base text-gray-600">Total Questions</div>
-                 </div>
-                 <div className="text-center">
-                   <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold text-green-600 mb-1">
-                     {answers.filter((answer, index) => answer === questions[index].correct).length}
-                   </div>
-                   <div className="text-sm sm:text-base text-gray-600">Correct</div>
-                 </div>
-                 <div className="text-center">
-                   <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold text-red-600 mb-1">
-                     {answers.filter((answer, index) => answer !== null && answer !== questions[index].correct).length}
-                   </div>
-                   <div className="text-sm sm:text-base text-gray-600">Incorrect</div>
-                 </div>
-                 <div className="text-center">
-                   <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-600 mb-1">
-                     {answers.filter(answer => answer === null).length}
-                   </div>
-                   <div className="text-sm sm:text-base text-gray-600">Unanswered</div>
-                 </div>
+                <div className="text-center">
+                  <div className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold text-gray-800 mb-1">{questions.length}</div>
+                  <div className="text-xs sm:text-sm text-gray-600">Total Questions</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold text-green-600 mb-1">
+                    {answers.filter((answer, index) => answer === questions[index].correct).length}
+                  </div>
+                  <div className="text-xs sm:text-sm text-gray-600">Correct</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold text-red-600 mb-1">
+                    {answers.filter((answer, index) => answer !== null && answer !== questions[index].correct).length}
+                  </div>
+                  <div className="text-xs sm:text-sm text-gray-600">Incorrect</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold text-gray-600 mb-1">
+                    {answers.filter(answer => answer === null).length}
+                  </div>
+                  <div className="text-xs sm:text-sm text-gray-600">Unanswered</div>
+                </div>
               </div>
 
                              {/* Performance breakdown */}
                <div className="bg-gray-50 rounded-lg sm:rounded-xl p-2 sm:p-3 md:p-4 lg:p-6 mb-3 sm:mb-4 md:mb-6 lg:mb-8">
-                 <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4 flex items-center">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
                   <svg className="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                   </svg>
@@ -1392,12 +1392,12 @@ function QuizPageContent() {
                     onClick={() => window.location.reload()}
                     className="flex-1 bg-green-600 text-white font-bold py-2 sm:py-3 md:py-4 px-3 sm:px-4 md:px-6 rounded-lg sm:rounded-xl hover:bg-green-700 transition-all duration-200 flex items-center justify-center text-sm sm:text-base"
                   >
-                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                    </svg>
-                    Retry Exam
-                  </button>
-                  <button
+                   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                   </svg>
+                   Retry Exam
+                 </button>
+                                   <button
                     onClick={() => window.location.href = "/qbank"}
                     className="flex-1 bg-gray-600 text-white font-bold py-2 sm:py-3 md:py-4 px-3 sm:px-4 md:px-6 rounded-lg sm:rounded-xl hover:bg-gray-700 transition-all duration-200 flex items-center justify-center text-sm sm:text-base"
                   >
