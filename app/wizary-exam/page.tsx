@@ -973,11 +973,11 @@ export default function WizaryExam() {
           </header>
 
           {/* Exam List Content */}
-          <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+          <main className="flex-1 p-2 overflow-y-auto">
 
             
             {/* Exam Info Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6 w-full">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 mb-4 w-full">
               <div className="bg-green-700 text-white p-3 sm:p-4 rounded-lg text-center">
                 <div className="text-xs sm:text-sm font-medium">الكلية/القسم</div>
                 <div className="text-sm sm:text-lg font-bold">كلية الطب</div>
@@ -998,28 +998,28 @@ export default function WizaryExam() {
 
             {/* Exam List */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 w-full h-full">
-              <div className="p-4 sm:p-6 border-b border-gray-200">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 relative gap-4">
-                  <h3 className="text-lg sm:text-xl font-bold text-gray-800">List Exam</h3>
-                  <button
-                    onClick={() => setExamMenuOpen(!examMenuOpen)}
-                    className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors duration-200 text-sm"
-                  >
-                    <span className="text-xs sm:text-sm font-medium">Choose Exam</span>
-                    <svg 
-                      className={`w-3 h-3 sm:w-4 sm:h-4 transition-transform duration-200 ${examMenuOpen ? 'rotate-180' : ''}`} 
-                      fill="none" 
-                      stroke="currentColor" 
-                      viewBox="0 0 24 24"
+              <div className="p-2 border-b border-gray-200">
+                                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 relative gap-2">
+                                      <h3 className="text-sm sm:text-base font-bold text-gray-800">List Exam</h3>
+                                      <button
+                      onClick={() => setExamMenuOpen(!examMenuOpen)}
+                      className="flex items-center gap-1 px-2 py-1 bg-orange-500 text-white rounded text-xs"
                     >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
+                      <span className="text-xs font-medium">Choose Exam</span>
+                                          <svg 
+                        className={`w-2 h-2 transition-transform duration-200 ${examMenuOpen ? 'rotate-180' : ''}`} 
+                        fill="none" 
+                        stroke="currentColor" 
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
                   </button>
                   {/* Overlay Menu */}
                   {examMenuOpen && (
-                    <div className="absolute top-full right-0 bg-white border border-gray-200 rounded-lg shadow-lg z-10 mt-2 min-w-48 w-full sm:w-auto">
-                      <div className="p-4">
-                        <div className="space-y-2">
+                    <div className="absolute top-full right-0 bg-white border border-gray-200 rounded shadow-lg z-10 mt-1 min-w-32 w-full sm:w-auto">
+                      <div className="p-2">
+                        <div className="space-y-1">
                           {subjects.map((subject) => (
                             <button
                               key={subject.id}
@@ -1027,9 +1027,9 @@ export default function WizaryExam() {
                                 setSelectedSubject(subject.name);
                                 setExamMenuOpen(false);
                               }}
-                              className={`w-full px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-left ${
+                              className={`w-full px-2 py-1 rounded text-xs font-medium transition-all duration-200 text-left ${
                                 selectedSubject === subject.name
-                                  ? 'bg-orange-500 text-white shadow-lg'
+                                  ? 'bg-orange-500 text-white'
                                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                               }`}
                             >
@@ -1044,7 +1044,7 @@ export default function WizaryExam() {
               </div>
               
               {/* Mobile Card View */}
-              <div className="block sm:hidden">
+              <div className="block sm:hidden p-2">
                 {loadingExams ? (
                   <div className="p-6 text-center">
                     <div className="flex items-center justify-center">
@@ -1057,12 +1057,12 @@ export default function WizaryExam() {
                     No exams available
                   </div>
                 ) : (
-                  <div className="space-y-4 p-4">
+                  <div className="space-y-2">
                     {currentExams.map((exam, index) => (
-                      <div key={exam.id} className={`bg-white border border-gray-200 rounded-lg p-4 ${exam.importedData ? 'bg-green-50 border-green-200' : ''}`}>
-                        <div className="flex justify-between items-start mb-3">
+                                              <div key={exam.id} className={`bg-white border border-gray-200 rounded p-2 ${exam.importedData ? 'bg-green-50 border-green-200' : ''}`}>
+                                                  <div className="flex justify-between items-start mb-2">
                           <div className="flex-1">
-                            <h4 className="font-semibold text-gray-900 text-sm mb-1">{exam.name}</h4>
+                                                          <h4 className="font-semibold text-gray-900 text-xs mb-1">{exam.name}</h4>
                             <p className="text-gray-600 text-xs mb-1">Subject: {exam.subject}</p>
                             <p className="text-gray-600 text-xs mb-1">Department: {exam.department}</p>
                             <div className="flex space-x-4 text-xs text-gray-500">
@@ -1073,7 +1073,7 @@ export default function WizaryExam() {
                           <div className="ml-4">
                             <button
                               onClick={() => startExam(exam)}
-                              className="bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 text-xs font-medium whitespace-nowrap"
+                              className="bg-blue-600 text-white px-2 py-1 rounded text-xs font-medium"
                             >
                               Take Exam
                             </button>
@@ -1143,7 +1143,7 @@ export default function WizaryExam() {
             </div>
 
             {/* Pagination */}
-            <div className="flex justify-center items-center space-x-2 sm:space-x-4 mt-4 sm:mt-6 w-full">
+            <div className="flex justify-center items-center space-x-1 mt-2 w-full">
               <button 
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
