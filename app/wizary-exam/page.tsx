@@ -14,6 +14,13 @@ const wizaryExamStyles = `
     --wizary-hover: #e55a2b;
   }
   
+  /* Mobile sidebar forced collapse styles */
+  .wizary-exam-page .mobile-sidebar-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  
   .wizary-exam-page button:focus,
   .wizary-exam-page input:focus,
   .wizary-exam-page select:focus {
@@ -341,6 +348,7 @@ export default function WizaryExam() {
   const examsPerPage = 5; // Number of exams per page
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false); // For question navigation sidebar
   const [dashboardSidebarCollapsed, setDashboardSidebarCollapsed] = useState(false); // For dashboard sidebar
+  const [isMobile, setIsMobile] = useState(false); // For detecting mobile/iPad portrait
   
   // State for imported exams
   const [importedExams, setImportedExams] = useState<any[]>([]);
@@ -617,6 +625,38 @@ export default function WizaryExam() {
     setCurrentPage(1);
   }, [selectedSubject]);
 
+  // Detect mobile/iPad portrait mode and force collapse sidebar
+  useEffect(() => {
+    const checkIsMobile = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const isPortrait = height > width;
+      
+      // Force collapse on mobile (< 768px) or iPad portrait (768-1024px and portrait)
+      const shouldCollapse = width < 768 || (width <= 1024 && isPortrait);
+      setIsMobile(shouldCollapse);
+      
+      if (shouldCollapse) {
+        setSidebarCollapsed(true);
+        setDashboardSidebarCollapsed(true);
+      }
+    };
+
+    // Check on mount
+    checkIsMobile();
+
+    // Check on resize and orientation change
+    window.addEventListener('resize', checkIsMobile);
+    window.addEventListener('orientationchange', () => {
+      setTimeout(checkIsMobile, 100); // Delay to ensure dimensions are updated
+    });
+
+    return () => {
+      window.removeEventListener('resize', checkIsMobile);
+      window.removeEventListener('orientationchange', checkIsMobile);
+    };
+  }, []);
+
   // Helper function to get Baghdad time
   const getBaghdadTime = () => {
     const baghdadTime = new Date(currentTime.toLocaleString("en-US", {timeZone: "Asia/Baghdad"}));
@@ -652,8 +692,21 @@ export default function WizaryExam() {
     setCurrentPage(page);
   };
 
-  const handleSidebarToggle = () => setSidebarCollapsed((prev) => !prev);
-  const handleDashboardSidebarToggle = () => setDashboardSidebarCollapsed((prev) => !prev);
+  const handleSidebarToggle = () => {
+    // Prevent expanding sidebar on mobile/iPad portrait
+    if (isMobile && sidebarCollapsed) {
+      return;
+    }
+    setSidebarCollapsed((prev) => !prev);
+  };
+  
+  const handleDashboardSidebarToggle = () => {
+    // Prevent expanding sidebar on mobile/iPad portrait
+    if (isMobile && dashboardSidebarCollapsed) {
+      return;
+    }
+    setDashboardSidebarCollapsed((prev) => !prev);
+  };
 
   // Secret code verification function
   const verifySecretCode = () => {
@@ -756,7 +809,11 @@ export default function WizaryExam() {
             <div className="flex items-center">
               <button
                 onClick={handleDashboardSidebarToggle}
-                className="p-1 sm:p-2 mr-2 sm:mr-3 text-white hover:bg-orange-600 rounded-lg transition-colors duration-200"
+                className={`p-1 sm:p-2 mr-2 sm:mr-3 text-white rounded-lg transition-colors duration-200 ${
+                  isMobile && dashboardSidebarCollapsed 
+                    ? 'opacity-50 cursor-not-allowed' 
+                    : 'hover:bg-orange-600'
+                }`}
               >
                 <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -770,11 +827,9 @@ export default function WizaryExam() {
 
           {/* Dashboard Content */}
           <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
-            {/* Main White Container for Dashboard */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 lg:p-8 mb-6">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
-                {/* Account Information */}
-                <div className="bg-gray-50 p-4 sm:p-6 rounded-lg border border-gray-100">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
+              {/* Account Information */}
+              <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
                 <h3 className="text-base sm:text-lg font-semibold text-gray-700 mb-4">معلومات الحساب</h3>
                 <div className="space-y-3 sm:space-y-4">
                   <div className="flex justify-between items-center py-2 sm:py-3 border-b border-gray-200">
@@ -800,11 +855,11 @@ export default function WizaryExam() {
                 </div>
               </div>
 
-                {/* Exam Instructions */}
-                <div className="bg-gray-50 p-4 sm:p-6 rounded-lg border border-gray-100">
-                  <div className="bg-orange-500 text-white p-3 sm:p-4 rounded-lg mb-4">
-                    <h3 className="text-lg sm:text-xl font-semibold text-right">قبل الدخول الى الامتحان</h3>
-                  </div>
+              {/* Exam Instructions */}
+              <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
+                <div className="bg-orange-500 text-white p-3 sm:p-4 rounded-lg mb-4">
+                  <h3 className="text-lg sm:text-xl font-semibold text-right">قبل الدخول الى الامتحان</h3>
+                </div>
                 <div className="text-gray-700 space-y-3 text-right" dir="rtl">
                   <p className="text-sm sm:text-lg">مرحباً بك عزيزي الطالب ، من هنا يمكنك الدخول واداء الامتحان لكن يرجى ملاحظة التالي:</p>
                   <ul className="list-disc list-inside space-y-2 text-sm sm:text-base pr-4">
@@ -822,7 +877,6 @@ export default function WizaryExam() {
                 >
                   الذهاب الى قائمة الامتحانات
                 </button>
-                </div>
               </div>
             </div>
           </main>
@@ -904,7 +958,11 @@ export default function WizaryExam() {
             <div className="flex items-center">
               <button
                 onClick={handleDashboardSidebarToggle}
-                className="p-1 sm:p-2 mr-2 sm:mr-3 text-white hover:bg-orange-600 rounded-lg transition-colors duration-200"
+                className={`p-1 sm:p-2 mr-2 sm:mr-3 text-white rounded-lg transition-colors duration-200 ${
+                  isMobile && dashboardSidebarCollapsed 
+                    ? 'opacity-50 cursor-not-allowed' 
+                    : 'hover:bg-orange-600'
+                }`}
               >
                 <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -918,29 +976,28 @@ export default function WizaryExam() {
 
           {/* Exam List Content */}
           <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
-            {/* White Container for All Content */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-6">
-              {/* Exam Info Cards - Contained within white background */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
-                <div className="bg-green-700 text-white p-3 sm:p-4 rounded-lg text-center">
-                  <div className="text-xs sm:text-sm font-medium">الكلية/القسم</div>
-                  <div className="text-sm sm:text-lg font-bold">كلية الطب</div>
-                </div>
-                <div className="bg-blue-700 text-white p-3 sm:p-4 rounded-lg text-center">
-                  <div className="text-xs sm:text-sm font-medium">الجامعة</div>
-                  <div className="text-sm sm:text-lg font-bold">{user?.university || 'جامعة فلان'}</div>
-                </div>
-                <div className="bg-orange-500 text-white p-3 sm:p-4 rounded-lg text-center">
-                  <div className="text-xs sm:text-sm font-medium">التاريخ</div>
-                  <div className="text-sm sm:text-lg font-bold">{getBaghdadTime().day}, {getBaghdadTime().month}, {getBaghdadTime().year}</div>
-                </div>
-                <div className="bg-red-500 text-white p-3 sm:p-4 rounded-lg text-center">
-                  <div className="text-xs sm:text-sm font-medium">الساعة</div>
-                  <div className="text-sm sm:text-lg font-bold">{getBaghdadTime().time}</div>
-                </div>
+
+            
+            {/* Exam Info Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+              <div className="bg-green-700 text-white p-3 sm:p-4 rounded-lg text-center">
+                <div className="text-xs sm:text-sm font-medium">الكلية/القسم</div>
+                <div className="text-sm sm:text-lg font-bold">كلية الطب</div>
+              </div>
+              <div className="bg-blue-700 text-white p-3 sm:p-4 rounded-lg text-center">
+                <div className="text-xs sm:text-sm font-medium">الجامعة</div>
+                <div className="text-sm sm:text-lg font-bold">{user?.university || 'جامعة فلان'}</div>
+              </div>
+              <div className="bg-orange-500 text-white p-3 sm:p-4 rounded-lg text-center">
+                <div className="text-xs sm:text-sm font-medium">التاريخ</div>
+                <div className="text-sm sm:text-lg font-bold">{getBaghdadTime().day}, {getBaghdadTime().month}, {getBaghdadTime().year}</div>
+              </div>
+              <div className="bg-red-500 text-white p-3 sm:p-4 rounded-lg text-center">
+                <div className="text-xs sm:text-sm font-medium">الساعة</div>
+                <div className="text-sm sm:text-lg font-bold">{getBaghdadTime().time}</div>
               </div>
             </div>
-            
+
             {/* Exam List */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200">
               <div className="p-4 sm:p-6 border-b border-gray-200">
@@ -1174,7 +1231,11 @@ export default function WizaryExam() {
               <div className="flex flex-col items-center w-full h-full">
                 <div className="pt-4">
                   <button
-                    className="p-2 rounded-full hover:bg-gray-100 text-gray-600"
+                    className={`p-2 rounded-full text-gray-600 ${
+                      isMobile 
+                        ? 'opacity-50 cursor-not-allowed' 
+                        : 'hover:bg-gray-100'
+                    }`}
                     onClick={handleSidebarToggle}
                     aria-label="Expand sidebar"
                   >
@@ -1190,7 +1251,11 @@ export default function WizaryExam() {
               <div className="flex items-center justify-between mb-4 px-6 pt-6">
                 <h3 className="text-lg font-bold text-gray-800">Question Navigation</h3>
                 <button
-                  className="p-2 rounded-full hover:bg-gray-100 text-gray-600"
+                  className={`p-2 rounded-full text-gray-600 ${
+                    isMobile 
+                      ? 'opacity-50 cursor-not-allowed' 
+                      : 'hover:bg-gray-100'
+                  }`}
                   onClick={handleSidebarToggle}
                   aria-label="Collapse sidebar"
                 >
@@ -1381,83 +1446,82 @@ export default function WizaryExam() {
           </header>
 
           {/* Exam Content */}
-          <div className="flex-1 p-4 sm:p-6 lg:p-8 flex items-center justify-center">
-            {/* Main White Container */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 lg:p-8 w-full max-w-7xl">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10">
-                {/* Left Panel - Exam Start and Timer */}
-                <div className="bg-white p-6 lg:p-10 rounded-lg shadow-sm border-2 border-blue-600 flex flex-col items-center justify-center">
-                  <div className="space-y-6 lg:space-y-8 w-full">
-                    <div className="bg-blue-600 text-white p-4 lg:p-6 rounded-lg text-center">
-                      <p className="text-sm lg:text-base">سوف يتم احتساب الوقت منذ لحظة الضغط على زر "أبدء الامتحان"</p>
-                    </div>
-                    
-                    <button
-                      onClick={startQuiz}
-                      className="w-full bg-green-600 text-white py-6 lg:py-8 rounded-lg text-xl lg:text-2xl font-bold hover:bg-green-700 transition-colors duration-200"
-                    >
-                      أبدء الامتحان
-                    </button>
-                    
-                    <div className="bg-red-500 text-white p-4 lg:p-6 rounded-lg text-center">
-                      <p className="text-sm lg:text-base">Day, 00 Hours 00 Minute, 00 Second</p>
-                      <p className="text-sm lg:text-base">الوقت المتبقي لانتهاء تاريخ الامتحان</p>
-                    </div>
+          <div className="flex-1 p-8 flex items-center justify-center">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 max-w-8xl w-full">
+              {/* Left Panel - Exam Start and Timer */}
+              <div className="bg-white p-10 rounded-lg shadow-sm border-2 border-blue-600 flex flex-col items-center justify-center">
+                <div className="space-y-8 w-full">
+                  <div className="bg-blue-600 text-white p-6 rounded-lg text-center">
+                    <p className="text-base">سوف يتم احتساب الوقت منذ لحظة الضغط على زر "أبدء الامتحان"</p>
+                  </div>
+                  
+                  <button
+                    onClick={startQuiz}
+                    className="w-full bg-green-600 text-white py-8 rounded-lg text-2xl font-bold hover:bg-green-700 transition-colors duration-200"
+                  >
+                    أبدء الامتحان
+                  </button>
+                  
+                  <div className="bg-red-500 text-white p-6 rounded-lg text-center">
+                    <p className="text-base">Day, 00 Hours 00 Minute, 00 Second</p>
+                    <p className="text-base">الوقت المتبقي لانتهاء تاريخ الامتحان</p>
                   </div>
                 </div>
+              </div>
 
-                {/* Right Panel - Exam Details Table with Blue Stroke */}
-                <div className="bg-white p-6 lg:p-10 rounded-lg shadow-sm border-2 border-blue-600">
-                  <div className="space-y-6">
-                    <div className="flex justify-between border-b border-gray-200 pb-4">
-                      <span className="text-gray-800 text-xl">{user ? `${user.firstName} ${user.lastName}` : 'فلان فلان'}</span>
-                      <span className="text-gray-600 font-medium text-xl">اسم الطالب</span>
-                    </div>
-                    <div className="flex justify-between border-b border-gray-200 pb-4">
-                      <span className="text-gray-800 text-xl">{user?.university || 'كلية الطب'} - المرحلة السادسة</span>
-                      <span className="text-gray-600 font-medium text-xl">القسم/الصف</span>
-                    </div>
-                    <div className="flex justify-between border-b border-gray-200 pb-4">
-                      <span className="text-gray-800 text-xl">{selectedExam?.name || 'الامتحان التقويمي'}</span>
-                      <span className="text-gray-600 font-medium text-xl">اسم الامتحان</span>
-                    </div>
-                    <div className="flex justify-between border-b border-gray-200 pb-4">
-                      <span className="text-gray-800 text-xl">{selectedExam?.questions || 100}</span>
-                      <span className="text-gray-600 font-medium text-xl">عدد الاسئلة</span>
-                    </div>
-                    <div className="flex justify-between border-b border-gray-200 pb-4">
-                      <span className="text-gray-800 text-xl">{selectedExam?.time || 180} دقيقة</span>
-                      <span className="text-gray-600 font-medium text-xl">الوقت</span>
-                    </div>
-                    <div className="flex justify-between border-b border-gray-200 pb-4">
-                      <input 
-                        type="text" 
-                        placeholder="أدخل رمز الامتحان السري"
-                        value={secretCode}
-                        onChange={(e) => setSecretCode(e.target.value)}
-                        onKeyPress={(e) => {
-                          if (e.key === 'Enter') {
-                            verifySecretCode();
-                          }
-                        }}
-                        className="text-gray-800 bg-transparent border-none outline-none text-right text-xl"
-                      />
-                      <span className="text-gray-600 font-medium text-xl">رمز الامتحان السري</span>
-                    </div>
-                    <div className="flex items-center justify-center space-x-4">
-                      <button
-                        onClick={verifySecretCode}
-                        className="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 transition-colors duration-200"
-                      >
-                        تحقق
-                      </button>
-                      {codeVerified && (
-                        <span className="text-green-600 text-sm font-medium">✓ تم التحقق من رمز الامتحان السري</span>
-                      )}
-                      {codeError && (
-                        <span className="text-red-600 text-sm font-medium">{codeError}</span>
-                      )}
-                    </div>
+              {/* Right Panel - Exam Details Table with Blue Stroke */}
+              <div className="bg-white p-10 rounded-lg shadow-sm border-2 border-blue-600">
+
+                
+                <div className="space-y-6">
+                  <div className="flex justify-between border-b border-gray-200 pb-4">
+                    <span className="text-gray-800 text-xl">{user ? `${user.firstName} ${user.lastName}` : 'فلان فلان'}</span>
+                    <span className="text-gray-600 font-medium text-xl">اسم الطالب</span>
+                  </div>
+                  <div className="flex justify-between border-b border-gray-200 pb-4">
+                    <span className="text-gray-800 text-xl">{user?.university || 'كلية الطب'} - المرحلة السادسة</span>
+                    <span className="text-gray-600 font-medium text-xl">القسم/الصف</span>
+                  </div>
+                  <div className="flex justify-between border-b border-gray-200 pb-4">
+                    <span className="text-gray-800 text-xl">{selectedExam?.name || 'الامتحان التقويمي'}</span>
+                    <span className="text-gray-600 font-medium text-xl">اسم الامتحان</span>
+                  </div>
+                  <div className="flex justify-between border-b border-gray-200 pb-4">
+                    <span className="text-gray-800 text-xl">{selectedExam?.questions || 100}</span>
+                    <span className="text-gray-600 font-medium text-xl">عدد الاسئلة</span>
+                  </div>
+                  <div className="flex justify-between border-b border-gray-200 pb-4">
+                    <span className="text-gray-800 text-xl">{selectedExam?.time || 180} دقيقة</span>
+                    <span className="text-gray-600 font-medium text-xl">الوقت</span>
+                  </div>
+                  <div className="flex justify-between border-b border-gray-200 pb-4">
+                    <input 
+                      type="text" 
+                      placeholder="أدخل رمز الامتحان السري"
+                      value={secretCode}
+                      onChange={(e) => setSecretCode(e.target.value)}
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                          verifySecretCode();
+                        }
+                      }}
+                      className="text-gray-800 bg-transparent border-none outline-none text-right text-xl"
+                    />
+                    <span className="text-gray-600 font-medium text-xl">رمز الامتحان السري</span>
+                  </div>
+                  <div className="flex items-center justify-center space-x-4">
+                    <button
+                      onClick={verifySecretCode}
+                      className="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 transition-colors duration-200"
+                    >
+                      تحقق
+                    </button>
+                    {codeVerified && (
+                      <span className="text-green-600 text-sm font-medium">✓ تم التحقق من رمز الامتحان السري</span>
+                    )}
+                    {codeError && (
+                      <span className="text-red-600 text-sm font-medium">{codeError}</span>
+                    )}
                   </div>
                 </div>
               </div>
