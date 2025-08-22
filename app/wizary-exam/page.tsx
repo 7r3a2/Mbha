@@ -7,6 +7,14 @@ import { useAuth } from '@/lib/hooks/useAuth';
 
 // WizaryExam-specific CSS overrides to ensure unique design
 const wizaryExamStyles = `
+  /* Safe area support for mobile devices */
+  .wizary-exam-page {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  
   /* WizaryExam-specific overrides */
   .wizary-exam-page * {
     --wizary-primary: #ff6b35;
@@ -685,7 +693,7 @@ export default function WizaryExam() {
 
   if (currentView === 'dashboard') {
     return (
-      <div className="flex h-screen bg-gray-100 wizary-exam-page">
+      <div className="flex min-h-screen bg-gray-100 wizary-exam-page">
         <style dangerouslySetInnerHTML={{ __html: wizaryExamStyles }} />
         
         {/* Sidebar */}
@@ -766,7 +774,7 @@ export default function WizaryExam() {
           </header>
 
           {/* Dashboard Content */}
-          <main className="flex-1 p-2 sm:p-4 md:p-6 overflow-hidden min-w-0">
+          <main className="flex-1 p-2 sm:p-4 md:p-6 overflow-y-auto min-w-0">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
               {/* Account Information */}
               <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
@@ -827,7 +835,7 @@ export default function WizaryExam() {
 
   if (currentView === 'exam-list') {
     return (
-      <div className="flex h-screen bg-gray-100 wizary-exam-page">
+      <div className="flex min-h-screen bg-gray-100 wizary-exam-page">
         <style dangerouslySetInnerHTML={{ __html: wizaryExamStyles }} />
         
         {/* Sidebar */}
@@ -908,7 +916,7 @@ export default function WizaryExam() {
           </header>
 
           {/* Exam List Content */}
-          <main className="flex-1 p-2 sm:p-4 md:p-6 overflow-hidden min-w-0">
+          <main className="flex-1 p-2 sm:p-4 md:p-6 overflow-y-auto min-w-0">
 
             
             {/* Exam Info Cards */}
@@ -1006,15 +1014,12 @@ export default function WizaryExam() {
                             </div>
                           </div>
                                                      <div className="ml-4">
-                             <button
-                               onClick={() => {
-                                 console.log('Starting exam:', exam);
-                                 startExam(exam);
-                               }}
-                               className="bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 text-xs font-medium whitespace-nowrap"
-                             >
-                               Take Exam
-                             </button>
+                                                           <button
+                                onClick={() => startExam(exam)}
+                                className="bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 text-xs font-medium whitespace-nowrap"
+                              >
+                                Take Exam
+                              </button>
                            </div>
                         </div>
                       </div>
@@ -1065,15 +1070,12 @@ export default function WizaryExam() {
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{exam.questions}</td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{exam.time} Minute</td>
                                                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                             <button
-                               onClick={() => {
-                                 console.log('Starting exam from table:', exam);
-                                 startExam(exam);
-                               }}
-                               className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
-                             >
-                               Take Exam
-                             </button>
+                                                           <button
+                                onClick={() => startExam(exam)}
+                                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                              >
+                                Take Exam
+                              </button>
                            </td>
                         </tr>
                       ))
@@ -1306,7 +1308,7 @@ export default function WizaryExam() {
 
   if (currentView === 'exam-taking') {
     return (
-      <div className="flex h-screen bg-gray-100 wizary-exam-page">
+      <div className="flex min-h-screen bg-gray-100 wizary-exam-page">
         <style dangerouslySetInnerHTML={{ __html: wizaryExamStyles }} />
         
         {/* Warning Overlay */}
@@ -1370,7 +1372,7 @@ export default function WizaryExam() {
           </header>
 
           {/* Exam Content */}
-          <div className="flex-1 p-2 sm:p-4 md:p-6 flex items-center justify-center overflow-hidden">
+          <div className="flex-1 p-2 sm:p-4 md:p-6 flex items-center justify-center overflow-y-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 w-full max-w-6xl">
               {/* Left Panel - Exam Start and Timer */}
               <div className="bg-white p-10 rounded-lg shadow-sm border-2 border-blue-600 flex flex-col items-center justify-center">
