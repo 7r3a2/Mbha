@@ -1444,34 +1444,34 @@ export default function WizaryExam() {
           </header>
 
           {/* Exam Content */}
-          <div className="flex-1 p-2 sm:p-3 md:p-4 lg:p-6 flex items-start justify-center bg-gray-100 min-h-screen overflow-hidden">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-3 md:gap-4 lg:gap-6 w-full max-w-xl sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl h-full">
+          <div className="flex-1 p-1 sm:p-2 md:p-3 lg:p-4 flex items-start justify-center bg-gray-100 min-h-screen overflow-hidden">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-1 sm:gap-2 md:gap-3 lg:gap-4 w-full h-full">
               {/* Left Panel - Exam Start and Timer */}
-              <div className="bg-white p-3 sm:p-4 md:p-6 lg:p-8 rounded-lg shadow-sm border-2 border-blue-600 flex flex-col items-center justify-center h-full max-h-[85vh] sm:max-h-[90vh] md:max-h-[95vh] lg:max-h-full overflow-hidden">
-                <div className="space-y-3 sm:space-y-4 md:space-y-6 w-full overflow-y-auto">
-                  <div className="bg-blue-600 text-white p-2 sm:p-3 md:p-4 rounded-lg text-center">
-                    <p className="text-xs sm:text-sm md:text-base lg:text-lg">سوف يتم احتساب الوقت منذ لحظة الضغط على زر "أبدء الامتحان"</p>
+              <div className="bg-white p-2 sm:p-3 md:p-4 lg:p-6 rounded-lg shadow-sm border-2 border-blue-600 flex flex-col items-center justify-center h-full overflow-hidden">
+                <div className="space-y-2 sm:space-y-3 md:space-y-4 w-full overflow-y-auto">
+                  <div className="bg-blue-600 text-white p-1 sm:p-2 md:p-3 rounded-lg text-center">
+                    <p className="text-xs sm:text-sm md:text-base">سوف يتم احتساب الوقت منذ لحظة الضغط على زر "أبدء الامتحان"</p>
                   </div>
                   
                   <button
                     onClick={startQuiz}
-                    className="w-full bg-green-600 text-white py-3 sm:py-4 md:py-5 rounded-lg text-sm sm:text-base md:text-lg lg:text-xl font-bold hover:bg-green-700 transition-colors duration-200"
+                    className="w-full bg-green-600 text-white py-2 sm:py-3 md:py-4 rounded-lg text-sm sm:text-base md:text-lg font-bold hover:bg-green-700 transition-colors duration-200"
                   >
                     أبدء الامتحان
                   </button>
                   
-                  <div className="bg-red-500 text-white p-2 sm:p-3 md:p-4 rounded-lg text-center">
-                    <p className="text-xs sm:text-sm md:text-base lg:text-lg">Day, 00 Hours 00 Minute, 00 Second</p>
-                    <p className="text-xs sm:text-sm md:text-base lg:text-lg">الوقت المتبقي لانتهاء تاريخ الامتحان</p>
+                  <div className="bg-red-500 text-white p-1 sm:p-2 md:p-3 rounded-lg text-center">
+                    <p className="text-xs sm:text-sm md:text-base">Day, 00 Hours 00 Minute, 00 Second</p>
+                    <p className="text-xs sm:text-sm md:text-base">الوقت المتبقي لانتهاء تاريخ الامتحان</p>
                   </div>
                 </div>
               </div>
 
               {/* Right Panel - Exam Details Table with Blue Stroke */}
-              <div className="bg-white p-3 sm:p-4 md:p-6 lg:p-8 rounded-lg shadow-sm border-2 border-blue-600 h-full max-h-[85vh] sm:max-h-[90vh] md:max-h-[95vh] lg:max-h-full flex flex-col overflow-hidden">
+              <div className="bg-white p-2 sm:p-3 md:p-4 lg:p-6 rounded-lg shadow-sm border-2 border-blue-600 h-full flex flex-col overflow-hidden">
 
                 
-                <div className="space-y-2 sm:space-y-3 md:space-y-4 flex-1 overflow-y-auto">
+                <div className="space-y-1 sm:space-y-2 md:space-y-3 flex-1 overflow-y-auto">
                   <div className="flex justify-between border-b border-gray-200 pb-1 sm:pb-2 md:pb-3 lg:pb-4">
                     <span className="text-gray-800 text-sm sm:text-base md:text-lg lg:text-xl">{user ? `${user.firstName} ${user.lastName}` : 'فلان فلان'}</span>
                     <span className="text-gray-600 font-medium text-sm sm:text-base md:text-lg lg:text-xl">اسم الطالب</span>
