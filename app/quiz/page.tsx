@@ -908,16 +908,16 @@ function QuizPageContent() {
           )}
         </header>
 
-        {/* Quiz Content */}
-        <div className="flex-1 overflow-y-auto p-2 sm:p-4 md:p-8 flex justify-center">
-          <div className="w-full flex flex-col h-full items-center max-w-full">
-            <div className="flex-grow flex w-full max-w-full overflow-hidden">
-                                            {/* Question Panel */}
-                <div className={`bg-white p-2 sm:p-4 md:p-6 rounded-lg shadow-xl border border-gray-200 flex flex-col min-h-0 transition-all duration-300 ${
-                  showExplanation && testMode === 'study' 
-                    ? (isMobile && window.innerHeight > window.innerWidth) ? "hidden" : "w-auto max-w-[50%]" 
-                    : "w-auto max-w-full"
-                }`}>
+                 {/* Quiz Content */}
+         <div className="flex-1 overflow-y-auto p-2 sm:p-4 md:p-8 flex justify-center">
+           <div className="w-full flex flex-col h-full items-center">
+             <div className="flex-grow flex w-full">
+                                                           {/* Question Panel */}
+                 <div className={`bg-white p-2 sm:p-4 md:p-6 rounded-lg shadow-xl border border-gray-200 flex flex-col min-h-0 transition-all duration-300 ${
+                   showExplanation && testMode === 'study' 
+                     ? isMobile ? "hidden" : "w-auto max-w-[50%]" 
+                     : "w-auto max-w-full"
+                 }`}>
                 <div className="flex justify-between items-start mb-4 sm:mb-6">
                   <div>
                     <span className="text-lg sm:text-2xl font-bold text-black">Q#{currentQuestionIndex + 1}</span>
@@ -1135,9 +1135,9 @@ function QuizPageContent() {
                 </div>
               </div>
 
-                                            {/* Explanation Panel - Only for Study Mode */}
-                {showExplanation && testMode === 'study' && (
-                  <div className={`${(isMobile && window.innerHeight > window.innerWidth) ? "w-full" : "w-auto max-w-[50%]"} flex-col min-h-0 ${(isMobile && window.innerHeight > window.innerWidth) ? "" : "ml-2 sm:ml-4 md:ml-6"} max-w-full overflow-hidden`}>
+                                                           {/* Explanation Panel - Only for Study Mode */}
+                 {showExplanation && testMode === 'study' && (
+                   <div className={`${isMobile ? "w-full" : "w-auto max-w-[50%]"} flex-col min-h-0 ${isMobile ? "" : "ml-2 sm:ml-4 md:ml-6"} max-w-full overflow-hidden`}>
                   <div 
                     ref={explanationTextRef} 
                     className="explanation-panel bg-white p-2 sm:p-4 md:p-6 rounded-lg shadow-xl border border-gray-200 flex-grow flex flex-col h-full break-words overflow-hidden"
@@ -1146,8 +1146,8 @@ function QuizPageContent() {
                                          <div className="flex justify-between items-center mb-4">
                        <h3 className="text-xl font-bold text-black">Explanation</h3>
                        <div className="flex items-center space-x-2">
-                                                   {/* Hide Explanation Button - Mobile Portrait Only */}
-                          {(isMobile && window.innerHeight > window.innerWidth) && (
+                                                                             {/* Hide Explanation Button - Mobile Only */}
+                           {isMobile && (
                            <button
                              onClick={() => setShowExplanation(false)}
                              className="p-2 text-blue-600 hover:bg-blue-100 rounded-full transition-colors duration-200"
