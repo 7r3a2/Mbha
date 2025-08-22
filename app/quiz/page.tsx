@@ -61,10 +61,11 @@ function QuizPageContent() {
   // Mobile detection and sidebar management
   useEffect(() => {
     const checkIsMobile = () => {
-      const mobile = window.innerWidth <= 1024;
+      const mobile = window.innerWidth <= 1024 || window.innerHeight <= 768;
       setIsMobile(mobile);
       if (mobile) {
         setSidebarCollapsed(true); // Force collapse on mobile
+        setShowSidebar(false); // Also hide the sidebar on mobile
       }
     };
 
@@ -913,8 +914,8 @@ function QuizPageContent() {
 
         {/* Quiz Content */}
         <div className="flex-1 overflow-y-auto p-2 sm:p-4 md:p-8 flex justify-center">
-          <div className="w-full flex flex-col h-full items-center">
-            <div className="flex-grow flex w-full">
+          <div className="w-full flex flex-col h-full items-center max-w-full">
+            <div className="flex-grow flex w-full max-w-full overflow-hidden">
               {/* Question Panel */}
               <div className={`bg-white p-2 sm:p-4 md:p-6 rounded-lg shadow-xl border border-gray-200 flex flex-col min-h-0 transition-all duration-300 ${showExplanation && testMode === 'study' ? "w-1/2" : "w-full"}`}>
                 <div className="flex justify-between items-start mb-4 sm:mb-6">
@@ -1136,10 +1137,10 @@ function QuizPageContent() {
 
               {/* Explanation Panel - Only for Study Mode */}
               {showExplanation && testMode === 'study' && (
-                <div className="w-1/2 flex-col min-h-0 ml-2 sm:ml-4 md:ml-6">
+                <div className="w-1/2 flex-col min-h-0 ml-2 sm:ml-4 md:ml-6 max-w-full overflow-hidden">
                   <div 
                     ref={explanationTextRef} 
-                    className="explanation-panel bg-white p-2 sm:p-4 md:p-6 rounded-lg shadow-xl border border-gray-200 flex-grow flex flex-col h-full break-words"
+                    className="explanation-panel bg-white p-2 sm:p-4 md:p-6 rounded-lg shadow-xl border border-gray-200 flex-grow flex flex-col h-full break-words overflow-hidden"
                     onDoubleClick={preventDoubleClickSelection}
                   >
                     <div className="flex justify-between items-center mb-4">
