@@ -1444,10 +1444,10 @@ export default function WizaryExam() {
           </header>
 
           {/* Exam Content */}
-          <div className="flex-1 p-4 sm:p-6 lg:p-8 flex items-start justify-center bg-gray-100 min-h-full">
+          <div className="flex-1 p-4 sm:p-6 lg:p-8 flex items-start justify-center bg-gray-100 min-h-screen sm:min-h-full">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-10 w-full max-w-8xl">
               {/* Left Panel - Exam Start and Timer */}
-              <div className="bg-white p-6 sm:p-8 lg:p-10 rounded-lg shadow-sm border-2 border-blue-600 flex flex-col items-center justify-center min-h-full">
+              <div className="bg-white p-6 sm:p-8 lg:p-10 rounded-lg shadow-sm border-2 border-blue-600 flex flex-col items-center justify-center min-h-[80vh] sm:min-h-full">
                 <div className="space-y-6 sm:space-y-8 w-full">
                   <div className="bg-blue-600 text-white p-4 sm:p-6 rounded-lg text-center">
                     <p className="text-sm sm:text-base">سوف يتم احتساب الوقت منذ لحظة الضغط على زر "أبدء الامتحان"</p>
@@ -1468,23 +1468,23 @@ export default function WizaryExam() {
               </div>
 
               {/* Right Panel - Exam Details Table with Blue Stroke */}
-              <div className="bg-white p-6 sm:p-8 lg:p-10 rounded-lg shadow-sm border-2 border-blue-600 min-h-full flex flex-col">
+              <div className="bg-white p-6 sm:p-8 lg:p-10 rounded-lg shadow-sm border-2 border-blue-600 min-h-[80vh] sm:min-h-full flex flex-col">
 
                 
-                <div className="space-y-4 sm:space-y-6 flex-1">
-                  <div className="flex justify-between border-b border-gray-200 pb-3 sm:pb-4">
+                <div className="space-y-3 sm:space-y-4 lg:space-y-6 flex-1">
+                  <div className="flex justify-between border-b border-gray-200 pb-2 sm:pb-3 lg:pb-4">
                     <span className="text-gray-800 text-sm sm:text-lg lg:text-xl">{user ? `${user.firstName} ${user.lastName}` : 'فلان فلان'}</span>
                     <span className="text-gray-600 font-medium text-sm sm:text-lg lg:text-xl">اسم الطالب</span>
                   </div>
-                  <div className="flex justify-between border-b border-gray-200 pb-3 sm:pb-4">
+                  <div className="flex justify-between border-b border-gray-200 pb-2 sm:pb-3 lg:pb-4">
                     <span className="text-gray-800 text-sm sm:text-lg lg:text-xl">{user?.university || 'كلية الطب'} - المرحلة السادسة</span>
                     <span className="text-gray-600 font-medium text-sm sm:text-lg lg:text-xl">القسم/الصف</span>
                   </div>
-                  <div className="flex justify-between border-b border-gray-200 pb-3 sm:pb-4">
+                  <div className="flex justify-between border-b border-gray-200 pb-2 sm:pb-3 lg:pb-4">
                     <span className="text-gray-800 text-sm sm:text-lg lg:text-xl">{selectedExam?.name || 'الامتحان التقويمي'}</span>
                     <span className="text-gray-600 font-medium text-sm sm:text-lg lg:text-xl">اسم الامتحان</span>
                   </div>
-                  <div className="flex justify-between border-b border-gray-200 pb-3 sm:pb-4">
+                  <div className="flex justify-between border-b border-gray-200 pb-2 sm:pb-3 lg:pb-4">
                     <span className="text-gray-800 text-sm sm:text-lg lg:text-xl">{selectedExam?.questions || 100}</span>
                     <span className="text-gray-600 font-medium text-sm sm:text-lg lg:text-xl">عدد الاسئلة</span>
                   </div>
@@ -1492,7 +1492,7 @@ export default function WizaryExam() {
                     <span className="text-gray-800 text-sm sm:text-lg lg:text-xl">{selectedExam?.time || 180} دقيقة</span>
                     <span className="text-gray-600 font-medium text-sm sm:text-lg lg:text-xl">الوقت</span>
                   </div>
-                  <div className="flex justify-between border-b border-gray-200 pb-3 sm:pb-4">
+                  <div className="flex justify-between border-b border-gray-200 pb-2 sm:pb-3 lg:pb-4">
                     <input 
                       type="text" 
                       placeholder="أدخل رمز الامتحان السري"
