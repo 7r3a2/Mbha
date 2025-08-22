@@ -1086,7 +1086,6 @@ export default function WizaryExam() {
                 </table>
               </div>
             </div>
-            </div>
 
             {/* Pagination */}
             <div className="flex justify-center items-center space-x-2 sm:space-x-4 mt-6">
@@ -1409,57 +1408,56 @@ export default function WizaryExam() {
 
                 {/* Right Panel - Exam Details Table with Blue Stroke */}
                 <div className="bg-white p-6 lg:p-10 rounded-lg shadow-sm border-2 border-blue-600">
-
-                
-                <div className="space-y-6">
-                  <div className="flex justify-between border-b border-gray-200 pb-4">
-                    <span className="text-gray-800 text-xl">{user ? `${user.firstName} ${user.lastName}` : 'فلان فلان'}</span>
-                    <span className="text-gray-600 font-medium text-xl">اسم الطالب</span>
-                  </div>
-                  <div className="flex justify-between border-b border-gray-200 pb-4">
-                    <span className="text-gray-800 text-xl">{user?.university || 'كلية الطب'} - المرحلة السادسة</span>
-                    <span className="text-gray-600 font-medium text-xl">القسم/الصف</span>
-                  </div>
-                  <div className="flex justify-between border-b border-gray-200 pb-4">
-                    <span className="text-gray-800 text-xl">{selectedExam?.name || 'الامتحان التقويمي'}</span>
-                    <span className="text-gray-600 font-medium text-xl">اسم الامتحان</span>
-                  </div>
-                  <div className="flex justify-between border-b border-gray-200 pb-4">
-                    <span className="text-gray-800 text-xl">{selectedExam?.questions || 100}</span>
-                    <span className="text-gray-600 font-medium text-xl">عدد الاسئلة</span>
-                  </div>
-                  <div className="flex justify-between border-b border-gray-200 pb-4">
-                    <span className="text-gray-800 text-xl">{selectedExam?.time || 180} دقيقة</span>
-                    <span className="text-gray-600 font-medium text-xl">الوقت</span>
-                  </div>
-                  <div className="flex justify-between border-b border-gray-200 pb-4">
-                    <input 
-                      type="text" 
-                      placeholder="أدخل رمز الامتحان السري"
-                      value={secretCode}
-                      onChange={(e) => setSecretCode(e.target.value)}
-                      onKeyPress={(e) => {
-                        if (e.key === 'Enter') {
-                          verifySecretCode();
-                        }
-                      }}
-                      className="text-gray-800 bg-transparent border-none outline-none text-right text-xl"
-                    />
-                    <span className="text-gray-600 font-medium text-xl">رمز الامتحان السري</span>
-                  </div>
-                  <div className="flex items-center justify-center space-x-4">
-                    <button
-                      onClick={verifySecretCode}
-                      className="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 transition-colors duration-200"
-                    >
-                      تحقق
-                    </button>
-                    {codeVerified && (
-                      <span className="text-green-600 text-sm font-medium">✓ تم التحقق من رمز الامتحان السري</span>
-                    )}
-                    {codeError && (
-                      <span className="text-red-600 text-sm font-medium">{codeError}</span>
-                    )}
+                  <div className="space-y-6">
+                    <div className="flex justify-between border-b border-gray-200 pb-4">
+                      <span className="text-gray-800 text-xl">{user ? `${user.firstName} ${user.lastName}` : 'فلان فلان'}</span>
+                      <span className="text-gray-600 font-medium text-xl">اسم الطالب</span>
+                    </div>
+                    <div className="flex justify-between border-b border-gray-200 pb-4">
+                      <span className="text-gray-800 text-xl">{user?.university || 'كلية الطب'} - المرحلة السادسة</span>
+                      <span className="text-gray-600 font-medium text-xl">القسم/الصف</span>
+                    </div>
+                    <div className="flex justify-between border-b border-gray-200 pb-4">
+                      <span className="text-gray-800 text-xl">{selectedExam?.name || 'الامتحان التقويمي'}</span>
+                      <span className="text-gray-600 font-medium text-xl">اسم الامتحان</span>
+                    </div>
+                    <div className="flex justify-between border-b border-gray-200 pb-4">
+                      <span className="text-gray-800 text-xl">{selectedExam?.questions || 100}</span>
+                      <span className="text-gray-600 font-medium text-xl">عدد الاسئلة</span>
+                    </div>
+                    <div className="flex justify-between border-b border-gray-200 pb-4">
+                      <span className="text-gray-800 text-xl">{selectedExam?.time || 180} دقيقة</span>
+                      <span className="text-gray-600 font-medium text-xl">الوقت</span>
+                    </div>
+                    <div className="flex justify-between border-b border-gray-200 pb-4">
+                      <input 
+                        type="text" 
+                        placeholder="أدخل رمز الامتحان السري"
+                        value={secretCode}
+                        onChange={(e) => setSecretCode(e.target.value)}
+                        onKeyPress={(e) => {
+                          if (e.key === 'Enter') {
+                            verifySecretCode();
+                          }
+                        }}
+                        className="text-gray-800 bg-transparent border-none outline-none text-right text-xl"
+                      />
+                      <span className="text-gray-600 font-medium text-xl">رمز الامتحان السري</span>
+                    </div>
+                    <div className="flex items-center justify-center space-x-4">
+                      <button
+                        onClick={verifySecretCode}
+                        className="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 transition-colors duration-200"
+                      >
+                        تحقق
+                      </button>
+                      {codeVerified && (
+                        <span className="text-green-600 text-sm font-medium">✓ تم التحقق من رمز الامتحان السري</span>
+                      )}
+                      {codeError && (
+                        <span className="text-red-600 text-sm font-medium">{codeError}</span>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
