@@ -973,31 +973,31 @@ export default function WizaryExam() {
           </header>
 
           {/* Exam List Content */}
-          <main className="flex-1 p-2 overflow-y-auto">
+          <main className="flex-1 p-1 overflow-hidden">
 
             
             {/* Exam Info Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 mb-4 w-full">
-              <div className="bg-green-700 text-white p-3 sm:p-4 rounded-lg text-center">
-                <div className="text-xs sm:text-sm font-medium">الكلية/القسم</div>
-                <div className="text-sm sm:text-lg font-bold">كلية الطب</div>
+            <div className="grid grid-cols-2 gap-1 mb-2 w-full">
+              <div className="bg-green-700 text-white p-1 rounded text-center">
+                <div className="text-xs font-medium">الكلية/القسم</div>
+                <div className="text-xs font-bold">كلية الطب</div>
               </div>
-              <div className="bg-blue-700 text-white p-3 sm:p-4 rounded-lg text-center">
-                <div className="text-xs sm:text-sm font-medium">الجامعة</div>
-                <div className="text-sm sm:text-lg font-bold">{user?.university || 'جامعة فلان'}</div>
+              <div className="bg-blue-700 text-white p-1 rounded text-center">
+                <div className="text-xs font-medium">الجامعة</div>
+                <div className="text-xs font-bold">{user?.university || 'جامعة فلان'}</div>
               </div>
-              <div className="bg-orange-500 text-white p-3 sm:p-4 rounded-lg text-center">
-                <div className="text-xs sm:text-sm font-medium">التاريخ</div>
-                <div className="text-sm sm:text-lg font-bold">{getBaghdadTime().day}, {getBaghdadTime().month}, {getBaghdadTime().year}</div>
+              <div className="bg-orange-500 text-white p-1 rounded text-center">
+                <div className="text-xs font-medium">التاريخ</div>
+                <div className="text-xs font-bold">{getBaghdadTime().day}, {getBaghdadTime().month}, {getBaghdadTime().year}</div>
               </div>
-              <div className="bg-red-500 text-white p-3 sm:p-4 rounded-lg text-center">
-                <div className="text-xs sm:text-sm font-medium">الساعة</div>
-                <div className="text-sm sm:text-lg font-bold">{getBaghdadTime().time}</div>
+              <div className="bg-red-500 text-white p-1 rounded text-center">
+                <div className="text-xs font-medium">الساعة</div>
+                <div className="text-xs font-bold">{getBaghdadTime().time}</div>
               </div>
             </div>
 
             {/* Exam List */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 w-full h-full">
+            <div className="bg-white rounded shadow-sm border border-gray-200 w-full h-full">
               <div className="p-2 border-b border-gray-200">
                                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 relative gap-2">
                                       <h3 className="text-sm sm:text-base font-bold text-gray-800">List Exam</h3>
@@ -1086,17 +1086,17 @@ export default function WizaryExam() {
               </div>
               
               {/* Desktop Table View */}
-              <div className="hidden sm:block overflow-x-auto h-full w-full">
+              <div className="hidden sm:block h-full w-full">
                 <table className="w-full">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">اسم الامتحان</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">المادة</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">الكلية/القسم</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">عدد الاسئلة</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">الوقت بالدقائق</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ادوات</th>
+                      <th className="px-1 py-1 text-left text-xs font-medium text-gray-500">#</th>
+                      <th className="px-1 py-1 text-left text-xs font-medium text-gray-500">اسم الامتحان</th>
+                      <th className="px-1 py-1 text-left text-xs font-medium text-gray-500">المادة</th>
+                      <th className="px-1 py-1 text-left text-xs font-medium text-gray-500">الكلية/القسم</th>
+                      <th className="px-1 py-1 text-left text-xs font-medium text-gray-500">عدد الاسئلة</th>
+                      <th className="px-1 py-1 text-left text-xs font-medium text-gray-500">الوقت بالدقائق</th>
+                      <th className="px-1 py-1 text-left text-xs font-medium text-gray-500">ادوات</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
@@ -1118,18 +1118,18 @@ export default function WizaryExam() {
                     ) : (
                       currentExams.map((exam, index) => (
                         <tr key={exam.id} className={`hover:bg-gray-50 ${exam.importedData ? 'bg-green-50' : ''}`}>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{startIndex + index + 1}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          <td className="px-1 py-1 text-xs font-medium text-gray-900">{startIndex + index + 1}</td>
+                          <td className="px-1 py-1 text-xs text-gray-900">
                             {exam.name}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{exam.subject}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{exam.department}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{exam.questions}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{exam.time} Minute</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          <td className="px-1 py-1 text-xs text-gray-900">{exam.subject}</td>
+                          <td className="px-1 py-1 text-xs text-gray-900">{exam.department}</td>
+                          <td className="px-1 py-1 text-xs text-gray-900">{exam.questions}</td>
+                          <td className="px-1 py-1 text-xs text-gray-900">{exam.time} Minute</td>
+                          <td className="px-1 py-1 text-xs text-gray-900">
                             <button
                               onClick={() => startExam(exam)}
-                              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                              className="bg-blue-600 text-white px-1 py-1 rounded text-xs"
                             >
                               Take Exam
                             </button>
