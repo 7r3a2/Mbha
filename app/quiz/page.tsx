@@ -61,10 +61,14 @@ function QuizPageContent() {
      // Mobile detection and sidebar management
    useEffect(() => {
      const checkIsMobile = () => {
-       const mobile = window.innerWidth <= 1024 || window.innerHeight <= 768;
-       setIsMobile(mobile);
-       if (mobile) {
-         setSidebarCollapsed(true); // Force collapse on mobile
+       // Only collapse on mobile portrait mode (width <= 768px and height > width)
+       const isPortrait = window.innerHeight > window.innerWidth;
+       const isMobilePortrait = window.innerWidth <= 768 && isPortrait;
+       setIsMobile(isMobilePortrait);
+       if (isMobilePortrait) {
+         setSidebarCollapsed(true); // Force collapse only on mobile portrait
+       } else {
+         setSidebarCollapsed(false); // Keep expanded on other screen sizes
        }
      };
 
