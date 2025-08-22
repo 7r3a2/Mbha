@@ -911,8 +911,12 @@ function QuizPageContent() {
         <div className="flex-1 overflow-y-auto p-2 sm:p-4 md:p-8 flex justify-center">
           <div className="w-full flex flex-col h-full items-center max-w-full">
             <div className="flex-grow flex w-full max-w-full overflow-hidden">
-              {/* Question Panel */}
-              <div className={`bg-white p-2 sm:p-4 md:p-6 rounded-lg shadow-xl border border-gray-200 flex flex-col min-h-0 transition-all duration-300 ${showExplanation && testMode === 'study' ? "w-1/2" : "w-full"}`}>
+                             {/* Question Panel */}
+               <div className={`bg-white p-2 sm:p-4 md:p-6 rounded-lg shadow-xl border border-gray-200 flex flex-col min-h-0 transition-all duration-300 ${
+                 showExplanation && testMode === 'study' 
+                   ? isMobile ? "hidden" : "w-1/2" 
+                   : "w-full"
+               }`}>
                 <div className="flex justify-between items-start mb-4 sm:mb-6">
                   <div>
                     <span className="text-lg sm:text-2xl font-bold text-black">Q#{currentQuestionIndex + 1}</span>
@@ -1130,40 +1134,55 @@ function QuizPageContent() {
                 </div>
               </div>
 
-              {/* Explanation Panel - Only for Study Mode */}
-              {showExplanation && testMode === 'study' && (
-                <div className="w-1/2 flex-col min-h-0 ml-2 sm:ml-4 md:ml-6 max-w-full overflow-hidden">
+                             {/* Explanation Panel - Only for Study Mode */}
+               {showExplanation && testMode === 'study' && (
+                 <div className={`${isMobile ? "w-full" : "w-1/2"} flex-col min-h-0 ${isMobile ? "" : "ml-2 sm:ml-4 md:ml-6"} max-w-full overflow-hidden`}>
                   <div 
                     ref={explanationTextRef} 
                     className="explanation-panel bg-white p-2 sm:p-4 md:p-6 rounded-lg shadow-xl border border-gray-200 flex-grow flex flex-col h-full break-words overflow-hidden"
                     onDoubleClick={preventDoubleClickSelection}
                   >
-                    <div className="flex justify-between items-center mb-4">
-                      <h3 className="text-xl font-bold text-black">Explanation</h3>
-                      {testMode === 'study' && (
-                        <div className="flex items-center space-x-2">
-                          <button
-                            onClick={decreaseFontSize}
-                            className="p-2 text-blue-600 hover:bg-blue-100 rounded-full transition-colors duration-200"
-                            title="Decrease Font Size"
-                          >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                            </svg>
-                          </button>
-                          <span className="text-sm text-gray-600 min-w-[3rem] text-center">{fontSize}px</span>
-                          <button
-                            onClick={increaseFontSize}
-                            className="p-2 text-blue-600 hover:bg-blue-100 rounded-full transition-colors duration-200"
-                            title="Increase Font Size"
-                          >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                            </svg>
-                          </button>
-                        </div>
-                      )}
-                    </div>
+                                         <div className="flex justify-between items-center mb-4">
+                       <h3 className="text-xl font-bold text-black">Explanation</h3>
+                       <div className="flex items-center space-x-2">
+                         {/* Hide Explanation Button - Mobile Only */}
+                         {isMobile && (
+                           <button
+                             onClick={() => setShowExplanation(false)}
+                             className="p-2 text-blue-600 hover:bg-blue-100 rounded-full transition-colors duration-200"
+                             title="Hide Explanation"
+                           >
+                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                             </svg>
+                           </button>
+                         )}
+                         {/* Font Size Controls - Desktop Only */}
+                         {!isMobile && testMode === 'study' && (
+                           <>
+                             <button
+                               onClick={decreaseFontSize}
+                               className="p-2 text-blue-600 hover:bg-blue-100 rounded-full transition-colors duration-200"
+                               title="Decrease Font Size"
+                             >
+                               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                               </svg>
+                             </button>
+                             <span className="text-sm text-gray-600 min-w-[3rem] text-center">{fontSize}px</span>
+                             <button
+                               onClick={increaseFontSize}
+                               className="p-2 text-blue-600 hover:bg-blue-100 rounded-full transition-colors duration-200"
+                               title="Increase Font Size"
+                             >
+                               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                               </svg>
+                             </button>
+                           </>
+                         )}
+                       </div>
+                     </div>
                                           <div className="text-base space-y-4 overflow-y-auto flex-grow explanation-text-container">
                         <div className={`p-4 ${isCorrect ? "bg-green-50 border-l-4 border-green-500" : "bg-red-50 border-l-4 border-red-500"}`}>
                           <p className={`${isCorrect ? "text-green-800" : "text-red-800"} font-semibold`} style={{ fontSize: `${fontSize}px` }}>
