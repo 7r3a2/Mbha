@@ -7,14 +7,6 @@ import { useAuth } from '@/lib/hooks/useAuth';
 
 // WizaryExam-specific CSS overrides to ensure unique design
 const wizaryExamStyles = `
-  /* Safe area support for mobile devices */
-  .wizary-exam-page {
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
-  }
-  
   /* WizaryExam-specific overrides */
   .wizary-exam-page * {
     --wizary-primary: #ff6b35;
@@ -693,7 +685,7 @@ export default function WizaryExam() {
 
   if (currentView === 'dashboard') {
     return (
-      <div className="flex min-h-screen bg-gray-100 wizary-exam-page">
+      <div className="flex h-screen bg-gray-100 wizary-exam-page">
         <style dangerouslySetInnerHTML={{ __html: wizaryExamStyles }} />
         
         {/* Sidebar */}
@@ -758,23 +750,26 @@ export default function WizaryExam() {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 flex flex-col min-w-0">
+        <div className="flex-1 flex flex-col">
           {/* Header */}
-          <header className="bg-orange-500 shadow-md h-12 sm:h-14 md:h-16 flex items-center justify-between px-3 sm:px-4 md:px-6">
-            <button
-              onClick={handleDashboardSidebarToggle}
-              className="text-white hover:text-gray-200 transition-colors duration-300 p-2 rounded-lg hover:bg-white/10"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-            <h1 className="text-lg sm:text-xl font-semibold text-white">MBHA</h1>
-            <div className="w-6"></div>
+          <header className="bg-orange-500 shadow-md p-2 sm:p-3 flex justify-between items-center text-white">
+            <div className="flex items-center">
+              <button
+                onClick={handleDashboardSidebarToggle}
+                className="p-1 sm:p-2 mr-2 sm:mr-3 text-white hover:bg-orange-600 rounded-lg transition-colors duration-200"
+              >
+                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">MBHA</h1>
+            </div>
+            <div className="flex items-center space-x-2 sm:space-x-3">
+            </div>
           </header>
 
           {/* Dashboard Content */}
-          <main className="flex-1 p-2 sm:p-4 md:p-6 overflow-y-auto min-w-0">
+          <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
               {/* Account Information */}
               <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
@@ -835,7 +830,7 @@ export default function WizaryExam() {
 
   if (currentView === 'exam-list') {
     return (
-      <div className="flex min-h-screen bg-gray-100 wizary-exam-page">
+      <div className="flex h-screen bg-gray-100 wizary-exam-page">
         <style dangerouslySetInnerHTML={{ __html: wizaryExamStyles }} />
         
         {/* Sidebar */}
@@ -900,42 +895,45 @@ export default function WizaryExam() {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 flex flex-col min-w-0">
+        <div className="flex-1 flex flex-col">
           {/* Header */}
-          <header className="bg-orange-500 shadow-md h-12 sm:h-14 md:h-16 flex items-center justify-between px-3 sm:px-4 md:px-6">
-            <button
-              onClick={handleDashboardSidebarToggle}
-              className="text-white hover:text-gray-200 transition-colors duration-300 p-2 rounded-lg hover:bg-white/10"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-            <h1 className="text-lg sm:text-xl font-semibold text-white">MBHA</h1>
-            <div className="w-6"></div>
+          <header className="bg-orange-500 shadow-md p-2 sm:p-3 flex justify-between items-center text-white">
+            <div className="flex items-center">
+              <button
+                onClick={handleDashboardSidebarToggle}
+                className="p-1 sm:p-2 mr-2 sm:mr-3 text-white hover:bg-orange-600 rounded-lg transition-colors duration-200"
+              >
+                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">MBHA</h1>
+            </div>
+            <div className="flex items-center space-x-2 sm:space-x-3">
+            </div>
           </header>
 
           {/* Exam List Content */}
-          <main className="flex-1 p-2 sm:p-4 md:p-6 overflow-y-auto min-w-0">
+          <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
 
             
             {/* Exam Info Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8 w-full overflow-hidden">
-              <div className="bg-green-700 text-white p-3 sm:p-4 rounded-lg text-center min-w-0 overflow-hidden">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+              <div className="bg-green-700 text-white p-3 sm:p-4 rounded-lg text-center">
                 <div className="text-xs sm:text-sm font-medium">الكلية/القسم</div>
-                <div className="text-sm sm:text-lg font-bold truncate">كلية الطب</div>
+                <div className="text-sm sm:text-lg font-bold">كلية الطب</div>
               </div>
-              <div className="bg-blue-700 text-white p-3 sm:p-4 rounded-lg text-center min-w-0 overflow-hidden">
+              <div className="bg-blue-700 text-white p-3 sm:p-4 rounded-lg text-center">
                 <div className="text-xs sm:text-sm font-medium">الجامعة</div>
-                <div className="text-sm sm:text-lg font-bold truncate">{user?.university || 'جامعة فلان'}</div>
+                <div className="text-sm sm:text-lg font-bold">{user?.university || 'جامعة فلان'}</div>
               </div>
-              <div className="bg-orange-500 text-white p-3 sm:p-4 rounded-lg text-center min-w-0 overflow-hidden">
+              <div className="bg-orange-500 text-white p-3 sm:p-4 rounded-lg text-center">
                 <div className="text-xs sm:text-sm font-medium">التاريخ</div>
-                <div className="text-sm sm:text-lg font-bold truncate">{getBaghdadTime().day}, {getBaghdadTime().month}, {getBaghdadTime().year}</div>
+                <div className="text-sm sm:text-lg font-bold">{getBaghdadTime().day}, {getBaghdadTime().month}, {getBaghdadTime().year}</div>
               </div>
-              <div className="bg-red-500 text-white p-3 sm:p-4 rounded-lg text-center min-w-0 overflow-hidden">
+              <div className="bg-red-500 text-white p-3 sm:p-4 rounded-lg text-center">
                 <div className="text-xs sm:text-sm font-medium">الساعة</div>
-                <div className="text-sm sm:text-lg font-bold truncate">{getBaghdadTime().time}</div>
+                <div className="text-sm sm:text-lg font-bold">{getBaghdadTime().time}</div>
               </div>
             </div>
 
@@ -1013,14 +1011,14 @@ export default function WizaryExam() {
                               <span>Time: {exam.time} min</span>
                             </div>
                           </div>
-                                                     <div className="ml-4">
-                                                           <button
-                                onClick={() => startExam(exam)}
-                                className="bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 text-xs font-medium whitespace-nowrap"
-                              >
-                                Take Exam
-                              </button>
-                           </div>
+                          <div className="ml-4">
+                            <button
+                              onClick={() => startExam(exam)}
+                              className="bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 text-xs font-medium whitespace-nowrap"
+                            >
+                              Take Exam
+                            </button>
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -1069,14 +1067,14 @@ export default function WizaryExam() {
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{exam.department}</td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{exam.questions}</td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{exam.time} Minute</td>
-                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                           <button
-                                onClick={() => startExam(exam)}
-                                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
-                              >
-                                Take Exam
-                              </button>
-                           </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            <button
+                              onClick={() => startExam(exam)}
+                              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                            >
+                              Take Exam
+                            </button>
+                          </td>
                         </tr>
                       ))
                     )}
@@ -1214,11 +1212,14 @@ export default function WizaryExam() {
         </aside>
 
         {/* Main Content */}
-        <div className="flex-1 flex flex-col min-w-0">
+        <div className="flex-1 flex flex-col">
           {/* Header */}
-          <header className="bg-blue-600 shadow-md h-12 sm:h-14 md:h-16 flex items-center justify-between px-3 sm:px-4 md:px-6">
-            <h1 className="text-lg sm:text-xl font-semibold text-white">MBHA</h1>
-            <div className="w-6"></div>
+          <header className="bg-blue-600 shadow-md p-2 sm:p-3 flex justify-between items-center text-white">
+            <div className="flex items-center">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">MBHA</h1>
+            </div>
+            <div className="flex items-center space-x-2 sm:space-x-3">
+            </div>
           </header>
 
           {/* Exam Content */}
@@ -1308,7 +1309,7 @@ export default function WizaryExam() {
 
   if (currentView === 'exam-taking') {
     return (
-      <div className="flex min-h-screen bg-gray-100 wizary-exam-page">
+      <div className="flex h-screen bg-gray-100 wizary-exam-page">
         <style dangerouslySetInnerHTML={{ __html: wizaryExamStyles }} />
         
         {/* Warning Overlay */}
@@ -1356,24 +1357,28 @@ export default function WizaryExam() {
         )}
         
         {/* Main Content */}
-        <div className="flex-1 flex flex-col min-w-0">
+        <div className="flex-1 flex flex-col">
           {/* Header */}
-          <header className="bg-blue-600 shadow-md h-12 sm:h-14 md:h-16 flex items-center justify-between px-3 sm:px-4 md:px-6">
-            <h1 className="text-lg sm:text-xl font-semibold text-white">MBHA</h1>
-            <button
-              onClick={() => setCurrentView('dashboard')}
-              className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg transition-colors duration-200 flex items-center space-x-2 text-sm"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              <span>رجوع</span>
-            </button>
+          <header className="bg-blue-600 shadow-md p-3 flex justify-between items-center text-white">
+            <div className="flex items-center">
+              <h1 className="text-3xl font-bold text-white">MBHA</h1>
+            </div>
+            <div className="flex items-center space-x-3">
+              <button
+                onClick={() => setCurrentView('dashboard')}
+                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center space-x-2"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+                <span>رجوع</span>
+              </button>
+            </div>
           </header>
 
           {/* Exam Content */}
-          <div className="flex-1 p-2 sm:p-4 md:p-6 flex items-center justify-center overflow-y-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 w-full max-w-6xl">
+          <div className="flex-1 p-8 flex items-center justify-center">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 max-w-8xl w-full">
               {/* Left Panel - Exam Start and Timer */}
               <div className="bg-white p-10 rounded-lg shadow-sm border-2 border-blue-600 flex flex-col items-center justify-center">
                 <div className="space-y-8 w-full">

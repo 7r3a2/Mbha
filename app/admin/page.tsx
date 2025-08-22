@@ -1031,23 +1031,23 @@ const saveAdd = async () => {
     let updatedStructure = [...approachStructure];
     
     if (grandParentId) {
-      // Move file within sub-folder (third level)
+      // Move files within sub-folder (third level)
       updatedStructure = updatedStructure.map(mainFolder => {
         if (mainFolder.id === grandParentId) {
           return {
             ...mainFolder,
-            children: mainFolder.children?.map((subFolder: any) => {
+            children: mainFolder.children.map((subFolder: any) => {
               if (subFolder.id === parentId) {
-                const files = [...(subFolder.children || [])];
-                const index = files.findIndex((file: any) => file.id === itemId);
+                const children = [...(subFolder.children || [])];
+                const index = children.findIndex((child: any) => child.id === itemId);
                 if (index > -1) {
                   if (direction === 'up' && index > 0) {
-                    [files[index], files[index - 1]] = [files[index - 1], files[index]];
-                  } else if (direction === 'down' && index < files.length - 1) {
-                    [files[index], files[index + 1]] = [files[index + 1], files[index]];
+                    [children[index], children[index - 1]] = [children[index - 1], children[index]];
+                  } else if (direction === 'down' && index < children.length - 1) {
+                    [children[index], children[index + 1]] = [children[index + 1], children[index]];
                   }
                 }
-                return { ...subFolder, children: files };
+                return { ...subFolder, children };
               }
               return subFolder;
             })
@@ -1056,7 +1056,7 @@ const saveAdd = async () => {
         return mainFolder;
       });
     } else if (parentId) {
-      // Move sub-folder within main folder (second level)
+      // Move sub-folders within main folder (second level)
       updatedStructure = updatedStructure.map(item => {
         if (item.id === parentId) {
           const children = [...(item.children || [])];
@@ -1073,7 +1073,7 @@ const saveAdd = async () => {
         return item;
       });
     } else {
-      // Move main folder (first level)
+      // Move main folders at root level (first level)
       const index = updatedStructure.findIndex(item => item.id === itemId);
       if (index > -1) {
         if (direction === 'up' && index > 0) {
@@ -2648,20 +2648,20 @@ const saveAdd = async () => {
                                             <div className="font-medium text-gray-700">{file.title}</div>
                                           </div>
                                           <div className="flex items-center gap-2">
-                                                                                <button
-                                      onClick={() => moveApproachItem(file.id, 'up', subFolder.id, mainFolder.id)}
-                                      disabled={fileIndex === 0}
-                                      className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 disabled:opacity-50"
-                                    >
-                                      ↑
-                                    </button>
-                                    <button
-                                      onClick={() => moveApproachItem(file.id, 'down', subFolder.id, mainFolder.id)}
-                                      disabled={fileIndex === subFolder.children.length - 1}
-                                      className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 disabled:opacity-50"
-                                    >
-                                      ↓
-                                    </button>
+                                            <button
+                                              onClick={() => moveApproachItem(file.id, 'up', subFolder.id, mainFolder.id)}
+                                              disabled={fileIndex === 0}
+                                              className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 disabled:opacity-50"
+                                            >
+                                              ↑
+                                            </button>
+                                            <button
+                                              onClick={() => moveApproachItem(file.id, 'down', subFolder.id, mainFolder.id)}
+                                              disabled={fileIndex === subFolder.children.length - 1}
+                                              className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 disabled:opacity-50"
+                                            >
+                                              ↓
+                                            </button>
                                             <button
                                               onClick={() => deleteApproachItem(file.id, subFolder.id, mainFolder.id)}
                                               className="px-2 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200"
