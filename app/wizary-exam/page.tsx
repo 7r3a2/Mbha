@@ -7,6 +7,14 @@ import { useAuth } from '@/lib/hooks/useAuth';
 
 // WizaryExam-specific CSS overrides to ensure unique design
 const wizaryExamStyles = `
+  /* Safe area insets support for mobile and iPad */
+  .wizary-exam-page {
+    padding-top: env(safe-area-inset-top);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
   /* WizaryExam-specific overrides */
   .wizary-exam-page * {
     --wizary-primary: #ff6b35;
