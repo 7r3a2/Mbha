@@ -1446,55 +1446,55 @@ export default function WizaryExam() {
           </header>
 
           {/* Exam Content */}
-          <div className="flex-1 p-8 flex items-center justify-center">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 max-w-8xl w-full">
+          <div className="flex-1 p-4 sm:p-6 lg:p-8 flex items-start justify-center bg-gray-100 min-h-full">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-10 max-w-8xl w-full">
               {/* Left Panel - Exam Start and Timer */}
-              <div className="bg-white p-10 rounded-lg shadow-sm border-2 border-blue-600 flex flex-col items-center justify-center">
-                <div className="space-y-8 w-full">
-                  <div className="bg-blue-600 text-white p-6 rounded-lg text-center">
-                    <p className="text-base">سوف يتم احتساب الوقت منذ لحظة الضغط على زر "أبدء الامتحان"</p>
+              <div className="bg-white p-6 sm:p-8 lg:p-10 rounded-lg shadow-sm border-2 border-blue-600 flex flex-col items-center justify-center">
+                <div className="space-y-6 sm:space-y-8 w-full">
+                  <div className="bg-blue-600 text-white p-4 sm:p-6 rounded-lg text-center">
+                    <p className="text-sm sm:text-base">سوف يتم احتساب الوقت منذ لحظة الضغط على زر "أبدء الامتحان"</p>
                   </div>
                   
                   <button
                     onClick={startQuiz}
-                    className="w-full bg-green-600 text-white py-8 rounded-lg text-2xl font-bold hover:bg-green-700 transition-colors duration-200"
+                    className="w-full bg-green-600 text-white py-6 sm:py-8 rounded-lg text-xl sm:text-2xl font-bold hover:bg-green-700 transition-colors duration-200"
                   >
                     أبدء الامتحان
                   </button>
                   
-                  <div className="bg-red-500 text-white p-6 rounded-lg text-center">
-                    <p className="text-base">Day, 00 Hours 00 Minute, 00 Second</p>
-                    <p className="text-base">الوقت المتبقي لانتهاء تاريخ الامتحان</p>
+                  <div className="bg-red-500 text-white p-4 sm:p-6 rounded-lg text-center">
+                    <p className="text-sm sm:text-base">Day, 00 Hours 00 Minute, 00 Second</p>
+                    <p className="text-sm sm:text-base">الوقت المتبقي لانتهاء تاريخ الامتحان</p>
                   </div>
                 </div>
               </div>
 
               {/* Right Panel - Exam Details Table with Blue Stroke */}
-              <div className="bg-white p-10 rounded-lg shadow-sm border-2 border-blue-600">
+              <div className="bg-white p-6 sm:p-8 lg:p-10 rounded-lg shadow-sm border-2 border-blue-600 min-h-full">
 
                 
-                <div className="space-y-6">
-                  <div className="flex justify-between border-b border-gray-200 pb-4">
-                    <span className="text-gray-800 text-xl">{user ? `${user.firstName} ${user.lastName}` : 'فلان فلان'}</span>
-                    <span className="text-gray-600 font-medium text-xl">اسم الطالب</span>
+                <div className="space-y-4 sm:space-y-6">
+                  <div className="flex justify-between border-b border-gray-200 pb-3 sm:pb-4">
+                    <span className="text-gray-800 text-sm sm:text-lg lg:text-xl">{user ? `${user.firstName} ${user.lastName}` : 'فلان فلان'}</span>
+                    <span className="text-gray-600 font-medium text-sm sm:text-lg lg:text-xl">اسم الطالب</span>
                   </div>
-                  <div className="flex justify-between border-b border-gray-200 pb-4">
-                    <span className="text-gray-800 text-xl">{user?.university || 'كلية الطب'} - المرحلة السادسة</span>
-                    <span className="text-gray-600 font-medium text-xl">القسم/الصف</span>
+                  <div className="flex justify-between border-b border-gray-200 pb-3 sm:pb-4">
+                    <span className="text-gray-800 text-sm sm:text-lg lg:text-xl">{user?.university || 'كلية الطب'} - المرحلة السادسة</span>
+                    <span className="text-gray-600 font-medium text-sm sm:text-lg lg:text-xl">القسم/الصف</span>
                   </div>
-                  <div className="flex justify-between border-b border-gray-200 pb-4">
-                    <span className="text-gray-800 text-xl">{selectedExam?.name || 'الامتحان التقويمي'}</span>
-                    <span className="text-gray-600 font-medium text-xl">اسم الامتحان</span>
+                  <div className="flex justify-between border-b border-gray-200 pb-3 sm:pb-4">
+                    <span className="text-gray-800 text-sm sm:text-lg lg:text-xl">{selectedExam?.name || 'الامتحان التقويمي'}</span>
+                    <span className="text-gray-600 font-medium text-sm sm:text-lg lg:text-xl">اسم الامتحان</span>
                   </div>
-                  <div className="flex justify-between border-b border-gray-200 pb-4">
-                    <span className="text-gray-800 text-xl">{selectedExam?.questions || 100}</span>
-                    <span className="text-gray-600 font-medium text-xl">عدد الاسئلة</span>
+                  <div className="flex justify-between border-b border-gray-200 pb-3 sm:pb-4">
+                    <span className="text-gray-800 text-sm sm:text-lg lg:text-xl">{selectedExam?.questions || 100}</span>
+                    <span className="text-gray-600 font-medium text-sm sm:text-lg lg:text-xl">عدد الاسئلة</span>
                   </div>
-                  <div className="flex justify-between border-b border-gray-200 pb-4">
-                    <span className="text-gray-800 text-xl">{selectedExam?.time || 180} دقيقة</span>
-                    <span className="text-gray-600 font-medium text-xl">الوقت</span>
+                  <div className="flex justify-between border-b border-gray-200 pb-3 sm:pb-4">
+                    <span className="text-gray-800 text-sm sm:text-lg lg:text-xl">{selectedExam?.time || 180} دقيقة</span>
+                    <span className="text-gray-600 font-medium text-sm sm:text-lg lg:text-xl">الوقت</span>
                   </div>
-                  <div className="flex justify-between border-b border-gray-200 pb-4">
+                  <div className="flex justify-between border-b border-gray-200 pb-3 sm:pb-4">
                     <input 
                       type="text" 
                       placeholder="أدخل رمز الامتحان السري"
@@ -1505,11 +1505,11 @@ export default function WizaryExam() {
                           verifySecretCode();
                         }
                       }}
-                      className="text-gray-800 bg-transparent border-none outline-none text-right text-xl"
+                      className="text-gray-800 bg-transparent border-none outline-none text-right text-sm sm:text-lg lg:text-xl w-full"
                     />
-                    <span className="text-gray-600 font-medium text-xl">رمز الامتحان السري</span>
+                    <span className="text-gray-600 font-medium text-sm sm:text-lg lg:text-xl whitespace-nowrap">رمز الامتحان السري</span>
                   </div>
-                  <div className="flex items-center justify-center space-x-4">
+                  <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-4 pt-2">
                     <button
                       onClick={verifySecretCode}
                       className="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 transition-colors duration-200"
@@ -1517,10 +1517,10 @@ export default function WizaryExam() {
                       تحقق
                     </button>
                     {codeVerified && (
-                      <span className="text-green-600 text-sm font-medium">✓ تم التحقق من رمز الامتحان السري</span>
+                      <span className="text-green-600 text-xs sm:text-sm font-medium text-center">✓ تم التحقق من رمز الامتحان السري</span>
                     )}
                     {codeError && (
-                      <span className="text-red-600 text-sm font-medium">{codeError}</span>
+                      <span className="text-red-600 text-xs sm:text-sm font-medium text-center">{codeError}</span>
                     )}
                   </div>
                 </div>
