@@ -7,6 +7,34 @@ import { useAuth } from '@/lib/hooks/useAuth';
 
 // WizaryExam-specific CSS overrides to ensure unique design
 const wizaryExamStyles = `
+  /* Safe area insets for mobile and iPad */
+  .wizary-exam-page {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height for mobile browsers */
+  }
+  
+  .wizary-exam-page .safe-area-header {
+    padding-top: max(env(safe-area-inset-top), 1rem);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  
+  .wizary-exam-page .safe-area-content {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .wizary-exam-page .safe-area-sidebar {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+  }
+  
   /* WizaryExam-specific overrides */
   .wizary-exam-page * {
     --wizary-primary: #ff6b35;
@@ -689,7 +717,7 @@ export default function WizaryExam() {
         <style dangerouslySetInnerHTML={{ __html: wizaryExamStyles }} />
         
         {/* Sidebar */}
-        <div className={`bg-gray-800 text-white flex flex-col transition-all duration-300 ${dashboardSidebarCollapsed ? 'w-16' : 'w-64'}`}>
+        <div className={`bg-gray-800 text-white flex flex-col transition-all duration-300 safe-area-sidebar ${dashboardSidebarCollapsed ? 'w-16' : 'w-64'}`}>
           {/* User Profile */}
           <div className="p-4 border-b border-gray-700">
             <div className={`flex items-center ${dashboardSidebarCollapsed ? 'justify-center' : 'space-x-3'}`}>
@@ -769,7 +797,7 @@ export default function WizaryExam() {
           </header>
 
           {/* Dashboard Content */}
-          <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+          <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto safe-area-content">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
               {/* Account Information */}
               <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
@@ -834,7 +862,7 @@ export default function WizaryExam() {
         <style dangerouslySetInnerHTML={{ __html: wizaryExamStyles }} />
         
         {/* Sidebar */}
-        <div className={`bg-gray-800 text-white flex flex-col transition-all duration-300 ${dashboardSidebarCollapsed ? 'w-16' : 'w-64'}`}>
+        <div className={`bg-gray-800 text-white flex flex-col transition-all duration-300 safe-area-sidebar ${dashboardSidebarCollapsed ? 'w-16' : 'w-64'}`}>
           {/* User Profile */}
           <div className="p-4 border-b border-gray-700">
             <div className={`flex items-center ${dashboardSidebarCollapsed ? 'justify-center' : 'space-x-3'}`}>
@@ -914,7 +942,7 @@ export default function WizaryExam() {
           </header>
 
           {/* Exam List Content */}
-          <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+          <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto safe-area-content">
 
             
             {/* Exam Info Cards */}
@@ -1110,7 +1138,7 @@ export default function WizaryExam() {
 
   if (currentView === 'quiz') {
     return (
-      <div className="flex min-h-screen bg-gray-100 wizary-exam-page">
+      <div className="flex min-h-screen bg-gray-100 wizary-exam-page safe-area-content">
         <style dangerouslySetInnerHTML={{ __html: wizaryExamStyles }} />
         
         {/* Warning Overlay */}
@@ -1159,7 +1187,7 @@ export default function WizaryExam() {
         
         {/* Question Navigation Sidebar */}
         <aside
-          className={`bg-white shadow-lg border-r border-gray-200 flex flex-col transition-all duration-300
+          className={`bg-white shadow-lg border-r border-gray-200 flex flex-col transition-all duration-300 safe-area-sidebar
             ${sidebarCollapsed ? 'w-16' : 'w-64 lg:w-80'}
           `}
           style={{ minWidth: sidebarCollapsed ? 64 : 320 }}
@@ -1214,7 +1242,7 @@ export default function WizaryExam() {
         {/* Main Content */}
         <div className="flex-1 flex flex-col">
           {/* Header */}
-          <header className="bg-blue-600 shadow-md p-2 sm:p-3 flex justify-between items-center text-white">
+          <header className="bg-blue-600 shadow-md p-2 sm:p-3 flex justify-between items-center text-white safe-area-header">
             <div className="flex items-center">
               <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">MBHA</h1>
             </div>
@@ -1223,7 +1251,7 @@ export default function WizaryExam() {
           </header>
 
           {/* Exam Content */}
-          <div className="flex-1 p-2 sm:p-4 md:p-8">
+          <div className="flex-1 p-2 sm:p-4 md:p-8 safe-area-content">
             {/* Question Panel */}
             <div className="bg-white p-3 sm:p-4 md:p-8 rounded-lg shadow-sm border border-gray-200 min-h-[300px] sm:min-h-[400px] md:min-h-[500px] flex flex-col">
               <div className="flex justify-between items-center mb-4 sm:mb-6 md:mb-8">
@@ -1309,7 +1337,7 @@ export default function WizaryExam() {
 
   if (currentView === 'exam-taking') {
     return (
-      <div className="flex h-screen bg-gray-100 wizary-exam-page">
+      <div className="flex h-screen bg-gray-100 wizary-exam-page safe-area-content">
         <style dangerouslySetInnerHTML={{ __html: wizaryExamStyles }} />
         
         {/* Warning Overlay */}
@@ -1359,7 +1387,7 @@ export default function WizaryExam() {
         {/* Main Content */}
         <div className="flex-1 flex flex-col">
           {/* Header */}
-          <header className="bg-blue-600 shadow-md p-3 flex justify-between items-center text-white">
+          <header className="bg-blue-600 shadow-md p-3 flex justify-between items-center text-white safe-area-header">
             <div className="flex items-center">
               <h1 className="text-3xl font-bold text-white">MBHA</h1>
             </div>
@@ -1377,7 +1405,7 @@ export default function WizaryExam() {
           </header>
 
           {/* Exam Content */}
-          <div className="flex-1 p-8 flex items-center justify-center">
+          <div className="flex-1 p-8 flex items-center justify-center safe-area-content">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 max-w-8xl w-full">
               {/* Left Panel - Exam Start and Timer */}
               <div className="bg-white p-10 rounded-lg shadow-sm border-2 border-blue-600 flex flex-col items-center justify-center">
@@ -1468,11 +1496,11 @@ export default function WizaryExam() {
     const totalQuestions = questions.length;
     
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 wizary-exam-page">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 wizary-exam-page safe-area-content">
         <style dangerouslySetInnerHTML={{ __html: wizaryExamStyles }} />
         
         {/* Results Content */}
-        <div className="min-h-screen flex items-center justify-center px-4 py-8">
+        <div className="min-h-screen flex items-center justify-center px-4 py-8 safe-area-content">
           <div className="max-w-4xl w-full">
             {/* Hero Score Card */}
             <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 p-10 mb-8 transform hover:scale-[1.02] transition-all duration-300">
