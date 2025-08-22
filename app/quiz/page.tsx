@@ -1259,10 +1259,10 @@ function QuizPageContent() {
 
              {/* Score Overlay */}
        {showScoreOverlay && (
-         <div className="fixed inset-0 bg-white flex items-center justify-center z-50 p-2 sm:p-4 md:p-8 overflow-y-auto">
-           <div className="bg-white rounded-2xl sm:rounded-3xl max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl w-full shadow-2xl overflow-y-auto border-2 border-blue-500 my-4 max-h-[95vh]">
-            {/* Header with gradient */}
-            <div className={`${getScoreColor(finalScore).bg} p-3 sm:p-4 md:p-4 lg:p-6 xl:p-8 text-center relative overflow-hidden`}>
+         <div className="fixed inset-0 bg-white flex items-center justify-center z-50 p-1 sm:p-2 md:p-4 lg:p-8 overflow-y-auto">
+           <div className="bg-white rounded-lg sm:rounded-2xl md:rounded-3xl max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl w-full shadow-2xl overflow-y-auto border-2 border-blue-500 my-2 sm:my-4 max-h-[98vh] sm:max-h-[95vh]">
+                         {/* Header with gradient */}
+             <div className={`${getScoreColor(finalScore).bg} p-2 sm:p-3 md:p-4 lg:p-6 xl:p-8 text-center relative overflow-hidden`}>
               {/* Background pattern */}
               <div className="absolute inset-0 opacity-10">
                 <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -1317,8 +1317,8 @@ function QuizPageContent() {
               </div>
             </div>
 
-            {/* Content */}
-            <div className="p-3 sm:p-4 md:p-4 lg:p-6 xl:p-8">
+                         {/* Content */}
+             <div className="p-2 sm:p-3 md:p-4 lg:p-6 xl:p-8">
               {/* Statistics Grid */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 md:gap-3 lg:gap-4 xl:gap-6 mb-4 sm:mb-6 md:mb-6 lg:mb-8">
                 <div className="text-center">
