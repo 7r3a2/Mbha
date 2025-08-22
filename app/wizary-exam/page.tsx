@@ -1444,53 +1444,53 @@ export default function WizaryExam() {
           </header>
 
           {/* Exam Content */}
-          <div className="flex-1 p-2 sm:p-4 md:p-6 lg:p-8 flex items-start justify-center bg-gray-100 min-h-screen sm:min-h-full overflow-hidden">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-4 md:gap-6 lg:gap-10 w-full max-w-5xl lg:max-w-7xl h-full">
+          <div className="flex-1 p-1 xs:p-2 sm:p-3 md:p-4 lg:p-6 xl:p-8 flex items-start justify-center bg-gray-100 min-h-screen sm:min-h-full overflow-hidden">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-1 xs:gap-2 sm:gap-3 md:gap-4 lg:gap-6 xl:gap-10 w-full max-w-xs xs:max-w-sm sm:max-w-md md:max-w-lg lg:max-w-4xl xl:max-w-7xl h-full">
               {/* Left Panel - Exam Start and Timer */}
-              <div className="bg-white p-3 sm:p-4 md:p-6 lg:p-8 rounded-lg shadow-sm border-2 border-blue-600 flex flex-col items-center justify-center h-full max-h-[80vh] sm:max-h-[85vh] md:max-h-full overflow-hidden">
-                <div className="space-y-3 sm:space-y-4 md:space-y-6 w-full overflow-y-auto">
-                  <div className="bg-blue-600 text-white p-2 sm:p-3 md:p-4 rounded-lg text-center">
-                    <p className="text-xs sm:text-sm md:text-base">سوف يتم احتساب الوقت منذ لحظة الضغط على زر "أبدء الامتحان"</p>
+              <div className="bg-white p-2 xs:p-3 sm:p-4 md:p-5 lg:p-6 xl:p-8 rounded-lg shadow-sm border-2 border-blue-600 flex flex-col items-center justify-center h-full max-h-[75vh] xs:max-h-[80vh] sm:max-h-[85vh] md:max-h-[90vh] lg:max-h-full overflow-hidden">
+                <div className="space-y-2 xs:space-y-3 sm:space-y-4 md:space-y-5 lg:space-y-6 w-full overflow-y-auto">
+                  <div className="bg-blue-600 text-white p-1 xs:p-2 sm:p-3 md:p-4 lg:p-5 rounded-lg text-center">
+                    <p className="text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl">سوف يتم احتساب الوقت منذ لحظة الضغط على زر "أبدء الامتحان"</p>
                   </div>
                   
                   <button
                     onClick={startQuiz}
-                    className="w-full bg-green-600 text-white py-3 sm:py-4 md:py-6 rounded-lg text-base sm:text-lg md:text-xl font-bold hover:bg-green-700 transition-colors duration-200"
+                    className="w-full bg-green-600 text-white py-2 xs:py-3 sm:py-4 md:py-5 lg:py-6 rounded-lg text-sm xs:text-base sm:text-lg md:text-xl lg:text-2xl font-bold hover:bg-green-700 transition-colors duration-200"
                   >
                     أبدء الامتحان
                   </button>
                   
-                  <div className="bg-red-500 text-white p-2 sm:p-3 md:p-4 rounded-lg text-center">
-                    <p className="text-xs sm:text-sm md:text-base">Day, 00 Hours 00 Minute, 00 Second</p>
-                    <p className="text-xs sm:text-sm md:text-base">الوقت المتبقي لانتهاء تاريخ الامتحان</p>
+                  <div className="bg-red-500 text-white p-1 xs:p-2 sm:p-3 md:p-4 lg:p-5 rounded-lg text-center">
+                    <p className="text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl">Day, 00 Hours 00 Minute, 00 Second</p>
+                    <p className="text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl">الوقت المتبقي لانتهاء تاريخ الامتحان</p>
                   </div>
                 </div>
               </div>
 
               {/* Right Panel - Exam Details Table with Blue Stroke */}
-              <div className="bg-white p-3 sm:p-4 md:p-6 lg:p-8 rounded-lg shadow-sm border-2 border-blue-600 h-full max-h-[80vh] sm:max-h-[85vh] md:max-h-full flex flex-col overflow-hidden">
+              <div className="bg-white p-2 xs:p-3 sm:p-4 md:p-5 lg:p-6 xl:p-8 rounded-lg shadow-sm border-2 border-blue-600 h-full max-h-[75vh] xs:max-h-[80vh] sm:max-h-[85vh] md:max-h-[90vh] lg:max-h-full flex flex-col overflow-hidden">
 
                 
-                <div className="space-y-1 sm:space-y-2 md:space-y-3 lg:space-y-4 flex-1 overflow-y-auto">
+                <div className="space-y-1 xs:space-y-2 sm:space-y-3 md:space-y-4 lg:space-y-5 flex-1 overflow-y-auto">
                   <div className="flex justify-between border-b border-gray-200 pb-1 sm:pb-2 md:pb-3 lg:pb-4">
-                    <span className="text-gray-800 text-xs sm:text-sm md:text-lg lg:text-xl">{user ? `${user.firstName} ${user.lastName}` : 'فلان فلان'}</span>
-                    <span className="text-gray-600 font-medium text-xs sm:text-sm md:text-lg lg:text-xl">اسم الطالب</span>
+                    <span className="text-gray-800 text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl">{user ? `${user.firstName} ${user.lastName}` : 'فلان فلان'}</span>
+                    <span className="text-gray-600 font-medium text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl">اسم الطالب</span>
                   </div>
                   <div className="flex justify-between border-b border-gray-200 pb-1 sm:pb-2 md:pb-3 lg:pb-4">
-                    <span className="text-gray-800 text-xs sm:text-sm md:text-lg lg:text-xl">{user?.university || 'كلية الطب'} - المرحلة السادسة</span>
-                    <span className="text-gray-600 font-medium text-xs sm:text-sm md:text-lg lg:text-xl">القسم/الصف</span>
+                    <span className="text-gray-800 text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl">{user?.university || 'كلية الطب'} - المرحلة السادسة</span>
+                    <span className="text-gray-600 font-medium text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl">القسم/الصف</span>
                   </div>
                   <div className="flex justify-between border-b border-gray-200 pb-1 sm:pb-2 md:pb-3 lg:pb-4">
-                    <span className="text-gray-800 text-xs sm:text-sm md:text-lg lg:text-xl">{selectedExam?.name || 'الامتحان التقويمي'}</span>
-                    <span className="text-gray-600 font-medium text-xs sm:text-sm md:text-lg lg:text-xl">اسم الامتحان</span>
+                    <span className="text-gray-800 text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl">{selectedExam?.name || 'الامتحان التقويمي'}</span>
+                    <span className="text-gray-600 font-medium text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl">اسم الامتحان</span>
                   </div>
                   <div className="flex justify-between border-b border-gray-200 pb-1 sm:pb-2 md:pb-3 lg:pb-4">
-                    <span className="text-gray-800 text-xs sm:text-sm md:text-lg lg:text-xl">{selectedExam?.questions || 100}</span>
-                    <span className="text-gray-600 font-medium text-xs sm:text-sm md:text-lg lg:text-xl">عدد الاسئلة</span>
+                    <span className="text-gray-800 text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl">{selectedExam?.questions || 100}</span>
+                    <span className="text-gray-600 font-medium text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl">عدد الاسئلة</span>
                   </div>
                   <div className="flex justify-between border-b border-gray-200 pb-1 sm:pb-2 md:pb-3 lg:pb-4">
-                    <span className="text-gray-800 text-xs sm:text-sm md:text-lg lg:text-xl">{selectedExam?.time || 180} دقيقة</span>
-                    <span className="text-gray-600 font-medium text-xs sm:text-sm md:text-lg lg:text-xl">الوقت</span>
+                    <span className="text-gray-800 text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl">{selectedExam?.time || 180} دقيقة</span>
+                    <span className="text-gray-600 font-medium text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl">الوقت</span>
                   </div>
                   <div className="flex justify-between border-b border-gray-200 pb-1 sm:pb-2 md:pb-3 lg:pb-4">
                     <input 
@@ -1503,9 +1503,9 @@ export default function WizaryExam() {
                           verifySecretCode();
                         }
                       }}
-                      className="text-gray-800 bg-transparent border-none outline-none text-right text-xs sm:text-sm md:text-lg lg:text-xl w-full"
+                      className="text-gray-800 bg-transparent border-none outline-none text-right text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl w-full"
                     />
-                    <span className="text-gray-600 font-medium text-xs sm:text-sm md:text-lg lg:text-xl whitespace-nowrap">رمز الامتحان السري</span>
+                    <span className="text-gray-600 font-medium text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl whitespace-nowrap">رمز الامتحان السري</span>
                   </div>
                   <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-4 pt-2 mt-auto">
                     <button
