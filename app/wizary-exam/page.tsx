@@ -1444,69 +1444,69 @@ export default function WizaryExam() {
           </header>
 
           {/* Exam Content */}
-          <div className="flex-1 p-1 sm:p-2 md:p-3 lg:p-4 flex items-start justify-center bg-gray-100 min-h-screen overflow-hidden">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-1 sm:gap-2 md:gap-3 lg:gap-4 w-full h-full">
+          <div className="flex-1 p-0 flex items-center justify-center bg-gray-100 min-h-screen">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 w-full h-full max-w-full">
               {/* Left Panel - Exam Start and Timer */}
-              <div className="bg-white p-2 sm:p-3 md:p-4 lg:p-6 rounded-lg shadow-sm border-2 border-blue-600 flex flex-col items-center justify-center h-full overflow-hidden">
-                <div className="space-y-2 sm:space-y-3 md:space-y-4 w-full overflow-y-auto">
-                  <div className="bg-blue-600 text-white p-1 sm:p-2 md:p-3 rounded-lg text-center">
-                    <p className="text-xs sm:text-sm md:text-base">سوف يتم احتساب الوقت منذ لحظة الضغط على زر "أبدء الامتحان"</p>
+              <div className="bg-white p-2 rounded-lg shadow-sm border-2 border-blue-600 flex flex-col items-center justify-center h-full">
+                <div className="space-y-1 w-full">
+                  <div className="bg-blue-600 text-white p-1 rounded text-center">
+                    <p className="text-xs">سوف يتم احتساب الوقت منذ لحظة الضغط على زر "أبدء الامتحان"</p>
                   </div>
                   
                   <button
                     onClick={startQuiz}
-                    className="w-full bg-green-600 text-white py-2 sm:py-3 md:py-4 rounded-lg text-sm sm:text-base md:text-lg font-bold hover:bg-green-700 transition-colors duration-200"
+                    className="w-full bg-green-600 text-white py-1 rounded text-xs font-bold hover:bg-green-700 transition-colors duration-200"
                   >
                     أبدء الامتحان
                   </button>
                   
-                  <div className="bg-red-500 text-white p-1 sm:p-2 md:p-3 rounded-lg text-center">
-                    <p className="text-xs sm:text-sm md:text-base">Day, 00 Hours 00 Minute, 00 Second</p>
-                    <p className="text-xs sm:text-sm md:text-base">الوقت المتبقي لانتهاء تاريخ الامتحان</p>
+                  <div className="bg-red-500 text-white p-1 rounded text-center">
+                    <p className="text-xs">Day, 00 Hours 00 Minute, 00 Second</p>
+                    <p className="text-xs">الوقت المتبقي لانتهاء تاريخ الامتحان</p>
                   </div>
                 </div>
               </div>
 
               {/* Right Panel - Exam Details Table with Blue Stroke */}
-              <div className="bg-white p-2 sm:p-3 md:p-4 lg:p-6 rounded-lg shadow-sm border-2 border-blue-600 h-full flex flex-col overflow-hidden">
+              <div className="bg-white p-2 rounded-lg shadow-sm border-2 border-blue-600 h-full flex flex-col">
 
                 
-                <div className="space-y-1 sm:space-y-2 md:space-y-3 flex-1 overflow-y-auto">
-                  <div className="flex justify-between border-b border-gray-200 pb-1 sm:pb-2 md:pb-3 lg:pb-4">
-                    <span className="text-gray-800 text-sm sm:text-base md:text-lg lg:text-xl">{user ? `${user.firstName} ${user.lastName}` : 'فلان فلان'}</span>
-                    <span className="text-gray-600 font-medium text-sm sm:text-base md:text-lg lg:text-xl">اسم الطالب</span>
+                <div className="space-y-1 flex-1">
+                  <div className="flex justify-between border-b border-gray-200 pb-1">
+                    <span className="text-gray-800 text-xs">{user ? `${user.firstName} ${user.lastName}` : 'فلان فلان'}</span>
+                    <span className="text-gray-600 font-medium text-xs">اسم الطالب</span>
                   </div>
-                  <div className="flex justify-between border-b border-gray-200 pb-1 sm:pb-2 md:pb-3 lg:pb-4">
-                    <span className="text-gray-800 text-sm sm:text-base md:text-lg lg:text-xl">{user?.university || 'كلية الطب'} - المرحلة السادسة</span>
-                    <span className="text-gray-600 font-medium text-sm sm:text-base md:text-lg lg:text-xl">القسم/الصف</span>
-                  </div>
-                  <div className="flex justify-between border-b border-gray-200 pb-1 sm:pb-2 md:pb-3 lg:pb-4">
-                    <span className="text-gray-800 text-sm sm:text-base md:text-lg lg:text-xl">{selectedExam?.name || 'الامتحان التقويمي'}</span>
-                    <span className="text-gray-600 font-medium text-sm sm:text-base md:text-lg lg:text-xl">اسم الامتحان</span>
-                  </div>
-                  <div className="flex justify-between border-b border-gray-200 pb-1 sm:pb-2 md:pb-3 lg:pb-4">
-                    <span className="text-gray-800 text-sm sm:text-base md:text-lg lg:text-xl">{selectedExam?.questions || 100}</span>
-                    <span className="text-gray-600 font-medium text-sm sm:text-base md:text-lg lg:text-xl">عدد الاسئلة</span>
-                  </div>
-                  <div className="flex justify-between border-b border-gray-200 pb-1 sm:pb-2 md:pb-3 lg:pb-4">
-                    <span className="text-gray-800 text-sm sm:text-base md:text-lg lg:text-xl">{selectedExam?.time || 180} دقيقة</span>
-                    <span className="text-gray-600 font-medium text-sm sm:text-base md:text-lg lg:text-xl">الوقت</span>
-                  </div>
-                  <div className="flex justify-between border-b border-gray-200 pb-1 sm:pb-2 md:pb-3 lg:pb-4">
-                    <input 
-                      type="text" 
-                      placeholder="أدخل رمز الامتحان السري"
-                      value={secretCode}
-                      onChange={(e) => setSecretCode(e.target.value)}
-                      onKeyPress={(e) => {
-                        if (e.key === 'Enter') {
-                          verifySecretCode();
-                        }
-                      }}
-                      className="text-gray-800 bg-transparent border-none outline-none text-right text-sm sm:text-base md:text-lg lg:text-xl w-full"
-                    />
-                    <span className="text-gray-600 font-medium text-sm sm:text-base md:text-lg lg:text-xl whitespace-nowrap">رمز الامتحان السري</span>
-                  </div>
+                                      <div className="flex justify-between border-b border-gray-200 pb-1">
+                      <span className="text-gray-800 text-xs">{user?.university || 'كلية الطب'} - المرحلة السادسة</span>
+                      <span className="text-gray-600 font-medium text-xs">القسم/الصف</span>
+                    </div>
+                                      <div className="flex justify-between border-b border-gray-200 pb-1">
+                      <span className="text-gray-800 text-xs">{selectedExam?.name || 'الامتحان التقويمي'}</span>
+                      <span className="text-gray-600 font-medium text-xs">اسم الامتحان</span>
+                    </div>
+                                      <div className="flex justify-between border-b border-gray-200 pb-1">
+                      <span className="text-gray-800 text-xs">{selectedExam?.questions || 100}</span>
+                      <span className="text-gray-600 font-medium text-xs">عدد الاسئلة</span>
+                    </div>
+                                      <div className="flex justify-between border-b border-gray-200 pb-1">
+                      <span className="text-gray-800 text-xs">{selectedExam?.time || 180} دقيقة</span>
+                      <span className="text-gray-600 font-medium text-xs">الوقت</span>
+                    </div>
+                                      <div className="flex justify-between border-b border-gray-200 pb-1">
+                      <input 
+                        type="text" 
+                        placeholder="أدخل رمز الامتحان السري"
+                        value={secretCode}
+                        onChange={(e) => setSecretCode(e.target.value)}
+                        onKeyPress={(e) => {
+                          if (e.key === 'Enter') {
+                            verifySecretCode();
+                          }
+                        }}
+                        className="text-gray-800 bg-transparent border-none outline-none text-right text-xs w-full"
+                      />
+                      <span className="text-gray-600 font-medium text-xs whitespace-nowrap">رمز الامتحان السري</span>
+                    </div>
                   <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-4 pt-2 mt-auto">
                     <button
                       onClick={verifySecretCode}
