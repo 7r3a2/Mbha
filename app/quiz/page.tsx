@@ -55,7 +55,28 @@ function QuizPageContent() {
   const [fontSize, setFontSize] = useState(16);
   const [calculatorValue, setCalculatorValue] = useState("");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const explanationRef = useRef<HTMLDivElement>(null);
+
+  // Mobile detection and sidebar management
+  useEffect(() => {
+    const checkIsMobile = () => {
+      const mobile = window.innerWidth <= 1024;
+      setIsMobile(mobile);
+      if (mobile) {
+        setSidebarCollapsed(true); // Force collapse on mobile
+      }
+    };
+
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
+    window.addEventListener('orientationchange', checkIsMobile);
+
+    return () => {
+      window.removeEventListener('resize', checkIsMobile);
+      window.removeEventListener('orientationchange', checkIsMobile);
+    };
+  }, []);
 
   // Fetch questions from database
   useEffect(() => {
@@ -400,7 +421,13 @@ function QuizPageContent() {
       }
     } 
   };
-  const handleSidebarToggle = () => setSidebarCollapsed((prev) => !prev);
+  const handleSidebarToggle = () => {
+    // Prevent expanding sidebar on mobile/iPad portrait
+    if (isMobile && sidebarCollapsed) {
+      return;
+    }
+    setSidebarCollapsed((prev) => !prev);
+  };
 
   // Navigation button color logic
   const getNavButtonState = (index: number) => {
@@ -764,7 +791,9 @@ function QuizPageContent() {
             <div className="flex flex-col items-center w-full h-full">
               <div className="pt-4">
                 <button
-                  className="p-2 rounded-full hover:bg-blue-100 text-blue-600"
+                  className={`p-2 rounded-full hover:bg-blue-100 text-blue-600 ${
+                    isMobile && sidebarCollapsed ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
                   onClick={handleSidebarToggle}
                   aria-label="Expand sidebar"
                 >
@@ -792,7 +821,9 @@ function QuizPageContent() {
             <div className="flex items-center justify-between mb-4 px-2 pt-2">
               <h2 className="text-xl font-bold text-blue-600 transition-all duration-200">Question Navigation</h2>
               <button
-                className="p-2 rounded-full hover:bg-blue-100 text-blue-600"
+                className={`p-2 rounded-full hover:bg-blue-100 text-blue-600 ${
+                  isMobile && sidebarCollapsed ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
                 onClick={handleSidebarToggle}
                 aria-label="Collapse sidebar"
               >
@@ -837,7 +868,7 @@ function QuizPageContent() {
       </aside>
 
       {/* Main Content */}
-      <main className={`flex-1 flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'ml-16' : 'ml-72'} md:ml-0`}> 
+      <main className={`flex-1 flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'ml-16' : 'ml-72'} md:ml-0 overflow-hidden`}> 
         {/* Header */}
         <header className="bg-blue-600 shadow-md p-2 sm:p-3 flex justify-between items-center text-white">
           <div className="flex items-center">
@@ -885,7 +916,7 @@ function QuizPageContent() {
           <div className="w-full flex flex-col h-full items-center">
             <div className="flex-grow flex w-full">
               {/* Question Panel */}
-              <div className={`bg-white p-3 sm:p-4 md:p-8 rounded-2xl shadow-xl border border-gray-200 flex flex-col min-h-0 transition-all duration-300 ${showExplanation && testMode === 'study' ? "w-1/2" : "w-full"}`}>
+              <div className={`bg-white p-2 sm:p-4 md:p-6 rounded-lg shadow-xl border border-gray-200 flex flex-col min-h-0 transition-all duration-300 ${showExplanation && testMode === 'study' ? "w-1/2" : "w-full"}`}>
                 <div className="flex justify-between items-start mb-4 sm:mb-6">
                   <div>
                     <span className="text-lg sm:text-2xl font-bold text-black">Q#{currentQuestionIndex + 1}</span>
@@ -906,7 +937,7 @@ function QuizPageContent() {
                         </svg>
                       </button>
                       {calculatorVisible && (
-                        <div className="absolute top-12 right-0 bg-white border border-gray-200 rounded-lg p-4 z-50 w-60 shadow-lg max-w-[90vw]">
+                        <div className="absolute top-12 right-0 bg-white border border-gray-200 rounded-lg p-2 sm:p-4 z-50 w-48 sm:w-60 shadow-lg max-w-[90vw]">
                           <input
                             type="text"
                             value={calculatorValue}
@@ -951,7 +982,7 @@ function QuizPageContent() {
                         </svg>
                       </button>
                       {showColorMenu && (
-                        <div className="absolute top-12 right-0 bg-white border border-gray-200 rounded-lg p-3 z-50 shadow-lg flex flex-col gap-2 max-w-[90vw]">
+                        <div className="absolute top-12 right-0 bg-white border border-gray-200 rounded-lg p-2 sm:p-3 z-50 shadow-lg flex flex-col gap-2 max-w-[90vw]">
                           <div className="flex gap-2">
                             {highlighterColors.map((colorObj, index) => (
                               <button
@@ -1105,10 +1136,10 @@ function QuizPageContent() {
 
               {/* Explanation Panel - Only for Study Mode */}
               {showExplanation && testMode === 'study' && (
-                <div className="w-1/2 flex-col min-h-0 ml-6">
+                <div className="w-1/2 flex-col min-h-0 ml-2 sm:ml-4 md:ml-6">
                   <div 
                     ref={explanationTextRef} 
-                    className="explanation-panel bg-white p-6 rounded-2xl shadow-xl border border-gray-200 flex-grow flex flex-col h-full break-words"
+                    className="explanation-panel bg-white p-2 sm:p-4 md:p-6 rounded-lg shadow-xl border border-gray-200 flex-grow flex flex-col h-full break-words"
                     onDoubleClick={preventDoubleClickSelection}
                   >
                     <div className="flex justify-between items-center mb-4">
