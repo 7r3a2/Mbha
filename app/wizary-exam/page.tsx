@@ -977,7 +977,7 @@ export default function WizaryExam() {
 
             
             {/* Exam Info Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6 w-full">
               <div className="bg-green-700 text-white p-3 sm:p-4 rounded-lg text-center">
                 <div className="text-xs sm:text-sm font-medium">الكلية/القسم</div>
                 <div className="text-sm sm:text-lg font-bold">كلية الطب</div>
@@ -997,7 +997,7 @@ export default function WizaryExam() {
             </div>
 
             {/* Exam List */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 h-full">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 w-full h-full">
               <div className="p-4 sm:p-6 border-b border-gray-200">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 relative gap-4">
                   <h3 className="text-lg sm:text-xl font-bold text-gray-800">List Exam</h3>
@@ -1086,7 +1086,7 @@ export default function WizaryExam() {
               </div>
               
               {/* Desktop Table View */}
-              <div className="hidden sm:block overflow-x-auto h-full">
+              <div className="hidden sm:block overflow-x-auto h-full w-full">
                 <table className="w-full">
                   <thead className="bg-gray-50">
                     <tr>
@@ -1143,7 +1143,7 @@ export default function WizaryExam() {
             </div>
 
             {/* Pagination */}
-            <div className="flex justify-center items-center space-x-2 sm:space-x-4 mt-4 sm:mt-6">
+            <div className="flex justify-center items-center space-x-2 sm:space-x-4 mt-4 sm:mt-6 w-full">
               <button 
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
