@@ -973,11 +973,11 @@ export default function WizaryExam() {
           </header>
 
           {/* Exam List Content */}
-          <main className="flex-1 p-2 sm:p-4 overflow-y-auto">
+          <main className="flex-1 p-2 overflow-y-auto">
 
             
             {/* Exam Info Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-4 sm:mb-6 w-full">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 mb-4 w-full">
               <div className="bg-green-700 text-white p-2 sm:p-3 rounded text-center">
                 <div className="text-sm sm:text-base font-medium">الكلية/القسم</div>
                 <div className="text-sm sm:text-base font-bold">كلية الطب</div>
@@ -998,28 +998,28 @@ export default function WizaryExam() {
 
             {/* Exam List */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 w-full h-full">
-              <div className="p-3 sm:p-4 border-b border-gray-200">
-                                                                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 sm:mb-4 relative gap-3 sm:gap-4">
-                                        <h3 className="text-base sm:text-lg font-bold text-gray-800">List Exam</h3>
-                                                                             <button
-                       onClick={() => setExamMenuOpen(!examMenuOpen)}
-                       className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors duration-200 text-sm"
-                     >
-                       <span className="text-sm font-medium">Choose Exam</span>
-                                                                                      <svg 
-                          className={`w-4 h-4 transition-transform duration-200 ${examMenuOpen ? 'rotate-180' : ''}`} 
-                          fill="none" 
-                          stroke="currentColor" 
-                          viewBox="0 0 24 24"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
+              <div className="p-2 border-b border-gray-200">
+                                                                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 relative gap-2">
+                                        <h3 className="text-sm sm:text-base font-bold text-gray-800">List Exam</h3>
+                                                                                                                                                           <button
+                        onClick={() => setExamMenuOpen(!examMenuOpen)}
+                        className="flex items-center gap-1 px-2 py-1 bg-orange-500 text-white rounded text-xs"
+                      >
+                        <span className="text-xs font-medium">Choose Exam</span>
+                                                                                                                                                                              <svg 
+                            className={`w-3 h-3 transition-transform duration-200 ${examMenuOpen ? 'rotate-180' : ''}`} 
+                            fill="none" 
+                            stroke="currentColor" 
+                            viewBox="0 0 24 24"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
                   </button>
                   {/* Overlay Menu */}
                   {examMenuOpen && (
-                    <div className="absolute top-full right-0 bg-white border border-gray-200 rounded-lg shadow-lg z-10 mt-2 min-w-48 w-full sm:w-auto">
-                      <div className="p-3 sm:p-4">
-                        <div className="space-y-2">
+                    <div className="absolute top-full right-0 bg-white border border-gray-200 rounded shadow-lg z-10 mt-1 min-w-32 w-full sm:w-auto">
+                      <div className="p-2">
+                        <div className="space-y-1">
                           {subjects.map((subject) => (
                             <button
                               key={subject.id}
@@ -1027,9 +1027,9 @@ export default function WizaryExam() {
                                 setSelectedSubject(subject.name);
                                 setExamMenuOpen(false);
                               }}
-                              className={`w-full px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-left ${
+                              className={`w-full px-2 py-1 rounded text-xs font-medium transition-all duration-200 text-left ${
                                 selectedSubject === subject.name
-                                  ? 'bg-orange-500 text-white shadow-lg'
+                                  ? 'bg-orange-500 text-white'
                                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                               }`}
                             >
@@ -1086,17 +1086,17 @@ export default function WizaryExam() {
               </div>
               
               {/* Desktop Table View */}
-              <div className="hidden sm:block overflow-x-auto h-full w-full">
+              <div className="hidden sm:block h-full w-full">
                 <table className="w-full">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-3 sm:px-6 py-3 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">#</th>
-                      <th className="px-3 sm:px-6 py-3 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">اسم الامتحان</th>
-                      <th className="px-3 sm:px-6 py-3 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">المادة</th>
-                      <th className="px-3 sm:px-6 py-3 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">الكلية/القسم</th>
-                      <th className="px-3 sm:px-6 py-3 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">عدد الاسئلة</th>
-                      <th className="px-3 sm:px-6 py-3 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">الوقت بالدقائق</th>
-                      <th className="px-3 sm:px-6 py-3 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">ادوات</th>
+                      <th className="px-2 py-2 text-left text-xs font-medium text-gray-500">#</th>
+                      <th className="px-2 py-2 text-left text-xs font-medium text-gray-500">اسم الامتحان</th>
+                      <th className="px-2 py-2 text-left text-xs font-medium text-gray-500">المادة</th>
+                      <th className="px-2 py-2 text-left text-xs font-medium text-gray-500">الكلية/القسم</th>
+                      <th className="px-2 py-2 text-left text-xs font-medium text-gray-500">عدد الاسئلة</th>
+                      <th className="px-2 py-2 text-left text-xs font-medium text-gray-500">الوقت بالدقائق</th>
+                      <th className="px-2 py-2 text-left text-xs font-medium text-gray-500">ادوات</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
@@ -1118,18 +1118,18 @@ export default function WizaryExam() {
                     ) : (
                       currentExams.map((exam, index) => (
                         <tr key={exam.id} className={`hover:bg-gray-50 ${exam.importedData ? 'bg-green-50' : ''}`}>
-                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{startIndex + index + 1}</td>
-                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          <td className="px-2 py-2 text-xs font-medium text-gray-900">{startIndex + index + 1}</td>
+                          <td className="px-2 py-2 text-xs text-gray-900">
                             {exam.name}
                           </td>
-                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{exam.subject}</td>
-                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{exam.department}</td>
-                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{exam.questions}</td>
-                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">{exam.time} Minute</td>
-                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          <td className="px-2 py-2 text-xs text-gray-900">{exam.subject}</td>
+                          <td className="px-2 py-2 text-xs text-gray-900">{exam.department}</td>
+                          <td className="px-2 py-2 text-xs text-gray-900">{exam.questions}</td>
+                          <td className="px-2 py-2 text-xs text-gray-900">{exam.time} Minute</td>
+                          <td className="px-2 py-2 text-xs text-gray-900">
                             <button
                               onClick={() => startExam(exam)}
-                              className="bg-blue-600 text-white px-3 sm:px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm"
+                              className="bg-blue-600 text-white px-2 py-1 rounded text-xs"
                             >
                               Take Exam
                             </button>
