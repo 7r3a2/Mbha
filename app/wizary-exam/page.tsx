@@ -9,10 +9,6 @@ import { useAuth } from '@/lib/hooks/useAuth';
 const wizaryExamStyles = `
   /* Safe area insets for mobile and iPad */
   .wizary-exam-page {
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
     min-height: 100vh;
     min-height: 100dvh; /* Dynamic viewport height for mobile browsers */
   }
@@ -1138,7 +1134,7 @@ export default function WizaryExam() {
 
   if (currentView === 'quiz') {
     return (
-      <div className="flex min-h-screen bg-gray-100 wizary-exam-page safe-area-content">
+      <div className="flex min-h-screen bg-gray-100 wizary-exam-page">
         <style dangerouslySetInnerHTML={{ __html: wizaryExamStyles }} />
         
         {/* Warning Overlay */}
@@ -1251,7 +1247,7 @@ export default function WizaryExam() {
           </header>
 
           {/* Exam Content */}
-          <div className="flex-1 p-2 sm:p-4 md:p-8 safe-area-content">
+          <div className="flex-1 p-2 sm:p-4 md:p-8">
             {/* Question Panel */}
             <div className="bg-white p-3 sm:p-4 md:p-8 rounded-lg shadow-sm border border-gray-200 min-h-[300px] sm:min-h-[400px] md:min-h-[500px] flex flex-col">
               <div className="flex justify-between items-center mb-4 sm:mb-6 md:mb-8">
@@ -1337,7 +1333,7 @@ export default function WizaryExam() {
 
   if (currentView === 'exam-taking') {
     return (
-      <div className="flex h-screen bg-gray-100 wizary-exam-page safe-area-content">
+      <div className="flex h-screen bg-gray-100 wizary-exam-page">
         <style dangerouslySetInnerHTML={{ __html: wizaryExamStyles }} />
         
         {/* Warning Overlay */}
@@ -1405,7 +1401,7 @@ export default function WizaryExam() {
           </header>
 
           {/* Exam Content */}
-          <div className="flex-1 p-8 flex items-center justify-center safe-area-content">
+          <div className="flex-1 p-8 flex items-center justify-center">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 max-w-8xl w-full">
               {/* Left Panel - Exam Start and Timer */}
               <div className="bg-white p-10 rounded-lg shadow-sm border-2 border-blue-600 flex flex-col items-center justify-center">
@@ -1496,11 +1492,11 @@ export default function WizaryExam() {
     const totalQuestions = questions.length;
     
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 wizary-exam-page safe-area-content">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 wizary-exam-page">
         <style dangerouslySetInnerHTML={{ __html: wizaryExamStyles }} />
         
         {/* Results Content */}
-        <div className="min-h-screen flex items-center justify-center px-4 py-8 safe-area-content">
+        <div className="min-h-screen flex items-center justify-center px-4 py-8">
           <div className="max-w-4xl w-full">
             {/* Hero Score Card */}
             <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 p-10 mb-8 transform hover:scale-[1.02] transition-all duration-300">
