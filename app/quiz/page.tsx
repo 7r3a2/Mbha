@@ -65,12 +65,11 @@ function QuizPageContent() {
        const isPortrait = window.innerHeight > window.innerWidth;
        const isMobilePortrait = window.innerWidth <= 768 && isPortrait;
        const isIpadPortrait = window.innerWidth <= 1024 && isPortrait;
-       const shouldCollapse = isMobilePortrait || isIpadPortrait;
-       // For mobile landscape, we want the question card to extend by height, not take full screen
        const isMobileLandscape = window.innerWidth <= 768 && !isPortrait;
-       setIsMobile(shouldCollapse || isMobileLandscape);
+       const shouldCollapse = isMobilePortrait || isIpadPortrait || isMobileLandscape;
+       setIsMobile(shouldCollapse);
        if (shouldCollapse) {
-         setSidebarCollapsed(true); // Force collapse on mobile/iPad portrait
+         setSidebarCollapsed(true); // Force collapse on mobile/iPad portrait AND mobile landscape
        } else {
          setSidebarCollapsed(false); // Keep expanded on other screen sizes
        }
@@ -916,8 +915,8 @@ function QuizPageContent() {
                                             {/* Question Panel */}
                 <div className={`bg-white p-2 sm:p-4 md:p-6 rounded-lg shadow-xl border border-gray-200 flex flex-col min-h-0 transition-all duration-300 ${
                   showExplanation && testMode === 'study' 
-                    ? (isMobile && window.innerHeight > window.innerWidth) ? "hidden" : "w-1/2" 
-                    : "w-full"
+                    ? (isMobile && window.innerHeight > window.innerWidth) ? "hidden" : "w-auto max-w-[50%]" 
+                    : "w-auto max-w-full"
                 }`}>
                 <div className="flex justify-between items-start mb-4 sm:mb-6">
                   <div>
@@ -1138,7 +1137,7 @@ function QuizPageContent() {
 
                                             {/* Explanation Panel - Only for Study Mode */}
                 {showExplanation && testMode === 'study' && (
-                  <div className={`${(isMobile && window.innerHeight > window.innerWidth) ? "w-full" : "w-1/2"} flex-col min-h-0 ${(isMobile && window.innerHeight > window.innerWidth) ? "" : "ml-2 sm:ml-4 md:ml-6"} max-w-full overflow-hidden`}>
+                  <div className={`${(isMobile && window.innerHeight > window.innerWidth) ? "w-full" : "w-auto max-w-[50%]"} flex-col min-h-0 ${(isMobile && window.innerHeight > window.innerWidth) ? "" : "ml-2 sm:ml-4 md:ml-6"} max-w-full overflow-hidden`}>
                   <div 
                     ref={explanationTextRef} 
                     className="explanation-panel bg-white p-2 sm:p-4 md:p-6 rounded-lg shadow-xl border border-gray-200 flex-grow flex flex-col h-full break-words overflow-hidden"
