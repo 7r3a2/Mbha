@@ -67,11 +67,18 @@ function QuizPageContent() {
        const isIpadPortrait = window.innerWidth <= 1024 && isPortrait;
        const isMobileLandscape = window.innerWidth <= 768 && !isPortrait;
        const shouldCollapse = isMobilePortrait || isIpadPortrait || isMobileLandscape;
-       setIsMobile(shouldCollapse);
-       if (shouldCollapse) {
-         setSidebarCollapsed(true); // Force collapse on mobile/iPad portrait AND mobile landscape
+       
+       // Force collapse on ALL mobile devices (both portrait and landscape)
+       if (window.innerWidth <= 768) {
+         setIsMobile(true);
+         setSidebarCollapsed(true);
+       } else if (window.innerWidth <= 1024 && isPortrait) {
+         // iPad portrait only
+         setIsMobile(true);
+         setSidebarCollapsed(true);
        } else {
-         setSidebarCollapsed(false); // Keep expanded on other screen sizes
+         setIsMobile(false);
+         setSidebarCollapsed(false);
        }
      };
 
