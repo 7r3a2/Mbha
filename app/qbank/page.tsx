@@ -1170,7 +1170,7 @@ const [isMobile, setIsMobile] = useState(false);
   };
 
   return (
-    <div className="flex h-screen bg-gray-100 qbank-page">
+    <div className="flex h-screen bg-gray-100 qbank-page" style={{ minHeight: '100dvh' }}>
       {/* Inject Qbank-specific styles */}
       <style dangerouslySetInnerHTML={{ __html: qbankStyles }} />
       

@@ -736,7 +736,7 @@ export default function WizaryExam() {
 
   if (currentView === 'dashboard') {
     return (
-      <div className="flex h-screen bg-gray-100 wizary-exam-page">
+      <div className="flex h-screen bg-gray-100 wizary-exam-page" style={{ minHeight: '100dvh' }}>
         <style dangerouslySetInnerHTML={{ __html: wizaryExamStyles }} />
         
         {/* Sidebar */}
@@ -885,7 +885,7 @@ export default function WizaryExam() {
 
   if (currentView === 'exam-list') {
     return (
-      <div className="flex h-screen bg-gray-100 wizary-exam-page">
+      <div className="flex h-screen bg-gray-100 wizary-exam-page" style={{ minHeight: '100dvh' }}>
         <style dangerouslySetInnerHTML={{ __html: wizaryExamStyles }} />
         
         {/* Sidebar */}
@@ -1380,7 +1380,7 @@ export default function WizaryExam() {
 
   if (currentView === 'exam-taking') {
     return (
-      <div className="flex h-screen bg-gray-100 wizary-exam-page">
+      <div className="flex h-screen bg-gray-100 wizary-exam-page" style={{ minHeight: '100dvh' }}>
         <style dangerouslySetInnerHTML={{ __html: wizaryExamStyles }} />
         
         {/* Warning Overlay */}
