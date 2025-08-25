@@ -51,6 +51,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
+    // Allow userAnswer to be -1 (no answer yet) for flagging without answering
+    if (userAnswer < -1 || userAnswer > 4) {
+      console.log('❌ Invalid user answer value:', userAnswer);
+      return NextResponse.json({ error: 'Invalid answer value' }, { status: 400 });
+    }
+
     // Upsert user response (update if exists, create if not)
     const response = await prisma.userResponse.upsert({
       where: {

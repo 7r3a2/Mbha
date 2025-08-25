@@ -97,7 +97,7 @@ export async function GET(request: NextRequest) {
          console.log(`📊 Sample responses:`, responses.slice(0, 3));
         
         // Create a map of questionId to response
-        const responseMap = responses.reduce((acc, response) => {
+        const responseMap = responses.reduce((acc: Record<string, any>, response: any) => {
           acc[response.questionId] = response;
           return acc;
         }, {} as Record<string, any>);
@@ -111,6 +111,7 @@ export async function GET(request: NextRequest) {
              filteredQuestionIds = questionIds.filter(id => !responseMap[id]);
              console.log(`🆕 Unused questions: ${filteredQuestionIds.length}`);
              console.log(`🆕 Sample unused question IDs:`, filteredQuestionIds.slice(0, 3));
+             console.log(`🆕 Total questions: ${questionIds.length}, Responses found: ${Object.keys(responseMap).length}`);
              break;
            case 'incorrect':
              // Return questions that user answered incorrectly
@@ -119,15 +120,17 @@ export async function GET(request: NextRequest) {
              );
              console.log(`❌ Incorrect questions: ${filteredQuestionIds.length}`);
              console.log(`❌ Sample incorrect question IDs:`, filteredQuestionIds.slice(0, 3));
+             console.log(`❌ Total responses: ${Object.keys(responseMap).length}, Incorrect responses: ${Object.values(responseMap).filter((r: any) => !r.isCorrect).length}`);
              break;
            case 'flagged':
-             // Return questions that user flagged
+             // Return questions that user flagged (regardless of whether answered)
              filteredQuestionIds = questionIds.filter(id => 
                responseMap[id] && responseMap[id].isFlagged
              );
              console.log(`🚩 Flagged questions: ${filteredQuestionIds.length}`);
              console.log(`🚩 Sample flagged question IDs:`, filteredQuestionIds.slice(0, 3));
-             console.log(`🚩 Response map with flagged questions:`, Object.entries(responseMap).filter(([id, response]) => response.isFlagged).slice(0, 3));
+             console.log(`🚩 Total responses: ${Object.keys(responseMap).length}, Flagged responses: ${Object.values(responseMap).filter((r: any) => r.isFlagged).length}`);
+             console.log(`🚩 Response map with flagged questions:`, Object.entries(responseMap).filter(([id, response]: [string, any]) => response.isFlagged).slice(0, 3));
              break;
            default:
              // Default to 'all'

@@ -37,7 +37,7 @@ model UserResponse {
   id         String   @id @default(cuid())
   userId     String
   questionId String   // ID of the question from qbank
-  userAnswer Int      // 0, 1, 2, 3, 4 (A, B, C, D, E)
+  userAnswer Int      // -1 (no answer), 0, 1, 2, 3, 4 (A, B, C, D, E)
   isCorrect  Boolean  // Whether the answer was correct
   isFlagged  Boolean  @default(false) // Whether user flagged this question
   answeredAt DateTime @default(now())

@@ -522,14 +522,26 @@ function QuizPageContent() {
     // Save the flag status to database
     const currentQuestion = questions[currentQuestionIndex];
     const currentAnswer = answers[currentQuestionIndex];
-    if (currentQuestion && currentAnswer !== null) {
-      const isCorrect = currentAnswer === currentQuestion.correct;
-      saveUserResponse(
-        currentQuestion.id.toString(),
-        currentAnswer,
-        isCorrect,
-        newFlagged[currentQuestionIndex]
-      );
+    
+    if (currentQuestion) {
+      if (currentAnswer !== null) {
+        // User has answered, save with answer
+        const isCorrect = currentAnswer === currentQuestion.correct;
+        saveUserResponse(
+          currentQuestion.id.toString(),
+          currentAnswer,
+          isCorrect,
+          newFlagged[currentQuestionIndex]
+        );
+      } else {
+        // User hasn't answered yet, save just the flag status
+        saveUserResponse(
+          currentQuestion.id.toString(),
+          -1, // -1 indicates no answer yet
+          false, // Not correct since no answer
+          newFlagged[currentQuestionIndex]
+        );
+      }
     }
   };
   const handleCalculatorClick = (value: string | number) => {
