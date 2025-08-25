@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { questionId, userAnswer, isCorrect, isFlagged } = body;
 
-    console.log(`💾 Saving user response - User: ${user.id}, Question: ${questionId}, Answer: ${userAnswer}, Correct: ${isCorrect}, Flagged: ${isFlagged}`);
+    console.log(`💾 Saving user response - User: ${user.userId}, Question: ${questionId}, Answer: ${userAnswer}, Correct: ${isCorrect}, Flagged: ${isFlagged}`);
 
     if (!questionId || userAnswer === undefined || isCorrect === undefined) {
       console.log('❌ Missing required fields in user response');
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
     const response = await prisma.userResponse.upsert({
       where: {
         userId_questionId: {
-          userId: user.id,
+          userId: user.userId,
           questionId: questionId.toString()
         }
       },
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
         answeredAt: new Date()
       },
       create: {
-        userId: user.id,
+        userId: user.userId,
         questionId: questionId.toString(),
         userAnswer,
         isCorrect,
@@ -108,7 +108,7 @@ export async function GET(request: NextRequest) {
     // Get user responses for the specified questions
     const responses = await prisma.userResponse.findMany({
       where: {
-        userId: user.id,
+        userId: user.userId,
         questionId: {
           in: questionIdArray
         }

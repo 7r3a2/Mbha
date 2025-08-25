@@ -74,8 +74,10 @@ export async function GET(request: NextRequest) {
         }
         
         const user = await verifyToken(token);
-        if (!user || user.id !== userId) {
+        if (!user || user.userId !== userId) {
           console.log('❌ Invalid user or token');
+          console.log('🔍 Token user ID:', user?.userId);
+          console.log('🔍 Request user ID:', userId);
           throw new Error('Invalid user');
         }
         
