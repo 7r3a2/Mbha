@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 // Sample questions removed - will fetch from database
 
 // Function to fetch questions from database
-const fetchQuestions = async (sources: string, topics: string, count: number) => {
+const fetchQuestions = async (sources: string, topics: string, count: number, questionMode: string = 'all') => {
   try {
     const params = new URLSearchParams({
       sources,
@@ -19,7 +19,36 @@ const fetchQuestions = async (sources: string, topics: string, count: number) =>
     }
     
     const data = await response.json();
-    return data.questions || [];
+    let questions = data.questions || [];
+
+    // If question mode is not 'all', filter based on user responses
+    if (questionMode !== 'all' && questions.length > 0) {
+      const questionIds = questions.map((q: any) => q.id.toString());
+      
+      // Get user responses for these questions
+      const userResponseParams = new URLSearchParams({
+        questionIds: questionIds.join(','),
+        mode: questionMode
+      });
+      
+      const userResponseRes = await fetch(`/api/qbank/user-responses?${userResponseParams}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+        }
+      });
+      
+      if (userResponseRes.ok) {
+        const userResponseData = await userResponseRes.json();
+        const filteredQuestionIds = userResponseData.filteredQuestionIds || [];
+        
+        // Filter questions to only include those that match the mode
+        questions = questions.filter((q: any) => 
+          filteredQuestionIds.includes(q.id.toString())
+        );
+      }
+    }
+    
+    return questions;
   } catch (error) {
     console.error('Error fetching questions:', error);
     return [];
@@ -33,6 +62,7 @@ function QuizPageContent() {
   const customTimeMinutes = parseInt(searchParams.get('time') || '60'); // Default 60 minutes if not provided
   const sources = searchParams.get('sources') || '';
   const topics = searchParams.get('topics') || '';
+  const questionMode = searchParams.get('questionMode') || 'all'; // 'all', 'unused', 'incorrect', 'flagged'
   
   const [questions, setQuestions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -99,9 +129,10 @@ function QuizPageContent() {
       setError(null);
       
       try {
-        const fetchedQuestions = await fetchQuestions(sources, topics, questionCount);
+        const fetchedQuestions = await fetchQuestions(sources, topics, questionCount, questionMode);
         if (fetchedQuestions.length === 0) {
-          setError('No questions found for the selected criteria. Please try different sources or topics.');
+          const modeText = questionMode === 'all' ? '' : ` in ${questionMode} mode`;
+          setError(`No questions found for the selected criteria${modeText}. Please try different sources, topics, or question mode.`);
         } else {
           // Shuffle questions randomly
           const shuffled = [...fetchedQuestions].sort(() => Math.random() - 0.5);
@@ -353,11 +384,47 @@ function QuizPageContent() {
   const goToPrevious = () => {
     if (currentQuestionIndex > 0) goToQuestion(currentQuestionIndex - 1);
   };
+  // Function to save user response to database
+  const saveUserResponse = async (questionId: string, userAnswer: number, isCorrect: boolean, isFlagged: boolean) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      await fetch('/api/qbank/user-responses', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          questionId,
+          userAnswer,
+          isCorrect,
+          isFlagged
+        })
+      });
+    } catch (error) {
+      console.error('Error saving user response:', error);
+    }
+  };
+
   const selectAnswer = (optionIndex: number) => {
     if (!submitted[currentQuestionIndex]) {
       const newAnswers = [...answers];
       newAnswers[currentQuestionIndex] = optionIndex;
       setAnswers(newAnswers);
+      
+      // Save the response to database
+      const currentQuestion = questions[currentQuestionIndex];
+      if (currentQuestion) {
+        const isCorrect = optionIndex === currentQuestion.correct;
+        saveUserResponse(
+          currentQuestion.id.toString(),
+          optionIndex,
+          isCorrect,
+          flagged[currentQuestionIndex] || false
+        );
+      }
       
       // Don't clear flag when answer is selected - keep orange color
       // Flag should only be cleared when explicitly toggled off
@@ -388,6 +455,19 @@ function QuizPageContent() {
     const newFlagged = [...flagged];
     newFlagged[currentQuestionIndex] = !newFlagged[currentQuestionIndex];
     setFlagged(newFlagged);
+    
+    // Save the flag status to database
+    const currentQuestion = questions[currentQuestionIndex];
+    const currentAnswer = answers[currentQuestionIndex];
+    if (currentQuestion && currentAnswer !== null) {
+      const isCorrect = currentAnswer === currentQuestion.correct;
+      saveUserResponse(
+        currentQuestion.id.toString(),
+        currentAnswer,
+        isCorrect,
+        newFlagged[currentQuestionIndex]
+      );
+    }
   };
   const handleCalculatorClick = (value: string | number) => {
     if (value === "C") setCalculatorValue("");

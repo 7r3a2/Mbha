@@ -637,6 +637,8 @@ const SUBJECTS = [
 const QUESTION_MODES = [
   { key: 'all', label: 'All' },
   { key: 'unused', label: 'Unused' },
+  { key: 'incorrect', label: 'Incorrect' },
+  { key: 'flagged', label: 'Flagged' },
 ];
 
 export default function Qbank() {
@@ -739,6 +741,7 @@ export default function Qbank() {
   const [showSearch, setShowSearch] = useState<Record<string, boolean>>({});
   const [searchTerms, setSearchTerms] = useState<Record<string, string>>({});
   const [topicsWithQuestions, setTopicsWithQuestions] = useState<{ [key: string]: boolean }>({});
+  const [topicQuestionCounts, setTopicQuestionCounts] = useState<{ [key: string]: number }>({});
 
   // Only check topics once when subjects are loaded
   useEffect(() => {
@@ -748,6 +751,13 @@ export default function Qbank() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subjects]); // Only depend on subjects, not sources
+
+  // Fetch question counts when sources change
+  useEffect(() => {
+    if (selectedSources.length > 0) {
+      fetchTopicQuestionCounts();
+    }
+  }, [selectedSources]); // eslint-disable-next-line react-hooks/exhaustive-deps
 
   // Helper: map selected source keys to their labels for current subject selection
   const getSelectedSourceLabels = (): string[] => {
@@ -833,6 +843,25 @@ export default function Qbank() {
     }
     
     setTopicsWithQuestions(topicsMap);
+  };
+
+  // Fetch question counts for topics
+  const fetchTopicQuestionCounts = async () => {
+    const sourceLabels = getSelectedSourceLabels();
+    if (sourceLabels.length === 0) return;
+
+    try {
+      const params = new URLSearchParams();
+      params.set('sources', sourceLabels.join(','));
+      
+      const response = await fetch(`/api/qbank/question-counts?${params.toString()}`);
+      if (response.ok) {
+        const data = await response.json();
+        setTopicQuestionCounts(data.topicCounts || {});
+      }
+    } catch (error) {
+      console.error('Error fetching topic question counts:', error);
+    }
   };
 
   const handleGenerateTest = async () => {
@@ -939,6 +968,10 @@ export default function Qbank() {
     params.set('testName', testName.trim());
     params.set('mode', examMode ? 'exam' : 'study');
     if (examMode) params.set('time', String(customTime));
+    
+    // Add question mode (default to 'all' if none selected)
+    const questionMode = selectedModes.length > 0 ? selectedModes[0] : 'all';
+    params.set('questionMode', questionMode);
     
     // Add all selected sources and topics as comma-separated values
     if (allSelectedSources.length > 0) {
@@ -1503,6 +1536,9 @@ const [isMobile, setIsMobile] = useState(false);
                                         />
                                           <label className={`ml-2 text-sm ${!hasQuestions ? 'text-gray-400 cursor-not-allowed' : 'text-gray-600'}`}>
                                             {topic}
+                                            {topicQuestionCounts[topic] && (
+                                              <span className="ml-1 text-xs text-[#0072b7] font-medium">({topicQuestionCounts[topic]})</span>
+                                            )}
                                             {!hasQuestions && (
                                               <span className="ml-1 text-xs text-red-500">(No questions)</span>
                                             )}
