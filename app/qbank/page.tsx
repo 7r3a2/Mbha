@@ -646,7 +646,7 @@ export default function Qbank() {
   const { user, isAuthenticated, isLoading } = useAuth();
 
   // Dynamic subjects from database
-  const [subjects, setSubjects] = useState<any[]>(SUBJECTS); // Start with hardcoded, will be replaced by API
+  const [subjects, setSubjects] = useState<any[]>([]); // Start with empty array, load from API
   
   // Debug: Log subjects state changes
   useEffect(() => {
@@ -702,6 +702,12 @@ export default function Qbank() {
             console.log('🔄 Setting subjects state with API data');
             setSubjects(transformedSubjects);
             
+            // Force a re-render to ensure API data is used
+            setTimeout(() => {
+              console.log('🔄 Forcing re-render with API data');
+              setSubjects([...transformedSubjects]);
+            }, 100);
+            
             // Update selected subjects to use the first dynamic subject
             if (transformedSubjects[0]?.key) {
               console.log('✅ Setting first subject as selected:', transformedSubjects[0].key);
@@ -718,8 +724,7 @@ export default function Qbank() {
         }
       } catch (error) {
         console.error('❌ Error loading subjects:', error);
-        // Keep using hardcoded subjects as fallback
-        console.log('🔄 Using hardcoded subjects as fallback');
+        console.log('🔄 No subjects loaded from API');
       } finally {
         setLoadingSubjects(false);
       }
@@ -727,7 +732,7 @@ export default function Qbank() {
 
     // Always try to load subjects, regardless of authentication status
     loadSubjects();
-  }, []); // Remove dependencies to ensure it runs on mount
+  }, [isLoading]); // Add isLoading as dependency to ensure it runs when auth is ready
 
   const [isOpen, setIsOpen] = useState(true);
   const [activeView, setActiveView] = useState('create-test');
