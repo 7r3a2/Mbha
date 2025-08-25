@@ -741,7 +741,7 @@ export default function Qbank() {
   const [selectedModes, setSelectedModes] = useState<string[]>(['unused']);
   const [expandedLectures, setExpandedLectures] = useState<{ [k: string]: number[] }>({});
   const [expandedSections, setExpandedSections] = useState<{ [k: string]: boolean }>({});
-  const [questionCount, setQuestionCount] = useState(0);
+  const [questionCount, setQuestionCount] = useState(1);
   const [availableQuestions, setAvailableQuestions] = useState<number | null>(null);
   const [checkingQuestions, setCheckingQuestions] = useState(false);
   const [testName, setTestName] = useState('');
@@ -860,6 +860,16 @@ export default function Qbank() {
       fetchTopicQuestionCounts();
     }
   }, [selectedSubjects, selectedSources, selectedModes, user?.id]); // eslint-disable-next-line react-hooks/exhaustive-deps
+
+  // Update question count when available questions change
+  useEffect(() => {
+    if (availableQuestions !== null && availableQuestions > 0) {
+      // If current question count exceeds available questions, adjust it
+      if (questionCount > availableQuestions) {
+        setQuestionCount(Math.min(availableQuestions, 100));
+      }
+    }
+  }, [availableQuestions, questionCount]);
 
   // Also fetch counts when sources change (even if no user ID yet)
   useEffect(() => {
@@ -1123,6 +1133,12 @@ export default function Qbank() {
       return;
     }
 
+    // Validate question count is required and greater than 0
+    if (!questionCount || questionCount <= 0) {
+      alert('Please enter a valid number of questions (1-100)');
+      return;
+    }
+
     // Check if any topics or lectures are selected
     let hasSelectedTopics = false;
     let hasSelectedLecturesWithNoTopics = false;
@@ -1229,7 +1245,11 @@ export default function Qbank() {
           return;
         }
         
-        // No warning dialog - just proceed with available questions
+        // Check if requested questions exceed available questions
+        if (questionCount > availableQuestions) {
+          alert(`Only ${availableQuestions} questions are available for the selected criteria, but you requested ${questionCount}. Please reduce the number of questions or select different criteria.`);
+          return;
+        }
       }
     } catch (error) {
       console.error('Error checking available questions:', error);
@@ -1334,7 +1354,7 @@ export default function Qbank() {
 
   const handleQuestionChange = (val: number) => {
     if (isNaN(val)) return;
-    if (val < 0) setQuestionCount(0);
+    if (val < 1) setQuestionCount(1);
     else if (val > 100) setQuestionCount(100);
     else setQuestionCount(val);
   };
@@ -1882,17 +1902,33 @@ export default function Qbank() {
               <footer className="mt-8 bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:border-[#0072b7] focus-within:border-[#0072b7] focus-within:ring-1 focus-within:ring-[#0072b7] transition-all duration-300">
                 <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between space-y-4 lg:space-y-0">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">No. of Questions</label>
+                    <label className="block text-sm font-medium text-gray-700">
+                      No. of Questions <span className="text-red-500">*</span>
+                    </label>
                     <div className="flex items-center mt-1">
                       <input
-                        className="w-16 px-3 py-2 text-center bg-gray-100 border-0 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#0072b7] focus:border-[#0072b7] hover:border-[#0072b7] sm:text-sm text-black"
+                        className={`w-16 px-3 py-2 text-center bg-gray-100 border-0 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#0072b7] focus:border-[#0072b7] hover:border-[#0072b7] sm:text-sm text-black ${
+                          !questionCount || questionCount <= 0 ? 'border-red-500 focus:ring-red-500' : ''
+                        }`}
                         type="number"
-                        min={0}
+                        min={1}
                         max={100}
+                        required
                         value={questionCount}
                         onChange={(e) => handleQuestionChange(Number(e.target.value))}
+                        placeholder="1"
                       />
-                      <span className="ml-2 text-sm text-gray-500">Max Allowed 100</span>
+                      <span className="ml-2 text-sm text-gray-500">Required (1-100)</span>
+                      {availableQuestions !== null && availableQuestions > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => setQuestionCount(Math.min(availableQuestions, 100))}
+                          className="ml-2 text-xs bg-[#0072b7] text-white px-2 py-1 rounded hover:bg-[#005a8f] transition-colors"
+                          title={`Set to maximum available (${Math.min(availableQuestions, 100)})`}
+                        >
+                          Max
+                        </button>
+                      )}
                       <svg className="ml-1 text-gray-400 text-sm w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
