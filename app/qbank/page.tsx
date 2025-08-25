@@ -708,24 +708,18 @@ export default function Qbank() {
         } else {
           console.error('❌ Failed to load subjects:', response.status, response.statusText);
         }
-              } catch (error) {
-          console.error('❌ Error loading subjects:', error);
-          // Keep using hardcoded subjects as fallback
-          console.log('🔄 Using hardcoded subjects as fallback');
-        } finally {
-          setLoadingSubjects(false);
-        }
-        
-        // Force a re-render to ensure the API data is used
-        setTimeout(() => {
-          console.log('🔄 Current subjects state:', subjects);
-        }, 100);
+      } catch (error) {
+        console.error('❌ Error loading subjects:', error);
+        // Keep using hardcoded subjects as fallback
+        console.log('🔄 Using hardcoded subjects as fallback');
+      } finally {
+        setLoadingSubjects(false);
+      }
     };
 
-    if (isAuthenticated && user?.hasQbankAccess) {
-      loadSubjects();
-    }
-  }, [isAuthenticated, user?.hasQbankAccess]);
+    // Always try to load subjects, regardless of authentication status
+    loadSubjects();
+  }, []); // Remove dependencies to ensure it runs on mount
 
   const [isOpen, setIsOpen] = useState(true);
   const [activeView, setActiveView] = useState('create-test');
