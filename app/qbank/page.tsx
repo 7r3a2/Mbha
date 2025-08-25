@@ -1378,7 +1378,7 @@ const [isMobile, setIsMobile] = useState(false);
             </svg>
           </button>
           {isOpen && (
-            <span className="text-xl font-bold ml-3 text-white">MBHA</span>
+            <span className="text-xl font-bold ml-3 text-white">MedAce</span>
           )}
         </div>
         {/* Navigation */}

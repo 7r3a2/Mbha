@@ -118,43 +118,59 @@ const wizaryExamStyles = `
              color: #ffffff !important;
            }
            
-           /* Prevent orange hover on answered questions */
-           .wizary-exam-page .bg-green-500:hover {
-             background-color: #10b981 !important;
-             border-color: #059669 !important;
+           /* Override green colors with new red color scheme */
+           .wizary-exam-page .bg-green-500:hover,
+           .wizary-exam-page .bg-green-600:hover,
+           .wizary-exam-page .bg-green-700:hover {
+             background-color: #8b1319 !important;
+             border-color: #6a0f14 !important;
              color: #ffffff !important;
            }
            
-           /* Ensure answered questions stay green on hover */
-           .wizary-exam-page button.bg-green-500:hover {
-             background-color: #10b981 !important;
-             border-color: #059669 !important;
+           /* Ensure answered questions use new red color on hover */
+           .wizary-exam-page button.bg-green-500:hover,
+           .wizary-exam-page button.bg-green-600:hover,
+           .wizary-exam-page button.bg-green-700:hover {
+             background-color: #8b1319 !important;
+             border-color: #6a0f14 !important;
              color: #ffffff !important;
            }
            
-           /* Override any orange hover effects on green buttons */
-           .wizary-exam-page .bg-green-500[class*="hover"] {
-             background-color: #10b981 !important;
-             border-color: #059669 !important;
+           /* Override any green hover effects */
+           .wizary-exam-page .bg-green-500[class*="hover"],
+           .wizary-exam-page .bg-green-600[class*="hover"],
+           .wizary-exam-page .bg-green-700[class*="hover"] {
+             background-color: #8b1319 !important;
+             border-color: #6a0f14 !important;
              color: #ffffff !important;
            }
            
-           /* Prevent orange stroke on answered questions when clicked */
+           /* Prevent green stroke on answered questions when clicked */
            .wizary-exam-page .bg-green-500:active,
            .wizary-exam-page .bg-green-500:focus,
-           .wizary-exam-page .bg-green-500:focus-visible {
-             background-color: #10b981 !important;
-             border-color: #059669 !important;
+           .wizary-exam-page .bg-green-500:focus-visible,
+           .wizary-exam-page .bg-green-600:active,
+           .wizary-exam-page .bg-green-600:focus,
+           .wizary-exam-page .bg-green-600:focus-visible,
+           .wizary-exam-page .bg-green-700:active,
+           .wizary-exam-page .bg-green-700:focus,
+           .wizary-exam-page .bg-green-700:focus-visible {
+             background-color: #8b1319 !important;
+             border-color: #6a0f14 !important;
              color: #ffffff !important;
              outline: none !important;
              box-shadow: none !important;
            }
            
-           /* Ensure answered questions never show orange */
+           /* Ensure answered questions use new red color */
            .wizary-exam-page .bg-green-500,
-           .wizary-exam-page button.bg-green-500 {
-             background-color: #10b981 !important;
-             border-color: #059669 !important;
+           .wizary-exam-page button.bg-green-500,
+           .wizary-exam-page .bg-green-600,
+           .wizary-exam-page button.bg-green-600,
+           .wizary-exam-page .bg-green-700,
+           .wizary-exam-page button.bg-green-700 {
+             background-color: #8b1319 !important;
+             border-color: #6a0f14 !important;
              color: #ffffff !important;
            }
 
@@ -817,7 +833,7 @@ export default function WizaryExam() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               </button>
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">MBHA</h1>
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">MedAce</h1>
             </div>
             <div className="flex items-center space-x-2 sm:space-x-3">
             </div>
@@ -966,7 +982,7 @@ export default function WizaryExam() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               </button>
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">MBHA</h1>
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">MedAce</h1>
             </div>
             <div className="flex items-center space-x-2 sm:space-x-3">
             </div>
@@ -978,7 +994,7 @@ export default function WizaryExam() {
             
             {/* Exam Info Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 mb-4 w-full">
-              <div className="bg-green-700 text-white p-2 sm:p-3 rounded text-center">
+              <div className="bg-[#8b1319] text-white p-2 sm:p-3 rounded text-center">
                 <div className="text-sm sm:text-base font-medium">الكلية/القسم</div>
                 <div className="text-sm sm:text-base font-bold">كلية الطب</div>
               </div>
@@ -1287,7 +1303,7 @@ export default function WizaryExam() {
           {/* Header */}
           <header className="bg-blue-600 shadow-md p-2 sm:p-3 flex justify-between items-center text-white">
             <div className="flex items-center">
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">MBHA</h1>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">MedAce</h1>
             </div>
             <div className="flex items-center space-x-2 sm:space-x-3">
             </div>
@@ -1316,14 +1332,14 @@ export default function WizaryExam() {
                     key={index}
                     className={`flex items-center p-3 sm:p-4 border-2 rounded-lg cursor-pointer transition-colors duration-200 ${
                       answers[currentQuestionIndex] === index
-                        ? 'bg-green-100 border-green-500'
+                        ? 'bg-red-100 border-[#8b1319]'
                         : 'border-gray-300 hover:bg-gray-50'
                     }`}
                     onClick={() => selectAnswer(index)}
                   >
                     <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded mr-3 sm:mr-4 flex items-center justify-center ${
                       answers[currentQuestionIndex] === index
-                        ? 'bg-green-600'
+                        ? 'bg-[#8b1319]'
                         : 'bg-gray-300'
                     }`}>
                       <span className={`text-sm sm:text-base font-bold ${
@@ -1432,12 +1448,12 @@ export default function WizaryExam() {
           {/* Header */}
           <header className="bg-blue-600 shadow-md p-3 flex justify-between items-center text-white">
             <div className="flex items-center">
-              <h1 className="text-3xl font-bold text-white">MBHA</h1>
+              <h1 className="text-3xl font-bold text-white">MedAce</h1>
             </div>
             <div className="flex items-center space-x-3">
               <button
                 onClick={() => setCurrentView('dashboard')}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center space-x-2"
+                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -1459,7 +1475,7 @@ export default function WizaryExam() {
                   
                   <button
                     onClick={startQuiz}
-                    className="w-full bg-green-600 text-white py-3 sm:py-4 rounded text-sm sm:text-base font-bold hover:bg-green-700 transition-colors duration-200"
+                    className="w-full bg-[#8b1319] text-white py-3 sm:py-4 rounded text-sm sm:text-base font-bold hover:bg-[#6a0f14] transition-colors duration-200"
                   >
                     أبدء الامتحان
                   </button>
@@ -1519,7 +1535,7 @@ export default function WizaryExam() {
                       تحقق
                     </button>
                     {codeVerified && (
-                      <span className="text-green-600 text-xs sm:text-sm font-medium text-center">✓ تم التحقق من رمز الامتحان السري</span>
+                      <span className="text-[#8b1319] text-xs sm:text-sm font-medium text-center">✓ تم التحقق من رمز الامتحان السري</span>
                     )}
                     {codeError && (
                       <span className="text-red-600 text-xs sm:text-sm font-medium text-center">{codeError}</span>
