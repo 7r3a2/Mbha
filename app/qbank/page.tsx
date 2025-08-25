@@ -777,6 +777,9 @@ export default function Qbank() {
     subject: string;
     questions: number;
     mode: 'Study' | 'Exam';
+    sources?: string;
+    topics?: string;
+    questionMode?: string;
   }) => {
     const newTest = {
       ...testData,
@@ -797,8 +800,18 @@ export default function Qbank() {
   // Previous Tests Functions
   const handleViewTest = (test: any) => {
     console.log('Viewing test:', test);
-    // Navigate to test results or restart test
-    router.push(`/quiz?testId=${test.id}&mode=review`);
+    // Navigate to quiz with the original test parameters to load the same questions
+    const params = new URLSearchParams();
+    params.set('count', String(test.questions));
+    params.set('testName', test.name);
+    params.set('mode', test.mode.toLowerCase());
+    params.set('sources', test.sources || '');
+    params.set('topics', test.topics || '');
+    params.set('questionMode', test.questionMode || 'all');
+    params.set('testId', test.id);
+    params.set('review', 'true');
+    
+    router.push(`/quiz?${params.toString()}`);
   };
 
   const handleDeleteTest = (testId: string) => {
@@ -1197,12 +1210,7 @@ export default function Qbank() {
           return;
         }
         
-        if (availableQuestions < questionCount) {
-          const proceed = confirm(`Only ${availableQuestions} questions are available for the selected criteria, but you requested ${questionCount}. Would you like to proceed with ${availableQuestions} questions?`);
-          if (!proceed) {
-            return;
-          }
-        }
+        // No warning dialog - just proceed with available questions
       }
     } catch (error) {
       console.error('Error checking available questions:', error);
@@ -1211,11 +1219,15 @@ export default function Qbank() {
 
     // Add test to history
     const subjectName = subjects.find(s => selectedSubjects.includes(s.key))?.label || 'Unknown Subject';
+    const questionMode = selectedModes.length > 0 ? selectedModes[0] : 'all';
     addTestToHistory({
       name: testName.trim(),
       subject: subjectName,
       questions: questionCount,
-      mode: examMode ? 'Exam' : 'Study'
+      mode: examMode ? 'Exam' : 'Study',
+      sources: allSelectedSources.join(','),
+      topics: allSelectedTopics.join(','),
+      questionMode: questionMode
     });
 
     // Navigate to quiz with test data, mode, and all selected sources/topics for DB fetch
@@ -1226,7 +1238,6 @@ export default function Qbank() {
     if (examMode) params.set('time', String(customTime));
     
     // Add question mode (default to 'all' if none selected)
-    const questionMode = selectedModes.length > 0 ? selectedModes[0] : 'all';
     params.set('questionMode', questionMode);
     
     // Add all selected sources and topics as comma-separated values
@@ -2013,7 +2024,7 @@ export default function Qbank() {
                                     className="text-[#0072b7] hover:text-[#005a8f] transition-colors duration-200"
                                   >
                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5v14l11-7z" />
                                     </svg>
                                   </button>
                                   <button

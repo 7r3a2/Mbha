@@ -58,6 +58,8 @@ const fetchQuestions = async (sources: string, topics: string, count: number, qu
   }
 };
 
+
+
 function QuizPageContent() {
   const searchParams = useSearchParams();
   const questionCount = parseInt(searchParams.get('count') || '20');
@@ -66,6 +68,8 @@ function QuizPageContent() {
   const sources = searchParams.get('sources') || '';
   const topics = searchParams.get('topics') || '';
   const questionMode = searchParams.get('questionMode') || 'all'; // 'all', 'unused', 'incorrect', 'flagged'
+  const testId = searchParams.get('testId'); // For loading previous test data
+  const isReviewMode = searchParams.get('review') === 'true'; // For review mode
   
   const [questions, setQuestions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -90,6 +94,54 @@ function QuizPageContent() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const explanationRef = useRef<HTMLDivElement>(null);
+
+  // Function to load previous test data
+  const loadPreviousTestData = async (testId: string, questions: any[]) => {
+    try {
+      // Get user responses for these questions
+      const questionIds = questions.map(q => q.id.toString());
+      const params = new URLSearchParams({
+        questionIds: questionIds.join(','),
+        testId: testId
+      });
+      
+      const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token') || localStorage.getItem('token');
+      
+      const response = await fetch(`/api/qbank/user-responses?${params}`, {
+        headers: {
+          'Authorization': `Bearer ${token || ''}`
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        const userResponses = data.responses || [];
+        
+        // Map responses back to questions
+        const answers = questions.map(q => {
+          const response = userResponses.find((r: any) => r.questionId === q.id.toString());
+          return response ? response.selectedAnswer : null;
+        });
+        
+        const flagged = questions.map(q => {
+          const response = userResponses.find((r: any) => r.questionId === q.id.toString());
+          return response ? response.flagged : false;
+        });
+        
+        const submitted = questions.map(q => {
+          const response = userResponses.find((r: any) => r.questionId === q.id.toString());
+          return response ? true : false;
+        });
+        
+        // Update state with previous answers
+        setAnswers(answers);
+        setSubmitted(submitted);
+        setFlagged(flagged);
+      }
+    } catch (error) {
+      console.error('Error loading previous test data:', error);
+    }
+  };
 
      // Mobile detection and sidebar management
    useEffect(() => {
@@ -155,6 +207,11 @@ function QuizPageContent() {
           setAnswers(initAnswers);
           setSubmitted(initSubmitted);
           setFlagged(initFlagged);
+
+          // Load previous test data if in review mode
+          if (isReviewMode && testId) {
+            loadPreviousTestData(testId, finalQuestions);
+          }
 
           // Reset navigation and UI state
           setCurrentQuestionIndex(0);
