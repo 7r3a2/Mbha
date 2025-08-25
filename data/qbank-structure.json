@@ -2,7 +2,7 @@
   "subjects": [
     {
       "key": "internal_medicine",
-      "name": "Internal Medicine",
+      "label": "Internal Medicine",
       "lectures": [
         {
           "title": "Neurology",
@@ -91,19 +91,19 @@
       "sources": [
         {
           "key": "davidson",
-          "name": "Davidson"
+          "label": "Davidson"
         },
         {
           "key": "harrison",
-          "name": "Harrison"
+          "label": "Harrison"
         },
         {
           "key": "pretest",
-          "name": "Pretest"
+          "label": "Pretest"
         },
         {
           "key": "sba_500",
-          "name": "500 SBAs in Internal Medicine"
+          "label": "500 SBAs in Internal Medicine"
         }
       ]
     }
