@@ -754,32 +754,27 @@ export default function Qbank() {
     mode: 'Study' | 'Exam';
     date: string;
     id: string;
-  }>>([
-    {
-      name: 'Obstetrics Review 1',
-      subject: 'Obstetrics & Gynecology',
-      questions: 25,
-      mode: 'Exam',
-      date: '15/07/24',
-      id: '1'
-    },
-    {
-      name: 'Gynecology Basics',
-      subject: 'Obstetrics & Gynecology',
-      questions: 30,
-      mode: 'Study',
-      date: '12/07/24',
-      id: '2'
-    },
-    {
-      name: 'Menstruation Cycle Test',
-      subject: 'Obstetrics & Gynecology',
-      questions: 20,
-      mode: 'Exam',
-      date: '10/07/24',
-      id: '3'
-    }
-  ]);
+  }>>([]);
+
+  // Add new test to history (max 10 tests)
+  const addTestToHistory = (testData: {
+    name: string;
+    subject: string;
+    questions: number;
+    mode: 'Study' | 'Exam';
+  }) => {
+    const newTest = {
+      ...testData,
+      date: new Date().toLocaleDateString('en-GB'),
+      id: Date.now().toString()
+    };
+
+    setPreviousTests(prev => {
+      const updated = [newTest, ...prev];
+      // Keep only the latest 10 tests
+      return updated.slice(0, 10);
+    });
+  };
 
   // Previous Tests Functions
   const handleViewTest = (test: any) => {
@@ -788,9 +783,8 @@ export default function Qbank() {
     router.push(`/quiz?testId=${test.id}&mode=review`);
   };
 
-  const handleDeleteTest = (index: number) => {
-    const updatedTests = previousTests.filter((_, i) => i !== index);
-    setPreviousTests(updatedTests);
+  const handleDeleteTest = (testId: string) => {
+    setPreviousTests(prev => prev.filter(test => test.id !== testId));
   };
 
   // Dropdown states
@@ -1155,6 +1149,15 @@ export default function Qbank() {
       }
     }
 
+    // Add test to history
+    const subjectName = subjects.find(s => selectedSubjects.includes(s.key))?.label || 'Unknown Subject';
+    addTestToHistory({
+      name: testName.trim(),
+      subject: subjectName,
+      questions: questionCount,
+      mode: examMode ? 'Exam' : 'Study'
+    });
+
     // Navigate to quiz with test data, mode, and all selected sources/topics for DB fetch
     const params = new URLSearchParams();
     params.set('count', String(questionCount));
@@ -1469,7 +1472,7 @@ const [isMobile, setIsMobile] = useState(false);
                 }`}
               >
                 <svg className={`${isOpen ? 'w-5 h-5' : 'w-6 h-6'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 {isOpen && <span className="ml-3 font-medium text-sm">Previous Tests</span>}
               </button>
@@ -1936,7 +1939,7 @@ const [isMobile, setIsMobile] = useState(false);
                                     </svg>
                                   </button>
                                   <button
-                                    onClick={() => handleDeleteTest(index)}
+                                    onClick={() => handleDeleteTest(test.id)}
                                     className="text-red-600 hover:text-red-800 transition-colors duration-200"
                                   >
                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
