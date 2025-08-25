@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import jwt from 'jsonwebtoken';
 import { findUserById } from '@/lib/db-utils';
+import { validateSession } from '@/lib/session-utils';
 import { promises as fs } from 'fs';
 import path from 'path';
 import { kvGet } from '@/lib/db-utils';
@@ -28,15 +28,15 @@ export async function POST(request: NextRequest) {
     const { token } = await request.json();
     if (!token) return NextResponse.json({ valid: false }, { status: 200 });
 
-    let payload: any;
-    try {
-      payload = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret');
-    } catch {
+    // Extract session ID from token
+    const sessionId = token;
+    
+    // Validate session
+    const { valid, user } = await validateSession(sessionId);
+    
+    if (!valid || !user) {
       return NextResponse.json({ valid: false }, { status: 200 });
     }
-
-    const user = await findUserById(payload.userId);
-    if (!user) return NextResponse.json({ valid: false }, { status: 200 });
 
     // Compute trial and subscription
     const createdAt = new Date(user.createdAt as any);

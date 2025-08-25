@@ -49,6 +49,12 @@ const loginUser = async (data: LoginData) => {
 
   if (!response.ok) {
     const error = await response.json();
+    
+    // Handle specific locked account error
+    if (response.status === 423) {
+      throw new Error(error.message || 'Account Locked: Your account has been locked due to multiple device usage. Please contact the developer to unlock your account.');
+    }
+    
     throw new Error(error.error || 'Login failed');
   }
 

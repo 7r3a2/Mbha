@@ -463,6 +463,30 @@ const saveAdd = async () => {
     }
   };
 
+  const unlockUserAccount = async (userId: string, userName: string) => {
+    if (!confirm(`Are you sure you want to unlock account for ${userName}?`)) return;
+    
+    try {
+      const response = await fetch('/api/admin/users/unlock-account', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId })
+      });
+      
+      if (response.ok) {
+        alert('✅ Account unlocked successfully!');
+        // Refresh users list to update the UI
+        loadData();
+      } else {
+        const error = await response.json();
+        alert(`❌ Error: ${error.error}`);
+      }
+    } catch (error) {
+      console.error('Error unlocking account:', error);
+      alert('❌ Failed to unlock account. Please try again.');
+    }
+  };
+
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const uploadedFile = event.target.files?.[0];
     setFile(uploadedFile || null);
@@ -1441,6 +1465,33 @@ const saveAdd = async () => {
                               >
                                 Reset Password
                               </button>
+                              {/* Account Status */}
+                              <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium mr-2">
+                                {user.isLocked ? (
+                                  <span className="bg-red-100 text-red-800 flex items-center">
+                                    <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                    </svg>
+                                    Locked
+                                  </span>
+                                ) : (
+                                  <span className="bg-green-100 text-green-800 flex items-center">
+                                    <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Active
+                                  </span>
+                                )}
+                              </div>
+                              {/* Unlock Account Button */}
+                              {user.isLocked && (
+                                <button
+                                  onClick={() => unlockUserAccount(user.id, `${user.firstName} ${user.lastName}`)}
+                                  className="text-orange-600 hover:text-orange-900"
+                                >
+                                  Unlock Account
+                                </button>
+                              )}
                               <button
                                 onClick={() => deleteUser(user.id)}
                                 className="text-red-600 hover:text-red-900"

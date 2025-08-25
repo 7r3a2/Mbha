@@ -24,11 +24,15 @@ model User {
   hasApproachAccess      Boolean  @default(false) // Admin controlled
   hasQbankAccess         Boolean  @default(false) // Admin controlled
   hasCoursesAccess       Boolean  @default(false) // Admin controlled
+  // Session management
+  isLocked               Boolean  @default(false) // Account locked due to multiple devices
+  lastLoginAt            DateTime?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
   // Relations
   responses UserResponse[]
+  sessions  UserSession[]
 
   @@map("users")
 }
@@ -47,6 +51,22 @@ model UserResponse {
 
   @@unique([userId, questionId]) // One response per user per question
   @@map("user_responses")
+}
+
+model UserSession {
+  id        String   @id @default(cuid())
+  userId    String
+  sessionId String   @unique // Unique session identifier
+  deviceInfo String? // Device/browser information
+  ipAddress String?  // IP address
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  expiresAt DateTime // Session expiration time
+  
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_sessions")
 }
 
 model UniqueCode {

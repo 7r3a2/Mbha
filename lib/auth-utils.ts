@@ -88,7 +88,17 @@ export const generateToken = (userId: string, email: string): string => {
 // Verify JWT token
 export const verifyToken = (token: string): any => {
   try {
-    return jwt.verify(token, JWT_SECRET);
+    // For backward compatibility, try JWT first
+    const jwtPayload = jwt.verify(token, JWT_SECRET);
+    
+    // If JWT verification succeeds, check if it has sessionId
+    if (jwtPayload && typeof jwtPayload === 'object' && 'sessionId' in jwtPayload) {
+      // This is a new session-based token, return the payload
+      return jwtPayload;
+    }
+    
+    // This is an old JWT token without sessionId, return null to force re-login
+    return null;
   } catch (error) {
     return null;
   }

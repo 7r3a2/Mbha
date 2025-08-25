@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { findUserByEmail, verifyPassword } from '@/lib/db-utils';
+import { 
+  createUserSession, 
+  checkUserSessions, 
+  lockUserAccount, 
+  deactivateAllUserSessions 
+} from '@/lib/session-utils';
 import jwt from 'jsonwebtoken';
 
 export async function POST(request: NextRequest) {
@@ -38,9 +44,22 @@ export async function POST(request: NextRequest) {
         firstName: user.firstName,
         lastName: user.lastName,
         uniqueCode: user.uniqueCode,
+        isLocked: user.isLocked,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt
       });
+
+      // Check if user account is locked
+      if (user.isLocked) {
+        console.log('🔒 User account is locked:', email);
+        return NextResponse.json(
+          { 
+            error: 'Account Locked',
+            message: 'Your account has been locked due to multiple device usage. Please contact the developer to unlock your account.'
+          },
+          { status: 423 } // 423 Locked
+        );
+      }
 
       // Verify password
       console.log('🔐 Verifying password...');
@@ -63,9 +82,37 @@ export async function POST(request: NextRequest) {
 
       console.log('✅ Password verified successfully');
 
-      // Generate JWT token
+      // Check existing sessions
+      const { activeSessions, shouldLock } = await checkUserSessions(user.id);
+      console.log(`📱 Active sessions: ${activeSessions}`);
+
+      if (shouldLock) {
+        console.log('🔒 Multiple devices detected, locking account');
+        await lockUserAccount(user.id);
+        await deactivateAllUserSessions(user.id);
+        
+        return NextResponse.json(
+          { 
+            error: 'Account Locked',
+            message: 'Multiple devices detected. Your account has been locked for security. Please contact the developer to unlock your account.'
+          },
+          { status: 423 } // 423 Locked
+        );
+      }
+
+      // Deactivate any existing sessions (single device policy)
+      if (activeSessions > 0) {
+        console.log('🔄 Deactivating existing sessions');
+        await deactivateAllUserSessions(user.id);
+      }
+
+      // Create new session
+      console.log('🆕 Creating new session');
+      const sessionId = await createUserSession(user.id, request);
+
+      // Generate JWT token with session ID
       const token = jwt.sign(
-        { userId: user.id },
+        { userId: user.id, sessionId },
         process.env.JWT_SECRET || 'fallback-secret',
         { expiresIn: '7d' }
       );
