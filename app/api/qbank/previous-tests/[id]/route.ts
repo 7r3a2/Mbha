@@ -1,40 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
+import { PrismaClient } from '@prisma/client';
 import { verifyToken } from '@/lib/auth-utils';
 
-// File path for previous tests
-const PREVIOUS_TESTS_FILE = path.join(process.cwd(), 'data', 'previous-tests.json');
-
-// Ensure data file exists
-const ensureFileExists = () => {
-  if (!fs.existsSync(PREVIOUS_TESTS_FILE)) {
-    fs.writeFileSync(PREVIOUS_TESTS_FILE, '[]');
-  }
-};
-
-// Load previous tests from file
-const loadPreviousTests = () => {
-  ensureFileExists();
-  try {
-    const data = fs.readFileSync(PREVIOUS_TESTS_FILE, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    console.error('Error loading previous tests:', error);
-    return [];
-  }
-};
-
-// Save previous tests to file
-const savePreviousTests = (tests: any[]) => {
-  ensureFileExists();
-  try {
-    fs.writeFileSync(PREVIOUS_TESTS_FILE, JSON.stringify(tests, null, 2));
-  } catch (error) {
-    console.error('Error saving previous tests:', error);
-    throw error;
-  }
-};
+const prisma = new PrismaClient();
 
 export async function DELETE(
   request: NextRequest,
@@ -53,20 +21,25 @@ export async function DELETE(
     }
 
     const testId = params.id;
-    const allTests = loadPreviousTests();
 
     // Verify the test belongs to the user
-    const testIndex = allTests.findIndex((test: any) => 
-      test.id === testId && test.userId === decoded.userId
-    );
+    const test = await prisma.previousTest.findFirst({
+      where: {
+        id: testId,
+        userId: decoded.userId
+      }
+    });
 
-    if (testIndex === -1) {
+    if (!test) {
       return NextResponse.json({ error: 'Test not found' }, { status: 404 });
     }
 
-    // Remove the test
-    allTests.splice(testIndex, 1);
-    savePreviousTests(allTests);
+    // Delete the test
+    await prisma.previousTest.delete({
+      where: {
+        id: testId
+      }
+    });
 
     return NextResponse.json({ message: 'Test deleted successfully' });
   } catch (error) {

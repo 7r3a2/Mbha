@@ -1,33 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
+import { findUserById } from '@/lib/db-utils';
 import jwt from 'jsonwebtoken';
 import { validateSession } from '@/lib/session-utils';
+import { promises as fs } from 'fs';
+import path from 'path';
+import { kvGet } from '@/lib/db-utils';
 
-// File paths
-const USERS_FILE = path.join(process.cwd(), 'data', 'users.json');
 const SUBS_FILE = path.join(process.cwd(), 'data', 'subscriptions.json');
 
-// Load users from file
-const loadUsers = () => {
-  try {
-    const data = fs.readFileSync(USERS_FILE, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    console.error('Error loading users:', error);
-    return [];
-  }
-};
-
-// Find user by ID
-const findUserById = (id: string) => {
-  const users = loadUsers();
-  return users.find((user: any) => user.id === id);
-};
-
 async function readSubs(): Promise<Record<string, { expiresAt: string }>> {
+  // Prefer KV store (Postgres)
   try {
-    const raw = await fs.promises.readFile(SUBS_FILE, 'utf-8');
+    const kv = await kvGet<Record<string, { expiresAt: string }>>('subscriptions', null as any);
+    if (kv) return kv;
+  } catch {}
+  // Fallback to local file (dev)
+  try {
+    const raw = await fs.readFile(SUBS_FILE, 'utf-8');
     return JSON.parse(raw || '{}');
   } catch (e: any) {
     if (e.code === 'ENOENT') return {};
