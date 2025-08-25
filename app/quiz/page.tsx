@@ -143,15 +143,26 @@ function QuizPageContent() {
           setSubmitted(savedSubmitted);
           setFlagged(savedFlagged);
           
+          // Reset navigation and UI state for review mode
+          setCurrentQuestionIndex(0);
+          setShowExplanation(false);
+          setShowScoreOverlay(false);
+          setEndTime(null);
+          
           console.log('✅ Successfully restored original test with user responses');
         } else {
           console.log('❌ No full questions found for testId:', testId);
+          setError('No previous test data found. Please create a new test.');
         }
       } else {
         console.log('❌ No responses found in localStorage');
+        setError('No previous test data found. Please create a new test.');
       }
     } catch (error) {
       console.error('❌ Error loading previous test data:', error);
+      setError('Failed to load previous test data. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -215,6 +226,13 @@ function QuizPageContent() {
       setError(null);
       
       try {
+        // If in review mode, load previous test data instead of fetching new questions
+        if (isReviewMode && testId) {
+          console.log('🔄 Review mode detected, loading previous test data...');
+          loadPreviousTestData(testId, []);
+          return; // Exit early, don't fetch new questions
+        }
+
         // If questionMode is not 'all', ignore the questionCount and get all questions for that mode
         const countToUse = questionMode === 'all' ? questionCount : 1000; // Use large number to get all questions
         const fetchedQuestions = await fetchQuestions(sources, topics, countToUse, questionMode);
@@ -242,15 +260,6 @@ function QuizPageContent() {
           // Update test history with actual question count if this is a new test
           if (testId && !isReviewMode) {
             updateTestHistoryWithQuestionCount(testId, finalQuestions.length);
-          }
-
-          // Load previous test data if in review mode
-          console.log('🔄 Checking if should load previous test data:', { isReviewMode, testId });
-          if (isReviewMode && testId) {
-            console.log('🔄 Loading previous test data...');
-            loadPreviousTestData(testId, finalQuestions);
-          } else {
-            console.log('🔄 Not loading previous test data - isReviewMode:', isReviewMode, 'testId:', testId);
           }
 
           // Reset navigation and UI state
