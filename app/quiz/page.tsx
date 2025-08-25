@@ -109,6 +109,8 @@ function QuizPageContent() {
   const loadPreviousTestData = async (testId: string, questions: any[]) => {
     try {
       console.log('🔄 Loading previous test data for testId:', testId);
+      console.log('🔄 TestId type:', typeof testId);
+      console.log('🔄 TestId value:', testId);
       
       // Load user responses from localStorage
       const existingResponses = localStorage.getItem('mbha_test_responses');
@@ -117,9 +119,21 @@ function QuizPageContent() {
       if (existingResponses) {
         const allResponses = JSON.parse(existingResponses);
         console.log('🔄 All responses keys:', Object.keys(allResponses));
+        console.log('🔄 All responses keys types:', Object.keys(allResponses).map(k => typeof k));
         
-        const testResponses = allResponses[testId];
+        // Try to find the test responses with different key formats
+        let testResponses = allResponses[testId];
+        if (!testResponses) {
+          // Try with string conversion
+          testResponses = allResponses[testId.toString()];
+        }
+        if (!testResponses) {
+          // Try with number conversion
+          testResponses = allResponses[Number(testId)];
+        }
+        
         console.log('🔄 Test responses for this testId:', testResponses ? 'Found' : 'Not found');
+        console.log('🔄 Test responses data:', testResponses);
         
         if (testResponses && testResponses.fullQuestions) {
           console.log('🔄 Found saved full questions, restoring original test...');
@@ -152,6 +166,7 @@ function QuizPageContent() {
           console.log('✅ Successfully restored original test with user responses');
         } else {
           console.log('❌ No full questions found for testId:', testId);
+          console.log('🔄 Available testIds in localStorage:', Object.keys(allResponses));
           setError('No previous test data found. Please create a new test.');
         }
       } else {
@@ -686,6 +701,9 @@ function QuizPageContent() {
     
     // Save user responses to localStorage for previous test functionality
     if (testId) {
+      console.log('💾 Saving test responses for testId:', testId);
+      console.log('💾 TestId type:', typeof testId);
+      
       const testResponses = {
         testId: testId,
         answers: answers,
@@ -699,6 +717,10 @@ function QuizPageContent() {
       
       const existingResponses = localStorage.getItem('mbha_test_responses');
       const allResponses = existingResponses ? JSON.parse(existingResponses) : {};
+      
+      console.log('💾 Existing responses keys:', Object.keys(allResponses));
+      console.log('💾 Saving with key:', testId);
+      
       allResponses[testId] = testResponses;
       localStorage.setItem('mbha_test_responses', JSON.stringify(allResponses));
       
@@ -709,6 +731,14 @@ function QuizPageContent() {
         submittedCount: submitted.filter(s => s).length,
         questionsCount: questions.length
       });
+      
+      // Verify the save worked
+      const verifySave = localStorage.getItem('mbha_test_responses');
+      if (verifySave) {
+        const verifyData = JSON.parse(verifySave);
+        console.log('💾 Verification - saved keys:', Object.keys(verifyData));
+        console.log('💾 Verification - our testId exists:', testId in verifyData);
+      }
     }
     
     const totalQuestions = questions.length;
