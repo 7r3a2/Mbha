@@ -109,7 +109,6 @@ function QuizPageContent() {
   const loadPreviousTestData = async (testId: string, questions: any[]) => {
     try {
       console.log('🔄 Loading previous test data for testId:', testId);
-      console.log('🔄 Questions to map:', questions.length);
       
       // Load user responses from localStorage
       const existingResponses = localStorage.getItem('mbha_test_responses');
@@ -122,68 +121,31 @@ function QuizPageContent() {
         const testResponses = allResponses[testId];
         console.log('🔄 Test responses for this testId:', testResponses ? 'Found' : 'Not found');
         
-        if (testResponses) {
-          console.log('🔄 Test responses data:', testResponses);
+        if (testResponses && testResponses.fullQuestions) {
+          console.log('🔄 Found saved full questions, restoring original test...');
           
-          // Map the saved responses to the current questions
+          // Use the saved full questions instead of the new ones
+          const savedQuestions = testResponses.fullQuestions;
           const savedAnswers = testResponses.answers || [];
           const savedFlagged = testResponses.flagged || [];
           const savedSubmitted = testResponses.submitted || [];
-          const savedQuestionIds = testResponses.questions || [];
           
-          console.log('🔄 Saved data:', {
-            answers: savedAnswers.length,
-            flagged: savedFlagged.length,
-            submitted: savedSubmitted.length,
-            questionIds: savedQuestionIds.length
+          console.log('🔄 Restoring original test:', {
+            questionsCount: savedQuestions.length,
+            answersCount: savedAnswers.filter((a: any) => a !== null).length,
+            flaggedCount: savedFlagged.filter((f: any) => f).length,
+            submittedCount: savedSubmitted.filter((s: any) => s).length
           });
           
-          // Create maps for quick lookup
-          const questionIdToIndex = questions.reduce((acc: Record<string, number>, q: any, index: number) => {
-            acc[q.id.toString()] = index;
-            return acc;
-          }, {});
+          // Update state with the original questions and responses
+          setQuestions(savedQuestions);
+          setAnswers(savedAnswers);
+          setSubmitted(savedSubmitted);
+          setFlagged(savedFlagged);
           
-          const savedQuestionIdToIndex = savedQuestionIds.reduce((acc: Record<string, number>, id: string, index: number) => {
-            acc[id] = index;
-            return acc;
-          }, {});
-          
-          console.log('🔄 Question mapping:', {
-            currentQuestions: Object.keys(questionIdToIndex),
-            savedQuestions: Object.keys(savedQuestionIdToIndex)
-          });
-          
-          // Map responses to current questions
-          const answers = questions.map((q: any) => {
-            const savedIndex = savedQuestionIdToIndex[q.id.toString()];
-            return savedIndex !== undefined ? savedAnswers[savedIndex] : null;
-          });
-          
-          const flagged = questions.map((q: any) => {
-            const savedIndex = savedQuestionIdToIndex[q.id.toString()];
-            return savedIndex !== undefined ? savedFlagged[savedIndex] : false;
-          });
-          
-          const submitted = questions.map((q: any) => {
-            const savedIndex = savedQuestionIdToIndex[q.id.toString()];
-            return savedIndex !== undefined ? savedSubmitted[savedIndex] : false;
-          });
-          
-          console.log('🔄 Mapped responses:', {
-            answers: answers.filter(a => a !== null).length,
-            flagged: flagged.filter(f => f).length,
-            submitted: submitted.filter(s => s).length
-          });
-          
-          // Update state with previous answers
-          setAnswers(answers);
-          setSubmitted(submitted);
-          setFlagged(flagged);
-          
-          console.log('✅ Successfully loaded previous test data');
+          console.log('✅ Successfully restored original test with user responses');
         } else {
-          console.log('❌ No test responses found for testId:', testId);
+          console.log('❌ No full questions found for testId:', testId);
         }
       } else {
         console.log('❌ No responses found in localStorage');
@@ -721,6 +683,8 @@ function QuizPageContent() {
         flagged: flagged,
         submitted: submitted,
         questions: questions.map(q => q.id),
+        // Save the full question objects to restore exact same questions
+        fullQuestions: questions,
         timestamp: Date.now()
       };
       
@@ -729,7 +693,7 @@ function QuizPageContent() {
       allResponses[testId] = testResponses;
       localStorage.setItem('mbha_test_responses', JSON.stringify(allResponses));
       
-      console.log('💾 Saved test responses to localStorage:', {
+      console.log('💾 Saved test responses with full questions:', {
         testId,
         answersCount: answers.filter(a => a !== null).length,
         flaggedCount: flagged.filter(f => f).length,

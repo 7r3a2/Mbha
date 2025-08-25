@@ -1059,13 +1059,18 @@ export default function Qbank() {
   // Reset all user responses (answers, flags, etc.)
   const resetUserResponses = async () => {
     try {
+      console.log('🔄 Starting reset user responses...');
+      
       const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token') || localStorage.getItem('token');
       
       if (!token) {
+        console.log('❌ No auth token found');
         alert('You must be logged in to reset your responses');
         return;
       }
 
+      console.log('🔍 Making DELETE request to /api/qbank/user-responses...');
+      
       const response = await fetch('/api/qbank/user-responses', {
         method: 'DELETE',
         headers: {
@@ -1074,16 +1079,22 @@ export default function Qbank() {
         }
       });
 
+      console.log('📡 Response status:', response.status);
+      console.log('📡 Response ok:', response.ok);
+
       if (response.ok) {
+        const result = await response.json();
+        console.log('✅ Reset successful:', result);
         alert('✅ All your question responses have been reset successfully!');
         // Refresh the question counts to reflect the reset
         fetchTopicQuestionCounts();
       } else {
         const errorData = await response.json();
+        console.error('❌ Reset failed:', errorData);
         alert(`❌ Failed to reset responses: ${errorData.error || 'Unknown error'}`);
       }
     } catch (error) {
-      console.error('Error resetting user responses:', error);
+      console.error('❌ Error resetting user responses:', error);
       alert('❌ Failed to reset responses. Please try again.');
     }
   };

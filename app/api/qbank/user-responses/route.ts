@@ -169,18 +169,48 @@ export async function GET(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
+    console.log('🗑️ DELETE request received for user responses');
+    
     // Verify user authentication
     const token = request.headers.get('authorization')?.replace('Bearer ', '');
     if (!token) {
+      console.log('❌ No authorization token provided');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    console.log('🔍 Verifying token...');
     const user = await verifyToken(token);
     if (!user) {
+      console.log('❌ Invalid token');
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
 
-    console.log(`🗑️ Deleting all responses for user: ${user.userId}`);
+    console.log(`✅ Token verified for user: ${user.userId}`);
+
+    // Check if database connection is working
+    try {
+      console.log('🔍 Testing database connection...');
+      await prisma.$connect();
+      console.log('✅ Database connection successful');
+    } catch (dbError) {
+      console.error('❌ Database connection failed:', dbError);
+      return NextResponse.json({ error: 'Database connection failed' }, { status: 500 });
+    }
+
+    // Check if user has any responses before deleting
+    try {
+      const responseCount = await prisma.userResponse.count({
+        where: {
+          userId: user.userId
+        }
+      });
+      console.log(`📊 Found ${responseCount} responses for user: ${user.userId}`);
+    } catch (countError) {
+      console.error('❌ Error counting responses:', countError);
+      return NextResponse.json({ error: 'Failed to count responses' }, { status: 500 });
+    }
+
+    console.log(`🗑️ Attempting to delete all responses for user: ${user.userId}`);
 
     // Delete all user responses
     const deleteResult = await prisma.userResponse.deleteMany({
@@ -189,14 +219,24 @@ export async function DELETE(request: NextRequest) {
       }
     });
 
-    console.log(`✅ Deleted ${deleteResult.count} responses for user: ${user.userId}`);
+    console.log(`✅ Successfully deleted ${deleteResult.count} responses for user: ${user.userId}`);
 
     return NextResponse.json({ 
       success: true, 
       deletedCount: deleteResult.count 
     });
   } catch (error) {
-    console.error('Error deleting user responses:', error);
-    return NextResponse.json({ error: 'Failed to delete responses' }, { status: 500 });
+    console.error('❌ Error deleting user responses:', error);
+    
+    // Provide more specific error information
+    let errorMessage = 'Failed to delete responses';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    
+    return NextResponse.json({ 
+      error: errorMessage,
+      details: error instanceof Error ? error.stack : 'Unknown error'
+    }, { status: 500 });
   }
 }
