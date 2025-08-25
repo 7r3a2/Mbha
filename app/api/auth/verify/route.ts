@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
       const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret') as any;
       if (decoded && decoded.userId) {
         // This is a JWT token with userId
-        user = findUserById(decoded.userId);
+        user = await findUserById(decoded.userId);
       } else if (decoded && decoded.sessionId) {
         // This is a session-based JWT token
         const { valid, user: sessionUser } = await validateSession(decoded.sessionId);

@@ -83,21 +83,12 @@ export default function Login() {
       setIsSubmitting(true);
       
       try {
-        console.log('🔐 Attempting login for:', formData.email);
-        const result = await login({
+        await login({
           ...formData,
           rememberMe
         });
-        console.log('✅ Login successful:', result);
-        
-        // Add a small delay to ensure authentication state is updated
-        setTimeout(() => {
-          console.log('🚀 Navigating to dashboard...');
-          router.push('/dashboard');
-        }, 100);
-        
+        router.push('/dashboard');
       } catch (error: any) {
-        console.error('❌ Login error:', error);
         setErrors({ submit: error.message || 'Login failed' });
       } finally {
         setIsSubmitting(false);

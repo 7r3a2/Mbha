@@ -98,27 +98,31 @@ export async function POST(request: NextRequest) {
       const sameDevice = await isSameDevice(user.id, request);
       console.log(`🔍 Same device check for ${email}: ${sameDevice}`);
       
-      if (!sameDevice) {
-        console.log('❌ Different device detected, locking account for:', email);
+      if (sameDevice) {
+        // Same device - allow login by deactivating old session and creating new one
+        console.log('🔄 Same device detected, refreshing session for:', email);
+        await deactivateAllUserSessions(user.id);
+      } else {
+        // Different device - lock account
+        console.log('🔒 Different device detected, locking account for:', email);
         await lockUserAccount(user.id);
+        await deactivateAllUserSessions(user.id);
+        
         return NextResponse.json(
           { 
             error: 'Account Locked',
-            message: 'Your account has been locked due to multiple device usage. Please contact the developer to unlock your account.'
+            message: 'You are already logged in on another device. Your account has been locked for security. Please contact the developer to unlock your account.'
           },
           { status: 423 } // 423 Locked
         );
       }
-      
-      // Same device, deactivate old sessions and create new one
-      console.log('✅ Same device detected, refreshing session for:', email);
-      await deactivateAllUserSessions(user.id);
     }
 
     // Create new session
+    console.log('🆕 Creating new session for:', email);
     const sessionId = await createUserSession(user.id, request);
-    console.log('✅ Session created:', sessionId);
-    
+    console.log('✅ New session created:', sessionId);
+
     // Generate JWT token with session ID
     const token = jwt.sign(
       { userId: user.id, sessionId },
@@ -141,7 +145,6 @@ export async function POST(request: NextRequest) {
         hasCoursesAccess: user.hasCoursesAccess
       }
     });
-
   } catch (error) {
     console.error('❌ Login error:', error);
     return NextResponse.json(
