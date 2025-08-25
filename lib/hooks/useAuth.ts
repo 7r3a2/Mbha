@@ -191,21 +191,26 @@ export const useAuth = () => {
 
   useEffect(() => {
     if (token && tokenVerification?.valid) {
+      console.log('🔐 Setting user from token verification:', tokenVerification.user);
       setUser(tokenVerification.user);
       setStoredUser(tokenVerification.user);
     } else if (token && tokenVerification && !tokenVerification.valid) {
+      console.log('❌ Token verification failed, logging out');
       logout();
     }
     setIsLoading(false);
   }, [token, tokenVerification]);
 
   const login = (loginData: LoginData) => {
+    console.log('🔐 useAuth login called with:', loginData.email);
     return loginUser(loginData).then((data) => {
+      console.log('✅ Login API response:', data);
       setStoredToken(data.token, loginData.rememberMe);
       setStoredUser(data.user, loginData.rememberMe);
       setToken(data.token);
       setUser(data.user);
       queryClient.setQueryData(['user'], data.user);
+      console.log('✅ User state updated in useAuth');
       return data;
     });
   };
