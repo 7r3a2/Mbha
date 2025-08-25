@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { findUserByEmail } from '@/lib/db-utils';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { checkUserSessions, createUserSession, lockUserAccount, deactivateAllUserSessions } from '@/lib/session-utils';
+import { checkUserSessions, createUserSession, lockUserAccount, deactivateAllUserSessions, isSameDevice } from '@/lib/session-utils';
 
 export async function POST(request: NextRequest) {
   try {
@@ -92,19 +92,30 @@ export async function POST(request: NextRequest) {
     const { activeSessions, shouldLock } = await checkUserSessions(user.id);
     console.log(`📱 Active sessions for ${email}: ${activeSessions}, shouldLock: ${shouldLock}`);
 
-    // Lock account if user already has an active session (strict single device)
+    // Check if user already has an active session
     if (activeSessions > 0) {
-      console.log('🔒 Active session detected, locking account for:', email);
-      await lockUserAccount(user.id);
-      await deactivateAllUserSessions(user.id);
+      // Check if it's the same device
+      const sameDevice = await isSameDevice(user.id, request);
+      console.log(`🔍 Same device check for ${email}: ${sameDevice}`);
       
-      return NextResponse.json(
-        { 
-          error: 'Account Locked',
-          message: 'You are already logged in on another device. Your account has been locked for security. Please contact the developer to unlock your account.'
-        },
-        { status: 423 } // 423 Locked
-      );
+      if (sameDevice) {
+        // Same device - allow login by deactivating old session and creating new one
+        console.log('🔄 Same device detected, refreshing session for:', email);
+        await deactivateAllUserSessions(user.id);
+      } else {
+        // Different device - lock account
+        console.log('🔒 Different device detected, locking account for:', email);
+        await lockUserAccount(user.id);
+        await deactivateAllUserSessions(user.id);
+        
+        return NextResponse.json(
+          { 
+            error: 'Account Locked',
+            message: 'You are already logged in on another device. Your account has been locked for security. Please contact the developer to unlock your account.'
+          },
+          { status: 423 } // 423 Locked
+        );
+      }
     }
 
     // Create new session

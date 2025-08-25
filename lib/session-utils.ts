@@ -57,6 +57,47 @@ export const checkUserSessions = async (userId: string): Promise<{ activeSession
   return { activeSessions: activeCount, shouldLock };
 };
 
+// Check if current device matches existing active session
+export const isSameDevice = async (userId: string, request: NextRequest): Promise<boolean> => {
+  const now = new Date();
+  const currentDeviceInfo = getDeviceInfo(request);
+  const currentIpAddress = getIpAddress(request);
+  
+  // Get active session for the user
+  const activeSession = await prisma.userSession.findFirst({
+    where: {
+      userId,
+      isActive: true,
+      expiresAt: {
+        gt: now
+      }
+    }
+  });
+
+  if (!activeSession) {
+    return false; // No active session, so not same device
+  }
+
+  // Compare device info and IP address
+  const existingDeviceInfo = activeSession.deviceInfo;
+  const existingIpAddress = activeSession.ipAddress;
+
+  // Parse device info to compare user agent
+  try {
+    const currentDevice = JSON.parse(currentDeviceInfo);
+    const existingDevice = JSON.parse(existingDeviceInfo);
+    
+    // Check if user agent matches (same browser/device)
+    const userAgentMatch = currentDevice.userAgent === existingDevice.userAgent;
+    const ipMatch = currentIpAddress === existingIpAddress;
+    
+    return userAgentMatch && ipMatch;
+  } catch (error) {
+    // If parsing fails, fall back to simple string comparison
+    return currentDeviceInfo === existingDeviceInfo && currentIpAddress === existingIpAddress;
+  }
+};
+
 // Create a new session for user
 export const createUserSession = async (
   userId: string, 
