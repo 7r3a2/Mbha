@@ -1704,14 +1704,14 @@ export default function ApproachPage() {
             <div className="w-8 h-8 flex items-center justify-center">
               <Image 
                 src="/images/logo lander.png" 
-                alt="MedAce Logo" 
+                alt="MBHA Logo" 
                 width={32} 
                 height={32} 
                 className="w-8 h-8 object-contain"
               />
             </div>
             {isOpen && (
-              <span className="text-xl font-bold ml-3 text-white">MedAce</span>
+              <span className="text-xl font-bold ml-3 text-white">MBHA</span>
             )}
           </div>
         </div>
@@ -1726,7 +1726,7 @@ export default function ApproachPage() {
                   onClick={() => setSelectedSubject(selectedSubject === subject.id ? null : subject.id)}
                   className={`flex items-center w-full transition-all duration-300 text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg ${
                     isOpen ? 'px-4 py-3' : 'justify-center p-3'
-                  } ${selectedSubject === subject.id ? 'bg-[#8b1319] text-white' : ''}`}
+                  } ${selectedSubject === subject.id ? 'bg-[#3A8431] text-white' : ''}`}
                 >
                   <svg className={`${isOpen ? 'w-5 h-5' : 'w-6 h-6'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
@@ -1759,7 +1759,7 @@ export default function ApproachPage() {
                                 key={lecture.id}
                                 onClick={() => setSelectedLecture(lecture.id)}
                                 className={`flex items-center w-full transition-all duration-300 text-gray-500 hover:bg-gray-500 hover:text-white rounded-lg px-3 py-1 ${
-                                  selectedLecture === lecture.id ? 'bg-[#8b1319] text-white' : ''
+                                  selectedLecture === lecture.id ? 'bg-[#3A8431] text-white' : ''
                                 }`}
                               >
                                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1784,7 +1784,7 @@ export default function ApproachPage() {
           {/* User Profile */}
           <div className={`p-4 ${isOpen ? '' : 'pb-2'}`}>
             <div className={`flex items-center ${isOpen ? 'mb-3' : 'justify-center'}`}>
-              <div className="w-8 h-8 bg-[#8b1319] rounded-full flex items-center justify-center">
+              <div className="w-8 h-8 bg-[#3A8431] rounded-full flex items-center justify-center">
                 <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
@@ -1826,7 +1826,7 @@ export default function ApproachPage() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
-        <header className="bg-[#8b1319] shadow-md h-12 sm:h-14 md:h-16 flex items-center justify-between px-3 sm:px-4 md:px-6">
+        <header className="bg-[#3A8431] shadow-md h-12 sm:h-14 md:h-16 flex items-center justify-between px-3 sm:px-4 md:px-6">
           <button 
             onClick={() => setIsOpen(!isOpen)}
             className="text-white hover:text-gray-200 transition-colors duration-300 p-2 rounded-lg hover:bg-white/10"

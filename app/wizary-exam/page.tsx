@@ -767,9 +767,9 @@ export default function WizaryExam() {
                   className={`flex items-center w-full transition-all duration-200 rounded-lg ${dashboardSidebarCollapsed ? 'justify-center p-3' : 'px-4 py-3'} bg-orange-600 text-white`}
                 >
                   <svg className={`${dashboardSidebarCollapsed ? 'w-6 h-6' : 'w-6 h-6 mr-3'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                   </svg>
-                  {!dashboardSidebarCollapsed && <span className="font-medium text-sm">الامتحانات</span>}
+                  {!dashboardSidebarCollapsed && <span className="font-medium text-sm">لوحة التحكم</span>}
                 </button>
               </li>
               <li>
@@ -778,9 +778,9 @@ export default function WizaryExam() {
                   className={`flex items-center w-full transition-all duration-200 rounded-lg ${dashboardSidebarCollapsed ? 'justify-center p-3' : 'px-4 py-3'} text-white hover:bg-gray-700`}
                 >
                   <svg className={`${dashboardSidebarCollapsed ? 'w-6 h-6' : 'w-6 h-6 mr-3'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                   </svg>
-                  {!dashboardSidebarCollapsed && <span className="font-medium text-sm">لوحة التحكم</span>}
+                  {!dashboardSidebarCollapsed && <span className="font-medium text-sm">الامتحانات</span>}
                 </button>
               </li>
             </ul>
@@ -817,7 +817,7 @@ export default function WizaryExam() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               </button>
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">MedAce</h1>
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">MBHA</h1>
             </div>
             <div className="flex items-center space-x-2 sm:space-x-3">
             </div>
@@ -966,7 +966,7 @@ export default function WizaryExam() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               </button>
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">MedAce</h1>
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">MBHA</h1>
             </div>
             <div className="flex items-center space-x-2 sm:space-x-3">
             </div>
@@ -1287,7 +1287,7 @@ export default function WizaryExam() {
           {/* Header */}
           <header className="bg-blue-600 shadow-md p-2 sm:p-3 flex justify-between items-center text-white">
             <div className="flex items-center">
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">MedAce</h1>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">MBHA</h1>
             </div>
             <div className="flex items-center space-x-2 sm:space-x-3">
             </div>
@@ -1432,7 +1432,7 @@ export default function WizaryExam() {
           {/* Header */}
           <header className="bg-blue-600 shadow-md p-3 flex justify-between items-center text-white">
             <div className="flex items-center">
-              <h1 className="text-3xl font-bold text-white">MedAce</h1>
+              <h1 className="text-3xl font-bold text-white">MBHA</h1>
             </div>
             <div className="flex items-center space-x-3">
               <button

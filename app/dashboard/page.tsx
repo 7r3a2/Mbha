@@ -110,14 +110,14 @@ export default function Dashboard() {
             <div className="w-8 h-8 flex items-center justify-center">
               <Image 
                 src="/images/logo lander.png" 
-                alt="MedAce Logo" 
+                alt="MBHA Logo" 
                 width={32} 
                 height={32} 
                 className="w-8 h-8 object-contain"
               />
             </div>
             {isOpen && (
-              <span className="text-xl font-bold ml-3 text-white">MedAce</span>
+              <span className="text-xl font-bold ml-3 text-white">MBHA</span>
             )}
           </div>
         </div>
@@ -130,7 +130,7 @@ export default function Dashboard() {
               <li>
                 <button className={`flex items-center w-full transition-all duration-300 rounded-lg ${
                   isOpen ? 'px-4 py-3' : 'justify-center p-3'
-                } bg-[#8b1319] text-white`}>
+                } bg-[#3A8431] text-white`}>
                   <svg className={`${isOpen ? 'w-5 h-5' : 'w-6 h-6'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                   </svg>
@@ -228,7 +228,7 @@ export default function Dashboard() {
           {/* User Profile */}
           <div className={`p-4 ${isOpen ? '' : 'pb-2'}`}>
             <div className={`flex items-center ${isOpen ? 'mb-3' : 'justify-center'}`}>
-              <div className="w-8 h-8 bg-[#8b1319] rounded-full flex items-center justify-center">
+              <div className="w-8 h-8 bg-[#3A8431] rounded-full flex items-center justify-center">
                 <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
@@ -248,7 +248,7 @@ export default function Dashboard() {
           <div className={`${isOpen ? 'px-4 pb-4' : 'px-2 pb-4'}`}>
             <button 
               onClick={handleLogout}
-              className={`w-full bg-[#8b1319] text-white font-bold py-2 px-3 rounded-lg hover:bg-[#6a0f14] transition-all duration-300 text-sm flex items-center justify-center`}
+              className={`w-full bg-[#3A8431] text-white font-bold py-2 px-3 rounded-lg hover:bg-[#2d6a27] transition-all duration-300 text-sm flex items-center justify-center`}
             >
               {isOpen ? (
                 <>
@@ -270,7 +270,7 @@ export default function Dashboard() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <header className="bg-[#8b1319] shadow-md h-16 flex items-center justify-between px-6">
+        <header className="bg-[#3A8431] shadow-md h-16 flex items-center justify-between px-6">
           <button 
             onClick={() => setIsOpen(!isOpen)}
             className="text-white hover:text-gray-200 transition-colors duration-300 p-2 rounded-lg hover:bg-white/10"
@@ -311,7 +311,7 @@ export default function Dashboard() {
           {user?.hasCoursesAccess && (user?.uniqueCode === 'ADMIN' || user?.email?.includes('admin')) && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {courses.map((course) => (
-              <div key={course.id} className="bg-white rounded-xl shadow-lg border-2 border-[#8b1319] overflow-hidden transform hover:scale-105 transition-all duration-300">
+              <div key={course.id} className="bg-white rounded-xl shadow-lg border-2 border-green-500 overflow-hidden transform hover:scale-105 transition-all duration-300">
                 {/* Course Image */}
                 <div className="h-48 overflow-hidden">
                   <Image
@@ -330,20 +330,20 @@ export default function Dashboard() {
                   {/* Progress Bar */}
                   <div className="w-full bg-gray-200 rounded-full h-2 mb-3">
                     <div 
-                      className="bg-[#8b1319] h-2 rounded-full transition-all duration-500"
+                      className="bg-[#3A8431] h-2 rounded-full transition-all duration-500"
                       style={{ width: `${course.progress}%` }}
                     ></div>
                   </div>
                   
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-sm text-gray-600">Progress</span>
-                    <span className="text-sm font-bold text-[#8b1319]">{course.progress}%</span>
+                    <span className="text-sm font-bold text-[#3A8431]">{course.progress}%</span>
                   </div>
                   
                   {/* Resume Button */}
                   <button 
                     onClick={() => handleResumeClick(course.courseId)}
-                    className="w-full bg-[#8b1319] text-white py-2 px-4 rounded-lg hover:bg-[#6a0f14] transition-colors duration-200 font-semibold"
+                    className="w-full bg-[#3A8431] text-white py-2 px-4 rounded-lg hover:bg-[#2d6a27] transition-colors duration-200 font-semibold"
                   >
                     Resume
                   </button>
