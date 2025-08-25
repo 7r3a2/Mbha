@@ -32,17 +32,28 @@ function toLabelShape(subjects: any[]): any[] {
 }
 
 async function readStructure() {
+  console.log('📖 Reading structure from file:', STRUCTURE_FILE);
   // Prefer KV
   try {
     const kv = await kvGet<any>(KV_KEY, null as any);
-    if (kv) return normalizeStructure(kv);
-  } catch {}
+    if (kv) {
+      console.log('✅ Found structure in KV');
+      return normalizeStructure(kv);
+    }
+  } catch (error) {
+    console.log('❌ KV read failed:', error);
+  }
   // Fallback to file
   try {
     const raw = await fs.readFile(STRUCTURE_FILE, 'utf-8');
-    return normalizeStructure(JSON.parse(raw));
+    console.log('✅ Read structure from file');
+    const parsed = JSON.parse(raw);
+    console.log('📄 Parsed structure:', parsed);
+    return normalizeStructure(parsed);
   } catch (e: any) {
+    console.log('❌ File read failed:', e);
     if (e.code === 'ENOENT') {
+      console.log('📝 Creating default structure');
       const defaultStructure = {
         subjects: []
       };
@@ -66,10 +77,14 @@ async function writeStructure(structure: any) {
 
 export async function GET() {
   try {
+    console.log('🔍 Qbank structure API called');
     const structure = await readStructure();
+    console.log('📁 Raw structure:', structure);
     const subjects = toLabelShape(structure.subjects);
+    console.log('🔄 Transformed subjects:', subjects);
     return NextResponse.json(subjects);
   } catch (error) {
+    console.error('❌ Error in qbank structure API:', error);
     return NextResponse.json({ error: 'Failed to load structure' }, { status: 500 });
   }
 }
