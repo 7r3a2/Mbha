@@ -432,6 +432,7 @@ function QuizPageContent() {
       console.log('  Final token used:', token);
       console.log('  Token length:', token?.length);
       console.log('  Token starts with:', token?.substring(0, 20) + '...');
+      console.log('  Token ends with:', token?.substring(token.length - 20));
       
       if (!token) {
         console.log('❌ No token available for saving response');
@@ -453,6 +454,9 @@ function QuizPageContent() {
           isFlagged
         })
       });
+
+      console.log('🔍 Response status:', response.status);
+      console.log('🔍 Response headers:', Object.fromEntries(response.headers.entries()));
 
       if (response.ok) {
         const data = await response.json();

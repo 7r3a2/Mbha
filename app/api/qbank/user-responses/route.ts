@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { verifyToken } from '@/lib/auth-utils';
+import jwt from 'jsonwebtoken';
 
 export async function POST(request: NextRequest) {
   try {
@@ -11,14 +12,29 @@ export async function POST(request: NextRequest) {
     const token = authHeader?.replace('Bearer ', '');
     console.log('🔍 Token extracted:', token ? `${token.substring(0, 20)}...` : 'null');
     console.log('🔍 Token length:', token?.length);
+    console.log('🔍 Full token:', token);
     
     if (!token) {
       console.log('❌ No authorization token in user responses POST');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    console.log('🔍 About to verify token...');
     const user = await verifyToken(token);
     console.log('🔍 Token verification result:', user ? `User ID: ${user.userId}` : 'null');
+    console.log('🔍 Full user object:', user);
+    
+    // Manual JWT verification for debugging
+    try {
+      const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret';
+      console.log('🔍 JWT_SECRET being used:', JWT_SECRET);
+      console.log('🔍 JWT_SECRET length:', JWT_SECRET.length);
+      
+      const manualVerification = jwt.verify(token, JWT_SECRET);
+      console.log('🔍 Manual JWT verification result:', manualVerification);
+    } catch (jwtError: any) {
+      console.log('🔍 Manual JWT verification failed:', jwtError.message);
+    }
     
     if (!user) {
       console.log('❌ Invalid token in user responses POST');
@@ -100,7 +116,7 @@ export async function GET(request: NextRequest) {
     });
 
     // Create a map of questionId to response
-    const responseMap = responses.reduce((acc, response) => {
+    const responseMap = responses.reduce((acc: Record<string, any>, response: any) => {
       acc[response.questionId] = response;
       return acc;
     }, {} as Record<string, any>);
