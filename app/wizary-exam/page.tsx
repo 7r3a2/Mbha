@@ -994,7 +994,7 @@ export default function WizaryExam() {
             
             {/* Exam Info Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 mb-4 w-full">
-              <div className="bg-green-700 text-white p-2 sm:p-3 rounded text-center">
+              <div className="bg-[#3A8431] text-white p-2 sm:p-3 rounded text-center">
                 <div className="text-sm sm:text-base font-medium">الكلية/القسم</div>
                 <div className="text-sm sm:text-base font-bold">كلية الطب</div>
               </div>
@@ -1475,7 +1475,7 @@ export default function WizaryExam() {
                   
                   <button
                     onClick={startQuiz}
-                    className="w-full bg-green-600 text-white py-3 sm:py-4 rounded text-sm sm:text-base font-bold hover:bg-green-700 transition-colors duration-200"
+                    className="w-full bg-[#3A8431] text-white py-3 sm:py-4 rounded text-sm sm:text-base font-bold hover:bg-[#2d6a27] transition-colors duration-200"
                   >
                     أبدء الامتحان
                   </button>
