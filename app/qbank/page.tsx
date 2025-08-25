@@ -1582,28 +1582,28 @@ export default function Qbank() {
                 {isOpen && <span className="ml-3 font-medium text-sm">Create Test</span>}
               </button>
             </li>
-            {/* Previous Tests */}
-            <li>
-              <button
-                onClick={() => setActiveView('previous-tests')}
-                onMouseEnter={() => setSidebarHover('previous-tests')}
-                onMouseLeave={() => setSidebarHover('')}
-                className={`flex items-center w-full transition-all duration-200 rounded-lg ${
-                  isOpen ? 'px-4 py-3' : 'justify-center p-3'
-                } ${
-                  activeView === 'previous-tests'
-                    ? 'bg-white text-[#0072b7] shadow-lg border border-[#0072b7]'
-                    : sidebarHover === 'previous-tests'
-                    ? 'bg-[#003a6d] text-white shadow-md'
-                    : 'text-white hover:bg-[#003a6d] hover:shadow-md'
-                }`}
-              >
-                <svg className={`${isOpen ? 'w-5 h-5' : 'w-6 h-6'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                {isOpen && <span className="ml-3 font-medium text-sm">Previous Tests</span>}
-              </button>
-            </li>
+                         {/* Previous Tests */}
+             <li>
+               <button
+                 onClick={() => setActiveView('previous-tests')}
+                 onMouseEnter={() => setSidebarHover('previous-tests')}
+                 onMouseLeave={() => setSidebarHover('')}
+                 className={`flex items-center w-full transition-all duration-200 rounded-lg ${
+                   isOpen ? 'px-4 py-3' : 'justify-center p-3'
+                 } ${
+                   activeView === 'previous-tests'
+                     ? 'bg-white text-[#0072b7] shadow-lg border border-[#0072b7]'
+                     : sidebarHover === 'previous-tests'
+                     ? 'bg-[#003a6d] text-white shadow-md'
+                     : 'text-white hover:bg-[#003a6d] hover:shadow-md'
+                 }`}
+               >
+                 <svg className={`${isOpen ? 'w-5 h-5' : 'w-6 h-6'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                 </svg>
+                 {isOpen && <span className="ml-3 font-medium text-sm">Previous Tests</span>}
+               </button>
+             </li>
 
           </ul>
         </nav>
@@ -2077,22 +2077,15 @@ export default function Qbank() {
                                   {test.questions} questions
                                 </span>
                               </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="flex flex-col space-y-1">
-                                  <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                                    test.mode === 'Exam' 
-                                      ? 'bg-orange-100 text-orange-800' 
-                                      : 'bg-green-100 text-green-800'
-                                  }`}>
-                                    {test.mode}
-                                  </span>
-                                  {test.mode === 'Exam' && test.time && (
-                                    <span className="text-xs text-gray-500">
-                                      {test.time} min
-                                    </span>
-                                  )}
-                                </div>
-                              </td>
+                                                             <td className="px-6 py-4 whitespace-nowrap">
+                                 <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                                   test.mode === 'Exam' 
+                                     ? 'bg-orange-100 text-orange-800' 
+                                     : 'bg-green-100 text-green-800'
+                                 }`}>
+                                   {test.mode}
+                                 </span>
+                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div className="flex items-center space-x-2">
                                   <button
