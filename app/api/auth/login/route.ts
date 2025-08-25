@@ -1,8 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { findUserByEmail } from '@/lib/db-utils';
+import fs from 'fs';
+import path from 'path';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { checkUserSessions, createUserSession, lockUserAccount, deactivateAllUserSessions, isSameDevice } from '@/lib/session-utils';
+
+// File path for users
+const USERS_FILE = path.join(process.cwd(), 'data', 'users.json');
+
+// Load users from file
+const loadUsers = () => {
+  try {
+    const data = fs.readFileSync(USERS_FILE, 'utf8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.error('Error loading users:', error);
+    return [];
+  }
+};
+
+// Find user by email
+const findUserByEmail = (email: string) => {
+  const users = loadUsers();
+  return users.find((user: any) => user.email === email);
+};
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,7 +39,7 @@ export async function POST(request: NextRequest) {
     console.log('🔍 Login attempt for:', email);
 
     // Find user
-    const user = await findUserByEmail(email);
+    const user = findUserByEmail(email);
     if (!user) {
       console.log('❌ User not found:', email);
       return NextResponse.json(
