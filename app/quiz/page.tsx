@@ -71,6 +71,16 @@ function QuizPageContent() {
   const testId = searchParams.get('testId'); // For loading previous test data
   const isReviewMode = searchParams.get('review') === 'true'; // For review mode
   
+  // Debug logging
+  console.log('🔄 Quiz page params:', {
+    testId,
+    isReviewMode,
+    sources,
+    topics,
+    questionCount,
+    questionMode
+  });
+  
   const [questions, setQuestions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -98,18 +108,35 @@ function QuizPageContent() {
   // Function to load previous test data
   const loadPreviousTestData = async (testId: string, questions: any[]) => {
     try {
+      console.log('🔄 Loading previous test data for testId:', testId);
+      console.log('🔄 Questions to map:', questions.length);
+      
       // Load user responses from localStorage
       const existingResponses = localStorage.getItem('mbha_test_responses');
+      console.log('🔄 Existing responses in localStorage:', existingResponses ? 'Found' : 'Not found');
+      
       if (existingResponses) {
         const allResponses = JSON.parse(existingResponses);
+        console.log('🔄 All responses keys:', Object.keys(allResponses));
+        
         const testResponses = allResponses[testId];
+        console.log('🔄 Test responses for this testId:', testResponses ? 'Found' : 'Not found');
         
         if (testResponses) {
+          console.log('🔄 Test responses data:', testResponses);
+          
           // Map the saved responses to the current questions
           const savedAnswers = testResponses.answers || [];
           const savedFlagged = testResponses.flagged || [];
           const savedSubmitted = testResponses.submitted || [];
           const savedQuestionIds = testResponses.questions || [];
+          
+          console.log('🔄 Saved data:', {
+            answers: savedAnswers.length,
+            flagged: savedFlagged.length,
+            submitted: savedSubmitted.length,
+            questionIds: savedQuestionIds.length
+          });
           
           // Create maps for quick lookup
           const questionIdToIndex = questions.reduce((acc: Record<string, number>, q: any, index: number) => {
@@ -121,6 +148,11 @@ function QuizPageContent() {
             acc[id] = index;
             return acc;
           }, {});
+          
+          console.log('🔄 Question mapping:', {
+            currentQuestions: Object.keys(questionIdToIndex),
+            savedQuestions: Object.keys(savedQuestionIdToIndex)
+          });
           
           // Map responses to current questions
           const answers = questions.map((q: any) => {
@@ -138,16 +170,26 @@ function QuizPageContent() {
             return savedIndex !== undefined ? savedSubmitted[savedIndex] : false;
           });
           
+          console.log('🔄 Mapped responses:', {
+            answers: answers.filter(a => a !== null).length,
+            flagged: flagged.filter(f => f).length,
+            submitted: submitted.filter(s => s).length
+          });
+          
           // Update state with previous answers
           setAnswers(answers);
           setSubmitted(submitted);
           setFlagged(flagged);
           
-          console.log('✅ Loaded previous test data:', { answers, flagged, submitted });
+          console.log('✅ Successfully loaded previous test data');
+        } else {
+          console.log('❌ No test responses found for testId:', testId);
         }
+      } else {
+        console.log('❌ No responses found in localStorage');
       }
     } catch (error) {
-      console.error('Error loading previous test data:', error);
+      console.error('❌ Error loading previous test data:', error);
     }
   };
 
@@ -241,8 +283,12 @@ function QuizPageContent() {
           }
 
           // Load previous test data if in review mode
+          console.log('🔄 Checking if should load previous test data:', { isReviewMode, testId });
           if (isReviewMode && testId) {
+            console.log('🔄 Loading previous test data...');
             loadPreviousTestData(testId, finalQuestions);
+          } else {
+            console.log('🔄 Not loading previous test data - isReviewMode:', isReviewMode, 'testId:', testId);
           }
 
           // Reset navigation and UI state
@@ -266,7 +312,7 @@ function QuizPageContent() {
     };
 
     loadQuestions();
-  }, [sources, topics, questionCount, questionMode, testMode, customTimeMinutes]);
+  }, [sources, topics, questionCount, questionMode, testMode, customTimeMinutes, isReviewMode, testId]);
 
   // Defer deriving current question until after loading/error/empty guards
 
@@ -682,6 +728,14 @@ function QuizPageContent() {
       const allResponses = existingResponses ? JSON.parse(existingResponses) : {};
       allResponses[testId] = testResponses;
       localStorage.setItem('mbha_test_responses', JSON.stringify(allResponses));
+      
+      console.log('💾 Saved test responses to localStorage:', {
+        testId,
+        answersCount: answers.filter(a => a !== null).length,
+        flaggedCount: flagged.filter(f => f).length,
+        submittedCount: submitted.filter(s => s).length,
+        questionsCount: questions.length
+      });
     }
     
     const totalQuestions = questions.length;
