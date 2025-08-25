@@ -166,3 +166,37 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to fetch responses' }, { status: 500 });
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  try {
+    // Verify user authentication
+    const token = request.headers.get('authorization')?.replace('Bearer ', '');
+    if (!token) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const user = await verifyToken(token);
+    if (!user) {
+      return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
+    }
+
+    console.log(`🗑️ Deleting all responses for user: ${user.userId}`);
+
+    // Delete all user responses
+    const deleteResult = await prisma.userResponse.deleteMany({
+      where: {
+        userId: user.userId
+      }
+    });
+
+    console.log(`✅ Deleted ${deleteResult.count} responses for user: ${user.userId}`);
+
+    return NextResponse.json({ 
+      success: true, 
+      deletedCount: deleteResult.count 
+    });
+  } catch (error) {
+    console.error('Error deleting user responses:', error);
+    return NextResponse.json({ error: 'Failed to delete responses' }, { status: 500 });
+  }
+}

@@ -976,6 +976,38 @@ export default function Qbank() {
     }
   };
 
+  // Reset all user responses (answers, flags, etc.)
+  const resetUserResponses = async () => {
+    try {
+      const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token') || localStorage.getItem('token');
+      
+      if (!token) {
+        alert('You must be logged in to reset your responses');
+        return;
+      }
+
+      const response = await fetch('/api/qbank/user-responses', {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        alert('✅ All your question responses have been reset successfully!');
+        // Refresh the question counts to reflect the reset
+        fetchTopicQuestionCounts();
+      } else {
+        const errorData = await response.json();
+        alert(`❌ Failed to reset responses: ${errorData.error || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Error resetting user responses:', error);
+      alert('❌ Failed to reset responses. Please try again.');
+    }
+  };
+
   const handleGenerateTest = async () => {
     if (!testName.trim()) {
       alert('Please enter a test name');
@@ -1442,7 +1474,23 @@ const [isMobile, setIsMobile] = useState(false);
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
                 {/* Question Mode */}
                 <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:border-[#0072b7] focus-within:border-[#0072b7] focus-within:ring-1 focus-within:ring-[#0072b7] transition-all duration-300">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Question mode</label>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="block text-sm font-medium text-gray-700">Question mode</label>
+                    <button
+                      onClick={() => {
+                        if (confirm('⚠️ Warning: This will reset all your question responses (answers, flags, etc.) for all question modes. This action cannot be undone. Are you sure you want to continue?')) {
+                          // Call API to reset user responses
+                          resetUserResponses();
+                        }
+                      }}
+                      className="focus:outline-none p-1 rounded hover:bg-red-100 transition-colors"
+                      title="Reset all question responses"
+                    >
+                      <svg className="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </div>
                   <div className="relative">
                     <button
                       onClick={() => setOpenDropdown(openDropdown === 'mode' ? null : 'mode')}
@@ -1560,17 +1608,6 @@ const [isMobile, setIsMobile] = useState(false);
                         <h3 className="text-lg font-medium text-[#0072b7]">Lectures - {subject.label}</h3>
                       </div>
                       <div className="flex items-center space-x-2">
-                        {/* Refresh counts button */}
-                        <button
-                          onClick={() => fetchTopicQuestionCounts()}
-                          disabled={loadingCounts}
-                          className="focus:outline-none p-1 rounded hover:bg-gray-100 transition-colors"
-                          title="Refresh question counts"
-                        >
-                          <svg className={`w-5 h-5 text-[#0072b7] ${loadingCounts ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                          </svg>
-                        </button>
                         {/* Search icon and bar */}
                         <div className="relative flex items-center">
                           {showSearch[subject.key] && (
