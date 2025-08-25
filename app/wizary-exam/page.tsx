@@ -118,43 +118,31 @@ const wizaryExamStyles = `
              color: #ffffff !important;
            }
            
-           /* Override green colors with new red color scheme */
-           .wizary-exam-page .bg-green-500:hover,
-           .wizary-exam-page .bg-green-600:hover,
-           .wizary-exam-page .bg-green-700:hover {
+           /* Prevent orange hover on answered questions */
+           .wizary-exam-page .bg-green-500:hover {
              background-color: #10b981 !important;
              border-color: #059669 !important;
              color: #ffffff !important;
            }
            
-           /* Ensure answered questions use original green color on hover */
-           .wizary-exam-page button.bg-green-500:hover,
-           .wizary-exam-page button.bg-green-600:hover,
-           .wizary-exam-page button.bg-green-700:hover {
+           /* Ensure answered questions stay green on hover */
+           .wizary-exam-page button.bg-green-500:hover {
              background-color: #10b981 !important;
              border-color: #059669 !important;
              color: #ffffff !important;
            }
            
-           /* Override any green hover effects */
-           .wizary-exam-page .bg-green-500[class*="hover"],
-           .wizary-exam-page .bg-green-600[class*="hover"],
-           .wizary-exam-page .bg-green-700[class*="hover"] {
+           /* Override any orange hover effects on green buttons */
+           .wizary-exam-page .bg-green-500[class*="hover"] {
              background-color: #10b981 !important;
              border-color: #059669 !important;
              color: #ffffff !important;
            }
            
-           /* Prevent green stroke on answered questions when clicked */
+           /* Prevent orange stroke on answered questions when clicked */
            .wizary-exam-page .bg-green-500:active,
            .wizary-exam-page .bg-green-500:focus,
-           .wizary-exam-page .bg-green-500:focus-visible,
-           .wizary-exam-page .bg-green-600:active,
-           .wizary-exam-page .bg-green-600:focus,
-           .wizary-exam-page .bg-green-600:focus-visible,
-           .wizary-exam-page .bg-green-700:active,
-           .wizary-exam-page .bg-green-700:focus,
-           .wizary-exam-page .bg-green-700:focus-visible {
+           .wizary-exam-page .bg-green-500:focus-visible {
              background-color: #10b981 !important;
              border-color: #059669 !important;
              color: #ffffff !important;
@@ -162,13 +150,9 @@ const wizaryExamStyles = `
              box-shadow: none !important;
            }
            
-           /* Ensure answered questions use original green color */
+           /* Ensure answered questions never show orange */
            .wizary-exam-page .bg-green-500,
-           .wizary-exam-page button.bg-green-500,
-           .wizary-exam-page .bg-green-600,
-           .wizary-exam-page button.bg-green-600,
-           .wizary-exam-page .bg-green-700,
-           .wizary-exam-page button.bg-green-700 {
+           .wizary-exam-page button.bg-green-500 {
              background-color: #10b981 !important;
              border-color: #059669 !important;
              color: #ffffff !important;
@@ -783,9 +767,9 @@ export default function WizaryExam() {
                   className={`flex items-center w-full transition-all duration-200 rounded-lg ${dashboardSidebarCollapsed ? 'justify-center p-3' : 'px-4 py-3'} bg-orange-600 text-white`}
                 >
                   <svg className={`${dashboardSidebarCollapsed ? 'w-6 h-6' : 'w-6 h-6 mr-3'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                   </svg>
-                  {!dashboardSidebarCollapsed && <span className="font-medium text-sm">لوحة التحكم</span>}
+                  {!dashboardSidebarCollapsed && <span className="font-medium text-sm">الامتحانات</span>}
                 </button>
               </li>
               <li>
@@ -794,9 +778,9 @@ export default function WizaryExam() {
                   className={`flex items-center w-full transition-all duration-200 rounded-lg ${dashboardSidebarCollapsed ? 'justify-center p-3' : 'px-4 py-3'} text-white hover:bg-gray-700`}
                 >
                   <svg className={`${dashboardSidebarCollapsed ? 'w-6 h-6' : 'w-6 h-6 mr-3'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                   </svg>
-                  {!dashboardSidebarCollapsed && <span className="font-medium text-sm">الامتحانات</span>}
+                  {!dashboardSidebarCollapsed && <span className="font-medium text-sm">لوحة التحكم</span>}
                 </button>
               </li>
             </ul>
@@ -994,7 +978,7 @@ export default function WizaryExam() {
             
             {/* Exam Info Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 mb-4 w-full">
-              <div className="bg-[#3A8431] text-white p-2 sm:p-3 rounded text-center">
+              <div className="bg-green-700 text-white p-2 sm:p-3 rounded text-center">
                 <div className="text-sm sm:text-base font-medium">الكلية/القسم</div>
                 <div className="text-sm sm:text-base font-bold">كلية الطب</div>
               </div>
@@ -1453,7 +1437,7 @@ export default function WizaryExam() {
             <div className="flex items-center space-x-3">
               <button
                 onClick={() => setCurrentView('dashboard')}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
+                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center space-x-2"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -1475,7 +1459,7 @@ export default function WizaryExam() {
                   
                   <button
                     onClick={startQuiz}
-                    className="w-full bg-[#3A8431] text-white py-3 sm:py-4 rounded text-sm sm:text-base font-bold hover:bg-[#2d6a27] transition-colors duration-200"
+                    className="w-full bg-green-600 text-white py-3 sm:py-4 rounded text-sm sm:text-base font-bold hover:bg-green-700 transition-colors duration-200"
                   >
                     أبدء الامتحان
                   </button>
