@@ -764,7 +764,14 @@ export default function Qbank() {
     if (savedTests) {
       try {
         const parsedTests = JSON.parse(savedTests);
-        setPreviousTests(parsedTests);
+        // Ensure only latest 10 tests are loaded
+        const limitedTests = parsedTests.slice(0, 10);
+        setPreviousTests(limitedTests);
+        
+        // If we had more than 10 tests, update localStorage to reflect the limit
+        if (parsedTests.length > 10) {
+          localStorage.setItem('mbha_test_history', JSON.stringify(limitedTests));
+        }
       } catch (error) {
         console.error('Error loading test history:', error);
       }

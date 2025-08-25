@@ -125,8 +125,8 @@ export default function Dashboard() {
         {/* Navigation */}
         <nav className="flex-1 py-4 overflow-hidden">
           <ul className="space-y-2 px-2">
-            {/* Courses - Admin Only */}
-            {user?.hasCoursesAccess && (user?.uniqueCode === 'ADMIN' || user?.email?.includes('admin')) && (
+            {/* Courses - Hidden for all users */}
+            {/* {user?.hasCoursesAccess && (user?.uniqueCode === 'ADMIN' || user?.email?.includes('admin')) && (
               <li>
                 <button className={`flex items-center w-full transition-all duration-300 rounded-lg ${
                   isOpen ? 'px-4 py-3' : 'justify-center p-3'
@@ -137,7 +137,7 @@ export default function Dashboard() {
                   {isOpen && <span className="ml-3 font-medium text-sm">Courses</span>}
                 </button>
               </li>
-            )}
+            )} */}
 
             {/* Qbank */}
             {user?.hasQbankAccess && (
@@ -171,8 +171,8 @@ export default function Dashboard() {
 
 
 
-            {/* Approach */}
-            {user?.hasApproachAccess && (
+            {/* Approach - Hidden for all users */}
+            {/* {user?.hasApproachAccess && (
               <li>
                 <button 
                   onClick={handleApproachClick}
@@ -185,7 +185,7 @@ export default function Dashboard() {
                   {isOpen && <span className="ml-3 font-medium text-sm">Approach</span>}
                 </button>
               </li>
-            )}
+            )} */}
           </ul>
         </nav>
 

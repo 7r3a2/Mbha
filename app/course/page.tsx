@@ -9,12 +9,12 @@ function CoursePageContent() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
 
-  // Check if user has courses access
+  // Redirect all users away from courses page
   useEffect(() => {
-    if (!isLoading && (!isAuthenticated || !user?.hasCoursesAccess)) {
-      router.push('/wizary-exam');
+    if (!isLoading) {
+      router.push('/dashboard');
     }
-  }, [isLoading, isAuthenticated, user, router]);
+  }, [isLoading, router]);
   const searchParams = useSearchParams();
   
   const [courseId, setCourseId] = useState('obs-gyne');
