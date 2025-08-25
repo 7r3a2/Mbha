@@ -1660,7 +1660,7 @@ const [isMobile, setIsMobile] = useState(false);
                                           <label className={`ml-2 text-sm ${!hasQuestions ? 'text-gray-400 cursor-not-allowed' : 'text-gray-600'}`}>
                                             {topic}
                                             <span className="ml-1 text-xs text-[#0072b7] font-medium">
-                                              ({loadingCounts ? '...' : (topicQuestionCounts[topic] !== undefined ? topicQuestionCounts[topic] : '...')})
+                                              ({loadingCounts ? '...' : (topicQuestionCounts[topic] !== undefined ? topicQuestionCounts[topic] : 0)})
                                             </span>
                                           </label>
                                       </div>

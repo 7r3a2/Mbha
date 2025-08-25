@@ -10,7 +10,8 @@ const fetchQuestions = async (sources: string, topics: string, count: number, qu
     const params = new URLSearchParams({
       sources,
       topics,
-      count: count.toString()
+      count: count.toString(),
+      questionMode // Add questionMode parameter
     });
     
     const response = await fetch(`/api/qbank/questions?${params}`);
@@ -31,9 +32,11 @@ const fetchQuestions = async (sources: string, topics: string, count: number, qu
         mode: questionMode
       });
       
+      const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token') || localStorage.getItem('token');
+      
       const userResponseRes = await fetch(`/api/qbank/user-responses?${userResponseParams}`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+          'Authorization': `Bearer ${token || ''}`
         }
       });
       
@@ -534,11 +537,11 @@ function QuizPageContent() {
           newFlagged[currentQuestionIndex]
         );
       } else {
-        // User hasn't answered yet, save just the flag status
+        // User hasn't answered yet, save just the flag status with a valid answer value
         saveUserResponse(
           currentQuestion.id.toString(),
-          -1, // -1 indicates no answer yet
-          false, // Not correct since no answer
+          0, // Use 0 as default answer when just flagging
+          false, // Not correct since no real answer
           newFlagged[currentQuestionIndex]
         );
       }
