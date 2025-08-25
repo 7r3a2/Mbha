@@ -7,18 +7,23 @@ export async function POST(request: NextRequest) {
     // Verify user authentication
     const token = request.headers.get('authorization')?.replace('Bearer ', '');
     if (!token) {
+      console.log('❌ No authorization token in user responses POST');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const user = await verifyToken(token);
     if (!user) {
+      console.log('❌ Invalid token in user responses POST');
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
 
     const body = await request.json();
     const { questionId, userAnswer, isCorrect, isFlagged } = body;
 
+    console.log(`💾 Saving user response - User: ${user.id}, Question: ${questionId}, Answer: ${userAnswer}, Correct: ${isCorrect}, Flagged: ${isFlagged}`);
+
     if (!questionId || userAnswer === undefined || isCorrect === undefined) {
+      console.log('❌ Missing required fields in user response');
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
@@ -45,9 +50,10 @@ export async function POST(request: NextRequest) {
       }
     });
 
+    console.log(`✅ User response saved successfully: ${response.id}`);
     return NextResponse.json({ success: true, response });
   } catch (error) {
-    console.error('Error saving user response:', error);
+    console.error('❌ Error saving user response:', error);
     return NextResponse.json({ error: 'Failed to save response' }, { status: 500 });
   }
 }

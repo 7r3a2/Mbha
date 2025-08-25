@@ -62,17 +62,24 @@ export async function GET(request: NextRequest) {
     if (questionMode !== 'all' && userId) {
       const questionIds = filtered.map(q => q.id.toString());
       
+      console.log(`🔍 Question counts API - Mode: ${questionMode}, User: ${userId}`);
+      console.log(`📊 Total questions from sources: ${questionIds.length}`);
+      
       try {
         // Verify the user token
         const token = request.headers.get('authorization')?.replace('Bearer ', '');
         if (!token) {
+          console.log('❌ No authorization token');
           throw new Error('No authorization token');
         }
         
         const user = await verifyToken(token);
         if (!user || user.id !== userId) {
+          console.log('❌ Invalid user or token');
           throw new Error('Invalid user');
         }
+        
+        console.log('✅ User authenticated successfully');
         
         // Get user responses directly from database
         const responses = await prisma.userResponse.findMany({
@@ -83,6 +90,8 @@ export async function GET(request: NextRequest) {
             }
           }
         });
+        
+        console.log(`📝 Found ${responses.length} user responses for these questions`);
         
         // Create a map of questionId to response
         const responseMap = responses.reduce((acc, response) => {
@@ -97,22 +106,26 @@ export async function GET(request: NextRequest) {
           case 'unused':
             // Return questions that user hasn't answered
             filteredQuestionIds = questionIds.filter(id => !responseMap[id]);
+            console.log(`🆕 Unused questions: ${filteredQuestionIds.length}`);
             break;
           case 'incorrect':
             // Return questions that user answered incorrectly
             filteredQuestionIds = questionIds.filter(id => 
               responseMap[id] && !responseMap[id].isCorrect
             );
+            console.log(`❌ Incorrect questions: ${filteredQuestionIds.length}`);
             break;
           case 'flagged':
             // Return questions that user flagged
             filteredQuestionIds = questionIds.filter(id => 
               responseMap[id] && responseMap[id].isFlagged
             );
+            console.log(`🚩 Flagged questions: ${filteredQuestionIds.length}`);
             break;
           default:
             // Default to 'all'
             filteredQuestionIds = questionIds;
+            console.log(`📋 All questions: ${filteredQuestionIds.length}`);
         }
         
         // Filter questions to only include those that match the mode
@@ -120,8 +133,10 @@ export async function GET(request: NextRequest) {
           filteredQuestionIds.includes(q.id.toString())
         );
         
+        console.log(`✅ Final filtered questions: ${filtered.length}`);
+        
       } catch (error) {
-        console.error('Error fetching user responses for counts:', error);
+        console.error('❌ Error fetching user responses for counts:', error);
         // If we can't get user responses, return 0 for all topics
         const topicCounts: Record<string, number> = {};
         if (selectedTopics.length > 0) {

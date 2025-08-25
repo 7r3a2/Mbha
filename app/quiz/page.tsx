@@ -424,9 +424,14 @@ function QuizPageContent() {
   const saveUserResponse = async (questionId: string, userAnswer: number, isCorrect: boolean, isFlagged: boolean) => {
     try {
       const token = localStorage.getItem('token');
-      if (!token) return;
+      if (!token) {
+        console.log('❌ No token available for saving response');
+        return;
+      }
 
-      await fetch('/api/qbank/user-responses', {
+      console.log(`💾 Quiz saving response - Question: ${questionId}, Answer: ${userAnswer}, Correct: ${isCorrect}, Flagged: ${isFlagged}`);
+
+      const response = await fetch('/api/qbank/user-responses', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -439,8 +444,17 @@ function QuizPageContent() {
           isFlagged
         })
       });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(`✅ Quiz response saved successfully:`, data);
+      } else {
+        console.error('❌ Failed to save quiz response:', response.status);
+        const errorText = await response.text();
+        console.error('Error response:', errorText);
+      }
     } catch (error) {
-      console.error('Error saving user response:', error);
+      console.error('❌ Error saving user response:', error);
     }
   };
 

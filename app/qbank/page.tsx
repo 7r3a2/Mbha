@@ -879,14 +879,19 @@ export default function Qbank() {
         headers['Authorization'] = `Bearer ${token}`;
       }
       
+      console.log(`🔍 Qbank fetching counts - Mode: ${questionMode}, Sources: ${sourceLabels.join(',')}, User: ${user?.id}, Token: ${token ? 'Present' : 'Missing'}`);
+      
       const response = await fetch(`/api/qbank/question-counts?${params.toString()}`, {
         headers
       });
       if (response.ok) {
         const data = await response.json();
+        console.log(`✅ Qbank received counts:`, data.topicCounts);
         setTopicQuestionCounts(data.topicCounts || {});
       } else {
-        console.error('Failed to fetch question counts:', response.status);
+        console.error('❌ Failed to fetch question counts:', response.status);
+        const errorText = await response.text();
+        console.error('Error response:', errorText);
         // Set all counts to 0 on error
         const allTopics = new Set();
         for (const subject of subjects) {
@@ -903,7 +908,7 @@ export default function Qbank() {
         setTopicQuestionCounts(zeroCounts);
       }
     } catch (error) {
-      console.error('Error fetching topic question counts:', error);
+      console.error('❌ Error fetching topic question counts:', error);
       // If there's an error, set all counts to 0
       const allTopics = new Set();
       for (const subject of subjects) {
