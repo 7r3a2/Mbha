@@ -43,11 +43,13 @@ export async function POST(request: NextRequest) {
 
     // Check if user is admin (bypass single-device restriction for admins)
     const isAdmin = user.email === 'admin@mbha.com' || user.email === 'admin@mbha.net' || user.uniqueCode === 'ADMIN2024';
+    console.log('👤 User type:', isAdmin ? 'ADMIN' : 'REGULAR USER');
     
     if (isAdmin) {
       console.log('👑 Admin login detected, bypassing single-device restriction');
       // For admin accounts, just create a new session without checking existing ones
       const sessionId = await createUserSession(user.id, request);
+      console.log('✅ Admin session created:', sessionId);
       
       // Generate JWT token with session ID
       const token = jwt.sign(
@@ -74,8 +76,9 @@ export async function POST(request: NextRequest) {
     }
 
     // For regular users, apply single-device restriction
+    console.log('🔍 Checking sessions for regular user:', email);
     const { activeSessions, shouldLock } = await checkUserSessions(user.id);
-    console.log(`📱 Active sessions for ${email}: ${activeSessions}`);
+    console.log(`📱 Active sessions for ${email}: ${activeSessions}, shouldLock: ${shouldLock}`);
 
     // Only lock if there are multiple active sessions (more than 1)
     if (activeSessions > 1) {
@@ -96,11 +99,13 @@ export async function POST(request: NextRequest) {
     if (activeSessions > 0) {
       console.log('🔄 Deactivating existing sessions for:', email);
       await deactivateAllUserSessions(user.id);
+      console.log('✅ Existing sessions deactivated');
     }
 
     // Create new session
     console.log('🆕 Creating new session for:', email);
     const sessionId = await createUserSession(user.id, request);
+    console.log('✅ New session created:', sessionId);
 
     // Generate JWT token with session ID
     const token = jwt.sign(
