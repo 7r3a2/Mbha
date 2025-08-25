@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { findUserById } from '@/lib/db-utils';
-import { validateSession } from '@/lib/session-utils';
+import jwt from 'jsonwebtoken';
 import { promises as fs } from 'fs';
 import path from 'path';
 import { kvGet } from '@/lib/db-utils';
@@ -28,13 +28,15 @@ export async function POST(request: NextRequest) {
     const { token } = await request.json();
     if (!token) return NextResponse.json({ valid: false }, { status: 200 });
 
-    // Extract session ID from token
-    const sessionId = token;
-    
-    // Validate session
-    const { valid, user } = await validateSession(sessionId);
-    
-    if (!valid || !user) {
+    // Verify JWT token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret') as any;
+    if (!decoded || !decoded.userId) {
+      return NextResponse.json({ valid: false }, { status: 200 });
+    }
+
+    // Find user by ID
+    const user = await findUserById(decoded.userId);
+    if (!user) {
       return NextResponse.json({ valid: false }, { status: 200 });
     }
 
@@ -65,6 +67,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ valid: true, user: effectiveUser });
   } catch (e) {
+    console.error('Token verification error:', e);
     return NextResponse.json({ valid: false }, { status: 200 });
   }
 }
