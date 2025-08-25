@@ -842,87 +842,11 @@ export default function Qbank() {
         setPreviousTests(data.tests || []);
       } else {
         console.error('Failed to load previous tests:', response.status);
-        // For now, use mock data if API fails
-        setPreviousTests([
-          {
-            id: '1',
-            name: 'Obstetrics Review 1',
-            questionCount: 25,
-            mode: 'exam',
-            timeLimit: 60,
-            questionMode: 'all',
-            sources: 'APGO, ACOG',
-            topics: 'Basic sign and normal pregnancy, Maternal Medicine',
-            subject: 'Obstetrics & Gynecology',
-            createdAt: new Date('2024-07-15').toISOString()
-          },
-          {
-            id: '2',
-            name: 'Gynecology Basics',
-            questionCount: 30,
-            mode: 'study',
-            timeLimit: null,
-            questionMode: 'unused',
-            sources: 'APGO',
-            topics: 'Basic sign and normal pregnancy',
-            subject: 'Obstetrics & Gynecology',
-            createdAt: new Date('2024-07-12').toISOString()
-          },
-          {
-            id: '3',
-            name: 'Menstruation Cycle Test',
-            questionCount: 20,
-            mode: 'exam',
-            timeLimit: 45,
-            questionMode: 'incorrect',
-            sources: 'ACOG',
-            topics: 'Basic sign and normal pregnancy',
-            subject: 'Obstetrics & Gynecology',
-            createdAt: new Date('2024-07-10').toISOString()
-          }
-        ]);
+        setPreviousTests([]);
       }
     } catch (error) {
       console.error('Error loading previous tests:', error);
-      // For now, use mock data if API fails
-      setPreviousTests([
-        {
-          id: '1',
-          name: 'Obstetrics Review 1',
-          questionCount: 25,
-          mode: 'exam',
-          timeLimit: 60,
-          questionMode: 'all',
-          sources: 'APGO, ACOG',
-          topics: 'Basic sign and normal pregnancy, Maternal Medicine',
-          subject: 'Obstetrics & Gynecology',
-          createdAt: new Date('2024-07-15').toISOString()
-        },
-        {
-          id: '2',
-          name: 'Gynecology Basics',
-          questionCount: 30,
-          mode: 'study',
-          timeLimit: null,
-          questionMode: 'unused',
-          sources: 'APGO',
-          topics: 'Basic sign and normal pregnancy',
-          subject: 'Obstetrics & Gynecology',
-          createdAt: new Date('2024-07-12').toISOString()
-        },
-        {
-          id: '3',
-          name: 'Menstruation Cycle Test',
-          questionCount: 20,
-          mode: 'exam',
-          timeLimit: 45,
-          questionMode: 'incorrect',
-          sources: 'ACOG',
-          topics: 'Basic sign and normal pregnancy',
-          subject: 'Obstetrics & Gynecology',
-          createdAt: new Date('2024-07-10').toISOString()
-        }
-      ]);
+      setPreviousTests([]);
     } finally {
       setLoadingPreviousTests(false);
     }
@@ -947,13 +871,11 @@ export default function Qbank() {
         setPreviousTests(prev => prev.filter(test => test.id !== testId));
       } else {
         console.error('Failed to delete test:', response.status);
-        // For now, just remove from local state even if API fails
-        setPreviousTests(prev => prev.filter(test => test.id !== testId));
+        alert('Failed to delete test. Please try again.');
       }
     } catch (error) {
       console.error('Error deleting test:', error);
-      // For now, just remove from local state even if API fails
-      setPreviousTests(prev => prev.filter(test => test.id !== testId));
+      alert('Error deleting test. Please try again.');
     } finally {
       setDeletingTest(null);
     }
@@ -967,8 +889,33 @@ export default function Qbank() {
     params.set('mode', test.mode);
     if (test.mode === 'exam' && test.timeLimit) params.set('time', String(test.timeLimit));
     params.set('questionMode', test.questionMode || 'all');
-    if (test.sources) params.set('sources', test.sources);
-    if (test.topics) params.set('topics', test.topics);
+    
+    // Parse sources and topics from JSON strings
+    if (test.sources) {
+      try {
+        const sources = JSON.parse(test.sources);
+        if (Array.isArray(sources)) {
+          params.set('sources', sources.join(','));
+        } else {
+          params.set('sources', test.sources);
+        }
+      } catch {
+        params.set('sources', test.sources);
+      }
+    }
+    
+    if (test.topics) {
+      try {
+        const topics = JSON.parse(test.topics);
+        if (Array.isArray(topics)) {
+          params.set('topics', topics.join(','));
+        } else {
+          params.set('topics', test.topics);
+        }
+      } catch {
+        params.set('topics', test.topics);
+      }
+    }
     
     router.push(`/quiz?${params.toString()}`);
   };
