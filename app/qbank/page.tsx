@@ -647,6 +647,12 @@ export default function Qbank() {
 
   // Dynamic subjects from database
   const [subjects, setSubjects] = useState<any[]>(SUBJECTS); // Start with hardcoded, will be replaced by API
+  
+  // Debug: Log subjects state changes
+  useEffect(() => {
+    console.log('🔄 Subjects state changed:', subjects.length, 'subjects');
+    console.log('🔄 First subject:', subjects[0]?.label);
+  }, [subjects]);
   const [loadingSubjects, setLoadingSubjects] = useState(false);
 
   // Check if user has qbank access
@@ -658,6 +664,7 @@ export default function Qbank() {
 
   // Load subjects from database
   useEffect(() => {
+    console.log('🔄 useEffect triggered - loading subjects');
     const loadSubjects = async () => {
       setLoadingSubjects(true);
       try {
@@ -692,6 +699,7 @@ export default function Qbank() {
             });
             
             console.log('🔄 Transformed subjects:', transformedSubjects);
+            console.log('🔄 Setting subjects state with API data');
             setSubjects(transformedSubjects);
             
             // Update selected subjects to use the first dynamic subject
