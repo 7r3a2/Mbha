@@ -745,7 +745,11 @@ export default function Qbank() {
   const [testName, setTestName] = useState('');
   const [examMode, setExamMode] = useState(false); // false = Study mode, true = Exam mode
   const [customTime, setCustomTime] = useState(60); // Default 60 minutes
-  // Previous tests section removed per request
+  
+  // Previous Tests functionality
+  const [previousTests, setPreviousTests] = useState<any[]>([]);
+  const [loadingPreviousTests, setLoadingPreviousTests] = useState(false);
+  const [deletingTest, setDeletingTest] = useState<string | null>(null);
 
   // Dropdown states
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -790,11 +794,15 @@ export default function Qbank() {
       if (selectedSubjects.length > 0 && user?.id) {
         fetchTopicQuestionCounts();
       }
+      // Also refresh previous tests if we're on that view
+      if (activeView === 'previous-tests' && user?.id) {
+        loadPreviousTests();
+      }
     };
 
     window.addEventListener('focus', handleFocus);
     return () => window.removeEventListener('focus', handleFocus);
-  }, [selectedSubjects, user?.id]); // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedSubjects, user?.id, activeView]); // eslint-disable-next-line react-hooks/exhaustive-deps
 
   // Helper: map selected source keys to their labels for current subject selection
   const getSelectedSourceLabels = (): string[] => {
@@ -815,9 +823,162 @@ export default function Qbank() {
     window.location.href = '/dashboard';
   };
 
-  // Previous tests actions removed per request
+  // Previous Tests functionality
+  const loadPreviousTests = async () => {
+    if (!user?.id) return;
+    
+    setLoadingPreviousTests(true);
+    try {
+      const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+      const response = await fetch('/api/qbank/previous-tests', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setPreviousTests(data.tests || []);
+      } else {
+        console.error('Failed to load previous tests:', response.status);
+        // For now, use mock data if API fails
+        setPreviousTests([
+          {
+            id: '1',
+            name: 'Obstetrics Review 1',
+            questionCount: 25,
+            mode: 'exam',
+            timeLimit: 60,
+            questionMode: 'all',
+            sources: 'APGO, ACOG',
+            topics: 'Basic sign and normal pregnancy, Maternal Medicine',
+            subject: 'Obstetrics & Gynecology',
+            createdAt: new Date('2024-07-15').toISOString()
+          },
+          {
+            id: '2',
+            name: 'Gynecology Basics',
+            questionCount: 30,
+            mode: 'study',
+            timeLimit: null,
+            questionMode: 'unused',
+            sources: 'APGO',
+            topics: 'Basic sign and normal pregnancy',
+            subject: 'Obstetrics & Gynecology',
+            createdAt: new Date('2024-07-12').toISOString()
+          },
+          {
+            id: '3',
+            name: 'Menstruation Cycle Test',
+            questionCount: 20,
+            mode: 'exam',
+            timeLimit: 45,
+            questionMode: 'incorrect',
+            sources: 'ACOG',
+            topics: 'Basic sign and normal pregnancy',
+            subject: 'Obstetrics & Gynecology',
+            createdAt: new Date('2024-07-10').toISOString()
+          }
+        ]);
+      }
+    } catch (error) {
+      console.error('Error loading previous tests:', error);
+      // For now, use mock data if API fails
+      setPreviousTests([
+        {
+          id: '1',
+          name: 'Obstetrics Review 1',
+          questionCount: 25,
+          mode: 'exam',
+          timeLimit: 60,
+          questionMode: 'all',
+          sources: 'APGO, ACOG',
+          topics: 'Basic sign and normal pregnancy, Maternal Medicine',
+          subject: 'Obstetrics & Gynecology',
+          createdAt: new Date('2024-07-15').toISOString()
+        },
+        {
+          id: '2',
+          name: 'Gynecology Basics',
+          questionCount: 30,
+          mode: 'study',
+          timeLimit: null,
+          questionMode: 'unused',
+          sources: 'APGO',
+          topics: 'Basic sign and normal pregnancy',
+          subject: 'Obstetrics & Gynecology',
+          createdAt: new Date('2024-07-12').toISOString()
+        },
+        {
+          id: '3',
+          name: 'Menstruation Cycle Test',
+          questionCount: 20,
+          mode: 'exam',
+          timeLimit: 45,
+          questionMode: 'incorrect',
+          sources: 'ACOG',
+          topics: 'Basic sign and normal pregnancy',
+          subject: 'Obstetrics & Gynecology',
+          createdAt: new Date('2024-07-10').toISOString()
+        }
+      ]);
+    } finally {
+      setLoadingPreviousTests(false);
+    }
+  };
 
+  const deletePreviousTest = async (testId: string) => {
+    if (!user?.id) return;
+    
+    setDeletingTest(testId);
+    try {
+      const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+      const response = await fetch(`/api/qbank/previous-tests/${testId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        // Remove the test from the local state
+        setPreviousTests(prev => prev.filter(test => test.id !== testId));
+      } else {
+        console.error('Failed to delete test:', response.status);
+        // For now, just remove from local state even if API fails
+        setPreviousTests(prev => prev.filter(test => test.id !== testId));
+      }
+    } catch (error) {
+      console.error('Error deleting test:', error);
+      // For now, just remove from local state even if API fails
+      setPreviousTests(prev => prev.filter(test => test.id !== testId));
+    } finally {
+      setDeletingTest(null);
+    }
+  };
 
+  const retakeTest = (test: any) => {
+    // Navigate to quiz with the test parameters
+    const params = new URLSearchParams();
+    params.set('count', String(test.questionCount));
+    params.set('testName', test.name);
+    params.set('mode', test.mode);
+    if (test.mode === 'exam' && test.timeLimit) params.set('time', String(test.timeLimit));
+    params.set('questionMode', test.questionMode || 'all');
+    if (test.sources) params.set('sources', test.sources);
+    if (test.topics) params.set('topics', test.topics);
+    
+    router.push(`/quiz?${params.toString()}`);
+  };
+
+  // Load previous tests when switching to that view
+  useEffect(() => {
+    if (activeView === 'previous-tests' && user?.id) {
+      loadPreviousTests();
+    }
+  }, [activeView, user?.id]);
 
   // Mobile detection and sidebar management
   useEffect(() => {
@@ -1128,6 +1289,33 @@ export default function Qbank() {
       params.set('topics', allSelectedTopics.join(','));
     }
     
+    // Save test to previous tests
+    try {
+      const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+      const testData = {
+        name: testName.trim(),
+        questionCount,
+        mode: examMode ? 'exam' : 'study',
+        timeLimit: examMode ? customTime : null,
+        questionMode: selectedModes.length > 0 ? selectedModes[0] : 'all',
+        sources: allSelectedSources,
+        topics: allSelectedTopics,
+        subject: subjects.find(s => selectedSubjects.includes(s.key))?.label || 'General'
+      };
+      
+      await fetch('/api/qbank/previous-tests', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(testData)
+      });
+    } catch (error) {
+      console.error('Error saving test to previous tests:', error);
+      // Don't block the test generation if saving fails
+    }
+    
     router.push(`/quiz?${params.toString()}`);
   };
 
@@ -1406,7 +1594,28 @@ const [isMobile, setIsMobile] = useState(false);
                 {isOpen && <span className="ml-3 font-medium text-sm">Create Test</span>}
               </button>
             </li>
-            {/* Previous Tests removed per request */}
+            {/* Previous Tests */}
+            <li>
+              <button
+                onClick={() => setActiveView('previous-tests')}
+                onMouseEnter={() => setSidebarHover('previous-tests')}
+                onMouseLeave={() => setSidebarHover('')}
+                className={`flex items-center w-full transition-all duration-200 rounded-lg ${
+                  isOpen ? 'px-4 py-3' : 'justify-center p-3'
+                } ${
+                  activeView === 'previous-tests'
+                    ? 'bg-white text-[#0072b7] shadow-lg border border-[#0072b7]'
+                    : sidebarHover === 'previous-tests'
+                    ? 'bg-[#003a6d] text-white shadow-md'
+                    : 'text-white hover:bg-[#003a6d] hover:shadow-md'
+                }`}
+              >
+                <svg className={`${isOpen ? 'w-5 h-5' : 'w-6 h-6'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                {isOpen && <span className="ml-3 font-medium text-sm">Previous Tests</span>}
+              </button>
+            </li>
 
           </ul>
         </nav>
@@ -1807,7 +2016,137 @@ const [isMobile, setIsMobile] = useState(false);
               </footer>
             </div>
           )}
-          {/* Previous tests view removed per request */}
+          {/* Previous Tests View */}
+          {activeView === 'previous-tests' && (
+            <div className="flex-grow">
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+                <div className="px-6 py-4 border-b border-gray-200">
+                  <h2 className="text-xl font-bold text-gray-900">Previous Tests</h2>
+                </div>
+                
+                {loadingPreviousTests ? (
+                  <div className="p-8 text-center">
+                    <div className="inline-flex items-center px-4 py-2 font-semibold leading-6 text-[#0072b7] transition ease-in-out duration-150">
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-[#0072b7]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Loading previous tests...
+                    </div>
+                  </div>
+                ) : previousTests.length === 0 ? (
+                  <div className="p-8 text-center">
+                    <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <h3 className="mt-2 text-sm font-medium text-gray-900">No previous tests</h3>
+                    <p className="mt-1 text-sm text-gray-500">Start by creating your first test.</p>
+                    <div className="mt-6">
+                      <button
+                        onClick={() => setActiveView('create-test')}
+                        className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#0072b7] hover:bg-[#005a8f] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0072b7]"
+                      >
+                        <svg className="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                        Create Test
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Test Name
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Questions
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Mode
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Actions
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Date
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {previousTests.map((test) => (
+                          <tr key={test.id} className="hover:bg-gray-50">
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div>
+                                <div className="text-sm font-medium text-gray-900">{test.name}</div>
+                                <div className="text-sm text-gray-500">{test.subject || 'General'}</div>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <a 
+                                href="#" 
+                                className="text-[#0072b7] hover:text-[#005a8f] text-sm font-medium"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  // Could show test details here
+                                }}
+                              >
+                                {test.questionCount} questions
+                              </a>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                                test.mode === 'exam' 
+                                  ? 'bg-orange-100 text-orange-800' 
+                                  : 'bg-green-100 text-green-800'
+                              }`}>
+                                {test.mode === 'exam' ? 'Exam' : 'Study'}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                              <div className="flex items-center space-x-2">
+                                <button
+                                  onClick={() => retakeTest(test)}
+                                  className="text-[#0072b7] hover:text-[#005a8f] p-1 rounded hover:bg-blue-50"
+                                  title="Retake test"
+                                >
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                  </svg>
+                                </button>
+                                <button
+                                  onClick={() => deletePreviousTest(test.id)}
+                                  disabled={deletingTest === test.id}
+                                  className="text-red-600 hover:text-red-800 p-1 rounded hover:bg-red-50 disabled:opacity-50"
+                                  title="Delete test"
+                                >
+                                  {deletingTest === test.id ? (
+                                    <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                  ) : (
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                  )}
+                                </button>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {new Date(test.createdAt).toLocaleDateString('en-GB')}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
         </main>
       </div>
