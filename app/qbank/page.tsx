@@ -646,7 +646,7 @@ export default function Qbank() {
   const { user, isAuthenticated, isLoading } = useAuth();
 
   // Dynamic subjects from database
-  const [subjects, setSubjects] = useState<any[]>(SUBJECTS); // Fallback to hardcoded
+  const [subjects, setSubjects] = useState<any[]>([]); // Start with empty array, load from API
   const [loadingSubjects, setLoadingSubjects] = useState(false);
 
   // Check if user has qbank access
@@ -872,11 +872,26 @@ export default function Qbank() {
         params.set('userId', user.id);
       }
       
-      // Get auth token from localStorage
-      const token = localStorage.getItem('token');
+      // Get auth token from multiple sources
+      let token = null;
+      try {
+        // Try to get token from localStorage/sessionStorage (auth_token is the correct key)
+        if (typeof window !== 'undefined') {
+          token = localStorage.getItem('auth_token') || 
+                  sessionStorage.getItem('auth_token') || 
+                  localStorage.getItem('token') || 
+                  sessionStorage.getItem('token') || 
+                  document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1];
+        }
+      } catch (error) {
+        console.log('❌ Error accessing storage:', error);
+      }
+      
       const headers: HeadersInit = {};
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
+      } else {
+        console.log('❌ No token found in any storage');
       }
       
       console.log(`🔍 Qbank fetching counts - Mode: ${questionMode}, Sources: ${sourceLabels.join(',')}, User: ${user?.id}, Token: ${token ? 'Present' : 'Missing'}`);

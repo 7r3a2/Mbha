@@ -1,130 +1,109 @@
 {
   "subjects": [
     {
-      "key": "subject_1",
-      "name": "Obstetrics & Gynecology",
+      "key": "internal_medicine",
+      "name": "Internal Medicine",
       "lectures": [
         {
-          "title": "Basic sign and normal pregnancy",
+          "title": "Neurology",
           "topics": [
             {
-              "title": "Physiological changes in pregnancy"
+              "title": "Stroke"
+            },
+            {
+              "title": "Epilepsy"
+            },
+            {
+              "title": "Multiple Sclerosis"
+            },
+            {
+              "title": "Parkinson's Disease"
+            },
+            {
+              "title": "Alzheimer's Disease"
+            },
+            {
+              "title": "Headache"
+            },
+            {
+              "title": "Peripheral Neuropathy"
             }
           ]
         },
         {
-          "title": "Maternal Medicine",
+          "title": "Cardiology",
           "topics": [
             {
-              "title": "D.M. in pregnancy"
+              "title": "Heart Failure"
+            },
+            {
+              "title": "Coronary Artery Disease"
+            },
+            {
+              "title": "Arrhythmias"
+            },
+            {
+              "title": "Hypertension"
+            },
+            {
+              "title": "Valvular Heart Disease"
+            }
+          ]
+        },
+        {
+          "title": "Respiratory",
+          "topics": [
+            {
+              "title": "Asthma"
+            },
+            {
+              "title": "COPD"
+            },
+            {
+              "title": "Pneumonia"
+            },
+            {
+              "title": "Pulmonary Embolism"
+            },
+            {
+              "title": "Lung Cancer"
+            }
+          ]
+        },
+        {
+          "title": "Endocrinology",
+          "topics": [
+            {
+              "title": "Diabetes Mellitus"
+            },
+            {
+              "title": "Thyroid Disorders"
+            },
+            {
+              "title": "Adrenal Disorders"
+            },
+            {
+              "title": "Pituitary Disorders"
             }
           ]
         }
       ],
       "sources": [
         {
-          "key": "source_1",
-          "name": "APGO"
+          "key": "davidson",
+          "name": "Davidson"
         },
         {
-          "key": "source_2",
-          "name": "ACOG"
+          "key": "harrison",
+          "name": "Harrison"
         },
         {
-          "key": "source_3",
-          "name": "tesst"
+          "key": "pretest",
+          "name": "Pretest"
         },
         {
-          "key": "source_4",
-          "name": "2"
-        },
-        {
-          "key": "source_5",
-          "name": "source 1"
-        },
-        {
-          "key": "source_6",
-          "name": "source 2"
-        }
-      ]
-    },
-    {
-      "key": "subject_2",
-      "name": "test",
-      "lectures": [
-        {
-          "title": "sss",
-          "topics": [
-            {
-              "title": "haha"
-            }
-          ]
-        }
-      ],
-      "sources": [
-        {
-          "key": "source_1",
-          "name": "APGO"
-        },
-        {
-          "key": "source_2",
-          "name": "ACOG"
-        },
-        {
-          "key": "source_3",
-          "name": "tesst"
-        },
-        {
-          "key": "source_4",
-          "name": "2"
-        },
-        {
-          "key": "source_5",
-          "name": "source 1"
-        },
-        {
-          "key": "source_6",
-          "name": "source 2"
-        }
-      ]
-    },
-    {
-      "key": "subject_3",
-      "name": "subject 1",
-      "lectures": [
-        {
-          "title": "lecture 1",
-          "topics": [
-            {
-              "title": "topic 1"
-            }
-          ]
-        }
-      ],
-      "sources": [
-        {
-          "key": "source_1",
-          "name": "APGO"
-        },
-        {
-          "key": "source_2",
-          "name": "ACOG"
-        },
-        {
-          "key": "source_3",
-          "name": "tesst"
-        },
-        {
-          "key": "source_4",
-          "name": "2"
-        },
-        {
-          "key": "source_5",
-          "name": "source 1"
-        },
-        {
-          "key": "source_6",
-          "name": "source 2"
+          "key": "sba_500",
+          "name": "500 SBAs in Internal Medicine"
         }
       ]
     }
