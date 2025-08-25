@@ -486,19 +486,19 @@ function CoursePageContent() {
               <div className="w-8 h-8 flex items-center justify-center">
                 <Image 
                   src="/images/logo.png" 
-                  alt="MBHA Logo" 
+                  alt="MedAce Logo" 
                   width={32} 
                   height={32} 
                   className="w-8 h-8 object-contain"
                 />
               </div>
-              {!sidebarCollapsed && <span className="text-xl font-bold ml-3 text-white">MBHA</span>}
+              {!sidebarCollapsed && <span className="text-xl font-bold ml-3 text-white">MedAce</span>}
             </div>
           </div>
 
                  {/* Course Title */}
          <div className="py-4">
-           <div className="flex items-center px-4 py-3 bg-[#3A8431] text-white mx-2 rounded-lg">
+           <div className="flex items-center px-4 py-3 bg-[#8b1319] text-white mx-2 rounded-lg">
              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
              </svg>
@@ -516,7 +516,7 @@ function CoursePageContent() {
            )}
            <div className="w-full bg-gray-600 rounded-full h-2 shadow-inner">
              <div 
-               className="bg-[#3A8431] h-2 rounded-full transition-all duration-500 shadow-sm"
+               className="bg-[#8b1319] h-2 rounded-full transition-all duration-500 shadow-sm"
                style={{ width: `${progressPercentage}%` }}
              ></div>
            </div>
@@ -538,7 +538,7 @@ function CoursePageContent() {
                    <div className="flex items-center justify-between w-full">
                      <div className="flex items-center">
                        {/* Subject Icon */}
-                       <div className="w-2 h-2 bg-[#3A8431] rounded-full mr-3 flex-shrink-0"></div>
+                       <div className="w-2 h-2 bg-[#8b1319] rounded-full mr-3 flex-shrink-0"></div>
                        {!sidebarCollapsed && <span className="text-sm font-medium leading-tight">{subject.title}</span>}
                      </div>
                      {!sidebarCollapsed && (
@@ -567,7 +567,7 @@ function CoursePageContent() {
                            onClick={() => selectLecture(lecture.id)}
                            className={`flex items-center w-full transition-all duration-300 rounded-lg border ${sidebarCollapsed ? 'px-2 py-2 justify-center' : 'px-3 py-2'} ${
                              selectedLecture === lecture.id 
-                               ? 'bg-gradient-to-r from-[#3A8431] to-[#2d6a27] text-white border-[#3A8431] shadow-lg transform scale-[1.02]' 
+                               ? 'bg-gradient-to-r from-[#8b1319] to-[#6a0f14] text-white border-[#8b1319] shadow-lg transform scale-[1.02]' 
                                : 'text-gray-400 hover:bg-gray-700 hover:text-white border-gray-700 hover:border-gray-600 hover:shadow-sm'
                            }`}
                          >
@@ -580,7 +580,7 @@ function CoursePageContent() {
                                    e.stopPropagation();
                                    toggleLectureComplete(lecture.id);
                                  }}
-                                 className="w-3 h-3 mr-3 text-[#3A8431] bg-gray-600 border-gray-500 rounded focus:ring-[#3A8431] focus:ring-1 flex-shrink-0"
+                                 className="w-3 h-3 mr-3 text-[#8b1319] bg-gray-600 border-gray-500 rounded focus:ring-[#8b1319] focus:ring-1 flex-shrink-0"
                                />
                                {!sidebarCollapsed && <span className="text-xs leading-tight truncate">{lecture.name}</span>}
                              </div>
@@ -607,7 +607,7 @@ function CoursePageContent() {
                      {/* User Profile */}
            <div className={`${sidebarCollapsed ? 'p-2' : 'p-4'}`}>
              <div className="flex items-center mb-3">
-               <div className="w-8 h-8 bg-[#3A8431] rounded-full flex items-center justify-center">
+               <div className="w-8 h-8 bg-[#8b1319] rounded-full flex items-center justify-center">
                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                  </svg>
@@ -641,10 +641,10 @@ function CoursePageContent() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
                  {/* Header - Matching Dashboard Header Height and Style */}
-         <header className="bg-[#3A8431] shadow-md h-16 flex items-center justify-between px-6">
+         <header className="bg-[#8b1319] shadow-md h-16 flex items-center justify-between px-6">
            <button
              onClick={handleSidebarToggle}
-             className="md:hidden p-2 text-white hover:bg-[#2d6a27] rounded-lg transition-colors duration-200"
+             className="md:hidden p-2 text-white hover:bg-[#6a0f14] rounded-lg transition-colors duration-200"
            >
              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -662,7 +662,7 @@ function CoursePageContent() {
               className={`flex items-center px-3 py-1 rounded-lg font-medium transition-colors text-sm ${
                 isCurrentLectureCompleted
                   ? 'bg-green-100 text-green-800'
-                  : 'bg-white text-[#3A8431] hover:bg-gray-100'
+                  : 'bg-white text-[#8b1319] hover:bg-gray-100'
               }`}
             >
               <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -694,7 +694,7 @@ function CoursePageContent() {
             {/* Lecture Parts - Improved Design */}
             <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-6 border border-gray-200 shadow-lg">
               <div className="flex items-center mb-6">
-                <div className="bg-[#3A8431] p-3 rounded-lg mr-4">
+                <div className="bg-[#8b1319] p-3 rounded-lg mr-4">
                   <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
@@ -706,10 +706,10 @@ function CoursePageContent() {
                   <button
                     key={part.id}
                     onClick={() => seekTo(part.time)}
-                    className="bg-white p-4 rounded-xl border-2 border-gray-200 hover:border-[#3A8431] hover:shadow-lg transition-all duration-300 text-left group"
+                    className="bg-white p-4 rounded-xl border-2 border-gray-200 hover:border-[#8b1319] hover:shadow-lg transition-all duration-300 text-left group"
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <div className="bg-[#3A8431] text-white w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">
+                      <div className="bg-[#8b1319] text-white w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">
                         {index + 1}
                       </div>
                       <span className="text-sm text-gray-500 font-mono bg-gray-100 px-3 py-1 rounded-lg">
@@ -717,7 +717,7 @@ function CoursePageContent() {
                       </span>
                     </div>
                     <div>
-                      <span className="font-semibold text-base text-gray-800 group-hover:text-[#3A8431] transition-colors block">
+                      <span className="font-semibold text-base text-gray-800 group-hover:text-[#8b1319] transition-colors block">
                         {part.title}
                       </span>
                       <div className="flex items-center text-sm text-gray-500 mt-2">
