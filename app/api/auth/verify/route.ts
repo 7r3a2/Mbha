@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { findUserById } from '@/lib/db-utils';
 import jwt from 'jsonwebtoken';
+import { validateSession } from '@/lib/session-utils';
 import { promises as fs } from 'fs';
 import path from 'path';
 import { kvGet } from '@/lib/db-utils';
@@ -28,14 +29,34 @@ export async function POST(request: NextRequest) {
     const { token } = await request.json();
     if (!token) return NextResponse.json({ valid: false }, { status: 200 });
 
-    // Verify JWT token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret') as any;
-    if (!decoded || !decoded.userId) {
-      return NextResponse.json({ valid: false }, { status: 200 });
+    let user = null;
+
+    // Try to verify as JWT token first
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret') as any;
+      if (decoded && decoded.userId) {
+        // This is a JWT token with userId
+        user = await findUserById(decoded.userId);
+      } else if (decoded && decoded.sessionId) {
+        // This is a session-based JWT token
+        const { valid, user: sessionUser } = await validateSession(decoded.sessionId);
+        if (valid && sessionUser) {
+          user = sessionUser;
+        }
+      }
+    } catch (jwtError) {
+      // JWT verification failed, try as session ID
+      try {
+        const { valid, user: sessionUser } = await validateSession(token);
+        if (valid && sessionUser) {
+          user = sessionUser;
+        }
+      } catch (sessionError) {
+        // Both failed
+        console.error('Token verification failed:', { jwtError, sessionError });
+      }
     }
 
-    // Find user by ID
-    const user = await findUserById(decoded.userId);
     if (!user) {
       return NextResponse.json({ valid: false }, { status: 200 });
     }
