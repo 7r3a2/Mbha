@@ -14,12 +14,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log('🔍 Login attempt for:', email);
+    console.log('🔍 Testing login for:', email);
 
     // Find user
     const user = await findUserByEmail(email);
     if (!user) {
-      console.log('❌ User not found:', email);
+      console.log('❌ User not found');
       return NextResponse.json(
         { error: 'Invalid credentials' },
         { status: 401 }
@@ -31,25 +31,26 @@ export async function POST(request: NextRequest) {
     // Verify password
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
-      console.log('❌ Invalid password for:', email);
+      console.log('❌ Invalid password');
       return NextResponse.json(
         { error: 'Invalid credentials' },
         { status: 401 }
       );
     }
 
-    console.log('✅ Password verified for:', email);
+    console.log('✅ Password verified');
 
-    // Generate JWT token WITHOUT session (simplified)
+    // Generate JWT token WITHOUT session
     const token = jwt.sign(
       { userId: user.id },
       process.env.JWT_SECRET || 'fallback-secret',
       { expiresIn: '7d' }
     );
 
-    console.log('✅ Login successful for:', email);
+    console.log('✅ Token generated');
 
     return NextResponse.json({
+      success: true,
       token,
       user: {
         id: user.id,
@@ -65,7 +66,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('❌ Login error:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Internal server error', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }
