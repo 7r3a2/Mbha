@@ -780,11 +780,12 @@ export default function Qbank() {
     sources?: string;
     topics?: string;
     questionMode?: string;
+    testId?: string;
   }) => {
     const newTest = {
       ...testData,
       date: new Date().toLocaleDateString('en-GB'),
-      id: Date.now().toString()
+      id: testData.testId || Date.now().toString()
     };
 
     setPreviousTests(prev => {
@@ -1217,17 +1218,19 @@ export default function Qbank() {
       // Continue anyway if we can't check
     }
 
-    // Add test to history
+    // Add test to history with actual question count (will be updated after quiz loads)
     const subjectName = subjects.find(s => selectedSubjects.includes(s.key))?.label || 'Unknown Subject';
     const questionMode = selectedModes.length > 0 ? selectedModes[0] : 'all';
+    const testId = Date.now().toString();
     addTestToHistory({
       name: testName.trim(),
       subject: subjectName,
-      questions: questionCount,
+      questions: 0, // Will be updated to actual count after quiz loads
       mode: examMode ? 'Exam' : 'Study',
       sources: allSelectedSources.join(','),
       topics: allSelectedTopics.join(','),
-      questionMode: questionMode
+      questionMode: questionMode,
+      testId: testId // Add testId to track this specific test
     });
 
     // Navigate to quiz with test data, mode, and all selected sources/topics for DB fetch
@@ -1236,6 +1239,7 @@ export default function Qbank() {
     params.set('testName', testName.trim());
     params.set('mode', examMode ? 'exam' : 'study');
     if (examMode) params.set('time', String(customTime));
+    params.set('testId', testId); // Add testId to track this test
     
     // Add question mode (default to 'all' if none selected)
     params.set('questionMode', questionMode);

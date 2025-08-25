@@ -98,48 +98,75 @@ function QuizPageContent() {
   // Function to load previous test data
   const loadPreviousTestData = async (testId: string, questions: any[]) => {
     try {
-      // Get user responses for these questions
-      const questionIds = questions.map(q => q.id.toString());
-      const params = new URLSearchParams({
-        questionIds: questionIds.join(','),
-        testId: testId
-      });
-      
-      const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token') || localStorage.getItem('token');
-      
-      const response = await fetch(`/api/qbank/user-responses?${params}`, {
-        headers: {
-          'Authorization': `Bearer ${token || ''}`
+      // Load user responses from localStorage
+      const existingResponses = localStorage.getItem('mbha_test_responses');
+      if (existingResponses) {
+        const allResponses = JSON.parse(existingResponses);
+        const testResponses = allResponses[testId];
+        
+        if (testResponses) {
+          // Map the saved responses to the current questions
+          const savedAnswers = testResponses.answers || [];
+          const savedFlagged = testResponses.flagged || [];
+          const savedSubmitted = testResponses.submitted || [];
+          const savedQuestionIds = testResponses.questions || [];
+          
+          // Create maps for quick lookup
+          const questionIdToIndex = questions.reduce((acc: Record<string, number>, q: any, index: number) => {
+            acc[q.id.toString()] = index;
+            return acc;
+          }, {});
+          
+          const savedQuestionIdToIndex = savedQuestionIds.reduce((acc: Record<string, number>, id: string, index: number) => {
+            acc[id] = index;
+            return acc;
+          }, {});
+          
+          // Map responses to current questions
+          const answers = questions.map((q: any) => {
+            const savedIndex = savedQuestionIdToIndex[q.id.toString()];
+            return savedIndex !== undefined ? savedAnswers[savedIndex] : null;
+          });
+          
+          const flagged = questions.map((q: any) => {
+            const savedIndex = savedQuestionIdToIndex[q.id.toString()];
+            return savedIndex !== undefined ? savedFlagged[savedIndex] : false;
+          });
+          
+          const submitted = questions.map((q: any) => {
+            const savedIndex = savedQuestionIdToIndex[q.id.toString()];
+            return savedIndex !== undefined ? savedSubmitted[savedIndex] : false;
+          });
+          
+          // Update state with previous answers
+          setAnswers(answers);
+          setSubmitted(submitted);
+          setFlagged(flagged);
+          
+          console.log('✅ Loaded previous test data:', { answers, flagged, submitted });
         }
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        const userResponses = data.responses || [];
-        
-        // Map responses back to questions
-        const answers = questions.map(q => {
-          const response = userResponses.find((r: any) => r.questionId === q.id.toString());
-          return response ? response.selectedAnswer : null;
-        });
-        
-        const flagged = questions.map(q => {
-          const response = userResponses.find((r: any) => r.questionId === q.id.toString());
-          return response ? response.flagged : false;
-        });
-        
-        const submitted = questions.map(q => {
-          const response = userResponses.find((r: any) => r.questionId === q.id.toString());
-          return response ? true : false;
-        });
-        
-        // Update state with previous answers
-        setAnswers(answers);
-        setSubmitted(submitted);
-        setFlagged(flagged);
       }
     } catch (error) {
       console.error('Error loading previous test data:', error);
+    }
+  };
+
+  // Function to update test history with actual question count
+  const updateTestHistoryWithQuestionCount = (testId: string, actualQuestionCount: number) => {
+    try {
+      const savedTests = localStorage.getItem('mbha_test_history');
+      if (savedTests) {
+        const tests = JSON.parse(savedTests);
+        const updatedTests = tests.map((test: any) => {
+          if (test.id === testId) {
+            return { ...test, questions: actualQuestionCount };
+          }
+          return test;
+        });
+        localStorage.setItem('mbha_test_history', JSON.stringify(updatedTests));
+      }
+    } catch (error) {
+      console.error('Error updating test history:', error);
     }
   };
 
@@ -207,6 +234,11 @@ function QuizPageContent() {
           setAnswers(initAnswers);
           setSubmitted(initSubmitted);
           setFlagged(initFlagged);
+
+          // Update test history with actual question count if this is a new test
+          if (testId && !isReviewMode) {
+            updateTestHistoryWithQuestionCount(testId, finalQuestions.length);
+          }
 
           // Load previous test data if in review mode
           if (isReviewMode && testId) {
@@ -633,6 +665,23 @@ function QuizPageContent() {
           flagged[i] || false
         );
       }
+    }
+    
+    // Save user responses to localStorage for previous test functionality
+    if (testId) {
+      const testResponses = {
+        testId: testId,
+        answers: answers,
+        flagged: flagged,
+        submitted: submitted,
+        questions: questions.map(q => q.id),
+        timestamp: Date.now()
+      };
+      
+      const existingResponses = localStorage.getItem('mbha_test_responses');
+      const allResponses = existingResponses ? JSON.parse(existingResponses) : {};
+      allResponses[testId] = testResponses;
+      localStorage.setItem('mbha_test_responses', JSON.stringify(allResponses));
     }
     
     const totalQuestions = questions.length;
