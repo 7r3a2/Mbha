@@ -105,7 +105,7 @@ export default function Login() {
             <div className="w-16 h-16 flex items-center justify-center shadow-lg">
               <Image 
                 src="/images/logo lander.png" 
-                alt="MBHA Logo" 
+                alt="MedAce Logo" 
                 width={64} 
                 height={64} 
                 className="w-16 h-16 object-contain"
@@ -113,7 +113,7 @@ export default function Login() {
             </div>
           </div>
           <h2 className="text-3xl font-bold text-white mb-2">Welcome Back</h2>
-          <p className="text-gray-400">Sign in to your MBHA account</p>
+          <p className="text-gray-400">Sign in to your MedAce account</p>
         </div>
 
         {/* Login Form */}
@@ -135,7 +135,7 @@ export default function Login() {
                 type="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className={`appearance-none relative block w-full pl-10 pr-3 py-4 border rounded-xl text-white placeholder-gray-400 bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#3A8431] focus:border-transparent transition-all duration-300 ${
+                className={`appearance-none relative block w-full pl-10 pr-3 py-4 border rounded-xl text-white placeholder-gray-400 bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#8b1319] focus:border-transparent transition-all duration-300 ${
                   errors.email ? 'border-red-500 focus:ring-red-500' : ''
                 }`}
                 placeholder="Enter your email address"
@@ -163,7 +163,7 @@ export default function Login() {
                 type={showPassword ? 'text' : 'password'}
                 value={formData.password}
                 onChange={handleInputChange}
-                className={`appearance-none relative block w-full pl-10 pr-12 py-4 border rounded-xl text-white placeholder-gray-400 bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#3A8431] focus:border-transparent transition-all duration-300 ${
+                className={`appearance-none relative block w-full pl-10 pr-12 py-4 border rounded-xl text-white placeholder-gray-400 bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#8b1319] focus:border-transparent transition-all duration-300 ${
                   errors.password ? 'border-red-500 focus:ring-red-500' : ''
                 }`}
                 placeholder="Enter your password"
@@ -199,7 +199,7 @@ export default function Login() {
                 type="checkbox"
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
-                className="h-4 w-4 text-[#3A8431] focus:ring-[#3A8431] border-gray-600 rounded bg-[#2A2A2A]"
+                className="h-4 w-4 text-[#8b1319] focus:ring-[#8b1319] border-gray-600 rounded bg-[#2A2A2A]"
               />
               <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-300">
                 Remember me
@@ -210,7 +210,7 @@ export default function Login() {
                 href="https://t.me/Haider3laaa" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="font-medium text-[#3A8431] hover:text-[#2d6a27] transition-colors duration-300"
+                className="font-medium text-[#8b1319] hover:text-[#6a0f14] transition-colors duration-300"
               >
                 Forgot password?
               </a>
@@ -222,7 +222,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="group relative w-full flex justify-center py-4 px-4 border border-transparent text-lg font-medium rounded-xl text-white bg-gradient-to-r from-[#3A8431] to-[#2d6a27] hover:from-[#2d6a27] hover:to-[#1e4a1e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#3A8431] transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              className="group relative w-full flex justify-center py-4 px-4 border border-transparent text-lg font-medium rounded-xl text-white bg-gradient-to-r from-[#8b1319] to-[#6a0f14] hover:from-[#6a0f14] hover:to-[#4a0b0e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#8b1319] transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               {isSubmitting ? 'Signing In...' : 'Sign In'}
             </button>
@@ -240,7 +240,7 @@ export default function Login() {
         <div className="text-center">
           <p className="text-gray-400">
             Don't have an account?{' '}
-            <Link href="/signup" className="font-medium text-[#3A8431] hover:text-[#2d6a27] transition-colors duration-300">
+            <Link href="/signup" className="font-medium text-[#8b1319] hover:text-[#6a0f14] transition-colors duration-300">
               Sign up
             </Link>
           </p>

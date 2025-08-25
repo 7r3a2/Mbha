@@ -127,7 +127,7 @@ export default function SignUp() {
             <div className="w-16 h-16 flex items-center justify-center shadow-lg">
               <Image 
                 src="/images/logo lander.png" 
-                alt="MBHA Logo" 
+                alt="MedAce Logo" 
                 width={64} 
                 height={64} 
                 className="w-16 h-16 object-contain"
@@ -135,7 +135,7 @@ export default function SignUp() {
             </div>
           </div>
           <h2 className="text-3xl font-bold text-white mb-2">Create Account</h2>
-          <p className="text-gray-400">Join MBHA and start your medical journey</p>
+          <p className="text-gray-400">Join MedAce and start your medical journey</p>
         </div>
 
         {/* Signup Form */}
@@ -151,7 +151,7 @@ export default function SignUp() {
               type="text"
               value={formData.firstName}
               onChange={handleInputChange}
-              className={`appearance-none relative block w-full px-3 py-4 border rounded-xl text-white placeholder-gray-400 bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#3A8431] focus:border-transparent transition-all duration-300 ${
+              className={`appearance-none relative block w-full px-3 py-4 border rounded-xl text-white placeholder-gray-400 bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#8b1319] focus:border-transparent transition-all duration-300 ${
                 errors.firstName ? 'border-red-500 focus:ring-red-500' : ''
               }`}
               placeholder="Enter your first name"
@@ -172,7 +172,7 @@ export default function SignUp() {
               type="text"
               value={formData.lastName}
               onChange={handleInputChange}
-              className={`appearance-none relative block w-full px-3 py-4 border rounded-xl text-white placeholder-gray-400 bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#3A8431] focus:border-transparent transition-all duration-300 ${
+              className={`appearance-none relative block w-full px-3 py-4 border rounded-xl text-white placeholder-gray-400 bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#8b1319] focus:border-transparent transition-all duration-300 ${
                 errors.lastName ? 'border-red-500 focus:ring-red-500' : ''
               }`}
               placeholder="Enter your last name"
@@ -193,7 +193,7 @@ export default function SignUp() {
               type="email"
               value={formData.email}
               onChange={handleInputChange}
-              className={`appearance-none relative block w-full px-3 py-4 border rounded-xl text-white placeholder-gray-400 bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#3A8431] focus:border-transparent transition-all duration-300 ${
+              className={`appearance-none relative block w-full px-3 py-4 border rounded-xl text-white placeholder-gray-400 bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#8b1319] focus:border-transparent transition-all duration-300 ${
                 errors.email ? 'border-red-500 focus:ring-red-500' : ''
               }`}
               placeholder="Enter your email"
@@ -215,7 +215,7 @@ export default function SignUp() {
                 type={showPassword ? 'text' : 'password'}
                 value={formData.password}
                 onChange={handleInputChange}
-                className={`appearance-none relative block w-full px-3 py-4 pr-10 border rounded-xl text-white placeholder-gray-400 bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#3A8431] focus:border-transparent transition-all duration-300 ${
+                className={`appearance-none relative block w-full px-3 py-4 pr-10 border rounded-xl text-white placeholder-gray-400 bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#8b1319] focus:border-transparent transition-all duration-300 ${
                   errors.password ? 'border-red-500 focus:ring-red-500' : ''
                 }`}
                 placeholder="Enter your password"
@@ -249,7 +249,7 @@ export default function SignUp() {
               name="gender"
               value={formData.gender}
               onChange={handleInputChange}
-              className="appearance-none relative block w-full px-3 py-4 border rounded-xl text-white bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#3A8431] focus:border-transparent transition-all duration-300"
+              className="appearance-none relative block w-full px-3 py-4 border rounded-xl text-white bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#8b1319] focus:border-transparent transition-all duration-300"
             >
               <option value="">Select your gender</option>
               <option value="male">Male</option>
@@ -267,7 +267,7 @@ export default function SignUp() {
               name="university"
               value={formData.university}
               onChange={handleInputChange}
-              className={`appearance-none relative block w-full px-3 py-4 border rounded-xl text-white bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#3A8431] focus:border-transparent transition-all duration-300 ${
+              className={`appearance-none relative block w-full px-3 py-4 border rounded-xl text-white bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#8b1319] focus:border-transparent transition-all duration-300 ${
                 errors.university ? 'border-red-500 focus:ring-red-500' : ''
               }`}
             >
@@ -296,7 +296,7 @@ export default function SignUp() {
               type="text"
               value={formData.uniqueCode}
               onChange={handleInputChange}
-              className={`appearance-none relative block w-full px-3 py-4 border rounded-xl text-white placeholder-gray-400 bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#3A8431] focus:border-transparent transition-all duration-300 ${
+              className={`appearance-none relative block w-full px-3 py-4 border rounded-xl text-white placeholder-gray-400 bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#8b1319] focus:border-transparent transition-all duration-300 ${
                 errors.uniqueCode ? 'border-red-500 focus:ring-red-500' : ''
               }`}
               placeholder="Enter your registration code"
@@ -311,7 +311,7 @@ export default function SignUp() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="group relative w-full flex justify-center py-4 px-4 border border-transparent text-lg font-medium rounded-xl text-white bg-gradient-to-r from-[#3A8431] to-[#2d6a27] hover:from-[#2d6a27] hover:to-[#1e4a1e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#3A8431] transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              className="group relative w-full flex justify-center py-4 px-4 border border-transparent text-lg font-medium rounded-xl text-white bg-gradient-to-r from-[#8b1319] to-[#6a0f14] hover:from-[#6a0f14] hover:to-[#4a0b0e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#8b1319] transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               {isSubmitting ? 'Creating Account...' : 'Create Account'}
             </button>
@@ -329,7 +329,7 @@ export default function SignUp() {
         <div className="text-center">
           <p className="text-gray-400">
             Already have an account?{' '}
-            <Link href="/login" className="font-medium text-[#3A8431] hover:text-[#2d6a27] transition-colors duration-300">
+            <Link href="/login" className="font-medium text-[#8b1319] hover:text-[#6a0f14] transition-colors duration-300">
               Sign in
             </Link>
           </p>

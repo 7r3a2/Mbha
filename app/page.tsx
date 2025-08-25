@@ -173,10 +173,10 @@ export default function Home() {
                 Welcome to MedAce
               </h1>
               <div className="space-y-6">
-                <p className="text-xl text-gray-300 leading-relaxed max-w-2xl">
+                <p className="text-xl text-gray-300 leading-relaxed max-w-2xl text-justify">
                   MED ACE supports medical students with on-demand video libraries, question banks, flashcards, and high-quality lectures designed to build a solid foundation of understanding that goes beyond memorization. Students from all Iraqi medical schools use MED ACE subscriptions to supplement their classes and prepare for their exams and successful careers.
                 </p>
-                <p className="text-xl text-gray-300 leading-relaxed max-w-2xl">
+                <p className="text-xl text-gray-300 leading-relaxed max-w-2xl text-justify">
                   MED ACE Content is designed and taught by Dr. Haitham N. Khalid, the first graduate of all Iraqi medical schools in 2020 with a cumulative score of 92%. Dr. Haitham has created videos filled with insights that will maximize your understanding. The content is clear, concise, and easy to understand. The videos are updated throughout the year in order to cover the newest advancement in science.
                 </p>
               </div>
