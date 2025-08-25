@@ -41,9 +41,21 @@ export async function POST(request: NextRequest) {
 
     console.log('✅ Password verified for:', email);
 
-    // Check if user is admin (bypass single-device restriction for admins)
+    // Check if account is locked (for all users except admin)
     const isAdmin = user.email === 'admin@mbha.com' || user.email === 'admin@mbha.net' || user.uniqueCode === 'ADMIN2024';
     console.log('👤 User type:', isAdmin ? 'ADMIN' : 'REGULAR USER');
+    
+    // Check if account is locked (non-admin users)
+    if (!isAdmin && user.isLocked) {
+      console.log('🔒 Account is locked for:', email);
+      return NextResponse.json(
+        { 
+          error: 'Account Locked',
+          message: 'Your account is locked. Please contact the developer to unlock your account.'
+        },
+        { status: 423 } // 423 Locked
+      );
+    }
     
     if (isAdmin) {
       console.log('👑 Admin login detected, bypassing single-device restriction');
