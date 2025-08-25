@@ -752,12 +752,12 @@ export default function Qbank() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subjects]); // Only depend on subjects, not sources
 
-  // Fetch question counts when sources change
+  // Fetch question counts when sources, question mode, or user changes
   useEffect(() => {
-    if (selectedSources.length > 0) {
+    if (selectedSources.length > 0 && user?.id) {
       fetchTopicQuestionCounts();
     }
-  }, [selectedSources]); // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedSources, selectedModes, user?.id]); // eslint-disable-next-line react-hooks/exhaustive-deps
 
   // Helper: map selected source keys to their labels for current subject selection
   const getSelectedSourceLabels = (): string[] => {
@@ -802,25 +802,10 @@ export default function Qbank() {
     };
   }, []);
 
-  // Check if a topic has questions
-  const checkTopicHasQuestions = async (topicName: string, sourceLabels?: string[]): Promise<boolean> => {
-    try {
-      const params = new URLSearchParams();
-      params.set('topic', topicName);
-      params.set('limit', '1');
-      if (sourceLabels && sourceLabels.length > 0) {
-        params.set('sources', sourceLabels.join(','));
-      }
-      const response = await fetch(`/api/qbank/questions?${params.toString()}`);
-      if (response.ok) {
-        const data = await response.json();
-        const arr = Array.isArray(data) ? data : data?.questions;
-        return Array.isArray(arr) && arr.length > 0;
-      }
-    } catch (error) {
-      console.error('Error checking topic questions:', error);
-    }
-    return false;
+  // Check if a topic has questions based on question counts
+  const checkTopicHasQuestions = (topicName: string): boolean => {
+    const count = topicQuestionCounts[topicName];
+    return count !== undefined && count > 0;
   };
 
   // Check all topics for questions when subjects are loaded
@@ -831,12 +816,11 @@ export default function Qbank() {
     }
     
     const topicsMap: { [key: string]: boolean } = {};
-    const sourceLabels = getSelectedSourceLabels();
     
     for (const subject of subjectsData) {
       for (const lecture of subject.lectures) {
         for (const topic of lecture.topics) {
-          const hasQuestions = await checkTopicHasQuestions(topic, sourceLabels);
+          const hasQuestions = checkTopicHasQuestions(topic);
           topicsMap[topic] = hasQuestions;
         }
       }
@@ -854,6 +838,15 @@ export default function Qbank() {
       const params = new URLSearchParams();
       params.set('sources', sourceLabels.join(','));
       
+      // Add question mode to the request
+      const questionMode = selectedModes.length > 0 ? selectedModes[0] : 'all';
+      params.set('questionMode', questionMode);
+      
+      // Add user ID if available
+      if (user?.id) {
+        params.set('userId', user.id);
+      }
+      
       const response = await fetch(`/api/qbank/question-counts?${params.toString()}`);
       if (response.ok) {
         const data = await response.json();
@@ -861,6 +854,20 @@ export default function Qbank() {
       }
     } catch (error) {
       console.error('Error fetching topic question counts:', error);
+      // If there's an error, set all counts to 0
+      const allTopics = new Set();
+      for (const subject of subjects) {
+        for (const lecture of subject.lectures) {
+          for (const topic of lecture.topics) {
+            allTopics.add(topic);
+          }
+        }
+      }
+      const zeroCounts: { [key: string]: number } = {};
+      for (const topic of allTopics) {
+        zeroCounts[topic as string] = 0;
+      }
+      setTopicQuestionCounts(zeroCounts);
     }
   };
 
@@ -918,7 +925,7 @@ export default function Qbank() {
     const sourceLabels = getSelectedSourceLabels();
     const topicsWithQuestions = await Promise.all(
       selectedTopicNames.map(async (topicName) => {
-        const hasQuestions = await checkTopicHasQuestions(topicName, sourceLabels);
+        const hasQuestions = checkTopicHasQuestions(topicName);
         return { topicName, hasQuestions };
       })
     );
@@ -1117,7 +1124,7 @@ export default function Qbank() {
             const preset = topicsWithQuestions[topicName];
             if (preset === false) return false;
             if (preset === true) return true;
-            return await checkTopicHasQuestions(topicName, getSelectedSourceLabels());
+            return checkTopicHasQuestions(topicName);
           })
         );
         const allowedIdxs = checks
@@ -1154,7 +1161,7 @@ const [isMobile, setIsMobile] = useState(false);
     
     if (!exists) {
       // We're trying to select this topic, check if it has questions
-      const hasQuestions = await checkTopicHasQuestions(topicName, getSelectedSourceLabels());
+      const hasQuestions = checkTopicHasQuestions(topicName);
       if (!hasQuestions) {
         return;
       }
@@ -1536,12 +1543,9 @@ const [isMobile, setIsMobile] = useState(false);
                                         />
                                           <label className={`ml-2 text-sm ${!hasQuestions ? 'text-gray-400 cursor-not-allowed' : 'text-gray-600'}`}>
                                             {topic}
-                                            {topicQuestionCounts[topic] && (
-                                              <span className="ml-1 text-xs text-[#0072b7] font-medium">({topicQuestionCounts[topic]})</span>
-                                            )}
-                                            {!hasQuestions && (
-                                              <span className="ml-1 text-xs text-red-500">(No questions)</span>
-                                            )}
+                                            <span className="ml-1 text-xs text-[#0072b7] font-medium">
+                                              ({topicQuestionCounts[topic] !== undefined ? topicQuestionCounts[topic] : 0})
+                                            </span>
                                           </label>
                                       </div>
                                       );
