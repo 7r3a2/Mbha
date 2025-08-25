@@ -171,6 +171,28 @@ function QuizPageContent() {
 
   // Defer deriving current question until after loading/error/empty guards
 
+  // Save all responses when user leaves the page
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      // Save all responses before leaving
+      for (let i = 0; i < questions.length; i++) {
+        if (answers[i] !== null) {
+          const question = questions[i];
+          const isCorrect = answers[i] === question.correct;
+          saveUserResponse(
+            question.id.toString(),
+            answers[i],
+            isCorrect,
+            flagged[i] || false
+          );
+        }
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [questions, answers, flagged]);
+
   useEffect(() => {
     // Only start timer for exam mode
     if (testMode !== 'exam') return;
@@ -187,6 +209,20 @@ function QuizPageContent() {
           setFinalScore(score);
           setEndTime(Date.now());
           setShowScoreOverlay(true);
+          
+          // Save all responses when time runs out
+          for (let i = 0; i < questions.length; i++) {
+            if (answers[i] !== null) {
+              const question = questions[i];
+              const isCorrect = answers[i] === question.correct;
+              saveUserResponse(
+                question.id.toString(),
+                answers[i],
+                isCorrect,
+                flagged[i] || false
+              );
+            }
+          }
           return 0;
         }
         return prev - 1;
@@ -444,8 +480,8 @@ function QuizPageContent() {
         const allSubmitted = submittedCount === questions.length;
         if (allSubmitted) {
           // Auto-end the quiz after a short delay
-          setTimeout(() => {
-            calculateAndShowScore();
+          setTimeout(async () => {
+            await calculateAndShowScore();
           }, 1000);
         }
       }
@@ -478,7 +514,21 @@ function QuizPageContent() {
   const increaseFontSize = () => setFontSize(Math.min(24, fontSize + 2));
   const decreaseFontSize = () => setFontSize(Math.max(12, fontSize - 2));
 
-  const calculateAndShowScore = () => {
+  const calculateAndShowScore = async () => {
+    // Save all responses before calculating score
+    for (let i = 0; i < questions.length; i++) {
+      if (answers[i] !== null) {
+        const question = questions[i];
+        const isCorrect = answers[i] === question.correct;
+        await saveUserResponse(
+          question.id.toString(),
+          answers[i],
+          isCorrect,
+          flagged[i] || false
+        );
+      }
+    }
+    
     const totalQuestions = questions.length;
     const correctAnswers = answers.filter((answer, index) => answer !== null && answer === questions[index].correct).length;
     const score = Math.round((correctAnswers / totalQuestions) * 100);
@@ -505,8 +555,22 @@ function QuizPageContent() {
     return { title: 'Needs Improvement', subtitle: 'Review the material' };
   };
 
-  const endQuiz = () => { 
+  const endQuiz = async () => { 
     if (confirm("Are you sure you want to end the quiz?")) { 
+      // Save all responses before ending
+      for (let i = 0; i < questions.length; i++) {
+        if (answers[i] !== null) {
+          const question = questions[i];
+          const isCorrect = answers[i] === question.correct;
+          await saveUserResponse(
+            question.id.toString(),
+            answers[i],
+            isCorrect,
+            flagged[i] || false
+          );
+        }
+      }
+      
       if (testMode === 'exam') {
         calculateAndShowScore();
       } else {

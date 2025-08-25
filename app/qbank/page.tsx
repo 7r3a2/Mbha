@@ -767,6 +767,18 @@ export default function Qbank() {
     }
   }, [selectedSources]); // eslint-disable-next-line react-hooks/exhaustive-deps
 
+  // Refresh counts when user returns to the page (e.g., from quiz)
+  useEffect(() => {
+    const handleFocus = () => {
+      if (selectedSubjects.length > 0 && user?.id) {
+        fetchTopicQuestionCounts();
+      }
+    };
+
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, [selectedSubjects, user?.id]); // eslint-disable-next-line react-hooks/exhaustive-deps
+
   // Helper: map selected source keys to their labels for current subject selection
   const getSelectedSourceLabels = (): string[] => {
     const allAvailSources = subjects
@@ -1495,6 +1507,17 @@ const [isMobile, setIsMobile] = useState(false);
                         <h3 className="text-lg font-medium text-[#0072b7]">Lectures - {subject.label}</h3>
                       </div>
                       <div className="flex items-center space-x-2">
+                        {/* Refresh counts button */}
+                        <button
+                          onClick={() => fetchTopicQuestionCounts()}
+                          disabled={loadingCounts}
+                          className="focus:outline-none p-1 rounded hover:bg-gray-100 transition-colors"
+                          title="Refresh question counts"
+                        >
+                          <svg className={`w-5 h-5 text-[#0072b7] ${loadingCounts ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                          </svg>
+                        </button>
                         {/* Search icon and bar */}
                         <div className="relative flex items-center">
                           {showSearch[subject.key] && (
