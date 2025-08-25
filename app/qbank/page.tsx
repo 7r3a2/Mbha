@@ -742,6 +742,7 @@ export default function Qbank() {
   const [searchTerms, setSearchTerms] = useState<Record<string, string>>({});
   const [topicsWithQuestions, setTopicsWithQuestions] = useState<{ [key: string]: boolean }>({});
   const [topicQuestionCounts, setTopicQuestionCounts] = useState<{ [key: string]: number }>({});
+  const [loadingCounts, setLoadingCounts] = useState(false);
 
   // Only check topics once when subjects are loaded
   useEffect(() => {
@@ -752,12 +753,12 @@ export default function Qbank() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subjects]); // Only depend on subjects, not sources
 
-  // Fetch question counts when sources, question mode, or user changes
+  // Fetch question counts when sources, question mode, user changes, or when subjects are selected
   useEffect(() => {
-    if (selectedSources.length > 0 && user?.id) {
+    if (selectedSubjects.length > 0 && user?.id) {
       fetchTopicQuestionCounts();
     }
-  }, [selectedSources, selectedModes, user?.id]); // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedSubjects, selectedSources, selectedModes, user?.id]); // eslint-disable-next-line react-hooks/exhaustive-deps
 
   // Helper: map selected source keys to their labels for current subject selection
   const getSelectedSourceLabels = (): string[] => {
@@ -805,7 +806,8 @@ export default function Qbank() {
   // Check if a topic has questions based on question counts
   const checkTopicHasQuestions = (topicName: string): boolean => {
     const count = topicQuestionCounts[topicName];
-    return count !== undefined && count > 0;
+    // If we have counts, use them; otherwise assume the topic has questions (allow checking)
+    return count !== undefined ? count > 0 : true;
   };
 
   // Check all topics for questions when subjects are loaded
@@ -832,11 +834,25 @@ export default function Qbank() {
   // Fetch question counts for topics
   const fetchTopicQuestionCounts = async () => {
     const sourceLabels = getSelectedSourceLabels();
-    if (sourceLabels.length === 0) return;
-
+    
+    setLoadingCounts(true);
     try {
       const params = new URLSearchParams();
-      params.set('sources', sourceLabels.join(','));
+      
+      // If sources are selected, use them; otherwise get all sources for the selected subjects
+      if (sourceLabels.length > 0) {
+        params.set('sources', sourceLabels.join(','));
+      } else {
+        // Get all available sources for selected subjects
+        const allSources = subjects
+          .filter(s => selectedSubjects.includes(s.key))
+          .flatMap(s => s.sources)
+          .map(s => s.label)
+          .filter(Boolean);
+        if (allSources.length > 0) {
+          params.set('sources', allSources.join(','));
+        }
+      }
       
       // Add question mode to the request
       const questionMode = selectedModes.length > 0 ? selectedModes[0] : 'all';
@@ -868,6 +884,8 @@ export default function Qbank() {
         zeroCounts[topic as string] = 0;
       }
       setTopicQuestionCounts(zeroCounts);
+    } finally {
+      setLoadingCounts(false);
     }
   };
 
@@ -1544,7 +1562,7 @@ const [isMobile, setIsMobile] = useState(false);
                                           <label className={`ml-2 text-sm ${!hasQuestions ? 'text-gray-400 cursor-not-allowed' : 'text-gray-600'}`}>
                                             {topic}
                                             <span className="ml-1 text-xs text-[#0072b7] font-medium">
-                                              ({topicQuestionCounts[topic] !== undefined ? topicQuestionCounts[topic] : 0})
+                                              ({loadingCounts ? '...' : (topicQuestionCounts[topic] !== undefined ? topicQuestionCounts[topic] : '...')})
                                             </span>
                                           </label>
                                       </div>
