@@ -745,7 +745,53 @@ export default function Qbank() {
   const [testName, setTestName] = useState('');
   const [examMode, setExamMode] = useState(false); // false = Study mode, true = Exam mode
   const [customTime, setCustomTime] = useState(60); // Default 60 minutes
-  // Previous tests section removed per request
+  
+  // Previous Tests State
+  const [previousTests, setPreviousTests] = useState<Array<{
+    name: string;
+    subject: string;
+    questions: number;
+    mode: 'Study' | 'Exam';
+    date: string;
+    id: string;
+  }>>([
+    {
+      name: 'Obstetrics Review 1',
+      subject: 'Obstetrics & Gynecology',
+      questions: 25,
+      mode: 'Exam',
+      date: '15/07/24',
+      id: '1'
+    },
+    {
+      name: 'Gynecology Basics',
+      subject: 'Obstetrics & Gynecology',
+      questions: 30,
+      mode: 'Study',
+      date: '12/07/24',
+      id: '2'
+    },
+    {
+      name: 'Menstruation Cycle Test',
+      subject: 'Obstetrics & Gynecology',
+      questions: 20,
+      mode: 'Exam',
+      date: '10/07/24',
+      id: '3'
+    }
+  ]);
+
+  // Previous Tests Functions
+  const handleViewTest = (test: any) => {
+    console.log('Viewing test:', test);
+    // Navigate to test results or restart test
+    router.push(`/quiz?testId=${test.id}&mode=review`);
+  };
+
+  const handleDeleteTest = (index: number) => {
+    const updatedTests = previousTests.filter((_, i) => i !== index);
+    setPreviousTests(updatedTests);
+  };
 
   // Dropdown states
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -1807,7 +1853,85 @@ const [isMobile, setIsMobile] = useState(false);
               </footer>
             </div>
           )}
-          {/* Previous tests view removed per request */}
+          {/* Previous Tests Section */}
+          <div className="mt-8 bg-white rounded-lg shadow-sm border border-gray-200">
+            <div className="p-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Previous Tests</h2>
+              
+              {previousTests.length === 0 ? (
+                <div className="text-center py-8">
+                  <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <h3 className="mt-2 text-sm font-medium text-gray-900">No previous tests</h3>
+                  <p className="mt-1 text-sm text-gray-500">Your completed tests will appear here.</p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Test Name</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Questions</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mode</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {previousTests.map((test, index) => (
+                        <tr key={index} className="hover:bg-gray-50">
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div>
+                              <div className="text-sm font-medium text-gray-900">{test.name}</div>
+                              <div className="text-sm text-gray-500">{test.subject}</div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className="text-sm text-[#0072b7] font-medium cursor-pointer hover:underline">
+                              {test.questions} questions
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                              test.mode === 'Exam' 
+                                ? 'bg-orange-100 text-orange-800' 
+                                : 'bg-green-100 text-green-800'
+                            }`}>
+                              {test.mode}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <div className="flex items-center space-x-2">
+                              <button
+                                onClick={() => handleViewTest(test)}
+                                className="text-[#0072b7] hover:text-[#005a8f] transition-colors duration-200"
+                              >
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                              </button>
+                              <button
+                                onClick={() => handleDeleteTest(index)}
+                                className="text-red-600 hover:text-red-800 transition-colors duration-200"
+                              >
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                              </button>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {test.date}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          </div>
 
         </main>
       </div>
