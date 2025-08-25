@@ -1,10 +1,10 @@
 [
   {
     "id": 1,
-    "subject": "Obstetrics & Gynecology",
-    "source": "APGO",
-    "lecture": "Basic sign and normal pregnancy",
-    "topic": "Physiological changes in pregnancy",
+    "subject": "Internal Medicine",
+    "source": "Davidson",
+    "lecture": "Neurology",
+    "topic": "Stroke",
     "text": "What is the most common cause of abnormal uterine bleeding in reproductive-age women?",
     "options": [
       "Uterine fibroids",
@@ -25,10 +25,10 @@
   },
   {
     "id": 2,
-    "subject": "Obstetrics & Gynecology",
-    "source": "ACOG",
-    "lecture": "Maternal Medicine",
-    "topic": "D.M. in pregnancy",
+    "subject": "Internal Medicine",
+    "source": "Harrison",
+    "lecture": "Cardiology",
+    "topic": "Heart Failure",
     "text": "Which of the following is the gold standard for diagnosing endometrial cancer?",
     "options": [
       "Transvaginal ultrasound",
@@ -49,10 +49,10 @@
   },
   {
     "id": 3,
-    "subject": "test",
-    "source": "tesst",
-    "lecture": "sss",
-    "topic": "haha",
+    "subject": "Internal Medicine",
+    "source": "Pretest",
+    "lecture": "Respiratory",
+    "topic": "Asthma",
     "text": "A woman requesting induction of labour, as she is at 41 weeks. A relative contraindication for induction of labour includes which one of the followings?",
     "options": [
       "Prolonged pregnancy",
@@ -75,10 +75,10 @@
   },
   {
     "id": 4,
-    "subject": "test",
-    "source": "tesst",
-    "lecture": "sss",
-    "topic": "haha",
+    "subject": "Internal Medicine",
+    "source": "500 SBAs in Internal Medicine",
+    "lecture": "Endocrinology",
+    "topic": "Diabetes Mellitus",
     "text": "A 25-years-old primigravida at 37 weeks presented with decrease fetal movement. Non stress test was done 2 times in the labour room and it was non-reactive. The doctor arranged for biophysical profiles test. Which of the following is not part of this test?",
     "options": [
       "Fetal tone",
