@@ -285,29 +285,154 @@ export default function Dashboard() {
 
         {/* Main Content */}
         <main className="flex-1 p-6 lg:p-8 overflow-y-auto">
-                 {/* Access Status Message */}
-       {(!user?.hasApproachAccess && !user?.hasQbankAccess && !user?.hasCoursesAccess) && (
-         <div className="mb-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-           <div className="flex">
-             <div className="flex-shrink-0">
-               <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
-                 <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-               </svg>
-             </div>
-             <div className="ml-3">
-               <h3 className="text-sm font-medium text-yellow-800">
-                 Basic Access
-               </h3>
-               <div className="mt-2 text-sm text-yellow-700">
-                 <p>
-                   You currently have Basic Access (Wizary Exam only). Get a subscription to unlock Full Access to all sections.
-                 </p>
-               </div>
-             </div>
-           </div>
-         </div>
-       )}
-          
+          {/* Welcome Message for New Users */}
+          {!user?.hasCoursesAccess && (
+            <div className="max-w-4xl mx-auto">
+              {/* Welcome Header */}
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-[#3A8431] rounded-full mb-4">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  </svg>
+                </div>
+                <h1 className="text-3xl font-bold text-gray-800 mb-2">
+                  Welcome to MBHA, {user?.firstName}!
+                </h1>
+                <p className="text-lg text-gray-600">
+                  Your medical education journey starts here. Choose your learning path below.
+                </p>
+              </div>
+
+              {/* Feature Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                {/* Qbank Card */}
+                <div className="bg-white rounded-xl shadow-lg border-2 border-gray-200 hover:border-[#3A8431] transition-all duration-300 overflow-hidden group">
+                  <div className="h-48 bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="w-16 h-16 bg-[#3A8431] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
+                      </div>
+                      <h3 className="text-xl font-bold text-gray-800">Question Bank</h3>
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <p className="text-gray-600 mb-4">
+                      Practice with thousands of medical questions. Test your knowledge, track your progress, and improve your exam preparation.
+                    </p>
+                    <ul className="space-y-2 mb-6">
+                      <li className="flex items-center text-sm text-gray-600">
+                        <svg className="w-4 h-4 text-[#3A8431] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        Multiple question modes (All, Flagged, Incorrect, Unused)
+                      </li>
+                      <li className="flex items-center text-sm text-gray-600">
+                        <svg className="w-4 h-4 text-[#3A8431] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        Filter by subjects, topics, and sources
+                      </li>
+                      <li className="flex items-center text-sm text-gray-600">
+                        <svg className="w-4 h-4 text-[#3A8431] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        Track your quiz history and performance
+                      </li>
+                    </ul>
+                    <button 
+                      onClick={handleQbankClick}
+                      className="w-full bg-[#3A8431] text-white py-3 px-4 rounded-lg hover:bg-[#2d6a27] transition-colors duration-200 font-semibold group-hover:shadow-lg"
+                    >
+                      Start Practicing
+                    </button>
+                  </div>
+                </div>
+
+                {/* Wizary Exam Card */}
+                <div className="bg-white rounded-xl shadow-lg border-2 border-gray-200 hover:border-[#3A8431] transition-all duration-300 overflow-hidden group">
+                  <div className="h-48 bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="w-16 h-16 bg-[#3A8431] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                      </div>
+                      <h3 className="text-xl font-bold text-gray-800">Wizary Exam</h3>
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <p className="text-gray-600 mb-4">
+                      Take comprehensive medical exams with realistic timing and scoring. Simulate real exam conditions and assess your readiness.
+                    </p>
+                    <ul className="space-y-2 mb-6">
+                      <li className="flex items-center text-sm text-gray-600">
+                        <svg className="w-4 h-4 text-[#3A8431] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        Timed exam simulations
+                      </li>
+                      <li className="flex items-center text-sm text-gray-600">
+                        <svg className="w-4 h-4 text-[#3A8431] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        Detailed performance analysis
+                      </li>
+                      <li className="flex items-center text-sm text-gray-600">
+                        <svg className="w-4 h-4 text-[#3A8431] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        Comprehensive question coverage
+                      </li>
+                    </ul>
+                    <button 
+                      onClick={handleWizaryExamClick}
+                      className="w-full bg-[#3A8431] text-white py-3 px-4 rounded-lg hover:bg-[#2d6a27] transition-colors duration-200 font-semibold group-hover:shadow-lg"
+                    >
+                      Take Exam
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Stats or Tips */}
+              <div className="bg-gradient-to-r from-[#3A8431] to-[#2d6a27] rounded-xl p-6 text-white">
+                <h3 className="text-xl font-bold mb-4">Getting Started Tips</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="text-center">
+                    <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                    </div>
+                    <p className="text-sm font-medium">Start with Qbank</p>
+                    <p className="text-xs opacity-90">Practice questions to build confidence</p>
+                  </div>
+                  <div className="text-center">
+                    <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <p className="text-sm font-medium">Take Regular Exams</p>
+                    <p className="text-xs opacity-90">Assess your progress with Wizary Exam</p>
+                  </div>
+                  <div className="text-center">
+                    <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      </svg>
+                    </div>
+                    <p className="text-sm font-medium">Track Progress</p>
+                    <p className="text-xs opacity-90">Monitor your improvement over time</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Admin Courses View */}
           {user?.hasCoursesAccess && (user?.uniqueCode === 'ADMIN' || user?.email?.includes('admin')) && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {courses.map((course) => (
