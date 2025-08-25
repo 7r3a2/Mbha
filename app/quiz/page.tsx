@@ -132,19 +132,26 @@ function QuizPageContent() {
       setError(null);
       
       try {
-        const fetchedQuestions = await fetchQuestions(sources, topics, questionCount, questionMode);
+        // If questionMode is not 'all', ignore the questionCount and get all questions for that mode
+        const countToUse = questionMode === 'all' ? questionCount : 1000; // Use large number to get all questions
+        const fetchedQuestions = await fetchQuestions(sources, topics, countToUse, questionMode);
+        
         if (fetchedQuestions.length === 0) {
           const modeText = questionMode === 'all' ? '' : ` in ${questionMode} mode`;
           setError(`No questions found for the selected criteria${modeText}. Please try different sources, topics, or question mode.`);
         } else {
           // Shuffle questions randomly
           const shuffled = [...fetchedQuestions].sort(() => Math.random() - 0.5);
-          setQuestions(shuffled);
+          
+          // If questionMode is not 'all', use all questions. If 'all', limit by questionCount
+          const finalQuestions = questionMode === 'all' ? shuffled.slice(0, questionCount) : shuffled;
+          
+          setQuestions(finalQuestions);
 
           // Initialize state arrays to full length to avoid sparse-array issues
-          const initAnswers = Array(shuffled.length).fill(null);
-          const initSubmitted = Array(shuffled.length).fill(false);
-          const initFlagged = Array(shuffled.length).fill(false);
+          const initAnswers = Array(finalQuestions.length).fill(null);
+          const initSubmitted = Array(finalQuestions.length).fill(false);
+          const initFlagged = Array(finalQuestions.length).fill(false);
           setAnswers(initAnswers);
           setSubmitted(initSubmitted);
           setFlagged(initFlagged);
@@ -170,7 +177,7 @@ function QuizPageContent() {
     };
 
     loadQuestions();
-  }, [sources, topics, questionCount, testMode, customTimeMinutes]);
+  }, [sources, topics, questionCount, questionMode, testMode, customTimeMinutes]);
 
   // Defer deriving current question until after loading/error/empty guards
 
