@@ -45,6 +45,18 @@ export async function POST(request: NextRequest) {
     const isAdmin = user.email === 'admin@mbha.com' || user.email === 'admin@mbha.net' || user.uniqueCode === 'ADMIN2024';
     console.log('👤 User type:', isAdmin ? 'ADMIN' : 'REGULAR USER');
     
+    // Check if account is locked (non-admin users)
+    if (!isAdmin && user.isLocked) {
+      console.log('🔒 Account is locked for:', email);
+      return NextResponse.json(
+        { 
+          error: 'Account Locked',
+          message: 'Your account is locked. Please contact the developer to unlock your account.'
+        },
+        { status: 423 } // 423 Locked
+      );
+    }
+    
     if (isAdmin) {
       console.log('👑 Admin login detected, bypassing single-device restriction');
       // For admin accounts, just create a new session without checking existing ones
@@ -80,11 +92,19 @@ export async function POST(request: NextRequest) {
     const { activeSessions, shouldLock } = await checkUserSessions(user.id);
     console.log(`📱 Active sessions for ${email}: ${activeSessions}, shouldLock: ${shouldLock}`);
 
-    // Log out first device if user already has an active session (single device policy)
+    // Lock account if user already has an active session (strict single device)
     if (activeSessions > 0) {
-      console.log('🔄 Active session detected, logging out first device for:', email);
+      console.log('🔒 Active session detected, locking account for:', email);
+      await lockUserAccount(user.id);
       await deactivateAllUserSessions(user.id);
-      console.log('✅ First device logged out');
+      
+      return NextResponse.json(
+        { 
+          error: 'Account Locked',
+          message: 'You are already logged in on another device. Your account has been locked for security. Please contact the developer to unlock your account.'
+        },
+        { status: 423 } // 423 Locked
+      );
     }
 
     // Create new session
