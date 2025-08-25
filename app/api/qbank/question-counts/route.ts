@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { promises as fs } from 'fs';
 import path from 'path';
 import { kvGet } from '@/lib/db-utils';
+import { prisma } from '@/lib/prisma';
+import { verifyToken } from '@/lib/auth-utils';
 
 const QUESTIONS_FILE = path.join(process.cwd(), 'data', 'qbank-questions.json');
 const KV_KEY = 'qbank-questions';
@@ -35,38 +37,89 @@ export async function GET(request: NextRequest) {
 
     const all = await readQuestions();
 
-    // Filter by sources if provided
-    let filtered = all as any[];
-    if (selectedSources.length > 0) {
-      filtered = filtered.filter(q => selectedSources.includes(q.source));
+    // If no sources are selected, return 0 for all topics
+    if (selectedSources.length === 0) {
+      const topicCounts: Record<string, number> = {};
+      if (selectedTopics.length > 0) {
+        for (const topic of selectedTopics) {
+          topicCounts[topic] = 0;
+        }
+      } else {
+        // Get all unique topics and set count to 0
+        const allTopics = new Set(all.map(q => q.topic).filter(Boolean));
+        for (const topic of allTopics) {
+          topicCounts[topic] = 0;
+        }
+      }
+      return NextResponse.json({ topicCounts });
     }
+
+    // Filter by sources
+    let filtered = all as any[];
+    filtered = filtered.filter(q => selectedSources.includes(q.source));
 
     // If question mode is not 'all' and we have a userId, filter based on user responses
     if (questionMode !== 'all' && userId) {
       const questionIds = filtered.map(q => q.id.toString());
       
-      // Get user responses for these questions
-      const userResponseParams = new URLSearchParams({
-        questionIds: questionIds.join(','),
-        mode: questionMode
-      });
-      
       try {
-        const userResponseRes = await fetch(`${request.nextUrl.origin}/api/qbank/user-responses?${userResponseParams}`, {
-          headers: {
-            'Authorization': `Bearer ${request.headers.get('authorization') || ''}`
+        // Verify the user token
+        const token = request.headers.get('authorization')?.replace('Bearer ', '');
+        if (!token) {
+          throw new Error('No authorization token');
+        }
+        
+        const user = await verifyToken(token);
+        if (!user || user.id !== userId) {
+          throw new Error('Invalid user');
+        }
+        
+        // Get user responses directly from database
+        const responses = await prisma.userResponse.findMany({
+          where: {
+            userId: userId,
+            questionId: {
+              in: questionIds
+            }
           }
         });
         
-        if (userResponseRes.ok) {
-          const userResponseData = await userResponseRes.json();
-          const filteredQuestionIds = userResponseData.filteredQuestionIds || [];
-          
-          // Filter questions to only include those that match the mode
-          filtered = filtered.filter((q: any) => 
-            filteredQuestionIds.includes(q.id.toString())
-          );
+        // Create a map of questionId to response
+        const responseMap = responses.reduce((acc, response) => {
+          acc[response.questionId] = response;
+          return acc;
+        }, {} as Record<string, any>);
+        
+        // Filter questions based on mode
+        let filteredQuestionIds: string[] = [];
+        
+        switch (questionMode) {
+          case 'unused':
+            // Return questions that user hasn't answered
+            filteredQuestionIds = questionIds.filter(id => !responseMap[id]);
+            break;
+          case 'incorrect':
+            // Return questions that user answered incorrectly
+            filteredQuestionIds = questionIds.filter(id => 
+              responseMap[id] && !responseMap[id].isCorrect
+            );
+            break;
+          case 'flagged':
+            // Return questions that user flagged
+            filteredQuestionIds = questionIds.filter(id => 
+              responseMap[id] && responseMap[id].isFlagged
+            );
+            break;
+          default:
+            // Default to 'all'
+            filteredQuestionIds = questionIds;
         }
+        
+        // Filter questions to only include those that match the mode
+        filtered = filtered.filter((q: any) => 
+          filteredQuestionIds.includes(q.id.toString())
+        );
+        
       } catch (error) {
         console.error('Error fetching user responses for counts:', error);
         // If we can't get user responses, return 0 for all topics
@@ -76,7 +129,6 @@ export async function GET(request: NextRequest) {
             topicCounts[topic] = 0;
           }
         } else {
-          // Get all unique topics and set count to 0
           const allTopics = new Set(all.map(q => q.topic).filter(Boolean));
           for (const topic of allTopics) {
             topicCounts[topic] = 0;

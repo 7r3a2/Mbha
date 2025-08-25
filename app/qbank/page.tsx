@@ -760,6 +760,13 @@ export default function Qbank() {
     }
   }, [selectedSubjects, selectedSources, selectedModes, user?.id]); // eslint-disable-next-line react-hooks/exhaustive-deps
 
+  // Also fetch counts when sources change (even if no user ID yet)
+  useEffect(() => {
+    if (selectedSubjects.length > 0) {
+      fetchTopicQuestionCounts();
+    }
+  }, [selectedSources]); // eslint-disable-next-line react-hooks/exhaustive-deps
+
   // Helper: map selected source keys to their labels for current subject selection
   const getSelectedSourceLabels = (): string[] => {
     const allAvailSources = subjects
@@ -839,19 +846,9 @@ export default function Qbank() {
     try {
       const params = new URLSearchParams();
       
-      // If sources are selected, use them; otherwise get all sources for the selected subjects
+      // Always use selected sources - if none selected, don't send any sources (will return 0)
       if (sourceLabels.length > 0) {
         params.set('sources', sourceLabels.join(','));
-      } else {
-        // Get all available sources for selected subjects
-        const allSources = subjects
-          .filter(s => selectedSubjects.includes(s.key))
-          .flatMap(s => s.sources)
-          .map(s => s.label)
-          .filter(Boolean);
-        if (allSources.length > 0) {
-          params.set('sources', allSources.join(','));
-        }
       }
       
       // Add question mode to the request
@@ -863,10 +860,35 @@ export default function Qbank() {
         params.set('userId', user.id);
       }
       
-      const response = await fetch(`/api/qbank/question-counts?${params.toString()}`);
+      // Get auth token from localStorage
+      const token = localStorage.getItem('token');
+      const headers: HeadersInit = {};
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      
+      const response = await fetch(`/api/qbank/question-counts?${params.toString()}`, {
+        headers
+      });
       if (response.ok) {
         const data = await response.json();
         setTopicQuestionCounts(data.topicCounts || {});
+      } else {
+        console.error('Failed to fetch question counts:', response.status);
+        // Set all counts to 0 on error
+        const allTopics = new Set();
+        for (const subject of subjects) {
+          for (const lecture of subject.lectures) {
+            for (const topic of lecture.topics) {
+              allTopics.add(topic);
+            }
+          }
+        }
+        const zeroCounts: { [key: string]: number } = {};
+        for (const topic of allTopics) {
+          zeroCounts[topic as string] = 0;
+        }
+        setTopicQuestionCounts(zeroCounts);
       }
     } catch (error) {
       console.error('Error fetching topic question counts:', error);
