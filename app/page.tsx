@@ -48,48 +48,48 @@ export default function Home() {
             <div className="w-12 h-12 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
               <Image 
                 src="/images/logo lander.png" 
-                alt="MBHA Logo" 
+                alt="MedAce Logo" 
                 width={48} 
                 height={48} 
                 className="w-12 h-12 object-contain"
               />
             </div>
-            <span className="text-white font-bold text-3xl tracking-wide group-hover:text-[#3A8431] transition-colors duration-300">MBHA</span>
+            <span className="text-white font-bold text-3xl tracking-wide group-hover:text-[#8b1319] transition-colors duration-300">MedAce</span>
           </div>
 
           {/* Navigation */}
           <nav className="hidden md:flex items-center space-x-10">
             <button
               onClick={() => scrollToSection('home')}
-              className="text-white hover:text-[#3A8431] transition-all duration-300 font-medium text-xl relative group"
+              className="text-white hover:text-[#8b1319] transition-all duration-300 font-medium text-xl relative group"
             >
               Home
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#3A8431] group-hover:w-full transition-all duration-300"></span>
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#8b1319] group-hover:w-full transition-all duration-300"></span>
             </button>
             <button
               onClick={() => scrollToSection('services')}
-              className="text-white hover:text-[#3A8431] transition-all duration-300 font-medium text-xl relative group"
+              className="text-white hover:text-[#8b1319] transition-all duration-300 font-medium text-xl relative group"
             >
               Services
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#3A8431] group-hover:w-full transition-all duration-300"></span>
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#8b1319] group-hover:w-full transition-all duration-300"></span>
             </button>
             <button
               onClick={() => scrollToSection('courses')}
-              className="text-white hover:text-[#3A8431] transition-all duration-300 font-medium text-xl relative group"
+              className="text-white hover:text-[#8b1319] transition-all duration-300 font-medium text-xl relative group"
             >
               Courses
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#3A8431] group-hover:w-full transition-all duration-300"></span>
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#8b1319] group-hover:w-full transition-all duration-300"></span>
             </button>
             <button
               onClick={() => scrollToSection('contact')}
-              className="text-white hover:text-[#3A8431] transition-all duration-300 font-medium text-xl relative group"
+              className="text-white hover:text-[#8b1319] transition-all duration-300 font-medium text-xl relative group"
             >
               Contact Us
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#3A8431] group-hover:w-full transition-all duration-300"></span>
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#8b1319] group-hover:w-full transition-all duration-300"></span>
             </button>
             <button
               onClick={() => window.location.href = '/login'}
-              className="bg-gradient-to-r from-[#3A8431] to-[#2d6a27] text-white px-6 py-3 rounded-xl hover:from-[#2d6a27] hover:to-[#1e4a1e] transition-all duration-300 font-semibold text-lg shadow-lg hover:shadow-xl hover:scale-105 border-2 border-transparent hover:border-[#3A8431]/20"
+              className="bg-gradient-to-r from-[#8b1319] to-[#6a0f14] text-white px-6 py-3 rounded-xl hover:from-[#6a0f14] hover:to-[#4a0b0e] transition-all duration-300 font-semibold text-lg shadow-lg hover:shadow-xl hover:scale-105 border-2 border-transparent hover:border-[#8b1319]/20"
             >
               Login
             </button>
@@ -98,7 +98,7 @@ export default function Home() {
           {/* Mobile menu button */}
           <button 
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden text-white hover:text-[#3A8431] transition-colors duration-300"
+            className="md:hidden text-white hover:text-[#8b1319] transition-colors duration-300"
           >
             <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -116,7 +116,7 @@ export default function Home() {
                     scrollToSection('home');
                     setIsMobileMenuOpen(false);
                   }}
-                  className="text-white hover:text-[#3A8431] transition-all duration-300 font-medium text-lg text-left py-2"
+                  className="text-white hover:text-[#8b1319] transition-all duration-300 font-medium text-lg text-left py-2"
                 >
                   Home
                 </button>
@@ -125,7 +125,7 @@ export default function Home() {
                     scrollToSection('services');
                     setIsMobileMenuOpen(false);
                   }}
-                  className="text-white hover:text-[#3A8431] transition-all duration-300 font-medium text-lg text-left py-2"
+                  className="text-white hover:text-[#8b1319] transition-all duration-300 font-medium text-lg text-left py-2"
                 >
                   Services
                 </button>
@@ -134,7 +134,7 @@ export default function Home() {
                     scrollToSection('courses');
                     setIsMobileMenuOpen(false);
                   }}
-                  className="text-white hover:text-[#3A8431] transition-all duration-300 font-medium text-lg text-left py-2"
+                  className="text-white hover:text-[#8b1319] transition-all duration-300 font-medium text-lg text-left py-2"
                 >
                   Courses
                 </button>
@@ -143,7 +143,7 @@ export default function Home() {
                     scrollToSection('contact');
                     setIsMobileMenuOpen(false);
                   }}
-                  className="text-white hover:text-[#3A8431] transition-all duration-300 font-medium text-lg text-left py-2"
+                  className="text-white hover:text-[#8b1319] transition-all duration-300 font-medium text-lg text-left py-2"
                 >
                   Contact Us
                 </button>
@@ -152,7 +152,7 @@ export default function Home() {
                     window.location.href = '/login';
                     setIsMobileMenuOpen(false);
                   }}
-                  className="bg-gradient-to-r from-[#3A8431] to-[#2d6a27] text-white px-6 py-3 rounded-xl hover:from-[#2d6a27] hover:to-[#1e4a1e] transition-all duration-300 font-semibold text-lg shadow-lg hover:shadow-xl hover:scale-105 border-2 border-transparent hover:border-[#3A8431]/20 w-full text-center"
+                  className="bg-gradient-to-r from-[#8b1319] to-[#6a0f14] text-white px-6 py-3 rounded-xl hover:from-[#6a0f14] hover:to-[#4a0b0e] transition-all duration-300 font-semibold text-lg shadow-lg hover:shadow-xl hover:scale-105 border-2 border-transparent hover:border-[#8b1319]/20 w-full text-center"
                 >
                   Login
                 </button>
@@ -170,15 +170,20 @@ export default function Home() {
             {/* Left Column */}
             <div className="space-y-8">
               <h1 className="text-3xl lg:text-5xl font-bold text-white leading-tight">
-                Welcome to MBHA
+                Welcome to MedAce
               </h1>
-              <p className="text-xl text-gray-300 leading-relaxed max-w-2xl text-right" dir="rtl" style={{ lineHeight: '1.8', textAlign: 'justify' }}>
-                منصة تعليمية متكاملة تهدف إلى تهيئة الطلبة للامتحانات الوزارية الخاصة بوزارة التعليم العراقية، من خلال كورسات شاملة تغطي المواد الأساسية، وأسئلة تم تجميعها من المصادر الرسمية المعتمدة، بالإضافة إلى اختبارات وزارية سابقة لمساعدة الطلبة على فهم نمط الأسئلة والاستعداد الفعال للامتحان النهائي.
-              </p>
+              <div className="space-y-6">
+                <p className="text-xl text-gray-300 leading-relaxed max-w-2xl">
+                  MED ACE supports medical students with on-demand video libraries, question banks, flashcards, and high-quality lectures designed to build a solid foundation of understanding that goes beyond memorization. Students from all Iraqi medical schools use MED ACE subscriptions to supplement their classes and prepare for their exams and successful careers.
+                </p>
+                <p className="text-xl text-gray-300 leading-relaxed max-w-2xl">
+                  MED ACE Content is designed and taught by Dr. Haitham N. Khalid, the first graduate of all Iraqi medical schools in 2020 with a cumulative score of 92%. Dr. Haitham has created videos filled with insights that will maximize your understanding. The content is clear, concise, and easy to understand. The videos are updated throughout the year in order to cover the newest advancement in science.
+                </p>
+              </div>
               <div className="flex space-x-4">
                 <button 
                   onClick={() => window.location.href = '/login'}
-                  className="bg-gradient-to-r from-[#3A8431] to-[#2d6a27] text-white px-8 py-4 rounded-xl hover:from-[#2d6a27] hover:to-[#1e4a1e] transition-all duration-300 font-semibold text-lg shadow-lg hover:shadow-xl hover:scale-105 border-2 border-transparent hover:border-[#3A8431]/20"
+                  className="bg-gradient-to-r from-[#8b1319] to-[#6a0f14] text-white px-8 py-4 rounded-xl hover:from-[#6a0f14] hover:to-[#4a0b0e] transition-all duration-300 font-semibold text-lg shadow-lg hover:shadow-xl hover:scale-105 border-2 border-transparent hover:border-[#8b1319]/20"
                 >
                   Get Started
                 </button>
@@ -188,7 +193,7 @@ export default function Home() {
             {/* Right Column */}
             <div className="flex justify-center lg:justify-end">
               <div className="relative group">
-                <div className="w-96 h-96 bg-gradient-to-br from-[#3A8431] to-[#2d6a27] rounded-full flex items-center justify-center relative shadow-2xl group-hover:scale-105 transition-transform duration-500">
+                <div className="w-96 h-96 bg-gradient-to-br from-[#8b1319] to-[#6a0f14] rounded-full flex items-center justify-center relative shadow-2xl group-hover:scale-105 transition-transform duration-500">
                   <Image
                     src="/images/hero main page.png"
                     alt="Hero"
@@ -265,7 +270,7 @@ export default function Home() {
                   onClick={() => setCurrentSlide(index)}
                   className={`w-3 h-3 rounded-full transition-all duration-300 ${
                     index === currentSlide 
-                      ? 'bg-[#3A8431] scale-125 shadow-lg' 
+                      ? 'bg-[#8b1319] scale-125 shadow-lg' 
                       : 'bg-white/50 hover:bg-white/70 hover:scale-110'
                   }`}
                 />
@@ -285,7 +290,7 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-12 max-w-7xl mx-auto">
             {courses.map((course) => (
               <div key={course.id} className="group">
-                <div className="bg-gradient-to-br from-[#2A2A2A] to-[#1E1E1E] border-4 border-[#3A8431] rounded-3xl p-8 hover:scale-105 transition-all duration-500 shadow-2xl hover:shadow-[#3A8431]/20 group-hover:border-[#2d6a27]">
+                <div className="bg-gradient-to-br from-[#2A2A2A] to-[#1E1E1E] border-4 border-[#8b1319] rounded-3xl p-8 hover:scale-105 transition-all duration-500 shadow-2xl hover:shadow-[#8b1319]/20 group-hover:border-[#6a0f14]">
                   <div className="flex justify-center mb-6">
                     <Image
                       src={course.image}
@@ -300,7 +305,7 @@ export default function Home() {
                     {course.title}
                   </h3>
                   <div className="text-center">
-                    <button className="bg-gradient-to-r from-[#3A8431] to-[#2d6a27] text-white px-8 py-4 rounded-xl hover:from-[#2d6a27] hover:to-[#1e4a1e] transition-all duration-300 font-semibold text-lg shadow-lg hover:shadow-xl hover:scale-105">
+                    <button className="bg-gradient-to-r from-[#8b1319] to-[#6a0f14] text-white px-8 py-4 rounded-xl hover:from-[#6a0f14] hover:to-[#4a0b0e] transition-all duration-300 font-semibold text-lg shadow-lg hover:shadow-xl hover:scale-105">
                       Learn More
                     </button>
                   </div>
@@ -321,7 +326,7 @@ export default function Home() {
           </h2>
           
           <div className="flex justify-center">
-            <div className="bg-gradient-to-br from-[#3A8431] to-[#2d6a27] rounded-2xl p-4 flex space-x-6 shadow-2xl">
+            <div className="bg-gradient-to-br from-[#8b1319] to-[#6a0f14] rounded-2xl p-4 flex space-x-6 shadow-2xl">
               <a
                 href="https://t.me/Haider3laaa"
                 target="_blank"
@@ -358,11 +363,11 @@ export default function Home() {
       </section>
 
       {/* Footer - Updated with Copyright */}
-      <footer className="bg-gradient-to-r from-[#3A8431] to-[#2d6a27] py-6 shadow-2xl">
+      <footer className="bg-gradient-to-r from-[#8b1319] to-[#6a0f14] py-6 shadow-2xl">
         <div className="container mx-auto px-6">
           <div className="text-center">
             <p className="text-white text-lg font-semibold">
-              © MBHA 2026
+              © MedAce 2026
             </p>
           </div>
         </div>
