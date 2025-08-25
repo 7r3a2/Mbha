@@ -37,7 +37,10 @@ export async function GET(request: NextRequest) {
     const sourcesParam = searchParams.get('sources') || '';
     const topicsParam = searchParams.get('topics') || '';
     const singleTopic = searchParams.get('topic') || '';
-    const count = parseInt(searchParams.get('count') || searchParams.get('limit') || '20', 10);
+    const countParam = searchParams.get('count') || searchParams.get('limit') || '';
+    
+    // If no count specified, return all available questions
+    const count = countParam ? parseInt(countParam, 10) : -1;
 
     const selectedSources = sourcesParam.split(',').map(s => s.trim()).filter(Boolean);
     const selectedTopics = (topicsParam || singleTopic).split(',').map(t => t.trim()).filter(Boolean);
@@ -55,7 +58,8 @@ export async function GET(request: NextRequest) {
 
     // If no topics specified, just return a randomized slice
     if (selectedTopics.length === 0) {
-      const limited = shuffle(filtered).slice(0, Math.max(0, count));
+      const shuffled = shuffle(filtered);
+      const limited = count > 0 ? shuffled.slice(0, count) : shuffled;
       const transformed = limited.map((q, idx) => ({
         id: q.id ?? idx + 1,
         text: q.text || q.question,
@@ -83,7 +87,7 @@ export async function GET(request: NextRequest) {
 
     // Determine how many to take without exceeding available
     const totalAvailable = Object.values(byTopic).reduce((sum, arr) => sum + arr.length, 0);
-    const target = Math.min(count, totalAvailable);
+    const target = count > 0 ? Math.min(count, totalAvailable) : totalAvailable;
 
     // Distribute fairly across topics without replacement
     const result: any[] = [];

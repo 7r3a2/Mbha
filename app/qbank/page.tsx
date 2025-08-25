@@ -742,6 +742,8 @@ export default function Qbank() {
   const [expandedLectures, setExpandedLectures] = useState<{ [k: string]: number[] }>({});
   const [expandedSections, setExpandedSections] = useState<{ [k: string]: boolean }>({});
   const [questionCount, setQuestionCount] = useState(0);
+  const [availableQuestions, setAvailableQuestions] = useState<number | null>(null);
+  const [checkingQuestions, setCheckingQuestions] = useState(false);
   const [testName, setTestName] = useState('');
   const [examMode, setExamMode] = useState(false); // false = Study mode, true = Exam mode
   const [customTime, setCustomTime] = useState(60); // Default 60 minutes
@@ -756,7 +758,20 @@ export default function Qbank() {
     id: string;
   }>>([]);
 
-  // Add new test to history (max 10 tests)
+  // Load test history from localStorage on component mount
+  useEffect(() => {
+    const savedTests = localStorage.getItem('mbha_test_history');
+    if (savedTests) {
+      try {
+        const parsedTests = JSON.parse(savedTests);
+        setPreviousTests(parsedTests);
+      } catch (error) {
+        console.error('Error loading test history:', error);
+      }
+    }
+  }, []);
+
+  // Add new test to history (max 10 tests) and save to localStorage
   const addTestToHistory = (testData: {
     name: string;
     subject: string;
@@ -772,7 +787,10 @@ export default function Qbank() {
     setPreviousTests(prev => {
       const updated = [newTest, ...prev];
       // Keep only the latest 10 tests
-      return updated.slice(0, 10);
+      const limitedTests = updated.slice(0, 10);
+      // Save to localStorage
+      localStorage.setItem('mbha_test_history', JSON.stringify(limitedTests));
+      return limitedTests;
     });
   };
 
@@ -784,7 +802,12 @@ export default function Qbank() {
   };
 
   const handleDeleteTest = (testId: string) => {
-    setPreviousTests(prev => prev.filter(test => test.id !== testId));
+    setPreviousTests(prev => {
+      const updated = prev.filter(test => test.id !== testId);
+      // Save to localStorage
+      localStorage.setItem('mbha_test_history', JSON.stringify(updated));
+      return updated;
+    });
   };
 
   // Dropdown states
@@ -1051,28 +1074,28 @@ export default function Qbank() {
     }
   };
 
-  const handleGenerateTest = async () => {
+  // Generate quiz function
+  const generateQuiz = async () => {
     if (!testName.trim()) {
       alert('Please enter a test name');
       return;
     }
-    
-    if (questionCount <= 0) {
-      alert('Please enter a number of questions greater than 0');
+
+    if (selectedSubjects.length === 0) {
+      alert('Please select at least one subject');
       return;
     }
 
-    // Check if at least one source is selected
     if (selectedSources.length === 0) {
       alert('Please select at least one source');
       return;
     }
 
-    // Check if at least one topic or lecture with no topics is selected
+    // Check if any topics or lectures are selected
     let hasSelectedTopics = false;
-    let selectedTopicNames: string[] = [];
     let hasSelectedLecturesWithNoTopics = false;
-    
+    let selectedTopicNames: string[] = [];
+
     for (const s of subjects) {
       if (!selectedSubjects.includes(s.key)) continue;
       const lectureChecks = topicChecks[s.key] || {};
@@ -1147,6 +1170,43 @@ export default function Qbank() {
         // which means the API will return questions from all topics in that lecture's subject
         // The filtering will be done by source, which is linked to the subject
       }
+    }
+
+    // Check available questions before generating quiz
+    try {
+      const params = new URLSearchParams();
+      if (allSelectedSources.length > 0) {
+        params.set('sources', allSelectedSources.join(','));
+      }
+      if (allSelectedTopics.length > 0) {
+        params.set('topics', allSelectedTopics.join(','));
+      }
+      // Get all available questions to check count
+      params.set('count', '1000'); // Large number to get all questions
+      
+      const questionMode = selectedModes.length > 0 ? selectedModes[0] : 'all';
+      params.set('questionMode', questionMode);
+      
+      const response = await fetch(`/api/qbank/questions?${params}`);
+      if (response.ok) {
+        const data = await response.json();
+        const availableQuestions = data.questions?.length || 0;
+        
+        if (availableQuestions === 0) {
+          alert('No questions found for the selected criteria. Please try different sources, topics, or question mode.');
+          return;
+        }
+        
+        if (availableQuestions < questionCount) {
+          const proceed = confirm(`Only ${availableQuestions} questions are available for the selected criteria, but you requested ${questionCount}. Would you like to proceed with ${availableQuestions} questions?`);
+          if (!proceed) {
+            return;
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error checking available questions:', error);
+      // Continue anyway if we can't check
     }
 
     // Add test to history
@@ -1237,7 +1297,8 @@ export default function Qbank() {
     }));
   };
 
-  // Number of questions
+
+
   const handleQuestionChange = (val: number) => {
     if (isNaN(val)) return;
     if (val < 0) setQuestionCount(0);
@@ -1331,7 +1392,9 @@ export default function Qbank() {
   };
   // Track checked topics
   const [topicChecks, setTopicChecks] = useState<Record<string, Record<number, number[]>>>({});
-const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+
   const toggleTopic = async (subjectKey: string, lectureIdx: number, topicIdx: number, topicCount: number) => {
     // Get the topic name
     const subject = subjects.find(s => s.key === subjectKey);
@@ -1801,6 +1864,21 @@ const [isMobile, setIsMobile] = useState(false);
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                     </div>
+                    {/* Available questions info */}
+                    {availableQuestions !== null && (
+                      <div className="mt-1 text-xs text-gray-600">
+                        {checkingQuestions ? (
+                          <span className="text-blue-600">Checking available questions...</span>
+                        ) : (
+                          <span className={availableQuestions > 0 ? 'text-green-600' : 'text-red-600'}>
+                            {availableQuestions > 0 
+                              ? `${availableQuestions} questions available` 
+                              : 'No questions found for selected criteria'
+                            }
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </div>
                   
                   {/* Exam/Study Mode Toggle */}
@@ -1864,7 +1942,7 @@ const [isMobile, setIsMobile] = useState(false);
 
                   <div className="flex items-center space-x-4 w-full lg:w-auto">
                     <button 
-                      onClick={handleGenerateTest}
+                      onClick={generateQuiz}
                       className="bg-[#0072b7] text-white font-bold py-3 px-6 rounded-lg hover:bg-[#005a8f] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0072b7] flex items-center w-full lg:w-auto justify-center"
                     >
                       <span>Generate Test</span>
