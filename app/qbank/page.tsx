@@ -756,6 +756,7 @@ export default function Qbank() {
     mode: 'Study' | 'Exam';
     date: string;
     id: string;
+    time?: number; // Add timer value
   }>>([]);
 
   // Load test history from localStorage on component mount
@@ -788,6 +789,7 @@ export default function Qbank() {
     topics?: string;
     questionMode?: string;
     testId?: string;
+    time?: number; // Add timer value
   }) => {
     const newTest = {
       ...testData,
@@ -818,6 +820,11 @@ export default function Qbank() {
     params.set('questionMode', test.questionMode || 'all');
     params.set('testId', test.id);
     params.set('review', 'true');
+    
+    // Add timer value if it exists
+    if (test.time && test.mode === 'Exam') {
+      params.set('time', String(test.time));
+    }
     
     router.push(`/quiz?${params.toString()}`);
   };
@@ -1245,10 +1252,10 @@ export default function Qbank() {
           return;
         }
         
-        // Check if requested questions exceed available questions
-        if (questionCount > availableQuestions) {
-          alert(`Only ${availableQuestions} questions are available for the selected criteria, but you requested ${questionCount}. Please reduce the number of questions or select different criteria.`);
-          return;
+        // Automatically adjust question count to available questions (no warning)
+        const adjustedQuestionCount = Math.min(questionCount, availableQuestions);
+        if (adjustedQuestionCount !== questionCount) {
+          setQuestionCount(adjustedQuestionCount);
         }
       }
     } catch (error) {
@@ -1268,12 +1275,16 @@ export default function Qbank() {
       sources: allSelectedSources.join(','),
       topics: allSelectedTopics.join(','),
       questionMode: questionMode,
-      testId: testId // Add testId to track this specific test
+      testId: testId, // Add testId to track this specific test
+      time: examMode ? customTime : undefined // Add timer value for exam mode
     });
 
+    // Get the final question count (may have been adjusted above)
+    const finalQuestionCount = questionCount;
+    
     // Navigate to quiz with test data, mode, and all selected sources/topics for DB fetch
     const params = new URLSearchParams();
-    params.set('count', String(questionCount));
+    params.set('count', String(finalQuestionCount));
     params.set('testName', testName.trim());
     params.set('mode', examMode ? 'exam' : 'study');
     if (examMode) params.set('time', String(customTime));
@@ -2067,13 +2078,20 @@ export default function Qbank() {
                                 </span>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
-                                <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                                  test.mode === 'Exam' 
-                                    ? 'bg-orange-100 text-orange-800' 
-                                    : 'bg-green-100 text-green-800'
-                                }`}>
-                                  {test.mode}
-                                </span>
+                                <div className="flex flex-col space-y-1">
+                                  <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                                    test.mode === 'Exam' 
+                                      ? 'bg-orange-100 text-orange-800' 
+                                      : 'bg-green-100 text-green-800'
+                                  }`}>
+                                    {test.mode}
+                                  </span>
+                                  {test.mode === 'Exam' && test.time && (
+                                    <span className="text-xs text-gray-500">
+                                      {test.time} min
+                                    </span>
+                                  )}
+                                </div>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div className="flex items-center space-x-2">
