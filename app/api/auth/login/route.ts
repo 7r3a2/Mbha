@@ -92,19 +92,11 @@ export async function POST(request: NextRequest) {
     const { activeSessions, shouldLock } = await checkUserSessions(user.id);
     console.log(`📱 Active sessions for ${email}: ${activeSessions}, shouldLock: ${shouldLock}`);
 
-    // Lock account if user already has an active session (strict single device)
+    // Log out first device if user already has an active session (single device policy)
     if (activeSessions > 0) {
-      console.log('🔒 Active session detected, locking account for:', email);
-      await lockUserAccount(user.id);
+      console.log('🔄 Active session detected, logging out first device for:', email);
       await deactivateAllUserSessions(user.id);
-      
-      return NextResponse.json(
-        { 
-          error: 'Account Locked',
-          message: 'You are already logged in on another device. Your account has been locked for security. Please contact the developer to unlock your account.'
-        },
-        { status: 423 } // 423 Locked
-      );
+      console.log('✅ First device logged out');
     }
 
     // Create new session
