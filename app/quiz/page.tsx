@@ -7,10 +7,13 @@ import { useSearchParams } from 'next/navigation';
 // Function to fetch questions from database
 const fetchQuestions = async (sources: string, topics: string, count: number, questionMode: string = 'all') => {
   try {
+    // For filtered modes, fetch more questions initially to ensure we get enough after filtering
+    const fetchCount = questionMode !== 'all' ? Math.max(count * 3, 50) : count;
+    
     const params = new URLSearchParams({
       sources,
       topics,
-      count: count.toString(),
+      count: fetchCount.toString(),
       questionMode // Add questionMode parameter
     });
     
@@ -48,6 +51,9 @@ const fetchQuestions = async (sources: string, topics: string, count: number, qu
         questions = questions.filter((q: any) => 
           filteredQuestionIds.includes(q.id.toString())
         );
+        
+        // Limit to the requested count after filtering
+        questions = questions.slice(0, count);
       }
     }
     
