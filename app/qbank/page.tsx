@@ -751,6 +751,9 @@ export default function Qbank() {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [sidebarHover, setSidebarHover] = useState('');
 
+  // Modal states
+  const [showResetWarning, setShowResetWarning] = useState(false);
+
   // New states for search functionality
   const [showSearch, setShowSearch] = useState<Record<string, boolean>>({});
   const [searchTerms, setSearchTerms] = useState<Record<string, string>>({});
@@ -1477,12 +1480,7 @@ const [isMobile, setIsMobile] = useState(false);
                   <div className="flex items-center justify-between mb-2">
                     <label className="block text-sm font-medium text-gray-700">Question mode</label>
                     <button
-                      onClick={() => {
-                        if (confirm('⚠️ Warning: This will reset all your question responses (answers, flags, etc.) for all question modes. This action cannot be undone. Are you sure you want to continue?')) {
-                          // Call API to reset user responses
-                          resetUserResponses();
-                        }
-                      }}
+                      onClick={() => setShowResetWarning(true)}
                       className="focus:outline-none p-1 rounded hover:bg-red-100 transition-colors"
                       title="Reset all question responses"
                     >
@@ -1507,9 +1505,10 @@ const [isMobile, setIsMobile] = useState(false);
                           <div key={mode.key} className="flex items-center">
                             <input
                               checked={selectedModes.includes(mode.key)}
-                              onChange={() => toggleMode(mode.key)}
-                              className="h-4 w-4 border-2 border-[#0072b7] text-[#0072b7] focus:ring-[#0072b7] rounded mr-2"
-                              type="checkbox"
+                              onChange={() => setSelectedModes([mode.key])} // Only allow one selection
+                              className="h-4 w-4 border-2 border-[#0072b7] text-[#0072b7] focus:ring-[#0072b7]"
+                              type="radio"
+                              name="questionMode"
                             />
                             <label className="ml-2 text-sm text-gray-600">{mode.label}</label>
                           </div>
@@ -1812,6 +1811,57 @@ const [isMobile, setIsMobile] = useState(false);
 
         </main>
       </div>
+
+      {/* Reset Warning Modal */}
+      {showResetWarning && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+            <div className="flex items-center mb-4">
+              <div className="flex-shrink-0">
+                <svg className="h-8 w-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <h3 className="text-lg font-medium text-gray-900">Reset All Responses</h3>
+              </div>
+            </div>
+            
+            <div className="mb-6">
+              <p className="text-sm text-gray-600">
+                This action will permanently delete all your question responses including:
+              </p>
+              <ul className="mt-2 text-sm text-gray-600 list-disc list-inside space-y-1">
+                <li>All answered questions</li>
+                <li>All flagged questions</li>
+                <li>All correct/incorrect records</li>
+                <li>All progress data</li>
+              </ul>
+              <p className="mt-3 text-sm font-medium text-red-600">
+                ⚠️ This action cannot be undone!
+              </p>
+            </div>
+
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={() => setShowResetWarning(false)}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  setShowResetWarning(false);
+                  resetUserResponses();
+                }}
+                className="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+              >
+                Reset All Data
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 } 
