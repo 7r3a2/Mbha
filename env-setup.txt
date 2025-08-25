@@ -1,0 +1,14 @@
+# Copy this content to your .env.local file:
+
+# Database Configuration
+# Replace with your actual PostgreSQL connection string
+PRISMA_DATABASE_URL="postgresql://username:password@host:port/database_name"
+
+# JWT Secret for Authentication
+JWT_SECRET="your-super-secret-jwt-key-here"
+
+# Instructions:
+# 1. Create a file named .env.local in the root directory
+# 2. Copy the above content into it
+# 3. Replace the PRISMA_DATABASE_URL with your actual PostgreSQL connection string
+# 4. Replace the JWT_SECRET with a secure random string
