@@ -1223,7 +1223,7 @@ export default function Qbank() {
       }
     }
 
-    // Check available questions before generating quiz
+    // Check if any questions are available (but don't limit the count)
     try {
       const params = new URLSearchParams();
       if (allSelectedSources.length > 0) {
@@ -1232,8 +1232,8 @@ export default function Qbank() {
       if (allSelectedTopics.length > 0) {
         params.set('topics', allSelectedTopics.join(','));
       }
-      // Get all available questions to check count
-      params.set('count', '1000'); // Large number to get all questions
+      // Just check if there are any questions at all
+      params.set('count', '1'); // Just get 1 question to check if any exist
       
       const questionMode = selectedModes.length > 0 ? selectedModes[0] : 'all';
       params.set('questionMode', questionMode);
@@ -1248,8 +1248,8 @@ export default function Qbank() {
           return;
         }
         
-        // Don't adjust question count - respect user's exact input
-        // The API will handle returning the requested number of questions
+        // If we have at least 1 question, proceed with the user's requested count
+        // The API will handle returning the exact number requested (or all available if less)
       }
     } catch (error) {
       console.error('Error checking available questions:', error);
