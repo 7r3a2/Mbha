@@ -81,17 +81,18 @@ export async function GET(request: NextRequest) {
         
         console.log('✅ User authenticated successfully');
         
-        // Get user responses directly from database
-        const responses = await prisma.userResponse.findMany({
-          where: {
-            userId: userId,
-            questionId: {
-              in: questionIds
-            }
-          }
-        });
-        
-        console.log(`📝 Found ${responses.length} user responses for these questions`);
+                 // Get user responses directly from database
+         const responses = await prisma.userResponse.findMany({
+           where: {
+             userId: userId,
+             questionId: {
+               in: questionIds
+             }
+           }
+         });
+         
+         console.log(`📝 Found ${responses.length} user responses for these questions`);
+         console.log(`📊 Sample responses:`, responses.slice(0, 3));
         
         // Create a map of questionId to response
         const responseMap = responses.reduce((acc, response) => {
@@ -99,34 +100,38 @@ export async function GET(request: NextRequest) {
           return acc;
         }, {} as Record<string, any>);
         
-        // Filter questions based on mode
-        let filteredQuestionIds: string[] = [];
-        
-        switch (questionMode) {
-          case 'unused':
-            // Return questions that user hasn't answered
-            filteredQuestionIds = questionIds.filter(id => !responseMap[id]);
-            console.log(`🆕 Unused questions: ${filteredQuestionIds.length}`);
-            break;
-          case 'incorrect':
-            // Return questions that user answered incorrectly
-            filteredQuestionIds = questionIds.filter(id => 
-              responseMap[id] && !responseMap[id].isCorrect
-            );
-            console.log(`❌ Incorrect questions: ${filteredQuestionIds.length}`);
-            break;
-          case 'flagged':
-            // Return questions that user flagged
-            filteredQuestionIds = questionIds.filter(id => 
-              responseMap[id] && responseMap[id].isFlagged
-            );
-            console.log(`🚩 Flagged questions: ${filteredQuestionIds.length}`);
-            break;
-          default:
-            // Default to 'all'
-            filteredQuestionIds = questionIds;
-            console.log(`📋 All questions: ${filteredQuestionIds.length}`);
-        }
+                 // Filter questions based on mode
+         let filteredQuestionIds: string[] = [];
+         
+         switch (questionMode) {
+           case 'unused':
+             // Return questions that user hasn't answered
+             filteredQuestionIds = questionIds.filter(id => !responseMap[id]);
+             console.log(`🆕 Unused questions: ${filteredQuestionIds.length}`);
+             console.log(`🆕 Sample unused question IDs:`, filteredQuestionIds.slice(0, 3));
+             break;
+           case 'incorrect':
+             // Return questions that user answered incorrectly
+             filteredQuestionIds = questionIds.filter(id => 
+               responseMap[id] && !responseMap[id].isCorrect
+             );
+             console.log(`❌ Incorrect questions: ${filteredQuestionIds.length}`);
+             console.log(`❌ Sample incorrect question IDs:`, filteredQuestionIds.slice(0, 3));
+             break;
+           case 'flagged':
+             // Return questions that user flagged
+             filteredQuestionIds = questionIds.filter(id => 
+               responseMap[id] && responseMap[id].isFlagged
+             );
+             console.log(`🚩 Flagged questions: ${filteredQuestionIds.length}`);
+             console.log(`🚩 Sample flagged question IDs:`, filteredQuestionIds.slice(0, 3));
+             console.log(`🚩 Response map with flagged questions:`, Object.entries(responseMap).filter(([id, response]) => response.isFlagged).slice(0, 3));
+             break;
+           default:
+             // Default to 'all'
+             filteredQuestionIds = questionIds;
+             console.log(`📋 All questions: ${filteredQuestionIds.length}`);
+         }
         
         // Filter questions to only include those that match the mode
         filtered = filtered.filter((q: any) => 

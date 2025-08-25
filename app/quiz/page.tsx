@@ -423,7 +423,7 @@ function QuizPageContent() {
   // Function to save user response to database
   const saveUserResponse = async (questionId: string, userAnswer: number, isCorrect: boolean, isFlagged: boolean) => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token') || localStorage.getItem('token');
       if (!token) {
         console.log('❌ No token available for saving response');
         return;

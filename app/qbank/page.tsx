@@ -884,11 +884,24 @@ export default function Qbank() {
       try {
         // Try to get token from localStorage/sessionStorage (auth_token is the correct key)
         if (typeof window !== 'undefined') {
-          token = localStorage.getItem('auth_token') || 
-                  sessionStorage.getItem('auth_token') || 
-                  localStorage.getItem('token') || 
-                  sessionStorage.getItem('token') || 
-                  document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1];
+          // Try all possible token storage locations
+          const possibleTokens = [
+            localStorage.getItem('auth_token'),
+            sessionStorage.getItem('auth_token'),
+            localStorage.getItem('token'),
+            sessionStorage.getItem('token'),
+            document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1],
+            document.cookie.split('; ').find(row => row.startsWith('auth_token='))?.split('=')[1]
+          ];
+          
+          token = possibleTokens.find(t => t && t.length > 0);
+          console.log('🔍 Token search results:', {
+            auth_token_local: localStorage.getItem('auth_token'),
+            auth_token_session: sessionStorage.getItem('auth_token'),
+            token_local: localStorage.getItem('token'),
+            token_session: sessionStorage.getItem('token'),
+            found_token: token ? 'Found' : 'Not found'
+          });
         }
       } catch (error) {
         console.log('❌ Error accessing storage:', error);
@@ -897,8 +910,14 @@ export default function Qbank() {
       const headers: HeadersInit = {};
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
+        console.log('✅ Token found and added to headers');
       } else {
         console.log('❌ No token found in any storage');
+        // Try to get token from the auth context if available
+        if (user && typeof user === 'object' && 'token' in user) {
+          headers['Authorization'] = `Bearer ${(user as any).token}`;
+          console.log('✅ Using token from user object');
+        }
       }
       
       console.log(`🔍 Qbank fetching counts - Mode: ${questionMode}, Sources: ${sourceLabels.join(',')}, User: ${user?.id}, Token: ${token ? 'Present' : 'Missing'}`);
