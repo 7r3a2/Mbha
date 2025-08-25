@@ -870,12 +870,8 @@ export default function Qbank() {
 
   // Update question count when available questions change
   useEffect(() => {
-    if (availableQuestions !== null && availableQuestions > 0) {
-      // If current question count exceeds available questions, adjust it
-      if (questionCount > availableQuestions) {
-        setQuestionCount(Math.min(availableQuestions, 100));
-      }
-    }
+    // Don't automatically adjust question count - respect user's input
+    // The API will handle returning the requested number of questions
   }, [availableQuestions, questionCount]);
 
   // Also fetch counts when sources change (even if no user ID yet)
@@ -1252,11 +1248,8 @@ export default function Qbank() {
           return;
         }
         
-        // Automatically adjust question count to available questions (no warning)
-        const adjustedQuestionCount = Math.min(questionCount, availableQuestions);
-        if (adjustedQuestionCount !== questionCount) {
-          setQuestionCount(adjustedQuestionCount);
-        }
+        // Don't adjust question count - respect user's exact input
+        // The API will handle returning the requested number of questions
       }
     } catch (error) {
       console.error('Error checking available questions:', error);
@@ -1929,17 +1922,7 @@ export default function Qbank() {
                         onChange={(e) => handleQuestionChange(Number(e.target.value))}
                         placeholder="1"
                       />
-                      <span className="ml-2 text-sm text-gray-500">Required (1-100)</span>
-                      {availableQuestions !== null && availableQuestions > 0 && (
-                        <button
-                          type="button"
-                          onClick={() => setQuestionCount(Math.min(availableQuestions, 100))}
-                          className="ml-2 text-xs bg-[#0072b7] text-white px-2 py-1 rounded hover:bg-[#005a8f] transition-colors"
-                          title={`Set to maximum available (${Math.min(availableQuestions, 100)})`}
-                        >
-                          Max
-                        </button>
-                      )}
+                                             <span className="ml-2 text-sm text-gray-500">Required (1-100)</span>
                       <svg className="ml-1 text-gray-400 text-sm w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
