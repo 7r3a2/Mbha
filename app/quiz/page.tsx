@@ -659,6 +659,24 @@ function QuizPageContent() {
         );
       }
       
+      // Save test responses to localStorage immediately when answer is selected
+      if (testId) {
+        const testResponses = {
+          testId: testId,
+          answers: newAnswers,
+          flagged: flagged,
+          submitted: submitted,
+          questions: questions.map(q => q.id),
+          fullQuestions: questions,
+          timestamp: Date.now()
+        };
+        
+        const existingResponses = localStorage.getItem('mbha_test_responses');
+        const allResponses = existingResponses ? JSON.parse(existingResponses) : {};
+        allResponses[testId] = testResponses;
+        localStorage.setItem('mbha_test_responses', JSON.stringify(allResponses));
+      }
+      
       // Don't clear flag when answer is selected - keep orange color
       // Flag should only be cleared when explicitly toggled off
     }
@@ -670,6 +688,24 @@ function QuizPageContent() {
       newSubmitted[currentQuestionIndex] = true;
       setSubmitted(newSubmitted);
       setShowExplanation(true);
+      
+      // Save test responses to localStorage immediately when answer is submitted
+      if (testId) {
+        const testResponses = {
+          testId: testId,
+          answers: answers,
+          flagged: flagged,
+          submitted: newSubmitted,
+          questions: questions.map(q => q.id),
+          fullQuestions: questions,
+          timestamp: Date.now()
+        };
+        
+        const existingResponses = localStorage.getItem('mbha_test_responses');
+        const allResponses = existingResponses ? JSON.parse(existingResponses) : {};
+        allResponses[testId] = testResponses;
+        localStorage.setItem('mbha_test_responses', JSON.stringify(allResponses));
+      }
       
       // In exam mode, check if all questions are submitted and auto-end quiz
       if (testMode === 'exam') {
@@ -712,6 +748,24 @@ function QuizPageContent() {
           newFlagged[currentQuestionIndex]
         );
       }
+    }
+    
+    // Save test responses to localStorage immediately when flag is toggled
+    if (testId) {
+      const testResponses = {
+        testId: testId,
+        answers: answers,
+        flagged: newFlagged,
+        submitted: submitted,
+        questions: questions.map(q => q.id),
+        fullQuestions: questions,
+        timestamp: Date.now()
+      };
+      
+      const existingResponses = localStorage.getItem('mbha_test_responses');
+      const allResponses = existingResponses ? JSON.parse(existingResponses) : {};
+      allResponses[testId] = testResponses;
+      localStorage.setItem('mbha_test_responses', JSON.stringify(allResponses));
     }
   };
   const handleCalculatorClick = (value: string | number) => {
