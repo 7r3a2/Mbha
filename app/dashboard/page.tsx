@@ -279,7 +279,7 @@ export default function Dashboard() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
-          <h1 className="text-xl font-semibold text-white">My Courses</h1>
+          <h1 className="text-xl font-semibold text-white">Welcome</h1>
           <div className="w-6"></div>
         </header>
 
@@ -309,7 +309,7 @@ export default function Dashboard() {
           )}
 
           {/* Welcome Message for Users with Subscription */}
-          {(user?.hasQbankAccess || user?.hasApproachAccess || user?.hasCoursesAccess) && !user?.hasCoursesAccess && (
+          {(user?.hasQbankAccess || user?.hasApproachAccess) && (
             <div className="max-w-4xl mx-auto">
               {/* Welcome Header */}
               <div className="text-center mb-8">
