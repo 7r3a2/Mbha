@@ -80,6 +80,11 @@ function QuizPageContent() {
     questionCount,
     questionMode
   });
+
+  // Debug localStorage on component mount
+  useEffect(() => {
+    debugLocalStorage();
+  }, []);
   
   const [questions, setQuestions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -105,12 +110,33 @@ function QuizPageContent() {
   const [isMobile, setIsMobile] = useState(false);
   const explanationRef = useRef<HTMLDivElement>(null);
 
+  // Debug function to check localStorage
+  const debugLocalStorage = () => {
+    console.log('🔍 DEBUG: Checking localStorage...');
+    console.log('🔍 All localStorage keys:', Object.keys(localStorage));
+    
+    const testHistory = localStorage.getItem('mbha_test_history');
+    const testResponses = localStorage.getItem('mbha_test_responses');
+    
+    console.log('🔍 Test history:', testHistory ? JSON.parse(testHistory) : 'Not found');
+    console.log('🔍 Test responses:', testResponses ? JSON.parse(testResponses) : 'Not found');
+    
+    if (testResponses) {
+      const responses = JSON.parse(testResponses);
+      console.log('🔍 Test responses keys:', Object.keys(responses));
+      console.log('🔍 Test responses data:', responses);
+    }
+  };
+
   // Function to load previous test data
   const loadPreviousTestData = async (testId: string, questions: any[]) => {
     try {
       console.log('🔄 Loading previous test data for testId:', testId);
       console.log('🔄 TestId type:', typeof testId);
       console.log('🔄 TestId value:', testId);
+      
+      // Debug: Check all localStorage keys
+      console.log('🔄 All localStorage keys:', Object.keys(localStorage));
       
       // Load user responses from localStorage
       const existingResponses = localStorage.getItem('mbha_test_responses');
@@ -120,6 +146,7 @@ function QuizPageContent() {
         const allResponses = JSON.parse(existingResponses);
         console.log('🔄 All responses keys:', Object.keys(allResponses));
         console.log('🔄 All responses keys types:', Object.keys(allResponses).map(k => typeof k));
+        console.log('🔄 All responses values:', allResponses);
         
         // Try to find the test responses with different key formats
         let testResponses = allResponses[testId];
@@ -167,7 +194,19 @@ function QuizPageContent() {
         } else {
           console.log('❌ No full questions found for testId:', testId);
           console.log('🔄 Available testIds in localStorage:', Object.keys(allResponses));
-          setError('No previous test data found. Please create a new test.');
+          
+          // Show more detailed error with available data
+          const availableTestIds = Object.keys(allResponses);
+          if (availableTestIds.length > 0) {
+            console.log('🔄 Available test data:', availableTestIds.map(id => ({
+              id,
+              type: typeof id,
+              hasFullQuestions: allResponses[id]?.fullQuestions ? 'Yes' : 'No'
+            })));
+            setError(`No previous test data found for testId: ${testId}. Available testIds: ${availableTestIds.join(', ')}`);
+          } else {
+            setError('No previous test data found. Please create a new test.');
+          }
         }
       } else {
         console.log('❌ No responses found in localStorage');
