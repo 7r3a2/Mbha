@@ -122,17 +122,17 @@ const wizaryExamStyles = `
            .wizary-exam-page .bg-green-500:hover,
            .wizary-exam-page .bg-green-600:hover,
            .wizary-exam-page .bg-green-700:hover {
-             background-color: #8b1319 !important;
-             border-color: #6a0f14 !important;
+             background-color: #10b981 !important;
+             border-color: #059669 !important;
              color: #ffffff !important;
            }
            
-           /* Ensure answered questions use new red color on hover */
+           /* Ensure answered questions use original green color on hover */
            .wizary-exam-page button.bg-green-500:hover,
            .wizary-exam-page button.bg-green-600:hover,
            .wizary-exam-page button.bg-green-700:hover {
-             background-color: #8b1319 !important;
-             border-color: #6a0f14 !important;
+             background-color: #10b981 !important;
+             border-color: #059669 !important;
              color: #ffffff !important;
            }
            
@@ -140,8 +140,8 @@ const wizaryExamStyles = `
            .wizary-exam-page .bg-green-500[class*="hover"],
            .wizary-exam-page .bg-green-600[class*="hover"],
            .wizary-exam-page .bg-green-700[class*="hover"] {
-             background-color: #8b1319 !important;
-             border-color: #6a0f14 !important;
+             background-color: #10b981 !important;
+             border-color: #059669 !important;
              color: #ffffff !important;
            }
            
@@ -155,22 +155,22 @@ const wizaryExamStyles = `
            .wizary-exam-page .bg-green-700:active,
            .wizary-exam-page .bg-green-700:focus,
            .wizary-exam-page .bg-green-700:focus-visible {
-             background-color: #8b1319 !important;
-             border-color: #6a0f14 !important;
+             background-color: #10b981 !important;
+             border-color: #059669 !important;
              color: #ffffff !important;
              outline: none !important;
              box-shadow: none !important;
            }
            
-           /* Ensure answered questions use new red color */
+           /* Ensure answered questions use original green color */
            .wizary-exam-page .bg-green-500,
            .wizary-exam-page button.bg-green-500,
            .wizary-exam-page .bg-green-600,
            .wizary-exam-page button.bg-green-600,
            .wizary-exam-page .bg-green-700,
            .wizary-exam-page button.bg-green-700 {
-             background-color: #8b1319 !important;
-             border-color: #6a0f14 !important;
+             background-color: #10b981 !important;
+             border-color: #059669 !important;
              color: #ffffff !important;
            }
 
@@ -1332,14 +1332,14 @@ export default function WizaryExam() {
                     key={index}
                     className={`flex items-center p-3 sm:p-4 border-2 rounded-lg cursor-pointer transition-colors duration-200 ${
                       answers[currentQuestionIndex] === index
-                        ? 'bg-red-100 border-[#8b1319]'
+                        ? 'bg-green-100 border-green-500'
                         : 'border-gray-300 hover:bg-gray-50'
                     }`}
                     onClick={() => selectAnswer(index)}
                   >
                     <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded mr-3 sm:mr-4 flex items-center justify-center ${
                       answers[currentQuestionIndex] === index
-                        ? 'bg-[#8b1319]'
+                        ? 'bg-green-600'
                         : 'bg-gray-300'
                     }`}>
                       <span className={`text-sm sm:text-base font-bold ${
