@@ -132,8 +132,9 @@ function QuizPageContent() {
       setError(null);
       
       try {
-        // Always respect the questionCount parameter, regardless of questionMode
-        const fetchedQuestions = await fetchQuestions(sources, topics, questionCount, questionMode);
+        // If questionMode is not 'all', ignore the questionCount and get all questions for that mode
+        const countToUse = questionMode === 'all' ? questionCount : 1000; // Use large number to get all questions
+        const fetchedQuestions = await fetchQuestions(sources, topics, countToUse, questionMode);
         
         if (fetchedQuestions.length === 0) {
           const modeText = questionMode === 'all' ? '' : ` in ${questionMode} mode`;
@@ -142,8 +143,8 @@ function QuizPageContent() {
           // Shuffle questions randomly
           const shuffled = [...fetchedQuestions].sort(() => Math.random() - 0.5);
           
-          // Always limit by questionCount, but if we have fewer questions than requested, use what we have
-          const finalQuestions = shuffled.slice(0, questionCount);
+          // If questionMode is not 'all', use all questions. If 'all', limit by questionCount
+          const finalQuestions = questionMode === 'all' ? shuffled.slice(0, questionCount) : shuffled;
           
           setQuestions(finalQuestions);
 
