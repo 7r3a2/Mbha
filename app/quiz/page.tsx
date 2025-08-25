@@ -291,8 +291,17 @@ function QuizPageContent() {
         const fetchedQuestions = await fetchQuestions(sources, topics, questionCount, questionMode);
         
         if (fetchedQuestions.length === 0) {
-          const modeText = questionMode === 'all' ? '' : ` in ${questionMode} mode`;
-          setError(`No questions found for the selected criteria${modeText}. Please try different sources, topics, or question mode.`);
+          let errorMessage = '';
+          if (questionMode === 'incorrect') {
+            errorMessage = 'No incorrect questions found. You need to answer some questions first and get them wrong to use this mode.';
+          } else if (questionMode === 'flagged') {
+            errorMessage = 'No flagged questions found. You need to flag some questions first to use this mode.';
+          } else if (questionMode === 'unused') {
+            errorMessage = 'No unused questions found. You may have answered all available questions for the selected criteria.';
+          } else {
+            errorMessage = `No questions found for the selected criteria. Please try different sources, topics, or question mode.`;
+          }
+          setError(errorMessage);
         } else {
           // Shuffle questions randomly
           const shuffled = [...fetchedQuestions].sort(() => Math.random() - 0.5);
