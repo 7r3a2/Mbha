@@ -1,7 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
+export async function GET(request: NextRequest) {
+  return await setupUserResponses();
+}
+
 export async function POST(request: NextRequest) {
+  return await setupUserResponses();
+}
+
+async function setupUserResponses() {
   try {
     console.log('🔧 Setting up UserResponse table...');
     
@@ -39,19 +47,19 @@ export async function POST(request: NextRequest) {
       if (error.message.includes('table') || error.message.includes('does not exist')) {
         console.log('🔧 Creating UserResponse table...');
         
-        // Execute raw SQL to create the table
-        await prisma.$executeRaw`
-          CREATE TABLE IF NOT EXISTS user_responses (
-            id TEXT PRIMARY KEY,
-            userId TEXT NOT NULL,
-            questionId TEXT NOT NULL,
-            userAnswer INTEGER NOT NULL,
-            isCorrect BOOLEAN NOT NULL,
-            isFlagged BOOLEAN NOT NULL DEFAULT false,
-            answeredAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            UNIQUE(userId, questionId)
-          )
-        `;
+                 // Execute raw SQL to create the table for PostgreSQL
+         await prisma.$executeRaw`
+           CREATE TABLE IF NOT EXISTS user_responses (
+             id TEXT PRIMARY KEY,
+             "userId" TEXT NOT NULL,
+             "questionId" TEXT NOT NULL,
+             "userAnswer" INTEGER NOT NULL,
+             "isCorrect" BOOLEAN NOT NULL,
+             "isFlagged" BOOLEAN NOT NULL DEFAULT false,
+             "answeredAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+             UNIQUE("userId", "questionId")
+           )
+         `;
         
         console.log('✅ UserResponse table created successfully');
         return NextResponse.json({ 

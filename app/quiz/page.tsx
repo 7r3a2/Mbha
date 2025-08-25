@@ -424,6 +424,15 @@ function QuizPageContent() {
   const saveUserResponse = async (questionId: string, userAnswer: number, isCorrect: boolean, isFlagged: boolean) => {
     try {
       const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token') || localStorage.getItem('token');
+      
+      console.log('🔍 Token debugging:');
+      console.log('  localStorage auth_token:', localStorage.getItem('auth_token'));
+      console.log('  sessionStorage auth_token:', sessionStorage.getItem('auth_token'));
+      console.log('  localStorage token:', localStorage.getItem('token'));
+      console.log('  Final token used:', token);
+      console.log('  Token length:', token?.length);
+      console.log('  Token starts with:', token?.substring(0, 20) + '...');
+      
       if (!token) {
         console.log('❌ No token available for saving response');
         return;

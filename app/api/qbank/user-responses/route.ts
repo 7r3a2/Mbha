@@ -5,13 +5,21 @@ import { verifyToken } from '@/lib/auth-utils';
 export async function POST(request: NextRequest) {
   try {
     // Verify user authentication
-    const token = request.headers.get('authorization')?.replace('Bearer ', '');
+    const authHeader = request.headers.get('authorization');
+    console.log('🔍 Authorization header received:', authHeader);
+    
+    const token = authHeader?.replace('Bearer ', '');
+    console.log('🔍 Token extracted:', token ? `${token.substring(0, 20)}...` : 'null');
+    console.log('🔍 Token length:', token?.length);
+    
     if (!token) {
       console.log('❌ No authorization token in user responses POST');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const user = await verifyToken(token);
+    console.log('🔍 Token verification result:', user ? `User ID: ${user.userId}` : 'null');
+    
     if (!user) {
       console.log('❌ Invalid token in user responses POST');
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
