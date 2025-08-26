@@ -455,12 +455,11 @@ export default function Dashboard() {
             </div>
           )}
 
-          {/* Admin Courses View */}
-          {user?.hasCoursesAccess && (user?.uniqueCode === 'ADMIN' || user?.email?.includes('admin')) && (
+          {/* Admin Courses View - Hidden for all users including admins */}
+          {/* {user?.hasCoursesAccess && (user?.uniqueCode === 'ADMIN' || user?.email?.includes('admin')) && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {courses.map((course) => (
               <div key={course.id} className="bg-white rounded-xl shadow-lg border-2 border-green-500 overflow-hidden transform hover:scale-105 transition-all duration-300">
-                {/* Course Image */}
                 <div className="h-48 overflow-hidden">
                   <Image
                     src={course.image}
@@ -471,11 +470,9 @@ export default function Dashboard() {
                   />
                 </div>
 
-                {/* Course Content */}
                 <div className="p-4">
                   <h3 className="text-lg font-bold text-gray-800 mb-3">{course.title}</h3>
                   
-                  {/* Progress Bar */}
                   <div className="w-full bg-gray-200 rounded-full h-2 mb-3">
                     <div 
                       className="bg-[#3A8431] h-2 rounded-full transition-all duration-500"
@@ -488,7 +485,6 @@ export default function Dashboard() {
                     <span className="text-sm font-bold text-[#3A8431]">{course.progress}%</span>
                   </div>
                   
-                  {/* Resume Button */}
                   <button 
                     onClick={() => handleResumeClick(course.courseId)}
                     className="w-full bg-[#3A8431] text-white py-2 px-4 rounded-lg hover:bg-[#2d6a27] transition-colors duration-200 font-semibold"
@@ -499,7 +495,7 @@ export default function Dashboard() {
               </div>
             ))}
             </div>
-          )}
+          )} */}
         </main>
       </div>
     </div>

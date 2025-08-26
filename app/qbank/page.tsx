@@ -2035,67 +2035,122 @@ export default function Qbank() {
                       <p className="mt-1 text-sm text-gray-500">Your completed tests will appear here.</p>
                     </div>
                   ) : (
-                    <div className="overflow-x-auto">
-                      <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
-                          <tr>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Test Name</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Questions</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mode</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                          </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
-                          {previousTests.map((test, index) => (
-                            <tr key={index} className="hover:bg-gray-50">
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div>
-                                  <div className="text-sm font-medium text-gray-900">{test.name}</div>
-                                  <div className="text-sm text-gray-500">{test.subject}</div>
-                                </div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <span className="text-sm text-[#0072b7] font-medium cursor-pointer hover:underline">
-                                  {test.questions} questions
-                                </span>
-                              </td>
-                                                             <td className="px-6 py-4 whitespace-nowrap">
-                                 <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                                   test.mode === 'Exam' 
-                                     ? 'bg-orange-100 text-orange-800' 
-                                     : 'bg-green-100 text-green-800'
-                                 }`}>
-                                   {test.mode}
-                                 </span>
-                               </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <div className="flex items-center space-x-2">
-                                  <button
-                                    onClick={() => handleViewTest(test)}
-                                    className="text-[#0072b7] hover:text-[#005a8f] transition-colors duration-200"
-                                  >
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5v14l11-7z" />
-                                    </svg>
-                                  </button>
-                                  <button
-                                    onClick={() => handleDeleteTest(test.id)}
-                                    className="text-red-600 hover:text-red-800 transition-colors duration-200"
-                                  >
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                    </svg>
-                                  </button>
-                                </div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {test.date}
-                              </td>
+                    <div className="w-full">
+                      {/* Desktop Table View */}
+                      <div className="hidden md:block">
+                        <table className="w-full divide-y divide-gray-200">
+                          <thead className="bg-gray-50">
+                            <tr>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Test Name</th>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Questions</th>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mode</th>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                          </thead>
+                          <tbody className="bg-white divide-y divide-gray-200">
+                            {previousTests.map((test, index) => (
+                              <tr key={index} className="hover:bg-gray-50">
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                  <div>
+                                    <div className="text-sm font-medium text-gray-900">{test.name}</div>
+                                    <div className="text-sm text-gray-500">{test.subject}</div>
+                                  </div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                  <span className="text-sm text-[#0072b7] font-medium cursor-pointer hover:underline">
+                                    {test.questions} questions
+                                  </span>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                  <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                                    test.mode === 'Exam' 
+                                      ? 'bg-orange-100 text-orange-800' 
+                                      : 'bg-green-100 text-green-800'
+                                  }`}>
+                                    {test.mode}
+                                  </span>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                  <div className="flex items-center space-x-2">
+                                    <button
+                                      onClick={() => handleViewTest(test)}
+                                      className="text-[#0072b7] hover:text-[#005a8f] transition-colors duration-200"
+                                    >
+                                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5v14l11-7z" />
+                                      </svg>
+                                    </button>
+                                    <button
+                                      onClick={() => handleDeleteTest(test.id)}
+                                      className="text-red-600 hover:text-red-800 transition-colors duration-200"
+                                    >
+                                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                      </svg>
+                                    </button>
+                                  </div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                  {test.date}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+
+                      {/* Mobile Card View */}
+                      <div className="md:hidden space-y-4">
+                        {previousTests.map((test, index) => (
+                          <div key={index} className="bg-white border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors duration-200">
+                            <div className="flex justify-between items-start mb-3">
+                              <div className="flex-1">
+                                <h3 className="text-sm font-medium text-gray-900">{test.name}</h3>
+                                <p className="text-sm text-gray-500">{test.subject}</p>
+                              </div>
+                              <div className="flex items-center space-x-2 ml-4">
+                                <button
+                                  onClick={() => handleViewTest(test)}
+                                  className="text-[#0072b7] hover:text-[#005a8f] transition-colors duration-200 p-1"
+                                >
+                                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5v14l11-7z" />
+                                  </svg>
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteTest(test.id)}
+                                  className="text-red-600 hover:text-red-800 transition-colors duration-200 p-1"
+                                >
+                                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                  </svg>
+                                </button>
+                              </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4 text-sm">
+                              <div>
+                                <span className="text-gray-500">Questions:</span>
+                                <span className="ml-1 text-[#0072b7] font-medium">{test.questions}</span>
+                              </div>
+                              <div>
+                                <span className="text-gray-500">Mode:</span>
+                                <span className={`ml-1 inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                                  test.mode === 'Exam' 
+                                    ? 'bg-orange-100 text-orange-800' 
+                                    : 'bg-green-100 text-green-800'
+                                }`}>
+                                  {test.mode}
+                                </span>
+                              </div>
+                              <div className="col-span-2">
+                                <span className="text-gray-500">Date:</span>
+                                <span className="ml-1 text-gray-900">{test.date}</span>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>
