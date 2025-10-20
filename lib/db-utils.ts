@@ -1,7 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma, withRetry } from './database';
 
 // Password utility functions
 export const hashPassword = async (password: string): Promise<string> => {
@@ -44,40 +42,50 @@ export const createUser = async (userData: {
 }) => {
   const hashedPassword = await hashPassword(userData.password);
   
-  return prisma.user.create({
-    data: {
-      ...userData,
-      password: hashedPassword,
-    },
-  });
+  return withRetry(() => 
+    prisma.user.create({
+      data: {
+        ...userData,
+        password: hashedPassword,
+      },
+    })
+  );
 };
 
 export const findUserByEmail = async (email: string) => {
-  return prisma.user.findUnique({
-    where: { email },
-  });
+  return withRetry(() => 
+    prisma.user.findUnique({
+      where: { email },
+    })
+  );
 };
 
 export const findUserById = async (id: string) => {
-  return prisma.user.findUnique({
-    where: { id },
-  });
+  return withRetry(() => 
+    prisma.user.findUnique({
+      where: { id },
+    })
+  );
 };
 
 // Unique code functions
 export const findUniqueCode = async (code: string) => {
-  return prisma.uniqueCode.findUnique({
-    where: { code },
-  });
+  return withRetry(() => 
+    prisma.uniqueCode.findUnique({
+      where: { code },
+    })
+  );
 };
 
 export const markCodeAsUsed = async (code: string, userId: string) => {
-  return prisma.uniqueCode.update({
-    where: { code },
-    data: {
-      used: true,
-    },
-  });
+  return withRetry(() => 
+    prisma.uniqueCode.update({
+      where: { code },
+      data: {
+        used: true,
+      },
+    })
+  );
 };
 
 // Exam functions

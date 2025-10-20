@@ -1,4 +1,4 @@
-import { prisma } from './prisma';
+import { prisma, withRetry } from './database';
 import { NextRequest } from 'next/server';
 import crypto from 'crypto';
 
@@ -41,15 +41,17 @@ export const checkUserSessions = async (userId: string): Promise<{ activeSession
   const now = new Date();
   
   // Get all active sessions for the user
-  const activeSessions = await prisma.userSession.findMany({
-    where: {
-      userId,
-      isActive: true,
-      expiresAt: {
-        gt: now
+  const activeSessions = await withRetry(() => 
+    prisma.userSession.findMany({
+      where: {
+        userId,
+        isActive: true,
+        expiresAt: {
+          gt: now
+        }
       }
-    }
-  });
+    })
+  );
 
   const activeCount = activeSessions.length;
   const shouldLock = activeCount > 1; // Lock if more than 1 active session
@@ -64,15 +66,17 @@ export const isSameDevice = async (userId: string, request: NextRequest): Promis
   const currentIpAddress = getIpAddress(request);
   
   // Get active session for the user
-  const activeSession = await prisma.userSession.findFirst({
-    where: {
-      userId,
-      isActive: true,
-      expiresAt: {
-        gt: now
+  const activeSession = await withRetry(() => 
+    prisma.userSession.findFirst({
+      where: {
+        userId,
+        isActive: true,
+        expiresAt: {
+          gt: now
+        }
       }
-    }
-  });
+    })
+  );
 
   if (!activeSession) {
     return false; // No active session, so not same device
@@ -109,15 +113,17 @@ export const createUserSession = async (
   const ipAddress = getIpAddress(request);
   const expiresAt = new Date(Date.now() + sessionDuration);
 
-  await prisma.userSession.create({
-    data: {
-      userId,
-      sessionId,
-      deviceInfo,
-      ipAddress,
-      expiresAt
-    }
-  });
+  await withRetry(() => 
+    prisma.userSession.create({
+      data: {
+        userId,
+        sessionId,
+        deviceInfo,
+        ipAddress,
+        expiresAt
+      }
+    })
+  );
 
   return sessionId;
 };

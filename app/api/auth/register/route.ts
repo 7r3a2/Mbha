@@ -27,6 +27,17 @@ export async function POST(request: NextRequest) {
     console.log('📋 DATABASE_URL set:', !!process.env.DATABASE_URL);
     console.log('🔗 DATABASE_URL starts with:', process.env.DATABASE_URL?.substring(0, 20) + '...');
 
+    // Check database connection first
+    const { checkDatabaseConnection } = await import('@/lib/database');
+    const dbCheck = await checkDatabaseConnection();
+    if (!dbCheck.success) {
+      console.error('❌ Database connection failed:', dbCheck.error);
+      return NextResponse.json(
+        { error: 'Database connection failed. Please try again later or contact support.' },
+        { status: 503 }
+      );
+    }
+
     try {
       // Check if user already exists
       console.log('🔍 Checking if user already exists...');
@@ -105,6 +116,21 @@ export async function POST(request: NextRequest) {
         code: dbError.code,
         stack: dbError.stack
       });
+      
+      // Handle specific database errors
+      if (dbError.code === 'P1001' || dbError.message?.includes('connection')) {
+        return NextResponse.json(
+          { error: 'Database connection failed. Please try again later or contact support.' },
+          { status: 503 }
+        );
+      }
+      
+      if (dbError.code === 'P2002' || dbError.message?.includes('unique constraint')) {
+        return NextResponse.json(
+          { error: 'User with this email already exists' },
+          { status: 400 }
+        );
+      }
       
       return NextResponse.json(
         { error: 'Database connection failed. Please try again later or contact support.' },

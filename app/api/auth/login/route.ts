@@ -16,6 +16,17 @@ export async function POST(request: NextRequest) {
     }
 
     console.log('🔍 Login attempt for:', email);
+    
+    // Check database connection first
+    const { checkDatabaseConnection } = await import('@/lib/database');
+    const dbCheck = await checkDatabaseConnection();
+    if (!dbCheck.success) {
+      console.error('❌ Database connection failed:', dbCheck.error);
+      return NextResponse.json(
+        { error: 'Database connection failed. Please try again later or contact support.' },
+        { status: 503 }
+      );
+    }
 
     // Find user
     const user = await findUserByEmail(email);
@@ -145,8 +156,24 @@ export async function POST(request: NextRequest) {
         hasCoursesAccess: user.hasCoursesAccess
       }
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ Login error:', error);
+    
+    // Handle specific database errors
+    if (error.code === 'P1001' || error.message?.includes('connection')) {
+      return NextResponse.json(
+        { error: 'Database connection failed. Please try again later or contact support.' },
+        { status: 503 }
+      );
+    }
+    
+    if (error.code === 'P2002' || error.message?.includes('unique constraint')) {
+      return NextResponse.json(
+        { error: 'Account conflict. Please contact support.' },
+        { status: 409 }
+      );
+    }
+    
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
