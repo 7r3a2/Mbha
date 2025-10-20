@@ -1,7 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createUser, findUserByEmail, findUniqueCode, markCodeAsUsed } from '@/lib/db-utils';
+import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { testConnection } from '@/lib/simple-db';
+
+// Direct database connection - no complex imports
+const prisma = new PrismaClient({
+  log: ['error'],
+  errorFormat: 'pretty',
+});
+
+// Password utility functions
+const hashPassword = async (password: string): Promise<string> => {
+  const salt = await bcrypt.genSalt(12);
+  return bcrypt.hash(password, salt);
+};
 
 export async function POST(request: NextRequest) {
   try {
@@ -28,20 +40,13 @@ export async function POST(request: NextRequest) {
     console.log('📋 DATABASE_URL set:', !!process.env.DATABASE_URL);
     console.log('🔗 DATABASE_URL starts with:', process.env.DATABASE_URL?.substring(0, 20) + '...');
 
-    // Simple database connection test
-    const dbTest = await testConnection();
-    if (!dbTest.success) {
-      console.error('❌ Database connection failed:', dbTest.error);
-      return NextResponse.json(
-        { error: 'Database connection failed. Please try again later or contact support.' },
-        { status: 503 }
-      );
-    }
-
     try {
       // Check if user already exists
       console.log('🔍 Checking if user already exists...');
-      const existingUser = await findUserByEmail(email);
+      const existingUser = await prisma.user.findUnique({
+        where: { email }
+      });
+      
       if (existingUser) {
         console.log('❌ User already exists:', email);
         return NextResponse.json(
@@ -52,7 +57,10 @@ export async function POST(request: NextRequest) {
 
       // Validate unique code
       console.log('🔍 Validating unique code:', uniqueCode);
-      const codeRecord = await findUniqueCode(uniqueCode);
+      const codeRecord = await prisma.uniqueCode.findUnique({
+        where: { code: uniqueCode }
+      });
+      
       if (!codeRecord) {
         console.log('❌ Invalid registration code:', uniqueCode);
         return NextResponse.json(
@@ -71,14 +79,18 @@ export async function POST(request: NextRequest) {
 
       // Create user
       console.log('👤 Creating user in database...');
-      const user = await createUser({
-        firstName,
-        lastName,
-        email,
-        password,
-        gender,
-        university,
-        uniqueCode,
+      const hashedPassword = await hashPassword(password);
+      
+      const user = await prisma.user.create({
+        data: {
+          firstName,
+          lastName,
+          email,
+          password: hashedPassword,
+          gender,
+          university,
+          uniqueCode,
+        },
       });
 
       console.log('✅ User created successfully:', {
@@ -91,7 +103,10 @@ export async function POST(request: NextRequest) {
 
       // Mark code as used
       console.log('🔑 Marking code as used...');
-      await markCodeAsUsed(uniqueCode, user.id);
+      await prisma.uniqueCode.update({
+        where: { code: uniqueCode },
+        data: { used: true }
+      });
 
       // Generate JWT token
       const token = jwt.sign(
@@ -137,7 +152,7 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ Registration error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
