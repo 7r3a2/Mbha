@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { prisma, withRetry } from './database';
+import { prisma } from './simple-db';
 
 // Password utility functions
 export const hashPassword = async (password: string): Promise<string> => {
@@ -42,50 +42,40 @@ export const createUser = async (userData: {
 }) => {
   const hashedPassword = await hashPassword(userData.password);
   
-  return withRetry(() => 
-    prisma.user.create({
-      data: {
-        ...userData,
-        password: hashedPassword,
-      },
-    })
-  );
+  return prisma.user.create({
+    data: {
+      ...userData,
+      password: hashedPassword,
+    },
+  });
 };
 
 export const findUserByEmail = async (email: string) => {
-  return withRetry(() => 
-    prisma.user.findUnique({
-      where: { email },
-    })
-  );
+  return prisma.user.findUnique({
+    where: { email },
+  });
 };
 
 export const findUserById = async (id: string) => {
-  return withRetry(() => 
-    prisma.user.findUnique({
-      where: { id },
-    })
-  );
+  return prisma.user.findUnique({
+    where: { id },
+  });
 };
 
 // Unique code functions
 export const findUniqueCode = async (code: string) => {
-  return withRetry(() => 
-    prisma.uniqueCode.findUnique({
-      where: { code },
-    })
-  );
+  return prisma.uniqueCode.findUnique({
+    where: { code },
+  });
 };
 
 export const markCodeAsUsed = async (code: string, userId: string) => {
-  return withRetry(() => 
-    prisma.uniqueCode.update({
-      where: { code },
-      data: {
-        used: true,
-      },
-    })
-  );
+  return prisma.uniqueCode.update({
+    where: { code },
+    data: {
+      used: true,
+    },
+  });
 };
 
 // Exam functions

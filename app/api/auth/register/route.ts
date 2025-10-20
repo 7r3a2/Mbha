@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createUser, findUserByEmail, findUniqueCode, markCodeAsUsed } from '@/lib/db-utils';
 import jwt from 'jsonwebtoken';
+import { testConnection } from '@/lib/simple-db';
 
 export async function POST(request: NextRequest) {
   try {
@@ -27,11 +28,10 @@ export async function POST(request: NextRequest) {
     console.log('📋 DATABASE_URL set:', !!process.env.DATABASE_URL);
     console.log('🔗 DATABASE_URL starts with:', process.env.DATABASE_URL?.substring(0, 20) + '...');
 
-    // Check database connection first
-    const { checkDatabaseConnection } = await import('@/lib/database');
-    const dbCheck = await checkDatabaseConnection();
-    if (!dbCheck.success) {
-      console.error('❌ Database connection failed:', dbCheck.error);
+    // Simple database connection test
+    const dbTest = await testConnection();
+    if (!dbTest.success) {
+      console.error('❌ Database connection failed:', dbTest.error);
       return NextResponse.json(
         { error: 'Database connection failed. Please try again later or contact support.' },
         { status: 503 }

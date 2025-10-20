@@ -3,6 +3,7 @@ import { findUserByEmail } from '@/lib/db-utils';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { checkUserSessions, createUserSession, lockUserAccount, deactivateAllUserSessions, isSameDevice } from '@/lib/session-utils';
+import { testConnection } from '@/lib/simple-db';
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,11 +18,10 @@ export async function POST(request: NextRequest) {
 
     console.log('🔍 Login attempt for:', email);
     
-    // Check database connection first
-    const { checkDatabaseConnection } = await import('@/lib/database');
-    const dbCheck = await checkDatabaseConnection();
-    if (!dbCheck.success) {
-      console.error('❌ Database connection failed:', dbCheck.error);
+    // Simple database connection test
+    const dbTest = await testConnection();
+    if (!dbTest.success) {
+      console.error('❌ Database connection failed:', dbTest.error);
       return NextResponse.json(
         { error: 'Database connection failed. Please try again later or contact support.' },
         { status: 503 }
