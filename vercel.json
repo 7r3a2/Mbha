@@ -1,10 +1,4 @@
 {
-  "env": {
-    "DATABASE_URL": "@database_url",
-    "POSTGRES_URL": "@postgres_url", 
-    "PRISMA_DATABASE_URL": "@prisma_database_url",
-    "JWT_SECRET": "@jwt_secret"
-  },
   "functions": {
     "app/api/**/*.ts": {
       "maxDuration": 30
