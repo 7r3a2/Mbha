@@ -604,22 +604,45 @@ function QuizPageContent() {
   const goToPrevious = () => {
     if (currentQuestionIndex > 0) goToQuestion(currentQuestionIndex - 1);
   };
-  // Function to save user response to database
+  // Function to save user response to database - Admin only
   const saveUserResponse = async (questionId: string, userAnswer: number, isCorrect: boolean, isFlagged: boolean) => {
     try {
       const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token') || localStorage.getItem('token');
       
-      console.log('🔍 Token debugging:');
-      console.log('  localStorage auth_token:', localStorage.getItem('auth_token'));
-      console.log('  sessionStorage auth_token:', sessionStorage.getItem('auth_token'));
-      console.log('  localStorage token:', localStorage.getItem('token'));
-      console.log('  Final token used:', token);
-      console.log('  Token length:', token?.length);
-      console.log('  Token starts with:', token?.substring(0, 20) + '...');
-      console.log('  Token ends with:', token?.substring(token.length - 20));
-      
       if (!token) {
         console.log('❌ No token available for saving response');
+        return;
+      }
+
+      // Check if user is admin before saving to database
+      try {
+        const verifyResponse = await fetch('/api/auth/verify', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ token }),
+        });
+
+        if (verifyResponse.ok) {
+          const userData = await verifyResponse.json();
+          const user = userData.user;
+          
+          // Check if user is admin
+          const isAdmin = user?.email === 'admin@mbha.com' || user?.email === 'admin@mbha.net' || user?.uniqueCode === 'ADMIN2024';
+          
+          if (!isAdmin) {
+            console.log('🔒 Non-admin user - skipping database save for quiz response');
+            return; // Don't save to database for non-admin users
+          }
+          
+          console.log('👑 Admin user - saving quiz response to database');
+        } else {
+          console.log('❌ Token verification failed - skipping database save');
+          return;
+        }
+      } catch (verifyError) {
+        console.log('❌ Error verifying user - skipping database save:', verifyError);
         return;
       }
 
