@@ -662,6 +662,9 @@ export default function Qbank() {
     }
   }, [isLoading, isAuthenticated, user, router]);
 
+  // Check if user is admin
+  const isAdmin = user?.email === 'admin@mbha.com' || user?.email === 'admin@mbha.net' || user?.uniqueCode === 'ADMIN2024';
+
   // Load subjects from database
   useEffect(() => {
     console.log('🔄 useEffect triggered - loading subjects');
@@ -779,7 +782,7 @@ export default function Qbank() {
     }
   }, []);
 
-  // Add new test to history (max 10 tests) and save to localStorage
+  // Add new test to history (max 10 tests) and save to localStorage - Admin only
   const addTestToHistory = (testData: {
     name: string;
     subject: string;
@@ -791,6 +794,11 @@ export default function Qbank() {
     testId?: string;
     time?: number; // Add timer value
   }) => {
+    // Only save test history for admin users
+    if (!isAdmin) {
+      return;
+    }
+
     const newTest = {
       ...testData,
       date: new Date().toLocaleDateString('en-GB'),
@@ -1575,28 +1583,30 @@ export default function Qbank() {
                 {isOpen && <span className="ml-3 font-medium text-sm">Create Test</span>}
               </button>
             </li>
-                         {/* Previous Tests */}
-             <li>
-               <button
-                 onClick={() => setActiveView('previous-tests')}
-                 onMouseEnter={() => setSidebarHover('previous-tests')}
-                 onMouseLeave={() => setSidebarHover('')}
-                 className={`flex items-center w-full transition-all duration-200 rounded-lg ${
-                   isOpen ? 'px-4 py-3' : 'justify-center p-3'
-                 } ${
-                   activeView === 'previous-tests'
-                     ? 'bg-white text-[#0072b7] shadow-lg border border-[#0072b7]'
-                     : sidebarHover === 'previous-tests'
-                     ? 'bg-[#003a6d] text-white shadow-md'
-                     : 'text-white hover:bg-[#003a6d] hover:shadow-md'
-                 }`}
-               >
-                 <svg className={`${isOpen ? 'w-5 h-5' : 'w-6 h-6'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                 </svg>
-                 {isOpen && <span className="ml-3 font-medium text-sm">Previous Tests</span>}
-               </button>
-             </li>
+                         {/* Previous Tests - Admin Only */}
+             {isAdmin && (
+               <li>
+                 <button
+                   onClick={() => setActiveView('previous-tests')}
+                   onMouseEnter={() => setSidebarHover('previous-tests')}
+                   onMouseLeave={() => setSidebarHover('')}
+                   className={`flex items-center w-full transition-all duration-200 rounded-lg ${
+                     isOpen ? 'px-4 py-3' : 'justify-center p-3'
+                   } ${
+                     activeView === 'previous-tests'
+                       ? 'bg-white text-[#0072b7] shadow-lg border border-[#0072b7]'
+                       : sidebarHover === 'previous-tests'
+                       ? 'bg-[#003a6d] text-white shadow-md'
+                       : 'text-white hover:bg-[#003a6d] hover:shadow-md'
+                   }`}
+                 >
+                   <svg className={`${isOpen ? 'w-5 h-5' : 'w-6 h-6'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                   </svg>
+                   {isOpen && <span className="ml-3 font-medium text-sm">Previous Tests</span>}
+                 </button>
+               </li>
+             )}
 
           </ul>
         </nav>
@@ -2019,8 +2029,8 @@ export default function Qbank() {
             </div>
           )}
 
-          {/* Previous Tests View */}
-          {activeView === 'previous-tests' && (
+          {/* Previous Tests View - Admin Only */}
+          {activeView === 'previous-tests' && isAdmin && (
             <div className="flex-grow">
               <div className="bg-white rounded-lg shadow-sm border border-gray-200">
                 <div className="p-6">
@@ -2153,6 +2163,29 @@ export default function Qbank() {
                       </div>
                     </div>
                   )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Non-admin users trying to access previous tests */}
+          {activeView === 'previous-tests' && !isAdmin && (
+            <div className="flex-grow">
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+                <div className="p-6">
+                  <div className="text-center py-8">
+                    <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    <h3 className="mt-2 text-lg font-medium text-gray-900">Access Restricted</h3>
+                    <p className="mt-1 text-sm text-gray-500">Previous Tests feature is only available for admin users.</p>
+                    <button
+                      onClick={() => setActiveView('create-test')}
+                      className="mt-4 bg-[#0072b7] text-white font-bold py-2 px-4 rounded-lg hover:bg-[#005a8f] transition-colors duration-200"
+                    >
+                      Create New Test
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
