@@ -664,6 +664,18 @@ export default function Qbank() {
 
   // Check if user is admin
   const isAdmin = user?.email === 'admin@mbha.com' || user?.email === 'admin@mbha.net' || user?.uniqueCode === 'ADMIN2024';
+  
+  // Debug logging for admin detection
+  console.log('🔍 Admin detection debug:', {
+    userEmail: user?.email,
+    userUniqueCode: user?.uniqueCode,
+    isAdmin: isAdmin,
+    adminChecks: {
+      emailAdminCom: user?.email === 'admin@mbha.com',
+      emailAdminNet: user?.email === 'admin@mbha.net',
+      uniqueCodeAdmin: user?.uniqueCode === 'ADMIN2024'
+    }
+  });
 
   // Load subjects from database
   useEffect(() => {
