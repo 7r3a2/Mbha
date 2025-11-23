@@ -1005,7 +1005,9 @@ export default function WizaryExam() {
                          onClick={() => setExamMenuOpen(!examMenuOpen)}
                          className="flex items-center gap-1 px-2 py-1 bg-orange-500 text-white rounded text-xs"
                        >
-                         <span className="text-xs font-medium">Choose Exam</span>
+                         <span className="text-xs font-medium">
+                           {selectedSubject === 'all' ? 'All Subjects' : selectedSubject}
+                         </span>
                                                                                                                <svg 
                              className={`w-3 h-3 transition-transform duration-200 ${examMenuOpen ? 'rotate-180' : ''}`} 
                              fill="none" 
@@ -1020,6 +1022,19 @@ export default function WizaryExam() {
                       <div className="absolute top-full right-0 bg-white border border-gray-200 rounded shadow-lg z-10 mt-1 min-w-32 w-full sm:w-auto">
                         <div className="p-2">
                           <div className="space-y-1">
+                            <button
+                              onClick={() => {
+                                setSelectedSubject('all');
+                                setExamMenuOpen(false);
+                              }}
+                              className={`w-full px-2 py-1 rounded text-xs font-medium transition-all duration-200 text-left ${
+                                selectedSubject === 'all'
+                                  ? 'bg-orange-500 text-white'
+                                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                              }`}
+                            >
+                              All Subjects
+                            </button>
                             {subjects.map((subject) => (
                               <button
                                 key={subject.id}
