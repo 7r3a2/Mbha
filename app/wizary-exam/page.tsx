@@ -1097,29 +1097,36 @@ export default function WizaryExam() {
                     </div>
                   ) : (
                     <div className="space-y-2">
-                      {currentExams.map((exam, index) => (
-                                                <div key={exam.id} className={`bg-white border border-gray-200 rounded p-2 ${exam.importedData ? 'bg-green-50 border-green-200' : ''}`}>
-                          <div className="flex justify-between items-start mb-2">
-                            <div className="flex-1">
-                                                           <h4 className="font-semibold text-gray-900 text-xs mb-1">{exam.name}</h4>
-                              <p className="text-gray-600 text-xs mb-1">Subject: {exam.subject}</p>
-                              <p className="text-gray-600 text-xs mb-1">Department: {exam.department}</p>
-                              <div className="flex space-x-4 text-xs text-gray-500">
-                                <span>Questions: {exam.questions}</span>
-                                <span>Time: {exam.time} min</span>
+                      {currentExams.map((exam, index) => {
+                        // Safety check - ensure exam has required properties
+                        if (!exam || !exam.id) {
+                          console.warn('⚠️ Invalid exam data at index', index, exam);
+                          return null;
+                        }
+                        return (
+                          <div key={exam.id || `exam-${index}`} className={`bg-white border border-gray-200 rounded p-2 ${exam.importedData ? 'bg-green-50 border-green-200' : ''}`}>
+                            <div className="flex justify-between items-start mb-2">
+                              <div className="flex-1">
+                                <h4 className="font-semibold text-gray-900 text-xs mb-1">{exam.name || 'Untitled Exam'}</h4>
+                                <p className="text-gray-600 text-xs mb-1">Subject: {exam.subject || 'N/A'}</p>
+                                <p className="text-gray-600 text-xs mb-1">Department: {exam.department || 'N/A'}</p>
+                                <div className="flex space-x-4 text-xs text-gray-500">
+                                  <span>Questions: {exam.questions || 0}</span>
+                                  <span>Time: {exam.time || 180} min</span>
+                                </div>
+                              </div>
+                              <div className="ml-4">
+                                <button
+                                  onClick={() => startExam(exam)}
+                                  className="bg-blue-600 text-white px-2 py-1 rounded text-xs font-medium"
+                                >
+                                  Take Exam
+                                </button>
                               </div>
                             </div>
-                            <div className="ml-4">
-                              <button
-                                onClick={() => startExam(exam)}
-                                className="bg-blue-600 text-white px-2 py-1 rounded text-xs font-medium"
-                              >
-                                Take Exam
-                              </button>
-                            </div>
                           </div>
-                        </div>
-                      ))}
+                        );
+                      }).filter(Boolean)}
                     </div>
                   )}
                 </div>
@@ -1155,26 +1162,33 @@ export default function WizaryExam() {
                           </td>
                         </tr>
                       ) : (
-                        currentExams.map((exam, index) => (
-                          <tr key={exam.id} className={`hover:bg-gray-50 ${exam.importedData ? 'bg-green-50' : ''}`}>
-                            <td className="px-2 py-2 text-xs font-medium text-gray-900">{startIndex + index + 1}</td>
-                            <td className="px-2 py-2 text-xs text-gray-900">
-                              {exam.name}
-                            </td>
-                            <td className="px-2 py-2 text-xs text-gray-900">{exam.subject}</td>
-                            <td className="px-2 py-2 text-xs text-gray-900">{exam.department}</td>
-                            <td className="px-2 py-2 text-xs text-gray-900">{exam.questions}</td>
-                            <td className="px-2 py-2 text-xs text-gray-900">{exam.time} Minute</td>
-                            <td className="px-2 py-2 text-xs text-gray-900">
-                              <button
-                                onClick={() => startExam(exam)}
-                                className="bg-blue-600 text-white px-2 py-1 rounded text-xs"
-                              >
-                                Take Exam
-                              </button>
-                            </td>
-                          </tr>
-                        ))
+                        currentExams.map((exam, index) => {
+                          // Safety check - ensure exam has required properties
+                          if (!exam || !exam.id) {
+                            console.warn('⚠️ Invalid exam data at index', index, exam);
+                            return null;
+                          }
+                          return (
+                            <tr key={exam.id || `exam-${index}`} className={`hover:bg-gray-50 ${exam.importedData ? 'bg-green-50' : ''}`}>
+                              <td className="px-2 py-2 text-xs font-medium text-gray-900">{startIndex + index + 1}</td>
+                              <td className="px-2 py-2 text-xs text-gray-900">
+                                {exam.name || 'Untitled Exam'}
+                              </td>
+                              <td className="px-2 py-2 text-xs text-gray-900">{exam.subject || 'N/A'}</td>
+                              <td className="px-2 py-2 text-xs text-gray-900">{exam.department || 'N/A'}</td>
+                              <td className="px-2 py-2 text-xs text-gray-900">{exam.questions || 0}</td>
+                              <td className="px-2 py-2 text-xs text-gray-900">{exam.time || 180} Minute</td>
+                              <td className="px-2 py-2 text-xs text-gray-900">
+                                <button
+                                  onClick={() => startExam(exam)}
+                                  className="bg-blue-600 text-white px-2 py-1 rounded text-xs"
+                                >
+                                  Take Exam
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        }).filter(Boolean)
                       )}
                     </tbody>
                   </table>
