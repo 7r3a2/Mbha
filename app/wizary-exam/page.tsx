@@ -384,9 +384,16 @@ export default function WizaryExam() {
         if (response.ok) {
           const data = await response.json();
           console.log('✅ Loaded exams:', data.exams?.length || 0, 'exams');
-          setImportedExams(data.exams || []);
+          console.log('📋 Exam data:', data.exams);
+          
+          // Ensure we have an array
+          const examsArray = Array.isArray(data.exams) ? data.exams : [];
+          console.log('📊 Setting imported exams:', examsArray.length, 'exams');
+          setImportedExams(examsArray);
         } else {
+          const errorText = await response.text();
           console.error('❌ Failed to load exams:', response.status, response.statusText);
+          console.error('❌ Error response:', errorText);
           // Fallback to empty array
           setImportedExams([]);
         }
@@ -675,10 +682,27 @@ export default function WizaryExam() {
   // Combine sample and imported exams
   const allExams = [...sampleExams, ...importedExams];
   
+  // Debug logging
+  useEffect(() => {
+    console.log('📊 Exam state update:');
+    console.log('  - importedExams:', importedExams.length);
+    console.log('  - sampleExams:', sampleExams.length);
+    console.log('  - allExams:', allExams.length);
+    console.log('  - selectedSubject:', selectedSubject);
+  }, [importedExams, allExams, selectedSubject]);
+  
   // Filter exams by selected subject
   const filteredExams = selectedSubject === 'Internal Medicine' || selectedSubject === 'Surgery' || selectedSubject === 'Obstetric & Gynecology' || selectedSubject === 'Pediatric'
     ? allExams.filter(exam => exam.subject === selectedSubject)
     : allExams;
+  
+  // Debug filtered exams
+  useEffect(() => {
+    console.log('🔍 Filtered exams:', filteredExams.length);
+    if (filteredExams.length > 0) {
+      console.log('📋 First exam sample:', filteredExams[0]);
+    }
+  }, [filteredExams]);
 
   // Pagination logic
   const totalPages = Math.ceil(filteredExams.length / examsPerPage);
