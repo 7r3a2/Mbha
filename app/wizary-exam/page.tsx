@@ -365,31 +365,90 @@ export default function WizaryExam() {
       try {
         console.log('🔄 Loading exams from database...');
         
-        // Get auth token
-        const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
-        if (!token) {
-          console.error('❌ No auth token found');
-          setImportedExams([]);
-          setLoadingExams(false);
-          return;
-        }
-
-        const response = await fetch(`/api/load-exams-db?t=${Date.now()}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        });
+        // Use the same endpoint as admin dashboard (no auth required)
+        const response = await fetch(`/api/admin/exams?t=${Date.now()}`);
         
         if (response.ok) {
-          const data = await response.json();
-          console.log('✅ Loaded exams:', data.exams?.length || 0, 'exams');
-          console.log('📋 Exam data:', data.exams);
+          const examsData = await response.json();
+          console.log('✅ Loaded raw exams:', examsData?.length || 0, 'exams');
+          console.log('📋 Raw exam data:', examsData);
           
           // Ensure we have an array
-          const examsArray = Array.isArray(data.exams) ? data.exams : [];
-          console.log('📊 Setting imported exams:', examsArray.length, 'exams');
-          setImportedExams(examsArray);
+          const rawExams = Array.isArray(examsData) ? examsData : [];
+          
+          // Subject mapping
+          const subjectMapping: { [key: string]: string } = {
+            'obgyn': 'Obstetric & Gynecology',
+            'im': 'Internal Medicine',
+            'surgery': 'Surgery',
+            'pediatrics': 'Pediatric'
+          };
+
+          // Transform the data to match the expected format for wizary-exam page
+          const transformedExams = rawExams.map((exam: any) => {
+            try {
+              // Parse questions safely
+              let questionsArray = [];
+              let questionCount = 0;
+              
+              if (exam.questions) {
+                if (typeof exam.questions === 'string') {
+                  questionsArray = JSON.parse(exam.questions);
+                } else if (Array.isArray(exam.questions)) {
+                  questionsArray = exam.questions;
+                }
+                questionCount = Array.isArray(questionsArray) ? questionsArray.length : 0;
+              }
+              
+              return {
+                id: exam.id,
+                name: exam.title || 'Untitled Exam',
+                department: 'المرحلة السادسة',
+                questions: questionCount,
+                time: exam.examTime || 180,
+                faculty: 'كلية الطب',
+                university: 'جامعة فلان',
+                subject: subjectMapping[exam.subject] || exam.subject || 'Obstetric & Gynecology',
+                order: exam.order || 999,
+                secretCode: exam.secretCode || 'HaiderAlaa',
+                importedData: {
+                  ...exam,
+                  questions: questionsArray
+                }
+              };
+            } catch (parseError) {
+              console.error(`❌ Error parsing exam ${exam.id}:`, parseError);
+              // Return a basic exam structure even if parsing fails
+              return {
+                id: exam.id,
+                name: exam.title || 'Untitled Exam',
+                department: 'المرحلة السادسة',
+                questions: 0,
+                time: exam.examTime || 180,
+                faculty: 'كلية الطب',
+                university: 'جامعة فلان',
+                subject: subjectMapping[exam.subject] || exam.subject || 'Obstetric & Gynecology',
+                order: exam.order || 999,
+                secretCode: exam.secretCode || 'HaiderAlaa',
+                importedData: {
+                  ...exam,
+                  questions: []
+                }
+              };
+            }
+          });
+
+          // Sort exams by subject and then by order
+          transformedExams.sort((a: any, b: any) => {
+            if (a.subject !== b.subject) {
+              return a.subject.localeCompare(b.subject);
+            }
+            return (a.order || 999) - (b.order || 999);
+          });
+          
+          console.log('📊 Transformed exams:', transformedExams.length, 'exams');
+          console.log('📋 Sample transformed exam:', transformedExams[0]);
+          setImportedExams(transformedExams);
         } else {
           const errorText = await response.text();
           console.error('❌ Failed to load exams:', response.status, response.statusText);
@@ -415,25 +474,82 @@ export default function WizaryExam() {
     try {
       console.log('🔄 Manually refreshing exams...');
       
-      // Get auth token
-      const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
-      if (!token) {
-        console.error('❌ No auth token found for refresh');
-        setLoadingExams(false);
-        return;
-      }
-
-      const response = await fetch(`/api/load-exams-db?t=${Date.now()}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
+      // Use the same endpoint as admin dashboard (no auth required)
+      const response = await fetch(`/api/admin/exams?t=${Date.now()}`);
       
       if (response.ok) {
-        const data = await response.json();
-        console.log('✅ Refreshed exams:', data.exams?.length || 0, 'exams');
-        setImportedExams(data.exams || []);
+        const examsData = await response.json();
+        const rawExams = Array.isArray(examsData) ? examsData : [];
+        
+        // Subject mapping
+        const subjectMapping: { [key: string]: string } = {
+          'obgyn': 'Obstetric & Gynecology',
+          'im': 'Internal Medicine',
+          'surgery': 'Surgery',
+          'pediatrics': 'Pediatric'
+        };
+
+        // Transform the data
+        const transformedExams = rawExams.map((exam: any) => {
+          try {
+            let questionsArray = [];
+            let questionCount = 0;
+            
+            if (exam.questions) {
+              if (typeof exam.questions === 'string') {
+                questionsArray = JSON.parse(exam.questions);
+              } else if (Array.isArray(exam.questions)) {
+                questionsArray = exam.questions;
+              }
+              questionCount = Array.isArray(questionsArray) ? questionsArray.length : 0;
+            }
+            
+            return {
+              id: exam.id,
+              name: exam.title || 'Untitled Exam',
+              department: 'المرحلة السادسة',
+              questions: questionCount,
+              time: exam.examTime || 180,
+              faculty: 'كلية الطب',
+              university: 'جامعة فلان',
+              subject: subjectMapping[exam.subject] || exam.subject || 'Obstetric & Gynecology',
+              order: exam.order || 999,
+              secretCode: exam.secretCode || 'HaiderAlaa',
+              importedData: {
+                ...exam,
+                questions: questionsArray
+              }
+            };
+          } catch (parseError) {
+            console.error(`❌ Error parsing exam ${exam.id}:`, parseError);
+            return {
+              id: exam.id,
+              name: exam.title || 'Untitled Exam',
+              department: 'المرحلة السادسة',
+              questions: 0,
+              time: exam.examTime || 180,
+              faculty: 'كلية الطب',
+              university: 'جامعة فلان',
+              subject: subjectMapping[exam.subject] || exam.subject || 'Obstetric & Gynecology',
+              order: exam.order || 999,
+              secretCode: exam.secretCode || 'HaiderAlaa',
+              importedData: {
+                ...exam,
+                questions: []
+              }
+            };
+          }
+        });
+
+        transformedExams.sort((a: any, b: any) => {
+          if (a.subject !== b.subject) {
+            return a.subject.localeCompare(b.subject);
+          }
+          return (a.order || 999) - (b.order || 999);
+        });
+        
+        console.log('✅ Refreshed exams:', transformedExams.length, 'exams');
+        setImportedExams(transformedExams);
       } else {
         console.error('❌ Failed to refresh exams:', response.status, response.statusText);
       }
