@@ -73,6 +73,7 @@ const [newApproachFile, setNewApproachFile] = useState('');
 const [selectedMainFolder, setSelectedMainFolder] = useState('');
 const [selectedSubFolder, setSelectedSubFolder] = useState('');
 const [editingApproachItem, setEditingApproachItem] = useState<any | null>(null);
+const [guestCount, setGuestCount] = useState(0);
 
 const loadQbankStructure = async () => {
     try {
@@ -120,6 +121,10 @@ const loadQbankStructure = async () => {
       fetch('/api/admin/subscriptions')
         .then((r) => (r.ok ? r.json() : {}))
         .then((data) => setSubscriptions(data || {}))
+        .catch(() => {});
+      fetch('/api/admin/guest-count')
+        .then((r) => (r.ok ? r.json() : { count: 0 }))
+        .then((data) => setGuestCount(data.count || 0))
         .catch(() => {});
     }
   }, [activeTab]);
@@ -1329,11 +1334,11 @@ const saveAdd = async () => {
                 </div>
                 <div className="bg-white shadow rounded-lg p-4 text-center">
                   <p className="text-sm text-gray-500">Registered Users</p>
-                  <p className="text-2xl font-bold text-blue-600">{users.filter((u: any) => u.role !== 'guest').length}</p>
+                  <p className="text-2xl font-bold text-blue-600">{users.length}</p>
                 </div>
                 <div className="bg-white shadow rounded-lg p-4 text-center">
-                  <p className="text-sm text-gray-500">Guest Users</p>
-                  <p className="text-2xl font-bold text-orange-500">{users.filter((u: any) => u.role === 'guest').length}</p>
+                  <p className="text-sm text-gray-500">Guest Logins</p>
+                  <p className="text-2xl font-bold text-orange-500">{guestCount}</p>
                 </div>
               </div>
               <div className="bg-white shadow rounded-lg">

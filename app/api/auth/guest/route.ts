@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { signToken } from '@/lib/jwt';
 import { UserRole } from '@/lib/types/user';
+import { prisma } from '@/lib/prisma';
 import crypto from 'crypto';
 
 export async function POST() {
@@ -11,6 +12,19 @@ export async function POST() {
       { userId: guestId, role: UserRole.GUEST },
       '24h'
     );
+
+    // Track guest count in KV store
+    try {
+      const existing = await prisma.keyValue.findUnique({ where: { key: 'guest_count' } });
+      const currentCount = existing ? (existing.value as { count: number }).count : 0;
+      await prisma.keyValue.upsert({
+        where: { key: 'guest_count' },
+        update: { value: { count: currentCount + 1 } },
+        create: { key: 'guest_count', value: { count: 1 } },
+      });
+    } catch {
+      // Don't block guest login if tracking fails
+    }
 
     return NextResponse.json({
       token,
