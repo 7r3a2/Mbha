@@ -161,7 +161,7 @@ export async function previewCsvFile(file: File): Promise<CsvPreviewResult> {
           correctIndex = answerStr.charCodeAt(0) - 65;
         } else {
           const num = parseInt(answerStr);
-          correctIndex = formatType === 'wizard' ? num : (num - 1);
+          correctIndex = (num || 1) - 1;
         }
         firstPreviewQuestion = {
           id: 1,

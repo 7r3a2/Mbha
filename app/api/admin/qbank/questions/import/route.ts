@@ -250,11 +250,11 @@ export async function POST(request: NextRequest) {
       } else if (formatType === 'wizard') {
         options = [questionData.a, questionData.b, questionData.c, questionData.d].filter((opt: string) => opt?.trim());
         const answerVal = questionData.answer?.toString().trim().toUpperCase();
-        // Support letter answers (A/B/C/D/E) or numeric (0-based: 0=A, 1=B, 2=C, 3=D, 4=E)
+        // Support letter answers (A/B/C/D/E) or numeric 1-based (1=A, 2=B, 3=C, 4=D, 5=E)
         if (['A','B','C','D','E'].includes(answerVal)) {
           correctIndex = answerVal.charCodeAt(0) - 65;
         } else {
-          correctIndex = parseInt(answerVal);
+          correctIndex = (parseInt(answerVal) || 1) - 1;
         }
         const incorrectExplanations = [] as string[];
         if (questionData.incorrect_a) incorrectExplanations.push(questionData.incorrect_a);

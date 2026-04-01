@@ -85,7 +85,7 @@ export function useExamForm(loadData: () => Promise<void>, setMessage: (msg: str
                   if (['A','B','C','D','E'].includes(answerVal)) {
                     correctOption = answerVal.charCodeAt(0) - 65;
                   } else {
-                    correctOption = parseInt(answerVal) || 0;
+                    correctOption = (parseInt(answerVal) || 1) - 1;
                   }
                 } else if (row.options) {
                   try {
