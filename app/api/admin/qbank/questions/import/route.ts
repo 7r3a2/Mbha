@@ -178,6 +178,16 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
 
+    // For wizard format, detect if answer column uses 0-based indexing by checking for '0' values
+    let wizardAnswerIsZeroBased = false;
+    if (formatType === 'wizard') {
+      const answerColIdx = originalHeaders.findIndex(h => h === 'answer');
+      if (answerColIdx !== -1) {
+        const hasZero = rows.slice(1).some(row => row[answerColIdx]?.toString().trim() === '0');
+        if (hasZero) wizardAnswerIsZeroBased = true;
+      }
+    }
+
     const existingQuestions = await readAll();
     const maxId = existingQuestions.reduce((m: number, q: any) => Math.max(m, Number(q.id) || 0), 0);
     const newQuestions = [] as any[];
@@ -249,7 +259,14 @@ export async function POST(request: NextRequest) {
         }
       } else if (formatType === 'wizard') {
         options = [questionData.a, questionData.b, questionData.c, questionData.d].filter((opt: string) => opt?.trim());
-        correctIndex = parseInt(questionData.answer) - 1;
+        const answerVal = questionData.answer?.toString().trim().toUpperCase();
+        // Support letter answers (A/B/C/D/E) or numeric
+        if (['A','B','C','D','E'].includes(answerVal)) {
+          correctIndex = answerVal.charCodeAt(0) - 65; // A=0, B=1, C=2, D=3, E=4
+        } else {
+          const num = parseInt(answerVal);
+          correctIndex = wizardAnswerIsZeroBased ? num : num - 1;
+        }
         const incorrectExplanations = [] as string[];
         if (questionData.incorrect_a) incorrectExplanations.push(questionData.incorrect_a);
         if (questionData.incorrect_b) incorrectExplanations.push(questionData.incorrect_b);

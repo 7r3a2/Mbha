@@ -1234,7 +1234,17 @@ const saveAdd = async () => {
             });
           }
           if (!firstPreviewQuestion) {
-            const correctIndex = (typeof correct === 'string' ? parseInt(correct) - 1 : Number(correct) - 1) || 0;
+            const answerStr = (correct || '').toString().trim().toUpperCase();
+            let correctIndex: number;
+            if (['A','B','C','D','E'].includes(answerStr)) {
+              correctIndex = answerStr.charCodeAt(0) - 65;
+            } else {
+              const num = parseInt(answerStr);
+              // Detect 0-based: check if any answer in the CSV is '0'
+              const answerColIdx = headers.indexOf('answer');
+              const hasZero = answerColIdx !== -1 && rows.slice(1).some(row => (row[answerColIdx] ?? '').trim() === '0');
+              correctIndex = (formatType === 'wizard' && hasZero) ? num : (num - 1);
+            }
             firstPreviewQuestion = {
               id: 1,
               text: questionText,
