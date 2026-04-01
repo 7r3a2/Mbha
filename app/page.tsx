@@ -164,18 +164,18 @@ export default function Home() {
       {/* Hero Section */}
       <section id="home" className="pt-32 pb-20 min-h-screen flex items-center justify-center relative">
         <div className="absolute inset-0 bg-gradient-to-br from-[#1E1E1E] via-[#1E1E1E] to-[#2A2A2A]"></div>
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-16">
             {/* Left Column */}
-            <div className="space-y-8">
+            <div className="space-y-8 text-center md:text-left">
               <h1 className="text-3xl lg:text-5xl font-bold text-white leading-tight">
                 Welcome to MBHA
               </h1>
               <p className="text-xl text-gray-300 leading-relaxed max-w-2xl text-right" dir="rtl" style={{ lineHeight: '1.8', textAlign: 'justify' }}>
                 منصة تعليمية متكاملة تهدف إلى تهيئة الطلبة للامتحانات الوزارية الخاصة بوزارة التعليم العراقية، من خلال كورسات شاملة تغطي المواد الأساسية، وأسئلة تم تجميعها من المصادر الرسمية المعتمدة، بالإضافة إلى اختبارات وزارية سابقة لمساعدة الطلبة على فهم نمط الأسئلة والاستعداد الفعال للامتحان النهائي.
               </p>
-              <div className="flex space-x-4">
-                <button 
+              <div className="flex justify-center md:justify-start space-x-4">
+                <button
                   onClick={() => window.location.href = '/login'}
                   className="bg-gradient-to-r from-[#3A8431] to-[#2d6a27] text-white px-8 py-4 rounded-xl hover:from-[#2d6a27] hover:to-[#1e4a1e] transition-all duration-300 font-semibold text-lg shadow-lg hover:shadow-xl hover:scale-105 border-2 border-transparent hover:border-[#3A8431]/20"
                 >
@@ -185,7 +185,7 @@ export default function Home() {
             </div>
 
             {/* Right Column */}
-            <div className="flex justify-center lg:justify-end">
+            <div className="flex justify-center">
               <div className="relative group">
                 <div className="w-96 h-96 bg-gradient-to-br from-[#3A8431] to-[#2d6a27] rounded-full flex items-center justify-center relative shadow-2xl group-hover:scale-105 transition-transform duration-500">
                   <Image
