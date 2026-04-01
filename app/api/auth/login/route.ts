@@ -1,116 +1,49 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-
-// Direct database connection - no complex imports
-const prisma = new PrismaClient({
-  log: ['error'],
-  errorFormat: 'pretty',
-});
+import { loginUser, ServiceError } from '@/lib/services/auth.service';
+import { validateLoginInput } from '@/lib/validation';
+import { rateLimit, getClientIp } from '@/lib/rate-limit';
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password } = await request.json();
-
-    if (!email || !password) {
+    // Rate limiting: 5 attempts per 15 minutes per IP
+    const ip = getClientIp(request);
+    const rateLimitResult = rateLimit(`login:${ip}`, 5, 15 * 60 * 1000);
+    if (!rateLimitResult.allowed) {
       return NextResponse.json(
-        { error: 'Email and password are required' },
+        { error: `Too many login attempts. Try again in ${rateLimitResult.retryAfter} seconds.` },
+        { status: 429 }
+      );
+    }
+
+    const body = await request.json();
+
+    // Input validation
+    const validation = validateLoginInput(body);
+    if (!validation.valid) {
+      return NextResponse.json(
+        { error: Object.values(validation.errors)[0] },
         { status: 400 }
       );
     }
 
-    console.log('🔍 Login attempt for:', email);
-    console.log('🌐 Environment:', process.env.NODE_ENV);
-    console.log('📋 DATABASE_URL set:', !!process.env.DATABASE_URL);
-    console.log('🔗 DATABASE_URL starts with:', process.env.DATABASE_URL?.substring(0, 20) + '...');
-
-    // Find user directly
-    const user = await prisma.user.findUnique({
-      where: { email },
-    });
-
-    if (!user) {
-      console.log('❌ User not found:', email);
+    const result = await loginUser(body.email, body.password);
+    return NextResponse.json(result);
+  } catch (error) {
+    if (error instanceof ServiceError) {
       return NextResponse.json(
-        { error: 'Invalid credentials' },
-        { status: 401 }
+        { error: error.message },
+        { status: error.statusCode }
       );
     }
 
-    console.log('✅ User found:', user.email);
-
-    // Verify password
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    if (!isValidPassword) {
-      console.log('❌ Invalid password for:', email);
+    const err = error as { code?: string; message?: string };
+    if (err.code === 'P1001' || err.message?.includes('connection')) {
       return NextResponse.json(
-        { error: 'Invalid credentials' },
-        { status: 401 }
-      );
-    }
-
-    console.log('✅ Password verified for:', email);
-
-    // Check if user is admin (bypass restrictions for admins)
-    const isAdmin = user.email === 'admin@mbha.com' || user.email === 'admin@mbha.net' || user.uniqueCode === 'ADMIN2024';
-    console.log('👤 User type:', isAdmin ? 'ADMIN' : 'REGULAR USER');
-    
-    // Check if account is locked (non-admin users)
-    if (!isAdmin && user.isLocked) {
-      console.log('🔒 Account is locked for:', email);
-      return NextResponse.json(
-        { 
-          error: 'Account Locked',
-          message: 'Your account is locked. Please contact the developer to unlock your account.'
-        },
-        { status: 423 } // 423 Locked
-      );
-    }
-
-    // Generate JWT token
-    const token = jwt.sign(
-      { userId: user.id },
-      process.env.JWT_SECRET || 'fallback-secret',
-      { expiresIn: '7d' }
-    );
-
-    console.log('✅ Login successful for:', email);
-
-    return NextResponse.json({
-      token,
-      user: {
-        id: user.id,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        hasWizaryExamAccess: user.hasWizaryExamAccess,
-        hasApproachAccess: user.hasApproachAccess,
-        hasQbankAccess: user.hasQbankAccess,
-        hasCoursesAccess: user.hasCoursesAccess
-      }
-    });
-  } catch (error: any) {
-    console.error('❌ Login error:', error);
-    
-    // Handle specific database errors
-    if (error.code === 'P1001' || error.message?.includes('connection')) {
-      return NextResponse.json(
-        { error: 'Database connection failed. Please try again later or contact support.' },
+        { error: 'Database connection failed. Please try again later.' },
         { status: 503 }
       );
     }
-    
-    if (error.code === 'P2002' || error.message?.includes('unique constraint')) {
-      return NextResponse.json(
-        { error: 'Account conflict. Please contact support.' },
-        { status: 409 }
-      );
-    }
-    
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

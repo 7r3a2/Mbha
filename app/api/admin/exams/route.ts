@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllExams, createExam } from '@/lib/db-utils';
+import { getAllExams, createExam } from '@/lib/repositories/exam.repository';
 
 export async function GET(request: NextRequest) {
   try {

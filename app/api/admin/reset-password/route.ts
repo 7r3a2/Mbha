@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { updateUserPassword, findUserById } from '@/lib/db-utils';
+import { updateUserPassword, findUserById } from '@/lib/repositories/user.repository';
 
 export async function POST(request: NextRequest) {
   try {

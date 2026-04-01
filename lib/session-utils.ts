@@ -1,4 +1,4 @@
-import { prisma, withRetry } from './database';
+import { prisma, withRetry } from './prisma';
 import { NextRequest } from 'next/server';
 import crypto from 'crypto';
 
@@ -89,7 +89,7 @@ export const isSameDevice = async (userId: string, request: NextRequest): Promis
   // Parse device info to compare user agent
   try {
     const currentDevice = JSON.parse(currentDeviceInfo);
-    const existingDevice = JSON.parse(existingDeviceInfo);
+    const existingDevice = JSON.parse(existingDeviceInfo || '{}');
     
     // Check if user agent matches (same browser/device)
     const userAgentMatch = currentDevice.userAgent === existingDevice.userAgent;

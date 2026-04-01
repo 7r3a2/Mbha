@@ -1,31 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { verifyToken } from '@/lib/jwt';
+import { deactivateAllUserSessions } from '@/lib/session-utils';
 
-export async function GET(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
-    // Clear all sessions for admin account
-    const { prisma } = await import('@/lib/prisma');
-    const { deactivateAllUserSessions } = await import('@/lib/session-utils');
-    
-    const adminUser = await prisma.user.findFirst({
-      where: {
-        email: 'admin@mbha.com'
-      }
-    });
-
-    if (adminUser) {
-      await deactivateAllUserSessions(adminUser.id);
-      console.log('✅ All admin sessions cleared');
+    const token = request.headers.get('authorization')?.replace('Bearer ', '');
+    if (!token) {
+      return NextResponse.json({ success: true, message: 'Logged out' });
     }
 
-    return NextResponse.json({
-      success: true,
-      message: 'All sessions cleared. You can now login again.'
-    });
-  } catch (error) {
-    console.error('❌ Error clearing sessions:', error);
-    return NextResponse.json(
-      { error: 'Failed to clear sessions' },
-      { status: 500 }
-    );
+    const payload = verifyToken(token);
+    if (payload?.userId) {
+      await deactivateAllUserSessions(payload.userId);
+    }
+
+    return NextResponse.json({ success: true, message: 'Logged out successfully' });
+  } catch {
+    return NextResponse.json({ success: true, message: 'Logged out' });
   }
 }

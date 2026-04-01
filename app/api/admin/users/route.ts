@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllUsers } from '@/lib/db-utils';
+import { getAllUsers } from '@/lib/repositories/user.repository';
 
 export async function GET(request: NextRequest) {
   try {

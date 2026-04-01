@@ -13,10 +13,6 @@ export default function AdminPage() {
   const [grantDuration, setGrantDuration] = useState<Record<string, string>>({});
   const [exams, setExams] = useState([]);
   
-  // Debug: Log when exams state changes
-  useEffect(() => {
-    console.log('🔄 Exams state updated:', exams.length, 'exams');
-  }, [exams]);
   const [uniqueCodes, setUniqueCodes] = useState([]);
   const [activeTab, setActiveTab] = useState('users');
   const [loading, setLoading] = useState(false);
@@ -262,7 +258,6 @@ const saveAdd = async () => {
   const loadData = async () => {
     setLoading(true);
     try {
-      console.log('🔄 Loading admin data...');
       const timestamp = Date.now(); // Cache buster
       const [usersRes, examsRes, codesRes] = await Promise.all([
         fetch(`/api/admin/users?t=${timestamp}`),
@@ -273,20 +268,17 @@ const saveAdd = async () => {
       if (usersRes.ok) {
         const usersData = await usersRes.json();
         setUsers(usersData);
-        console.log('📊 Users loaded:', usersData.length);
       }
       if (examsRes.ok) {
         const examsData = await examsRes.json();
         setExams(examsData);
-        console.log('📊 Exams loaded:', examsData.length);
       }
       if (codesRes.ok) {
         const codesData = await codesRes.json();
         setUniqueCodes(codesData);
-        console.log('📊 Codes loaded:', codesData.length);
       }
     } catch (error) {
-      console.error('Error loading admin data:', error);
+      // Error loading admin data
     } finally {
       setLoading(false);
     }
@@ -304,40 +296,31 @@ const saveAdd = async () => {
         setUsers(users.filter((u: any) => u.id !== userId));
       }
     } catch (error) {
-      console.error('Error deleting user:', error);
+      // Error deleting user
     }
   };
 
   const deleteExam = async (examId: string, examTitle: string = '') => {
-    console.log('🔍 Delete button clicked for exam:', { examId, examTitle });
-    
     if (!confirm(`Are you sure you want to delete "${examTitle}"? This action cannot be undone.`)) {
-      console.log('❌ User cancelled deletion');
       return;
     }
-    
+
     setLoading(true);
     try {
-      console.log('🗑️ Sending delete request for exam:', examId);
       const response = await fetch(`/api/admin/exams/${examId}`, {
         method: 'DELETE'
       });
-      
-      console.log('📊 Delete response status:', response.status);
-      
+
       if (response.ok) {
-        console.log('✅ Exam deleted successfully');
         await loadData(); // Refresh all data
         setMessage(`✅ Exam "${examTitle}" deleted successfully!`);
         setTimeout(() => setMessage(''), 3000);
       } else {
         const errorData = await response.json();
-        console.error('❌ Delete failed:', errorData);
         setError(`❌ Failed to delete exam: ${errorData.error || 'Unknown error'}`);
         setTimeout(() => setError(''), 5000);
       }
     } catch (error) {
-      console.error('💥 Error deleting exam:', error);
       setError('❌ Network error while deleting exam. Please try again.');
       setTimeout(() => setError(''), 5000);
     } finally {
@@ -355,24 +338,18 @@ const saveAdd = async () => {
     setLoading(true);
     
     try {
-      console.log('Sending request to generate codes:', { count: Number(count) });
-      
       const response = await fetch('/api/admin/generate-codes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ count: Number(count) })
       });
       
-      console.log('Response status:', response.status);
-      
       if (response.ok) {
         const result = await response.json();
-        console.log('Success result:', result);
         alert(`✅ Successfully generated ${result.codes?.length || result.count || count} new registration codes!`);
         await loadData(); // Refresh data
       } else {
         const errorText = await response.text();
-        console.error('Error response:', errorText);
         try {
           const errorJson = JSON.parse(errorText);
           alert(`❌ Error: ${errorJson.error}`);
@@ -381,7 +358,7 @@ const saveAdd = async () => {
         }
       }
     } catch (error) {
-      console.error('Network error generating codes:', error);
+      // Network error generating codes
       alert('❌ Network error. Please check if server is running and try again.');
     } finally {
       setLoading(false);
@@ -402,14 +379,13 @@ const saveAdd = async () => {
         alert('User updated successfully!');
       }
     } catch (error) {
-      console.error('Error updating user:', error);
+      // Error updating user
       alert('Error updating user');
     }
   };
 
   const updateExamInfo = async (examId: string, examData: any) => {
     try {
-      console.log('🔄 Updating exam:', examId, examData);
       const response = await fetch(`/api/admin/exams/${examId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -418,17 +394,16 @@ const saveAdd = async () => {
       
       if (response.ok) {
         const result = await response.json();
-        console.log('✅ Exam updated successfully:', result);
         await loadData(); // Wait for data reload
         setEditingExam(null);
         alert('Exam updated successfully!');
       } else {
         const errorData = await response.json();
-        console.error('❌ Update failed:', errorData);
+        // Update failed
         alert('Error updating exam: ' + (errorData.error || 'Unknown error'));
       }
     } catch (error) {
-      console.error('💥 Error updating exam:', error);
+      // Error updating exam
       alert('Error updating exam');
     }
   };
@@ -458,7 +433,7 @@ const saveAdd = async () => {
         alert(`❌ Error: ${error.error}`);
       }
     } catch (error) {
-      console.error('Error resetting password:', error);
+      // Error resetting password
       alert('❌ Failed to reset password. Please try again.');
     }
   };
@@ -482,7 +457,7 @@ const saveAdd = async () => {
         alert(`❌ Error: ${error.error}`);
       }
     } catch (error) {
-      console.error('Error unlocking account:', error);
+      // Error unlocking account
       alert('❌ Failed to unlock account. Please try again.');
     }
   };
@@ -528,10 +503,8 @@ const saveAdd = async () => {
               }));
             
             setPreview(normalizedQuestions);
-            console.log('✅ JSON file loaded:', normalizedQuestions.length, 'questions');
           } catch (error: any) {
             alert('Error parsing JSON file: ' + error.message);
-            console.error('JSON parse error:', error);
           }
         };
         reader.readAsText(uploadedFile);
@@ -562,7 +535,6 @@ const saveAdd = async () => {
                 };
               });
             setPreview(questions);
-            console.log('✅ CSV file loaded:', questions.length, 'questions');
           },
           error: (error) => {
             alert('Error parsing CSV file: ' + error.message);
@@ -586,14 +558,6 @@ const saveAdd = async () => {
     setLoading(true);
 
     try {
-      console.log('📤 Creating exam with data:', {
-        title: examTitle,
-        subject: selectedSubject,
-        examTime: examTime,
-        secretCode: secretCode,
-        questionsCount: preview.length
-      });
-
       const response = await fetch('/api/admin/exams', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -609,7 +573,6 @@ const saveAdd = async () => {
       const result = await response.json();
       
       if (response.ok) {
-        console.log('✅ Exam created successfully, refreshing data...');
         setExamView('list');
         setExamTitle('');
         setFile(null);
@@ -624,7 +587,7 @@ const saveAdd = async () => {
     } catch (error) {
       setError('❌ Error creating exam. Please try again.');
       setTimeout(() => setError(''), 5000);
-      console.error('Error:', error);
+      // Error creating exam
     } finally {
       setLoading(false);
     }
@@ -730,14 +693,11 @@ const saveAdd = async () => {
   const addTopic = async () => {
     if (!selectedLectureForTopic || !newTopicName.trim()) return;
     
-    console.log('🔄 Adding topic:', { selectedLectureForTopic, newTopicName });
-    console.log('📊 Current structure:', qbankStructure);
-    
     const updatedStructure = qbankStructure.map((subject: any) => ({
       ...subject,
       lectures: (subject.lectures || []).map((lecture: any) => {
         if (lecture.title === selectedLectureForTopic) {
-          console.log('✅ Found matching lecture:', lecture.title);
+          // Found matching lecture
           return {
             ...lecture,
             topics: [...(lecture.topics || []), newTopicName.trim()]
@@ -747,7 +707,6 @@ const saveAdd = async () => {
       })
     }));
     
-    console.log('🔄 Updated structure:', updatedStructure);
     await updateQbankStructure(updatedStructure);
     setNewTopicName('');
     setSelectedLectureForTopic('');
@@ -779,11 +738,11 @@ const saveAdd = async () => {
         setCsvPreviewCount(0);
         setCsvPreviewQuestion(null);
       } else {
-        console.error('Import failed:', data);
+        // Import failed
         alert(`Failed to import questions\n${data.error || ''}${data.details ? `\nDetails: ${data.details}` : ''}${data.expectedFormat ? `\nExpected format: ${data.expectedFormat}` : ''}`);
       }
     } catch (error: any) {
-      console.error('Error importing questions:', error);
+      // Error importing questions
       alert(`Error importing questions: ${String(error?.message || error)}`);
     }
   };
@@ -876,7 +835,7 @@ const saveAdd = async () => {
         setFilteredQuestions(data);
       }
     } catch (error) {
-      console.error('Error loading filtered questions:', error);
+      // Error loading filtered questions
     }
   };
 
@@ -899,7 +858,7 @@ const saveAdd = async () => {
         alert('Failed to delete questions');
       }
     } catch (error) {
-      console.error('Error deleting questions:', error);
+      // Error deleting questions
       alert('Error deleting questions');
     }
   };
@@ -915,7 +874,7 @@ const saveAdd = async () => {
         setQbankStructure(newStructure);
       }
     } catch (error) {
-      console.error('Error updating structure:', error);
+      // Error updating structure
     }
   };
 
@@ -931,7 +890,7 @@ const saveAdd = async () => {
         setApproachStructure(newStructure);
       }
     } catch (error) {
-      console.error('Error updating approach structure:', error);
+      // Error updating approach structure
     }
   };
 
@@ -1287,7 +1246,7 @@ const saveAdd = async () => {
       setCsvPreviewCount(validCount);
       setCsvPreviewQuestion(firstPreviewQuestion);
     } catch (error) {
-      console.error('Error previewing CSV:', error);
+      // Error previewing CSV
       setCsvPreview([]);
       setCsvPreviewCount(0);
       setCsvPreviewQuestion(null);

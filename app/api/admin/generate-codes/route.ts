@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { generateNewCodes } from '@/lib/db-utils';
+import { generateNewCodes } from '@/lib/repositories/code.repository';
 
 export async function POST(request: NextRequest) {
   try {

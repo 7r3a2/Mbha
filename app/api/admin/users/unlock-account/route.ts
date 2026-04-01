@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { unlockUserAccount, deactivateAllUserSessions } from '@/lib/session-utils';
-import { findUserById } from '@/lib/db-utils';
+import { findUserById } from '@/lib/repositories/user.repository';
 
 export async function POST(request: NextRequest) {
   try {

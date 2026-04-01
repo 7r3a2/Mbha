@@ -38,7 +38,7 @@ export default function AdminCodesPage() {
         setCodes(data.codes);
       }
     } catch (error) {
-      console.error('Error loading codes:', error);
+      // Error loading codes
     } finally {
       setLoading(false);
     }
@@ -63,7 +63,7 @@ export default function AdminCodesPage() {
         alert(error.error || 'Failed to generate codes');
       }
     } catch (error) {
-      console.error('Error generating codes:', error);
+      // Error generating codes
       alert('Failed to generate codes');
     } finally {
       setGenerating(false);
@@ -92,7 +92,7 @@ export default function AdminCodesPage() {
         alert(error.error || 'Failed to delete code');
       }
     } catch (error) {
-      console.error('Error deleting code:', error);
+      // Error deleting code
       alert('Failed to delete code');
     }
   };

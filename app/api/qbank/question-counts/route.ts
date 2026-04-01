@@ -1,27 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { promises as fs } from 'fs';
-import path from 'path';
-import { kvGet } from '@/lib/db-utils';
+import { kvGet } from '@/lib/repositories/kv.repository';
 import { prisma } from '@/lib/prisma';
-import { verifyToken } from '@/lib/auth-utils';
+import { verifyToken } from '@/lib/jwt';
 
-const QUESTIONS_FILE = path.join(process.cwd(), 'data', 'qbank-questions.json');
 const KV_KEY = 'qbank-questions';
 
 async function readQuestions(): Promise<any[]> {
-  // KV first
-  try {
-    const kv = await kvGet<any[]>(KV_KEY, null as any);
-    if (kv) return kv;
-  } catch {}
-  // Fallback to file
-  try {
-    const data = await fs.readFile(QUESTIONS_FILE, 'utf-8');
-    return JSON.parse(data);
-  } catch (e: any) {
-    if (e.code === 'ENOENT') return [];
-    throw e;
-  }
+  const kv = await kvGet<any[]>(KV_KEY, null as any);
+  return kv || [];
 }
 
 export async function GET(request: NextRequest) {
@@ -61,92 +47,66 @@ export async function GET(request: NextRequest) {
     // If question mode is not 'all' and we have a userId, filter based on user responses
     if (questionMode !== 'all' && userId) {
       const questionIds = filtered.map(q => q.id.toString());
-      
-      console.log(`🔍 Question counts API - Mode: ${questionMode}, User: ${userId}`);
-      console.log(`📊 Total questions from sources: ${questionIds.length}`);
-      
+
       try {
         // Verify the user token
         const token = request.headers.get('authorization')?.replace('Bearer ', '');
         if (!token) {
-          console.log('❌ No authorization token');
           throw new Error('No authorization token');
         }
-        
+
         const user = await verifyToken(token);
         if (!user || user.userId !== userId) {
-          console.log('❌ Invalid user or token');
-          console.log('🔍 Token user ID:', user?.userId);
-          console.log('🔍 Request user ID:', userId);
           throw new Error('Invalid user');
         }
-        
-        console.log('✅ User authenticated successfully');
-        
-                 // Get user responses directly from database
-         const responses = await prisma.userResponse.findMany({
-           where: {
-             userId: userId,
-             questionId: {
-               in: questionIds
-             }
-           }
-         });
-         
-         console.log(`📝 Found ${responses.length} user responses for these questions`);
-         console.log(`📊 Sample responses:`, responses.slice(0, 3));
-        
+
+        // Get user responses directly from database
+        const responses = await prisma.userResponse.findMany({
+          where: {
+            userId: userId,
+            questionId: {
+              in: questionIds
+            }
+          }
+        });
+
         // Create a map of questionId to response
         const responseMap = responses.reduce((acc: Record<string, any>, response: any) => {
           acc[response.questionId] = response;
           return acc;
         }, {} as Record<string, any>);
-        
-                 // Filter questions based on mode
-         let filteredQuestionIds: string[] = [];
-         
-         switch (questionMode) {
-           case 'unused':
-             // Return questions that user hasn't answered
-             filteredQuestionIds = questionIds.filter(id => !responseMap[id]);
-             console.log(`🆕 Unused questions: ${filteredQuestionIds.length}`);
-             console.log(`🆕 Sample unused question IDs:`, filteredQuestionIds.slice(0, 3));
-             console.log(`🆕 Total questions: ${questionIds.length}, Responses found: ${Object.keys(responseMap).length}`);
-             break;
-           case 'incorrect':
-             // Return questions that user answered incorrectly
-             filteredQuestionIds = questionIds.filter(id => 
-               responseMap[id] && !responseMap[id].isCorrect
-             );
-             console.log(`❌ Incorrect questions: ${filteredQuestionIds.length}`);
-             console.log(`❌ Sample incorrect question IDs:`, filteredQuestionIds.slice(0, 3));
-             console.log(`❌ Total responses: ${Object.keys(responseMap).length}, Incorrect responses: ${Object.values(responseMap).filter((r: any) => !r.isCorrect).length}`);
-             break;
-           case 'flagged':
-             // Return questions that user flagged (regardless of whether answered)
-             filteredQuestionIds = questionIds.filter(id => 
-               responseMap[id] && responseMap[id].isFlagged
-             );
-             console.log(`🚩 Flagged questions: ${filteredQuestionIds.length}`);
-             console.log(`🚩 Sample flagged question IDs:`, filteredQuestionIds.slice(0, 3));
-             console.log(`🚩 Total responses: ${Object.keys(responseMap).length}, Flagged responses: ${Object.values(responseMap).filter((r: any) => r.isFlagged).length}`);
-             console.log(`🚩 Response map with flagged questions:`, Object.entries(responseMap).filter(([id, response]: [string, any]) => response.isFlagged).slice(0, 3));
-             break;
-           default:
-             // Default to 'all'
-             filteredQuestionIds = questionIds;
-             console.log(`📋 All questions: ${filteredQuestionIds.length}`);
-         }
-        
+
+        // Filter questions based on mode
+        let filteredQuestionIds: string[] = [];
+
+        switch (questionMode) {
+          case 'unused':
+            // Return questions that user hasn't answered
+            filteredQuestionIds = questionIds.filter(id => !responseMap[id]);
+            break;
+          case 'incorrect':
+            // Return questions that user answered incorrectly
+            filteredQuestionIds = questionIds.filter(id =>
+              responseMap[id] && !responseMap[id].isCorrect
+            );
+            break;
+          case 'flagged':
+            // Return questions that user flagged (regardless of whether answered)
+            filteredQuestionIds = questionIds.filter(id =>
+              responseMap[id] && responseMap[id].isFlagged
+            );
+            break;
+          default:
+            // Default to 'all'
+            filteredQuestionIds = questionIds;
+        }
+
         // Filter questions to only include those that match the mode
-        filtered = filtered.filter((q: any) => 
+        filtered = filtered.filter((q: any) =>
           filteredQuestionIds.includes(q.id.toString())
         );
-        
-        console.log(`✅ Final filtered questions: ${filtered.length}`);
-        
+
       } catch (error) {
-        console.error('❌ Error fetching user responses for counts:', error);
         // If we can't get user responses, return 0 for all topics
         const topicCounts: Record<string, number> = {};
         if (selectedTopics.length > 0) {
@@ -165,7 +125,7 @@ export async function GET(request: NextRequest) {
 
     // Count questions by topic
     const topicCounts: Record<string, number> = {};
-    
+
     if (selectedTopics.length > 0) {
       // Count only for specified topics
       for (const topic of selectedTopics) {
@@ -183,7 +143,6 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ topicCounts });
   } catch (error) {
-    console.error('Error fetching question counts:', error);
     return NextResponse.json({ error: 'Failed to fetch question counts' }, { status: 500 });
   }
 }

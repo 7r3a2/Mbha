@@ -9,7 +9,6 @@ export default function Home() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const services = [
-    { id: 1, image: '/images/main-card 1.png', title: 'Courses' },
     { id: 2, image: '/images/main-card 2.png', title: 'Services' },
     { id: 3, image: '/images/main-card 3.png', title: 'Resources' },
     { id: 4, image: '/images/main-card 4.png', title: 'Support' },

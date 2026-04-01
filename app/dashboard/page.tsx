@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 
 export default function Dashboard() {
   const router = useRouter();
-  const { user, isAuthenticated, isLoading, logout } = useAuth();
+  const { user, isAuthenticated, isLoading, isGuest, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(true);
 
   useEffect(() => {
@@ -16,19 +16,12 @@ export default function Dashboard() {
     }
   }, [isLoading, isAuthenticated, router]);
 
-  // Debug: Log user permissions
+  // Redirect guests to wizary-exam
   useEffect(() => {
-    if (user) {
-      console.log('🔍 Dashboard - User permissions:', {
-        email: user.email,
-        hasApproachAccess: user.hasApproachAccess,
-        hasQbankAccess: user.hasQbankAccess,
-        hasCoursesAccess: user.hasCoursesAccess,
-        hasWizaryExamAccess: user.hasWizaryExamAccess,
-        uniqueCode: user.uniqueCode
-      });
+    if (!isLoading && isGuest) {
+      router.push('/wizary-exam');
     }
-  }, [user]);
+  }, [isLoading, isGuest, router]);
 
   const courses = [
     {

@@ -119,67 +119,68 @@ export default function SignUp() {
   };
 
   return (
-    <div className="min-h-screen bg-[#1E1E1E] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#1E1E1E] flex items-center justify-center py-12 px-3 sm:px-4 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <div className="text-center">
           <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 flex items-center justify-center shadow-lg">
-              <Image 
-                src="/images/logo lander.png" 
-                alt="MBHA Logo" 
-                width={64} 
-                height={64} 
-                className="w-16 h-16 object-contain"
+            <div className="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center shadow-lg">
+              <Image
+                src="/images/logo lander.png"
+                alt="MBHA Logo"
+                width={64}
+                height={64}
+                className="w-12 h-12 sm:w-16 sm:h-16 object-contain"
               />
             </div>
           </div>
-          <h2 className="text-3xl font-bold text-white mb-2">Create Account</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">Create Account</h2>
           <p className="text-gray-400">Join MBHA and start your medical journey</p>
         </div>
 
         {/* Signup Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* First Name */}
-          <div>
-            <label htmlFor="firstName" className="block text-sm font-medium text-gray-300 mb-2">
-              First Name
-            </label>
-            <input
-              id="firstName"
-              name="firstName"
-              type="text"
-              value={formData.firstName}
-              onChange={handleInputChange}
-              className={`appearance-none relative block w-full px-3 py-4 border rounded-xl text-white placeholder-gray-400 bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#3A8431] focus:border-transparent transition-all duration-300 ${
-                errors.firstName ? 'border-red-500 focus:ring-red-500' : ''
-              }`}
-              placeholder="Enter your first name"
-            />
-            {errors.firstName && (
-              <p className="mt-1 text-sm text-red-400">{errors.firstName}</p>
-            )}
-          </div>
+          {/* First Name & Last Name */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="firstName" className="block text-sm font-medium text-gray-300 mb-2">
+                First Name
+              </label>
+              <input
+                id="firstName"
+                name="firstName"
+                type="text"
+                value={formData.firstName}
+                onChange={handleInputChange}
+                className={`appearance-none relative block w-full px-3 py-3 sm:py-4 border rounded-xl text-white placeholder-gray-400 bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#3A8431] focus:border-transparent transition-all duration-300 ${
+                  errors.firstName ? 'border-red-500 focus:ring-red-500' : ''
+                }`}
+                placeholder="Enter your first name"
+              />
+              {errors.firstName && (
+                <p className="mt-1 text-sm text-red-400">{errors.firstName}</p>
+              )}
+            </div>
 
-          {/* Last Name */}
-          <div>
-            <label htmlFor="lastName" className="block text-sm font-medium text-gray-300 mb-2">
-              Last Name
-            </label>
-            <input
-              id="lastName"
-              name="lastName"
-              type="text"
-              value={formData.lastName}
-              onChange={handleInputChange}
-              className={`appearance-none relative block w-full px-3 py-4 border rounded-xl text-white placeholder-gray-400 bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#3A8431] focus:border-transparent transition-all duration-300 ${
-                errors.lastName ? 'border-red-500 focus:ring-red-500' : ''
-              }`}
-              placeholder="Enter your last name"
-            />
-            {errors.lastName && (
-              <p className="mt-1 text-sm text-red-400">{errors.lastName}</p>
-            )}
+            <div>
+              <label htmlFor="lastName" className="block text-sm font-medium text-gray-300 mb-2">
+                Last Name
+              </label>
+              <input
+                id="lastName"
+                name="lastName"
+                type="text"
+                value={formData.lastName}
+                onChange={handleInputChange}
+                className={`appearance-none relative block w-full px-3 py-3 sm:py-4 border rounded-xl text-white placeholder-gray-400 bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#3A8431] focus:border-transparent transition-all duration-300 ${
+                  errors.lastName ? 'border-red-500 focus:ring-red-500' : ''
+                }`}
+                placeholder="Enter your last name"
+              />
+              {errors.lastName && (
+                <p className="mt-1 text-sm text-red-400">{errors.lastName}</p>
+              )}
+            </div>
           </div>
 
           {/* Email */}
@@ -193,7 +194,7 @@ export default function SignUp() {
               type="email"
               value={formData.email}
               onChange={handleInputChange}
-              className={`appearance-none relative block w-full px-3 py-4 border rounded-xl text-white placeholder-gray-400 bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#3A8431] focus:border-transparent transition-all duration-300 ${
+              className={`appearance-none relative block w-full px-3 py-3 sm:py-4 border rounded-xl text-white placeholder-gray-400 bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#3A8431] focus:border-transparent transition-all duration-300 ${
                 errors.email ? 'border-red-500 focus:ring-red-500' : ''
               }`}
               placeholder="Enter your email"
@@ -215,7 +216,7 @@ export default function SignUp() {
                 type={showPassword ? 'text' : 'password'}
                 value={formData.password}
                 onChange={handleInputChange}
-                className={`appearance-none relative block w-full px-3 py-4 pr-10 border rounded-xl text-white placeholder-gray-400 bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#3A8431] focus:border-transparent transition-all duration-300 ${
+                className={`appearance-none relative block w-full px-3 py-3 sm:py-4 pr-10 border rounded-xl text-white placeholder-gray-400 bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#3A8431] focus:border-transparent transition-all duration-300 ${
                   errors.password ? 'border-red-500 focus:ring-red-500' : ''
                 }`}
                 placeholder="Enter your password"
@@ -249,7 +250,7 @@ export default function SignUp() {
               name="gender"
               value={formData.gender}
               onChange={handleInputChange}
-              className="appearance-none relative block w-full px-3 py-4 border rounded-xl text-white bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#3A8431] focus:border-transparent transition-all duration-300"
+              className="appearance-none relative block w-full px-3 py-3 sm:py-4 border rounded-xl text-white bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#3A8431] focus:border-transparent transition-all duration-300"
             >
               <option value="">Select your gender</option>
               <option value="male">Male</option>
@@ -267,7 +268,7 @@ export default function SignUp() {
               name="university"
               value={formData.university}
               onChange={handleInputChange}
-              className={`appearance-none relative block w-full px-3 py-4 border rounded-xl text-white bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#3A8431] focus:border-transparent transition-all duration-300 ${
+              className={`appearance-none relative block w-full px-3 py-3 sm:py-4 border rounded-xl text-white bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#3A8431] focus:border-transparent transition-all duration-300 ${
                 errors.university ? 'border-red-500 focus:ring-red-500' : ''
               }`}
             >
@@ -296,7 +297,7 @@ export default function SignUp() {
               type="text"
               value={formData.uniqueCode}
               onChange={handleInputChange}
-              className={`appearance-none relative block w-full px-3 py-4 border rounded-xl text-white placeholder-gray-400 bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#3A8431] focus:border-transparent transition-all duration-300 ${
+              className={`appearance-none relative block w-full px-3 py-3 sm:py-4 border rounded-xl text-white placeholder-gray-400 bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#3A8431] focus:border-transparent transition-all duration-300 ${
                 errors.uniqueCode ? 'border-red-500 focus:ring-red-500' : ''
               }`}
               placeholder="Enter your registration code"
@@ -311,7 +312,7 @@ export default function SignUp() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="group relative w-full flex justify-center py-4 px-4 border border-transparent text-lg font-medium rounded-xl text-white bg-gradient-to-r from-[#3A8431] to-[#2d6a27] hover:from-[#2d6a27] hover:to-[#1e4a1e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#3A8431] transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              className="group relative w-full flex justify-center py-3 sm:py-4 px-4 border border-transparent text-base sm:text-lg font-medium rounded-xl text-white bg-gradient-to-r from-[#3A8431] to-[#2d6a27] hover:from-[#2d6a27] hover:to-[#1e4a1e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#3A8431] transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               {isSubmitting ? 'Creating Account...' : 'Create Account'}
             </button>

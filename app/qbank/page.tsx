@@ -648,11 +648,6 @@ export default function Qbank() {
   // Dynamic subjects from database
   const [subjects, setSubjects] = useState<any[]>([]); // Start with empty array, load from API
   
-  // Debug: Log subjects state changes
-  useEffect(() => {
-    console.log('🔄 Subjects state changed:', subjects.length, 'subjects');
-    console.log('🔄 First subject:', subjects[0]?.label);
-  }, [subjects]);
   const [loadingSubjects, setLoadingSubjects] = useState(false);
 
   // Check if user has qbank access
@@ -665,30 +660,14 @@ export default function Qbank() {
   // Check if user is admin
   const isAdmin = user?.email === 'admin@mbha.com' || user?.email === 'admin@mbha.net' || user?.uniqueCode === 'ADMIN2024';
   
-  // Debug logging for admin detection
-  console.log('🔍 Admin detection debug:', {
-    userEmail: user?.email,
-    userUniqueCode: user?.uniqueCode,
-    isAdmin: isAdmin,
-    adminChecks: {
-      emailAdminCom: user?.email === 'admin@mbha.com',
-      emailAdminNet: user?.email === 'admin@mbha.net',
-      uniqueCodeAdmin: user?.uniqueCode === 'ADMIN2024'
-    }
-  });
-
   // Load subjects from database
   useEffect(() => {
-    console.log('🔄 useEffect triggered - loading subjects');
     const loadSubjects = async () => {
       setLoadingSubjects(true);
       try {
-        console.log('🔄 Loading subjects from API...');
         const response = await fetch('/api/qbank/structure');
-        console.log('📡 API Response status:', response.status);
         if (response.ok) {
           const dynamicSubjects = await response.json();
-          console.log('📥 Raw subjects data:', dynamicSubjects);
           
           if (dynamicSubjects.length > 0) {
             // Transform the data to match the expected structure
@@ -713,33 +692,24 @@ export default function Qbank() {
               };
             });
             
-            console.log('🔄 Transformed subjects:', transformedSubjects);
-            console.log('🔄 Setting subjects state with API data');
             setSubjects(transformedSubjects);
-            
+
             // Force a re-render to ensure API data is used
             setTimeout(() => {
-              console.log('🔄 Forcing re-render with API data');
               setSubjects([...transformedSubjects]);
             }, 100);
-            
+
             // Update selected subjects to use the first dynamic subject
             if (transformedSubjects[0]?.key) {
-              console.log('✅ Setting first subject as selected:', transformedSubjects[0].key);
               setSelectedSubjects([transformedSubjects[0].key]);
             }
             
             // Check which topics have questions
             checkAllTopicsForQuestions(transformedSubjects);
-          } else {
-            console.log('⚠️ No subjects found in API response');
           }
-        } else {
-          console.error('❌ Failed to load subjects:', response.status, response.statusText);
         }
       } catch (error) {
-        console.error('❌ Error loading subjects:', error);
-        console.log('🔄 No subjects loaded from API');
+        // Error loading subjects
       } finally {
         setLoadingSubjects(false);
       }
@@ -789,7 +759,7 @@ export default function Qbank() {
           localStorage.setItem('mbha_test_history', JSON.stringify(limitedTests));
         }
       } catch (error) {
-        console.error('Error loading test history:', error);
+        // Error loading test history
       }
     }
   }, []);
@@ -829,7 +799,6 @@ export default function Qbank() {
 
   // Previous Tests Functions
   const handleViewTest = (test: any) => {
-    console.log('Viewing test:', test);
     // Navigate to quiz with the original test parameters to load the same questions
     const params = new URLSearchParams();
     params.set('count', String(test.questions));
@@ -1022,44 +991,28 @@ export default function Qbank() {
           ];
           
           token = possibleTokens.find(t => t && t.length > 0);
-          console.log('🔍 Token search results:', {
-            auth_token_local: localStorage.getItem('auth_token'),
-            auth_token_session: sessionStorage.getItem('auth_token'),
-            token_local: localStorage.getItem('token'),
-            token_session: sessionStorage.getItem('token'),
-            found_token: token ? 'Found' : 'Not found'
-          });
         }
       } catch (error) {
-        console.log('❌ Error accessing storage:', error);
+        // Error accessing storage
       }
       
       const headers: HeadersInit = {};
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
-        console.log('✅ Token found and added to headers');
       } else {
-        console.log('❌ No token found in any storage');
         // Try to get token from the auth context if available
         if (user && typeof user === 'object' && 'token' in user) {
           headers['Authorization'] = `Bearer ${(user as any).token}`;
-          console.log('✅ Using token from user object');
         }
       }
-      
-      console.log(`🔍 Qbank fetching counts - Mode: ${questionMode}, Sources: ${sourceLabels.join(',')}, User: ${user?.id}, Token: ${token ? 'Present' : 'Missing'}`);
       
       const response = await fetch(`/api/qbank/question-counts?${params.toString()}`, {
         headers
       });
       if (response.ok) {
         const data = await response.json();
-        console.log(`✅ Qbank received counts:`, data.topicCounts);
         setTopicQuestionCounts(data.topicCounts || {});
       } else {
-        console.error('❌ Failed to fetch question counts:', response.status);
-        const errorText = await response.text();
-        console.error('Error response:', errorText);
         // Set all counts to 0 on error
         const allTopics = new Set();
         for (const subject of subjects) {
@@ -1076,7 +1029,7 @@ export default function Qbank() {
         setTopicQuestionCounts(zeroCounts);
       }
     } catch (error) {
-      console.error('❌ Error fetching topic question counts:', error);
+      // Error fetching topic question counts
       // If there's an error, set all counts to 0
       const allTopics = new Set();
       for (const subject of subjects) {
@@ -1099,18 +1052,13 @@ export default function Qbank() {
   // Reset all user responses (answers, flags, etc.)
   const resetUserResponses = async () => {
     try {
-      console.log('🔄 Starting reset user responses...');
-      
       const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token') || localStorage.getItem('token');
-      
+
       if (!token) {
-        console.log('❌ No auth token found');
         alert('You must be logged in to reset your responses');
         return;
       }
 
-      console.log('🔍 Making DELETE request to /api/qbank/user-responses...');
-      
       const response = await fetch('/api/qbank/user-responses', {
         method: 'DELETE',
         headers: {
@@ -1119,22 +1067,18 @@ export default function Qbank() {
         }
       });
 
-      console.log('📡 Response status:', response.status);
-      console.log('📡 Response ok:', response.ok);
-
       if (response.ok) {
         const result = await response.json();
-        console.log('✅ Reset successful:', result);
         alert('✅ All your question responses have been reset successfully!');
         // Refresh the question counts to reflect the reset
         fetchTopicQuestionCounts();
       } else {
         const errorData = await response.json();
-        console.error('❌ Reset failed:', errorData);
+        // Reset failed
         alert(`❌ Failed to reset responses: ${errorData.error || 'Unknown error'}`);
       }
     } catch (error) {
-      console.error('❌ Error resetting user responses:', error);
+      // Error resetting user responses
       alert('❌ Failed to reset responses. Please try again.');
     }
   };
@@ -1272,7 +1216,7 @@ export default function Qbank() {
         // The API will handle returning the exact number requested (or all available if less)
       }
     } catch (error) {
-      console.error('Error checking available questions:', error);
+      // Error checking available questions
       // Continue anyway if we can't check
     }
 

@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { promises as fs } from 'fs';
-import path from 'path';
-import { kvGet, kvSet } from '@/lib/db-utils';
+import { kvGet, kvSet } from '@/lib/repositories/kv.repository';
 
-const QUESTIONS_FILE = path.join(process.cwd(), 'data', 'qbank-questions.json');
 const KV_KEY = 'qbank-questions';
 
 // Function to parse full CSV text, handling quoted fields, escaped quotes, and newlines inside quoted fields
@@ -70,10 +67,10 @@ function parseCSVLine(line: string): string[] {
   const result: string[] = [];
   let current = '';
   let inQuotes = false;
-  
+
   for (let i = 0; i < line.length; i++) {
     const char = line[i];
-    
+
     if (char === '"') {
       inQuotes = !inQuotes;
     } else if (char === ',' && !inQuotes) {
@@ -83,7 +80,7 @@ function parseCSVLine(line: string): string[] {
       current += char;
     }
   }
-  
+
   result.push(current.trim());
   return result;
 }
@@ -95,43 +92,21 @@ function cleanJsonString(jsonStr: string): string {
   if (cleaned.startsWith('"') && cleaned.endsWith('"')) {
     cleaned = cleaned.slice(1, -1);
   }
-  
+
   // Fix common CSV parsing issues
   cleaned = cleaned.replace(/\\\"/g, '"'); // Unescape quotes
   cleaned = cleaned.replace(/""/g, '"'); // Fix double quotes
-  
+
   return cleaned;
 }
 
 async function readAll() {
-  // Prefer KV
-  try {
-    const kv = await kvGet<any[]>(KV_KEY, null as any);
-    if (kv) return kv;
-  } catch {}
-  // Fallback to file for local dev
-  try {
-    const raw = await fs.readFile(QUESTIONS_FILE, 'utf-8');
-    return JSON.parse(raw);
-  } catch (e: any) {
-    if (e.code === 'ENOENT') return [];
-    return [];
-  }
+  const kv = await kvGet<any[]>(KV_KEY, null as any);
+  return kv || [];
 }
 
 async function writeAll(list: any[]) {
-  // Write to KV (Postgres)
-  try { await kvSet(KV_KEY, list); } catch {}
-  // Best-effort write to file (will fail on Vercel, ignore EROFS)
-  try {
-    await fs.mkdir(path.dirname(QUESTIONS_FILE), { recursive: true });
-    await fs.writeFile(QUESTIONS_FILE, JSON.stringify(list, null, 2), 'utf-8');
-  } catch (e: any) {
-    if (e?.code !== 'EROFS') {
-      // Ignore read-only filesystem errors on Vercel, rethrow others
-      // console.warn('File write skipped:', e?.message);
-    }
-  }
+  await kvSet(KV_KEY, list);
 }
 
 export async function POST(request: NextRequest) {
@@ -145,8 +120,8 @@ export async function POST(request: NextRequest) {
     const topic = formData.get('topic') as string;
 
     if (!file || !subject || !lecture || !topic || (!sourceLabel && !sourceKey)) {
-      return NextResponse.json({ 
-        error: 'Missing required fields', 
+      return NextResponse.json({
+        error: 'Missing required fields',
         received: { subject, sourceLabel, sourceKey, lecture, topic, hasFile: !!file }
       }, { status: 400 });
     }
@@ -160,23 +135,23 @@ export async function POST(request: NextRequest) {
 
     const originalHeaders = rows[0].map((h) => (h || '').trim().replace(/^"|"$/g, ''));
     const headers = originalHeaders.map(h => h.toLowerCase());
-    
+
     // Create mapping from lowercase headers to original headers for data access
     const headerMap: { [key: string]: string } = {};
     headers.forEach((header, index) => {
       headerMap[header] = originalHeaders[index];
     });
-    
+
     // Support multiple formats
     const newFormatHeaders = ['questions', 'options', 'correct_options', 'explanation', 'incorrect_options', 'educational_objective'];
     const userFormatHeaders = ['question', 'options', 'correct_option', 'explanation', 'why the other options are incorrect:', 'educational objective'];
     const simpleFormatHeaders = ['question', 'options', 'correct_option', 'explanation', 'incorrect_reasons', 'educational_objective'];
     const oldWizardHeaders = ['question', 'a', 'b', 'c', 'd', 'answer', 'explanation', 'incorrect_a', 'incorrect_b', 'incorrect_c', 'incorrect_d', 'objective'];
     const oldFormatHeaders = ['question', 'option_a', 'option_b', 'option_c', 'option_d', 'correct', 'explanation', 'objective'];
-    
+
     let formatType = 'unknown';
     let missingHeaders: string[] = [];
-    
+
     // Check which format we're using
     if (headers.includes('questions') && headers.includes('options') && headers.includes('correct_options')) {
       formatType = 'new';
@@ -194,9 +169,9 @@ export async function POST(request: NextRequest) {
       formatType = 'old';
       missingHeaders = oldFormatHeaders.filter(h => !headers.includes(h));
     }
-    
+
     if (missingHeaders.length > 0) {
-      return NextResponse.json({ 
+      return NextResponse.json({
         error: `Missing required headers: ${missingHeaders.join(', ')}`,
         foundHeaders: headers,
         expectedFormat: formatType
@@ -307,8 +282,8 @@ export async function POST(request: NextRequest) {
     }
 
     if (newQuestions.length === 0) {
-      return NextResponse.json({ 
-        error: 'No valid questions found in CSV', 
+      return NextResponse.json({
+        error: 'No valid questions found in CSV',
         details: 'All rows were skipped due to parsing errors.',
         format: formatType,
         totalRows: rows.length - 1
@@ -318,7 +293,7 @@ export async function POST(request: NextRequest) {
     const updatedQuestions = [...existingQuestions, ...newQuestions];
     await writeAll(updatedQuestions);
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       message: `Successfully imported ${newQuestions.length} questions`,
       imported: newQuestions.length,
       format: formatType,
@@ -326,7 +301,6 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error: any) {
-    console.error('Import error:', error);
     return NextResponse.json({ error: 'Failed to import questions', details: String(error?.message || error) }, { status: 500 });
   }
 }

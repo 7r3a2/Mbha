@@ -7,12 +7,11 @@ export default function FullscreenButton() {
   const [isSupported, setIsSupported] = useState(false);
 
   useEffect(() => {
-    // Check if fullscreen API is supported
-    setIsSupported(!!document.fullscreenEnabled || !!document.webkitFullscreenEnabled);
-    
-    // Listen for fullscreen changes
+    const doc = document as any;
+    setIsSupported(!!doc.fullscreenEnabled || !!doc.webkitFullscreenEnabled);
+
     const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement || !!document.webkitFullscreenElement);
+      setIsFullscreen(!!doc.fullscreenElement || !!doc.webkitFullscreenElement);
     };
 
     document.addEventListener('fullscreenchange', handleFullscreenChange);
@@ -27,20 +26,22 @@ export default function FullscreenButton() {
   const toggleFullscreen = async () => {
     try {
       if (!isFullscreen) {
-        if (document.documentElement.requestFullscreen) {
-          await document.documentElement.requestFullscreen();
-        } else if (document.documentElement.webkitRequestFullscreen) {
-          await document.documentElement.webkitRequestFullscreen();
+        const el = document.documentElement as any;
+        if (el.requestFullscreen) {
+          await el.requestFullscreen();
+        } else if (el.webkitRequestFullscreen) {
+          await el.webkitRequestFullscreen();
         }
       } else {
-        if (document.exitFullscreen) {
-          await document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) {
-          await document.webkitExitFullscreen();
+        const doc = document as any;
+        if (doc.exitFullscreen) {
+          await doc.exitFullscreen();
+        } else if (doc.webkitExitFullscreen) {
+          await doc.webkitExitFullscreen();
         }
       }
-    } catch (error) {
-      console.error('Error toggling fullscreen:', error);
+    } catch {
+      // Fullscreen toggle failed silently
     }
   };
 
@@ -51,7 +52,7 @@ export default function FullscreenButton() {
   return (
     <button
       onClick={toggleFullscreen}
-      className="fixed bottom-4 right-4 z-50 p-3 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition-colors"
+      className="fixed bottom-2 right-2 sm:bottom-4 sm:right-4 z-50 p-2 sm:p-3 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition-colors"
       title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
     >
       {isFullscreen ? (

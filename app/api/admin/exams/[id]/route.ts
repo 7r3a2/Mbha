@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { deleteExamAdmin } from '@/lib/db-utils';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { deleteExam } from '@/lib/repositories/exam.repository';
+import { prisma } from '@/lib/prisma';
 
 export async function DELETE(
   request: NextRequest,
@@ -18,7 +16,7 @@ export async function DELETE(
     console.log('🗑️ Deleting exam from database:', examId);
     
     // Delete from database
-    await deleteExamAdmin(examId);
+    await deleteExam(examId);
 
     return NextResponse.json({ 
       message: 'Exam deleted successfully from database',

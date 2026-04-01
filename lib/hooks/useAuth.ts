@@ -10,17 +10,19 @@ interface User {
   email: string;
   gender?: string;
   university?: string;
-  uniqueCode: string;
+  uniqueCode?: string;
+  role?: string;
   hasWizaryExamAccess: boolean;
   hasApproachAccess: boolean;
   hasQbankAccess: boolean;
   hasCoursesAccess: boolean;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
   trialActive?: boolean;
   trialEndsAt?: string;
   subscriptionActive?: boolean;
   subscriptionExpiresAt?: string;
+  isGuest?: boolean;
 }
 
 interface LoginData {
@@ -118,11 +120,13 @@ const setStoredToken = (token: string, rememberMe: boolean = false) => {
   if (typeof window !== 'undefined') {
     if (rememberMe) {
       localStorage.setItem('auth_token', token);
-      sessionStorage.removeItem('auth_token'); // Clear session storage if using localStorage
+      sessionStorage.removeItem('auth_token');
     } else {
       sessionStorage.setItem('auth_token', token);
-      localStorage.removeItem('auth_token'); // Clear localStorage if using sessionStorage
+      localStorage.removeItem('auth_token');
     }
+    // Also set as cookie so middleware can read it for API route protection
+    document.cookie = `auth_token=${token}; path=/; max-age=${rememberMe ? 604800 : ''}; SameSite=Lax`;
   }
 };
 
@@ -130,6 +134,8 @@ const removeStoredToken = () => {
   if (typeof window !== 'undefined') {
     localStorage.removeItem('auth_token');
     sessionStorage.removeItem('auth_token');
+    // Clear the cookie too
+    document.cookie = 'auth_token=; path=/; max-age=0; SameSite=Lax';
   }
 };
 
@@ -186,6 +192,16 @@ export const useAuth = () => {
 
   const queryClient = useQueryClient();
 
+  // Sync token to cookie on mount (for users who logged in before cookie was added)
+  useEffect(() => {
+    if (token && typeof window !== 'undefined') {
+      const hasCookie = document.cookie.includes('auth_token=');
+      if (!hasCookie) {
+        document.cookie = `auth_token=${token}; path=/; SameSite=Lax`;
+      }
+    }
+  }, [token]);
+
   // Verify token on mount
   const { data: tokenVerification } = useVerifyToken(token);
 
@@ -221,6 +237,24 @@ export const useAuth = () => {
     });
   };
 
+  const loginAsGuest = async () => {
+    const response = await fetch('/api/auth/guest', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to create guest session');
+    }
+
+    const data = await response.json();
+    setStoredToken(data.token, false);
+    setStoredUser(data.user, false);
+    setToken(data.token);
+    setUser(data.user);
+    return data;
+  };
+
   const logout = () => {
     removeStoredToken();
     removeStoredUser();
@@ -233,8 +267,10 @@ export const useAuth = () => {
     user,
     isLoading,
     isAuthenticated: !!user && !!token,
+    isGuest: user?.role === 'guest' || user?.isGuest === true,
     login,
     register,
+    loginAsGuest,
     logout,
   };
 };

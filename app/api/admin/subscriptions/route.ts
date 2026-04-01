@@ -1,38 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { promises as fs } from 'fs';
-import path from 'path';
-import { kvGet, kvSet } from '@/lib/db-utils';
-
-const SUBS_FILE = path.join(process.cwd(), 'data', 'subscriptions.json');
-const KV_KEY = 'subscriptions';
-
-async function readSubs(): Promise<Record<string, { expiresAt: string }>> {
-  try {
-    // Prefer KV (Postgres)
-    const kv = await kvGet<Record<string, { expiresAt: string }>>(KV_KEY, null as any);
-    if (kv) return kv;
-  } catch {}
-  // Fallback to local file
-  try {
-    const raw = await fs.readFile(SUBS_FILE, 'utf-8');
-    return JSON.parse(raw || '{}');
-  } catch (e: any) {
-    if (e.code === 'ENOENT') return {};
-    throw e;
-  }
-}
-
-async function writeSubs(data: Record<string, { expiresAt: string }>) {
-  // Write both KV and file (best-effort)
-  try { await kvSet(KV_KEY, data); } catch {}
-  try {
-    await fs.mkdir(path.dirname(SUBS_FILE), { recursive: true });
-    await fs.writeFile(SUBS_FILE, JSON.stringify(data, null, 2), 'utf-8');
-  } catch {}
-}
+import {
+  getSubscriptions,
+  setUserSubscription,
+  removeUserSubscription,
+} from '@/lib/repositories/subscription.repository';
 
 export async function GET() {
-  const subs = await readSubs();
+  const subs = await getSubscriptions();
   return NextResponse.json(subs);
 }
 
@@ -47,7 +21,6 @@ export async function POST(req: NextRequest) {
     if (!months && !(amount && unit)) {
       return NextResponse.json({ error: 'Provide months OR amount+unit' }, { status: 400 });
     }
-    const subs = await readSubs();
     const now = new Date();
     const expires = new Date(now);
     if (months && months > 0) {
@@ -76,10 +49,10 @@ export async function POST(req: NextRequest) {
     } else {
       return NextResponse.json({ error: 'Invalid duration' }, { status: 400 });
     }
-    subs[userId] = { expiresAt: expires.toISOString() };
-    await writeSubs(subs);
-    return NextResponse.json({ ok: true, userId, expiresAt: subs[userId].expiresAt });
-  } catch (e: any) {
+    const expiresAt = expires.toISOString();
+    await setUserSubscription(userId, expiresAt);
+    return NextResponse.json({ ok: true, userId, expiresAt });
+  } catch {
     return NextResponse.json({ error: 'Failed to save subscription' }, { status: 500 });
   }
 }
@@ -89,14 +62,10 @@ export async function DELETE(req: NextRequest) {
     const url = new URL(req.url);
     const userId = url.searchParams.get('userId');
     if (!userId) return NextResponse.json({ error: 'userId required' }, { status: 400 });
-    
-    const subs = await readSubs();
-    delete subs[userId];
-    await writeSubs(subs);
+
+    await removeUserSubscription(userId);
     return NextResponse.json({ ok: true, userId });
-  } catch (e: any) {
+  } catch {
     return NextResponse.json({ error: 'Failed to remove subscription' }, { status: 500 });
   }
 }
-
-

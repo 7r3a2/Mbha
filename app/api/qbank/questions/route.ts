@@ -1,25 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { promises as fs } from 'fs';
-import path from 'path';
-import { kvGet } from '@/lib/db-utils';
+import { kvGet } from '@/lib/repositories/kv.repository';
 
-const QUESTIONS_FILE = path.join(process.cwd(), 'data', 'qbank-questions.json');
 const KV_KEY = 'qbank-questions';
 
 async function readQuestions(): Promise<any[]> {
-  // KV first
-  try {
-    const kv = await kvGet<any[]>(KV_KEY, null as any);
-    if (kv) return kv;
-  } catch {}
-  // Fallback to file
-  try {
-    const data = await fs.readFile(QUESTIONS_FILE, 'utf-8');
-    return JSON.parse(data);
-  } catch (e: any) {
-    if (e.code === 'ENOENT') return [];
-    throw e;
-  }
+  const kv = await kvGet<any[]>(KV_KEY, null as any);
+  return kv || [];
 }
 
 function shuffle<T>(arr: T[]): T[] {
@@ -115,7 +101,6 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ questions: transformed });
   } catch (error) {
-    console.error('Error fetching questions:', error);
     return NextResponse.json({ error: 'Failed to fetch questions' }, { status: 500 });
   }
 }

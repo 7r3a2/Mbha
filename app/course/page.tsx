@@ -450,7 +450,7 @@ function CoursePageContent() {
           // Handle play error silently
         });
       } catch (error) {
-        console.error('Error seeking video:', error);
+        // Error seeking video
       }
     }
   };
@@ -683,8 +683,8 @@ function CoursePageContent() {
                 className="w-full h-full" 
                 controls
                 src={currentLecture?.video}
-                onError={(e) => {
-                  console.error('Video error:', e);
+                onError={() => {
+                  // Video error handled silently
                 }}
               >
                 Your browser does not support the video tag.

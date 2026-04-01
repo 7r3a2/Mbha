@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllUniqueCodes } from '@/lib/db-utils';
+import { getAllUniqueCodes } from '@/lib/repositories/code.repository';
 
 export async function GET(request: NextRequest) {
   try {

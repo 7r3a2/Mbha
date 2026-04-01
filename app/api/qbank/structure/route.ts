@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { promises as fs } from 'fs';
-import path from 'path';
-import { kvGet, kvSet } from '@/lib/db-utils';
+import { kvGet, kvSet } from '@/lib/repositories/kv.repository';
 
-const STRUCTURE_FILE = path.join(process.cwd(), 'data', 'qbank-structure.json');
 const KV_KEY = 'qbank-structure';
 
 function normalizeStructure(data: any): { subjects: any[] } {
@@ -32,59 +29,21 @@ function toLabelShape(subjects: any[]): any[] {
 }
 
 async function readStructure() {
-  console.log('📖 Reading structure from file:', STRUCTURE_FILE);
-  // Prefer KV
-  try {
-    const kv = await kvGet<any>(KV_KEY, null as any);
-    if (kv) {
-      console.log('✅ Found structure in KV');
-      return normalizeStructure(kv);
-    }
-  } catch (error) {
-    console.log('❌ KV read failed:', error);
-  }
-  // Fallback to file
-  try {
-    const raw = await fs.readFile(STRUCTURE_FILE, 'utf-8');
-    console.log('✅ Read structure from file');
-    const parsed = JSON.parse(raw);
-    console.log('📄 Parsed structure:', parsed);
-    return normalizeStructure(parsed);
-  } catch (e: any) {
-    console.log('❌ File read failed:', e);
-    if (e.code === 'ENOENT') {
-      console.log('📝 Creating default structure');
-      const defaultStructure = {
-        subjects: []
-      };
-      await writeStructure(defaultStructure);
-      return defaultStructure;
-    }
-    throw e;
-  }
+  const kv = await kvGet<any>(KV_KEY, null as any);
+  return normalizeStructure(kv);
 }
 
 async function writeStructure(structure: any) {
   const normalized = normalizeStructure(structure);
-  // KV first
-  try { await kvSet(KV_KEY, normalized); } catch {}
-  // File best-effort
-  try {
-    await fs.mkdir(path.dirname(STRUCTURE_FILE), { recursive: true });
-    await fs.writeFile(STRUCTURE_FILE, JSON.stringify(normalized, null, 2), 'utf-8');
-  } catch {}
+  await kvSet(KV_KEY, normalized);
 }
 
 export async function GET() {
   try {
-    console.log('🔍 Qbank structure API called');
     const structure = await readStructure();
-    console.log('📁 Raw structure:', structure);
     const subjects = toLabelShape(structure.subjects);
-    console.log('🔄 Transformed subjects:', subjects);
     return NextResponse.json(subjects);
   } catch (error) {
-    console.error('❌ Error in qbank structure API:', error);
     return NextResponse.json({ error: 'Failed to load structure' }, { status: 500 });
   }
 }

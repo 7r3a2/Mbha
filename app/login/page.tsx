@@ -8,7 +8,8 @@ import { useRouter } from 'next/navigation';
 
 export default function Login() {
   const router = useRouter();
-  const { login } = useAuth();
+  const { login, loginAsGuest } = useAuth();
+  const [isGuestLoading, setIsGuestLoading] = useState(false);
   
   const [formData, setFormData] = useState(() => {
     // Pre-fill email if user had "Remember Me" enabled
@@ -97,22 +98,22 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-[#1E1E1E] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#1E1E1E] flex items-center justify-center py-12 px-3 sm:px-4 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <div className="text-center">
           <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 flex items-center justify-center shadow-lg">
-              <Image 
-                src="/images/logo lander.png" 
-                alt="MBHA Logo" 
-                width={64} 
-                height={64} 
-                className="w-16 h-16 object-contain"
+            <div className="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center shadow-lg">
+              <Image
+                src="/images/logo lander.png"
+                alt="MBHA Logo"
+                width={64}
+                height={64}
+                className="w-12 h-12 sm:w-16 sm:h-16 object-contain"
               />
             </div>
           </div>
-          <h2 className="text-3xl font-bold text-white mb-2">Welcome Back</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">Welcome Back</h2>
           <p className="text-gray-400">Sign in to your MBHA account</p>
         </div>
 
@@ -135,7 +136,7 @@ export default function Login() {
                 type="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className={`appearance-none relative block w-full pl-10 pr-3 py-4 border rounded-xl text-white placeholder-gray-400 bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#3A8431] focus:border-transparent transition-all duration-300 ${
+                className={`appearance-none relative block w-full pl-10 pr-3 py-3 sm:py-4 border rounded-xl text-white placeholder-gray-400 bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#3A8431] focus:border-transparent transition-all duration-300 ${
                   errors.email ? 'border-red-500 focus:ring-red-500' : ''
                 }`}
                 placeholder="Enter your email address"
@@ -163,7 +164,7 @@ export default function Login() {
                 type={showPassword ? 'text' : 'password'}
                 value={formData.password}
                 onChange={handleInputChange}
-                className={`appearance-none relative block w-full pl-10 pr-12 py-4 border rounded-xl text-white placeholder-gray-400 bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#3A8431] focus:border-transparent transition-all duration-300 ${
+                className={`appearance-none relative block w-full pl-10 pr-12 py-3 sm:py-4 border rounded-xl text-white placeholder-gray-400 bg-[#2A2A2A] border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#3A8431] focus:border-transparent transition-all duration-300 ${
                   errors.password ? 'border-red-500 focus:ring-red-500' : ''
                 }`}
                 placeholder="Enter your password"
@@ -222,7 +223,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="group relative w-full flex justify-center py-4 px-4 border border-transparent text-lg font-medium rounded-xl text-white bg-gradient-to-r from-[#3A8431] to-[#2d6a27] hover:from-[#2d6a27] hover:to-[#1e4a1e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#3A8431] transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              className="group relative w-full flex justify-center py-3 sm:py-4 px-4 border border-transparent text-base sm:text-lg font-medium rounded-xl text-white bg-gradient-to-r from-[#3A8431] to-[#2d6a27] hover:from-[#2d6a27] hover:to-[#1e4a1e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#3A8431] transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               {isSubmitting ? 'Signing In...' : 'Sign In'}
             </button>
@@ -235,6 +236,40 @@ export default function Login() {
             </div>
           )}
         </form>
+
+        {/* Divider */}
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-600"></div>
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-2 bg-[#1E1E1E] text-gray-400">or</span>
+          </div>
+        </div>
+
+        {/* Guest Login Button */}
+        <div>
+          <button
+            onClick={async () => {
+              setIsGuestLoading(true);
+              try {
+                await loginAsGuest();
+                router.push('/wizary-exam');
+              } catch {
+                setErrors({ submit: 'Failed to create guest session' });
+              } finally {
+                setIsGuestLoading(false);
+              }
+            }}
+            disabled={isGuestLoading}
+            className="w-full flex justify-center py-3 sm:py-4 px-4 border-2 border-gray-600 text-base sm:text-lg font-medium rounded-xl text-gray-300 bg-transparent hover:bg-gray-800 hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isGuestLoading ? 'Loading...' : 'Continue as Guest'}
+          </button>
+          <p className="text-center text-xs text-gray-500 mt-2">
+            Guest access is limited to Wizary Exam only
+          </p>
+        </div>
 
         {/* Sign Up Link */}
         <div className="text-center">

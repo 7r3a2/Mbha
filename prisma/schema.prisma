@@ -19,6 +19,7 @@ model User {
   gender     String?
   university String?
   uniqueCode String
+  role       String   @default("user") // "user", "admin", "guest"
   // Access permissions - all default to false except wizaryExam
   hasWizaryExamAccess    Boolean  @default(true)  // All users have access to wizary exam by default
   hasApproachAccess      Boolean  @default(false) // Admin controlled

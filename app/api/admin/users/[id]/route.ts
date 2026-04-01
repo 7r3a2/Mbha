@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { deleteUser, findUserById } from '@/lib/db-utils';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { deleteUser } from '@/lib/repositories/user.repository';
+import { prisma } from '@/lib/prisma';
 
 export async function PUT(
   request: NextRequest,

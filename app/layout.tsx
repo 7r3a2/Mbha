@@ -1,9 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ReactQueryProvider } from "@/lib/react-query";
 import { ErrorBoundary } from "@/app/components/ErrorBoundary";
-import FullscreenButton from './components/FullscreenButton'
+import ClientFullscreenButton from "./components/ClientFullscreenButton";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,9 +15,33 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#3A8431",
+};
+
 export const metadata: Metadata = {
   title: "MBHA - منصة تعليمية متكاملة",
   description: "منصة تعليمية متكاملة تهدف إلى تهيئة الطلبة الامتحانات الوزاري الخاصة بوزارة التعليم العراقية",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "MBHA",
+  },
+  applicationName: "MBHA",
+  icons: {
+    icon: [
+      { url: "/images/logo app.png", sizes: "32x32", type: "image/png" },
+      { url: "/images/logo app.png", sizes: "16x16", type: "image/png" },
+    ],
+    apple: [
+      { url: "/images/logo app.png" },
+      { url: "/images/logo app.png", sizes: "180x180" },
+    ],
+  },
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({
@@ -27,29 +51,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-title" content="MBHA" />
-        <meta name="application-name" content="MBHA" />
-        <meta name="msapplication-TileColor" content="#3A8431" />
-        <meta name="theme-color" content="#3A8431" />
-        <link rel="manifest" href="/manifest.json" />
-        <link rel="apple-touch-icon" href="/images/logo app.png" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/images/logo app.png" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/images/logo app.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/images/logo app.png" />
-        <link rel="mask-icon" href="/images/logo app.png" color="#3A8431" />
-      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ReactQueryProvider>
           <ErrorBoundary>
             {children}
-            <FullscreenButton />
+            <ClientFullscreenButton />
           </ErrorBoundary>
         </ReactQueryProvider>
       </body>
