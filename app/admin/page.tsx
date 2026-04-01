@@ -1240,10 +1240,8 @@ const saveAdd = async () => {
               correctIndex = answerStr.charCodeAt(0) - 65;
             } else {
               const num = parseInt(answerStr);
-              // Detect 0-based: check if any answer in the CSV is '0'
-              const answerColIdx = headers.indexOf('answer');
-              const hasZero = answerColIdx !== -1 && rows.slice(1).some(row => (row[answerColIdx] ?? '').trim() === '0');
-              correctIndex = (formatType === 'wizard' && hasZero) ? num : (num - 1);
+              // Wizard format uses 0-based (0=A, 1=B, 2=C, 3=D, 4=E), others use 1-based
+              correctIndex = formatType === 'wizard' ? num : (num - 1);
             }
             firstPreviewQuestion = {
               id: 1,
