@@ -13,21 +13,27 @@ export async function POST(request: NextRequest) {
       '24h'
     );
 
-    // Track unique guest IPs
+    // Track unique devices (IP + User-Agent = device fingerprint)
     try {
       const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
         || request.headers.get('x-real-ip')
         || 'unknown';
+      const userAgent = request.headers.get('user-agent') || 'unknown';
 
-      const existing = await prisma.keyValue.findUnique({ where: { key: 'guest_ips' } });
-      const ips: string[] = existing ? (existing.value as { ips: string[] }).ips : [];
+      // Hash IP + User-Agent to create a unique device fingerprint
+      const fingerprint = crypto.createHash('sha256').update(`${ip}|${userAgent}`).digest('hex');
 
-      if (!ips.includes(ip)) {
-        ips.push(ip);
+      const existing = await prisma.keyValue.findUnique({ where: { key: 'guest_devices' } });
+      const devices: string[] = existing
+        ? (existing.value as { devices: string[] }).devices
+        : [];
+
+      if (!devices.includes(fingerprint)) {
+        devices.push(fingerprint);
         await prisma.keyValue.upsert({
-          where: { key: 'guest_ips' },
-          update: { value: { ips } },
-          create: { key: 'guest_ips', value: { ips } },
+          where: { key: 'guest_devices' },
+          update: { value: { devices } },
+          create: { key: 'guest_devices', value: { devices } },
         });
       }
     } catch {

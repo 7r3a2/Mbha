@@ -162,7 +162,7 @@ export default function Home() {
       </header>
 
       {/* Hero Section */}
-      <section id="home" className="pt-32 pb-20 min-h-screen flex items-center relative">
+      <section id="home" className="pt-32 pb-20 min-h-[600px] sm:min-h-[700px] lg:min-h-0 flex items-center relative">
         <div className="absolute inset-0 bg-gradient-to-br from-[#1E1E1E] via-[#1E1E1E] to-[#2A2A2A]"></div>
         <div className="container mx-auto px-6 relative z-10">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
