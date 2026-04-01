@@ -1,14 +1,24 @@
 import { PrismaClient } from '@prisma/client';
+import { withAccelerate } from '@prisma/extension-accelerate';
 
 const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined;
+  prisma: ReturnType<typeof createPrismaClient> | undefined;
 };
 
 const createPrismaClient = () => {
-  return new PrismaClient({
+  const isAccelerate = process.env.PRISMA_DATABASE_URL?.includes('accelerate.prisma-data.net');
+
+  const client = new PrismaClient({
     log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
     errorFormat: 'pretty',
   });
+
+  // Enable Accelerate extension in production for connection pooling & caching
+  if (isAccelerate) {
+    return client.$extends(withAccelerate());
+  }
+
+  return client;
 };
 
 export const prisma = globalForPrisma.prisma ?? createPrismaClient();

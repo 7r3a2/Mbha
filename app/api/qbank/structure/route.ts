@@ -42,7 +42,11 @@ export async function GET() {
   try {
     const structure = await readStructure();
     const subjects = toLabelShape(structure.subjects);
-    return NextResponse.json(subjects);
+    return NextResponse.json(subjects, {
+      headers: {
+        'Cache-Control': 'public, max-age=300, stale-while-revalidate=60',
+      },
+    });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to load structure' }, { status: 500 });
   }

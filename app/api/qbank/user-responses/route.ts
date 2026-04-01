@@ -51,7 +51,6 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true, response });
   } catch (error) {
-    console.error('Error saving user response:', error);
     return NextResponse.json({ error: 'Failed to save response' }, { status: 500 });
   }
 }
@@ -77,6 +76,13 @@ export async function GET(request: NextRequest) {
       where: {
         userId,
         questionId: { in: questionIdArray },
+      },
+      select: {
+        questionId: true,
+        userAnswer: true,
+        isCorrect: true,
+        isFlagged: true,
+        answeredAt: true,
       },
     });
 
@@ -109,7 +115,6 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ responses: responseMap, filteredQuestionIds, mode });
   } catch (error) {
-    console.error('Error fetching user responses:', error);
     return NextResponse.json({ error: 'Failed to fetch responses' }, { status: 500 });
   }
 }
@@ -127,7 +132,6 @@ export async function DELETE(request: NextRequest) {
 
     return NextResponse.json({ success: true, deletedCount: deleteResult.count });
   } catch (error) {
-    console.error('Error deleting user responses:', error);
     return NextResponse.json({ error: 'Failed to delete responses' }, { status: 500 });
   }
 }

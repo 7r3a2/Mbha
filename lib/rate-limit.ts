@@ -1,40 +1,64 @@
-interface RateLimitEntry {
-  count: number;
-  resetAt: number;
-}
+import { prisma } from './prisma';
 
-const store = new Map<string, RateLimitEntry>();
-
-// Clean up expired entries periodically
-setInterval(() => {
-  const now = Date.now();
-  for (const [key, entry] of store) {
-    if (entry.resetAt < now) {
-      store.delete(key);
-    }
-  }
-}, 60_000);
-
-export function rateLimit(
+export async function rateLimit(
   key: string,
   limit: number,
   windowMs: number
-): { allowed: boolean; retryAfter?: number } {
-  const now = Date.now();
-  const entry = store.get(key);
+): Promise<{ allowed: boolean; retryAfter?: number }> {
+  const now = new Date();
 
-  if (!entry || entry.resetAt < now) {
-    store.set(key, { count: 1, resetAt: now + windowMs });
+  try {
+    // Try to find existing rate limit entry
+    const entry = await prisma.rateLimit.findUnique({
+      where: { id: key },
+    });
+
+    // If no entry or entry has expired, create/reset it
+    if (!entry || entry.resetAt < now) {
+      await prisma.rateLimit.upsert({
+        where: { id: key },
+        create: {
+          id: key,
+          count: 1,
+          resetAt: new Date(Date.now() + windowMs),
+        },
+        update: {
+          count: 1,
+          resetAt: new Date(Date.now() + windowMs),
+        },
+      });
+      return { allowed: true };
+    }
+
+    // Increment count
+    const updated = await prisma.rateLimit.update({
+      where: { id: key },
+      data: { count: { increment: 1 } },
+    });
+
+    if (updated.count > limit) {
+      const retryAfter = Math.ceil((entry.resetAt.getTime() - Date.now()) / 1000);
+      return { allowed: false, retryAfter: Math.max(retryAfter, 1) };
+    }
+
+    return { allowed: true };
+  } catch {
+    // If DB fails, allow the request (fail-open) to avoid blocking legitimate users
     return { allowed: true };
   }
+}
 
-  entry.count++;
-  if (entry.count > limit) {
-    const retryAfter = Math.ceil((entry.resetAt - now) / 1000);
-    return { allowed: false, retryAfter };
+// Clean up expired rate limit entries (call periodically or via cron)
+export async function cleanupExpiredRateLimits(): Promise<void> {
+  try {
+    await prisma.rateLimit.deleteMany({
+      where: {
+        resetAt: { lt: new Date() },
+      },
+    });
+  } catch {
+    // Silently fail cleanup
   }
-
-  return { allowed: true };
 }
 
 export function getClientIp(request: Request): string {

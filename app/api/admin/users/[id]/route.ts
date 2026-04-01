@@ -8,7 +8,7 @@ export async function PUT(
 ) {
   try {
     const userData = await request.json();
-    
+
     const updatedUser = await prisma.user.update({
       where: { id: params.id },
       data: {
@@ -17,17 +17,16 @@ export async function PUT(
         email: userData.email,
         gender: userData.gender,
         university: userData.university,
-             hasWizaryExamAccess: true, // Always enabled for all users
-     hasApproachAccess: userData.hasApproachAccess,
-     hasQbankAccess: userData.hasQbankAccess,
-     hasCoursesAccess: userData.hasCoursesAccess,
+        hasWizaryExamAccess: true,
+        hasApproachAccess: userData.hasApproachAccess,
+        hasQbankAccess: userData.hasQbankAccess,
+        hasCoursesAccess: userData.hasCoursesAccess,
       },
     });
 
     const { password: _, ...userWithoutPassword } = updatedUser;
     return NextResponse.json(userWithoutPassword);
   } catch (error) {
-    console.error('Error updating user:', error);
     return NextResponse.json(
       { error: 'Failed to update user' },
       { status: 500 }
@@ -43,7 +42,6 @@ export async function DELETE(
     await deleteUser(params.id);
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error deleting user:', error);
     return NextResponse.json(
       { error: 'Failed to delete user' },
       { status: 500 }

@@ -60,14 +60,19 @@ export async function GET(request: NextRequest) {
           throw new Error('Invalid user');
         }
 
-        // Get user responses directly from database
+        // Get user responses directly from database (only needed fields)
         const responses = await prisma.userResponse.findMany({
           where: {
             userId: userId,
             questionId: {
               in: questionIds
             }
-          }
+          },
+          select: {
+            questionId: true,
+            isCorrect: true,
+            isFlagged: true,
+          },
         });
 
         // Create a map of questionId to response

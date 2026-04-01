@@ -99,7 +99,14 @@ export async function GET(request: NextRequest) {
       }
     }));
 
-    return NextResponse.json({ questions: transformed });
+    return NextResponse.json(
+      { questions: transformed },
+      {
+        headers: {
+          'Cache-Control': 'private, max-age=60, stale-while-revalidate=30',
+        },
+      }
+    );
   } catch (error) {
     return NextResponse.json({ error: 'Failed to fetch questions' }, { status: 500 });
   }

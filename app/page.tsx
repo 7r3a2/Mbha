@@ -231,7 +231,7 @@ export default function Home() {
                       width={1200}
                       height={600}
                       className="w-full h-[600px] object-cover"
-                      priority
+                      loading="lazy"
                     />
                   </div>
                 ))}
@@ -292,7 +292,7 @@ export default function Home() {
                       width={400}
                       height={250}
                       className="object-contain rounded-2xl shadow-lg group-hover:scale-105 transition-transform duration-300"
-                      priority
+                      loading="lazy"
                     />
                   </div>
                   <h3 className="text-2xl font-bold text-white text-center mb-6">

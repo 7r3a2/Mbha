@@ -62,29 +62,6 @@ function parseCSV(text: string): string[][] {
   return rows;
 }
 
-// Function to parse CSV line properly, handling quoted fields with commas
-function parseCSVLine(line: string): string[] {
-  const result: string[] = [];
-  let current = '';
-  let inQuotes = false;
-
-  for (let i = 0; i < line.length; i++) {
-    const char = line[i];
-
-    if (char === '"') {
-      inQuotes = !inQuotes;
-    } else if (char === ',' && !inQuotes) {
-      result.push(current.trim());
-      current = '';
-    } else {
-      current += char;
-    }
-  }
-
-  result.push(current.trim());
-  return result;
-}
-
 // Function to clean up JSON strings that might have been corrupted by CSV parsing
 function cleanJsonString(jsonStr: string): string {
   // Remove outer quotes if present

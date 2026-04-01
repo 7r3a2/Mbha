@@ -34,6 +34,24 @@ export const findUserById = async (id: string) => {
 
 export const getAllUsers = async () => {
   return prisma.user.findMany({
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      email: true,
+      gender: true,
+      university: true,
+      uniqueCode: true,
+      role: true,
+      createdAt: true,
+      updatedAt: true,
+      hasApproachAccess: true,
+      hasCoursesAccess: true,
+      hasQbankAccess: true,
+      hasWizaryExamAccess: true,
+      isLocked: true,
+      lastLoginAt: true,
+    },
     orderBy: { createdAt: 'desc' },
   });
 };

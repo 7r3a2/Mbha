@@ -13,7 +13,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if user exists
     const user = await findUserById(userId);
     if (!user) {
       return NextResponse.json(
@@ -22,22 +21,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log(`🔓 Admin unlocking account for user: ${userId}`);
-
-    // Unlock the user account
     await unlockUserAccount(userId);
-    
-    // Deactivate all existing sessions to force fresh login
     await deactivateAllUserSessions(userId);
-
-    console.log(`✅ Account unlocked successfully for user: ${userId}`);
 
     return NextResponse.json({
       success: true,
       message: 'Account unlocked successfully'
     });
   } catch (error) {
-    console.error('❌ Error unlocking account:', error);
     return NextResponse.json(
       { error: 'Failed to unlock account' },
       { status: 500 }

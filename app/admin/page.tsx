@@ -1,18 +1,21 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import { useAdminData } from './_hooks/useAdminData';
 import { useQbank } from './_hooks/useQbank';
 import { useApproach } from './_hooks/useApproach';
 import { useExamForm } from './_hooks/useExamForm';
-import UsersTab from './_components/UsersTab';
-import ExamsTab from './_components/ExamsTab';
-import CodesTab from './_components/CodesTab';
-import QbankTab from './_components/QbankTab';
-import ApproachTab from './_components/ApproachTab';
-import EditUserModal from './_components/EditUserModal';
-import EditExamModal from './_components/EditExamModal';
+
+// Lazy load tab components — only the active tab gets loaded
+const UsersTab = dynamic(() => import('./_components/UsersTab'));
+const ExamsTab = dynamic(() => import('./_components/ExamsTab'));
+const CodesTab = dynamic(() => import('./_components/CodesTab'));
+const QbankTab = dynamic(() => import('./_components/QbankTab'));
+const ApproachTab = dynamic(() => import('./_components/ApproachTab'));
+const EditUserModal = dynamic(() => import('./_components/EditUserModal'));
+const EditExamModal = dynamic(() => import('./_components/EditExamModal'));
 
 export default function AdminPage() {
   const { user, isLoading } = useAuth();

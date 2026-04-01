@@ -1,15 +1,18 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { useExamState } from './_hooks/useExamState';
 import { useTimer } from './_hooks/useTimer';
-import ExamDashboard from './_components/ExamDashboard';
-import ExamTaking from './_components/ExamTaking';
-import QuizView from './_components/QuizView';
-import ExamResults from './_components/ExamResults';
 import { GuestBanner } from '@/app/components/GuestBanner';
+
+// Lazy load exam views — only the active view is rendered
+const ExamDashboard = dynamic(() => import('./_components/ExamDashboard'));
+const ExamTaking = dynamic(() => import('./_components/ExamTaking'));
+const QuizView = dynamic(() => import('./_components/QuizView'));
+const ExamResults = dynamic(() => import('./_components/ExamResults'));
 
 export default function WizaryExam() {
   const router = useRouter();

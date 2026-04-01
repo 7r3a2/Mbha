@@ -14,8 +14,11 @@
   --font-mono: var(--font-geist-mono);
 }
 
-* {
-  transition: all 0.3s ease;
+/* Apply transitions only to interactive elements, not all elements */
+a, button, input, select, textarea,
+[role="button"] {
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease,
+              box-shadow 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
 }
 
 body {

@@ -7,7 +7,9 @@
       "Bash(grep -r next/head /c/Users/AL-NABAA/Desktop/mbha-website-v1/app --include=*.tsx)",
       "Bash(npm uninstall:*)",
       "Bash(npx next:*)",
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "Bash(find /c/Users/AL-NABAA/Desktop/mbha-website-v1/app/api/qbank -type f -name \"route.ts\" -exec head -20 {} +)",
+      "Bash(ls:*)"
     ]
   }
 }

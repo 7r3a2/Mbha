@@ -40,8 +40,8 @@ export const getIpAddress = (request: NextRequest): string => {
 export const checkUserSessions = async (userId: string): Promise<{ activeSessions: number; shouldLock: boolean }> => {
   const now = new Date();
   
-  // Get all active sessions for the user
-  const activeSessions = await withRetry(() => 
+  // Get all active sessions for the user (only need count)
+  const activeSessions = await withRetry(() =>
     prisma.userSession.findMany({
       where: {
         userId,
@@ -49,7 +49,8 @@ export const checkUserSessions = async (userId: string): Promise<{ activeSession
         expiresAt: {
           gt: now
         }
-      }
+      },
+      select: { id: true },
     })
   );
 

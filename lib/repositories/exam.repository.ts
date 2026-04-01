@@ -3,6 +3,17 @@ import { CreateExamInput } from '../types/exam';
 
 export const getAllExams = async () => {
   return prisma.exam.findMany({
+    select: {
+      id: true,
+      title: true,
+      subject: true,
+      examTime: true,
+      order: true,
+      secretCode: true,
+      questions: true,
+      createdAt: true,
+      updatedAt: true,
+    },
     orderBy: [
       { subject: 'asc' },
       { order: 'asc' },
