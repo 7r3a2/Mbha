@@ -5,7 +5,9 @@
       "Bash(ls -lh /c/Users/AL-NABAA/Desktop/mbha-website-v1/*.csv /c/Users/AL-NABAA/Desktop/mbha-website-v1/*.json)",
       "Bash(grep -r from.*heroicons /c/Users/AL-NABAA/Desktop/mbha-website-v1/app --include=*.tsx)",
       "Bash(grep -r next/head /c/Users/AL-NABAA/Desktop/mbha-website-v1/app --include=*.tsx)",
-      "Bash(npm uninstall:*)"
+      "Bash(npm uninstall:*)",
+      "Bash(npx next:*)",
+      "Bash(wc:*)"
     ]
   }
 }
