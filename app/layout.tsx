@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ReactQueryProvider } from "@/lib/react-query";
 import { ErrorBoundary } from "@/app/components/ErrorBoundary";
-import ClientFullscreenButton from "./components/ClientFullscreenButton";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -57,7 +56,6 @@ export default function RootLayout({
         <ReactQueryProvider>
           <ErrorBoundary>
             {children}
-            <ClientFullscreenButton />
           </ErrorBoundary>
         </ReactQueryProvider>
       </body>
