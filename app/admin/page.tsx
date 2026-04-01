@@ -1320,6 +1320,22 @@ const saveAdd = async () => {
           <>
             {/* Users Tab */}
             {activeTab === 'users' && (
+              <>
+              {/* User Stats */}
+              <div className="grid grid-cols-3 gap-4 mb-4">
+                <div className="bg-white shadow rounded-lg p-4 text-center">
+                  <p className="text-sm text-gray-500">Total Users</p>
+                  <p className="text-2xl font-bold text-gray-900">{users.length}</p>
+                </div>
+                <div className="bg-white shadow rounded-lg p-4 text-center">
+                  <p className="text-sm text-gray-500">Registered Users</p>
+                  <p className="text-2xl font-bold text-blue-600">{users.filter((u: any) => u.role !== 'guest').length}</p>
+                </div>
+                <div className="bg-white shadow rounded-lg p-4 text-center">
+                  <p className="text-sm text-gray-500">Guest Users</p>
+                  <p className="text-2xl font-bold text-orange-500">{users.filter((u: any) => u.role === 'guest').length}</p>
+                </div>
+              </div>
               <div className="bg-white shadow rounded-lg">
                 <div className="px-6 py-4 border-b border-gray-200">
                   <div className="flex justify-between items-center">
@@ -1577,6 +1593,7 @@ const saveAdd = async () => {
                   </table>
                 </div>
               </div>
+              </>
             )}
 
             {/* Exams Tab */}
