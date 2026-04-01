@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,29 +8,25 @@ datasource db {
 }
 
 model User {
-  id         String   @id @default(cuid())
-  firstName  String
-  lastName   String
-  email      String   @unique
-  password   String
-  gender     String?
-  university String?
-  uniqueCode String
-  role       String   @default("user") // "user", "admin", "guest"
-  // Access permissions - all default to false except wizaryExam
-  hasWizaryExamAccess    Boolean  @default(true)  // All users have access to wizary exam by default
-  hasApproachAccess      Boolean  @default(false) // Admin controlled
-  hasQbankAccess         Boolean  @default(false) // Admin controlled
-  hasCoursesAccess       Boolean  @default(false) // Admin controlled
-  // Session management
-  isLocked               Boolean  @default(false) // Account locked due to multiple devices
-  lastLoginAt            DateTime?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  // Relations
-  responses UserResponse[]
-  sessions  UserSession[]
+  id                  String         @id @default(cuid())
+  firstName           String
+  lastName            String
+  email               String         @unique
+  password            String
+  gender              String?
+  university          String?
+  uniqueCode          String
+  role                String         @default("user")
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+  hasApproachAccess   Boolean        @default(false)
+  hasCoursesAccess    Boolean        @default(false)
+  hasQbankAccess      Boolean        @default(false)
+  hasWizaryExamAccess Boolean        @default(true)
+  isLocked            Boolean        @default(false)
+  lastLoginAt         DateTime?
+  responses           UserResponse[]
+  sessions            UserSession[]
 
   @@map("users")
 }
@@ -41,31 +34,27 @@ model User {
 model UserResponse {
   id         String   @id @default(cuid())
   userId     String
-  questionId String   // ID of the question from qbank
-  userAnswer Int      // 0 (flagging without answer), 0, 1, 2, 3, 4 (A, B, C, D, E)
-  isCorrect  Boolean  // Whether the answer was correct
-  isFlagged  Boolean  @default(false) // Whether user flagged this question
+  questionId String
+  userAnswer Int
+  isCorrect  Boolean
+  isFlagged  Boolean  @default(false)
   answeredAt DateTime @default(now())
-  
-  // Relations
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, questionId]) // One response per user per question
+  @@unique([userId, questionId])
   @@map("user_responses")
 }
 
 model UserSession {
-  id        String   @id @default(cuid())
-  userId    String
-  sessionId String   @unique // Unique session identifier
-  deviceInfo String? // Device/browser information
-  ipAddress String?  // IP address
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  expiresAt DateTime // Session expiration time
-  
-  // Relations
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id         String   @id @default(cuid())
+  userId     String
+  sessionId  String   @unique
+  deviceInfo String?
+  ipAddress  String?
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  expiresAt  DateTime
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("user_sessions")
 }
@@ -89,7 +78,7 @@ model Exam {
   examTime   Int
   order      Int      @default(1)
   secretCode String   @default("HaiderAlaa")
-  questions  String   // JSON string
+  questions  String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
