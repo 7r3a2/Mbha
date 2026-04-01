@@ -500,12 +500,22 @@ const saveAdd = async () => {
             // Normalize the question format
             const normalizedQuestions = questions
               .filter((q: any) => q.question)
-              .map((q: any) => ({
-                question: q.question || '',
-                options: Array.isArray(q.options) ? q.options : 
-                        [q.option1, q.option2, q.option3, q.option4].filter(opt => opt?.trim()),
-                correct_option: q.correct_option || q.correct_answer || q.answer || 1
-              }));
+              .map((q: any) => {
+                const options = Array.isArray(q.options) ? q.options :
+                        [q.option1, q.option2, q.option3, q.option4].filter(opt => opt?.trim());
+                // Support 0-based 'correct' or 1-based 'correct_option'
+                let correctIndex: number;
+                if (q.correct !== undefined && q.correct !== null) {
+                  correctIndex = typeof q.correct === 'number' ? q.correct : parseInt(q.correct) || 0;
+                } else {
+                  correctIndex = ((q.correct_option || q.correct_answer || q.answer || 1) - 1);
+                }
+                return {
+                  question: q.question || '',
+                  options,
+                  correct: correctIndex
+                };
+              });
             
             setPreview(normalizedQuestions);
           } catch (error: any) {
@@ -518,25 +528,45 @@ const saveAdd = async () => {
         Papa.parse(uploadedFile, {
           header: true,
           complete: (results) => {
+            const headers = Object.keys(results.data[0] || {}).map(h => h.toLowerCase().trim());
+            const isWizardFormat = headers.includes('a') && headers.includes('b') && headers.includes('answer');
+
             const questions = results.data
-              .filter((row: any) => row.question && (row.option1 || row.options))
+              .filter((row: any) => {
+                if (isWizardFormat) return row.question && (row.a || row.A);
+                return row.question && (row.option1 || row.options);
+              })
               .map((row: any) => {
-                // Handle different CSV formats
                 let options = [];
-                if (row.options) {
+                let correctOption = 1;
+
+                if (isWizardFormat) {
+                  // Wizard format: columns a, b, c, d, answer (0-based: 0=A, 1=B, 2=C, 3=D)
+                  options = [row.a || row.A, row.b || row.B, row.c || row.C, row.d || row.D].filter(opt => opt?.trim());
+                  const answerVal = (row.answer || row.Answer || '').toString().trim().toUpperCase();
+                  if (['A','B','C','D','E'].includes(answerVal)) {
+                    correctOption = answerVal.charCodeAt(0) - 65; // 0-based
+                  } else {
+                    correctOption = parseInt(answerVal) || 0; // already 0-based
+                  }
+                } else if (row.options) {
                   try {
                     options = JSON.parse(row.options);
                   } catch (e) {
                     options = [row.option1, row.option2, row.option3, row.option4].filter(opt => opt?.trim());
                   }
+                  correctOption = (parseInt(row.correct_option) || 1) - 1; // convert 1-based to 0-based
                 } else {
                   options = [row.option1, row.option2, row.option3, row.option4].filter(opt => opt?.trim());
+                  correctOption = (parseInt(row.correct_option) || 1) - 1; // convert 1-based to 0-based
                 }
-                
+
                 return {
                   question: row.question || '',
                   options: options,
-                  correct_option: parseInt(row.correct_option) || 1
+                  correct: correctOption,
+                  explanation: row.explanation || '',
+                  objective: row.objective || row.educational_objective || ''
                 };
               });
             setPreview(questions);
@@ -1815,7 +1845,7 @@ const saveAdd = async () => {
                                   <p className="font-medium text-gray-900">{index + 1}. {question.question}</p>
                                   <ul className="mt-2 space-y-1">
                                     {question.options.map((option: string, optIndex: number) => (
-                                      <li key={optIndex} className={`text-sm ${optIndex + 1 === question.correct_option ? 'text-green-600 font-medium' : 'text-gray-600'}`}>
+                                      <li key={optIndex} className={`text-sm ${optIndex === (question.correct !== undefined ? question.correct : (question.correct_option || 1) - 1) ? 'text-green-600 font-medium' : 'text-gray-600'}`}>
                                         {optIndex + 1}. {option}
                                       </li>
                                     ))}
@@ -3029,7 +3059,7 @@ const saveAdd = async () => {
                         <p className="font-medium text-gray-900">{index + 1}. {question.question}</p>
                         <ul className="mt-2 space-y-1">
                           {question.options.map((option: string, optIndex: number) => (
-                            <li key={optIndex} className={`text-sm ${optIndex + 1 === question.correct_option ? 'text-green-600 font-medium' : 'text-gray-600'}`}>
+                            <li key={optIndex} className={`text-sm ${optIndex === (question.correct !== undefined ? question.correct : (question.correct_option || 1) - 1) ? 'text-green-600 font-medium' : 'text-gray-600'}`}>
                               {optIndex + 1}. {option}
                             </li>
                           ))}

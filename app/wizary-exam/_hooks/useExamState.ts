@@ -220,11 +220,20 @@ export function useExamState() {
     setCodeError('');
 
     if (exam.importedData && exam.importedData.questions) {
-      const importedQuestions = exam.importedData.questions.map((q: any) => ({
-          text: q.question || q.text,
-          options: Array.isArray(q.options) ? q.options : q.options?.map((opt: any) => opt.text) || [],
-          correct: (q.correct_option || q.correctOption || 1) - 1
-        }));
+      const importedQuestions = exam.importedData.questions.map((q: any) => {
+          // Support both 0-based 'correct' field and 1-based 'correct_option' field
+          let correctIndex: number;
+          if (q.correct !== undefined && q.correct !== null) {
+            correctIndex = typeof q.correct === 'number' ? q.correct : parseInt(q.correct) || 0;
+          } else {
+            correctIndex = ((q.correct_option || q.correctOption || 1) - 1);
+          }
+          return {
+            text: q.question || q.text,
+            options: Array.isArray(q.options) ? q.options : q.options?.map((opt: any) => opt.text) || [],
+            correct: correctIndex
+          };
+        });
       setQuestions(importedQuestions);
       setAnswers(new Array(importedQuestions.length).fill(null));
       setFlagged(new Array(importedQuestions.length).fill(false));
